@@ -12,10 +12,10 @@ import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 
 @EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ModEvents {
-    @SubscribeEvent
+/*    @SubscribeEvent
     public static void onEntityAttributeCreation(EntityAttributeCreationEvent event) {
         event.put(ModEntityTypes.BOBLING.get(), BoblingEntity.createAttributes().build());
-    }
+    }*/
 
     @SubscribeEvent
     public static void onRegisterDataMapTypes(RegisterDataMapTypesEvent event) {

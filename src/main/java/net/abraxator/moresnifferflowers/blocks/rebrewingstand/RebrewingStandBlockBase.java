@@ -35,7 +35,7 @@ public class RebrewingStandBlockBase extends ModEntityDoubleTallBlock {
     public static final VoxelShape BASE = Block.box(0, 0, 0, 16, 1, 16);
     public static VoxelShape ROD_UPPER = Block.box(6.5, 0, 6.5, 9.5, 14, 9.5);
     public static VoxelShape ROD_LOWER = Block.box(6.5, 0, 6.5, 9.5, 16, 9.5);
-    
+
     public RebrewingStandBlockBase(Properties pProperties) {
         super(pProperties);
         if(!(this instanceof RebrewingStandBlockTop)) {
@@ -47,7 +47,7 @@ public class RebrewingStandBlockBase extends ModEntityDoubleTallBlock {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         pBuilder.add(HAS_BOTTLE);
     }
-    
+
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         return Shapes.or(BASE, ROD_LOWER);
@@ -71,7 +71,7 @@ public class RebrewingStandBlockBase extends ModEntityDoubleTallBlock {
             return InteractionResult.CONSUME;
         }
     }
-    
+
     @Override
     public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
         double d0 = (double)pPos.getX() + 0.4D + (double)pRandom.nextFloat() * 0.2D;
@@ -91,7 +91,27 @@ public class RebrewingStandBlockBase extends ModEntityDoubleTallBlock {
     }
 
     @Override
+    public Block getCorruptedLowerBlock() {
+        return null;
+    }
+
+    @Override
     public Block getUpperBlock() {
         return ModBlocks.REBREWING_STAND_TOP.get();
+    }
+
+    @Override
+    public Block getCorruptedUpperBlock() {
+        return null;
+    }
+
+    @Override
+    public boolean isLower(BlockState blockState) {
+        return blockState.is(ModBlocks.REBREWING_STAND_BOTTOM.get());
+    }
+
+    @Override
+    public boolean isUpper(BlockState blockState) {
+        return false;
     }
 }
