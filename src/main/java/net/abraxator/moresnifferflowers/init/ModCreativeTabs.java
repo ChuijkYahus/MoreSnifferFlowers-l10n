@@ -100,8 +100,9 @@ public class ModCreativeTabs {
                 output.accept(ModItems.BOBLING_CORE);
                 output.accept(ModItems.VIVICUS_ANTIDOTE);
 
-                output.accept(ModBlocks.DECAYED_LOG);
-                output.accept(ModBlocks.CORRUPTED_GRASS_BLOCK);
+                output.accept(ModBlocks.DECAYED_LOG.get());
+                output.accept(ModBlocks.CORRUPTED_GRASS_BLOCK.get());
+                output.accept(ModBlocks.CURED_GRASS_BLOCK.get());
 
                 output.accept(ModBlocks.VIVICUS_LOG.get());
                 output.accept(ModBlocks.VIVICUS_WOOD.get());

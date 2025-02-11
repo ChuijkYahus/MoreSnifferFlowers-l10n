@@ -90,7 +90,8 @@ final manifestAttributes = [
         'Specification-Version' : project.version,
         'Implementation-Title'  : project.name,
         'Implementation-Version': project.jar.archiveVersion,
-        'Implementation-Vendor' : 'AbraXator'
+        'Implementation-Vendor' : 'AbraXator',
+        "MixinConfigs": "more_sniffer_flowers.mixins.json"
 ]
 
 jar {
