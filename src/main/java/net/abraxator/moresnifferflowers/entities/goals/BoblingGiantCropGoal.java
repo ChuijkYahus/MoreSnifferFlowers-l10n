@@ -101,7 +101,7 @@ public class BoblingGiantCropGoal extends Goal {
         return !gonnaPlant() && flag;
     }
 
-    @Override
+/*    @Override
     public void stop() {
         if(gonnaPlant()) {
             var giantBlock = Util.getRandom(List.of(ModBlocks.GIANT_CARROT, ModBlocks.GIANT_BEETROOT, ModBlocks.GIANT_NETHERWART, ModBlocks.GIANT_POTATO, ModBlocks.GIANT_WHEAT), this.bobling.getRandom());
@@ -121,7 +121,7 @@ public class BoblingGiantCropGoal extends Goal {
                 this.bobling.remove(Entity.RemovalReason.DISCARDED);
             });
         }
-    }
+    }*/
 
     @Override
     public void tick() {

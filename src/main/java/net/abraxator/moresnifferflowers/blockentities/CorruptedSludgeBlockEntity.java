@@ -46,7 +46,7 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
     public void updateUses() {
         this.usesLeft--;
          
-        if(this.usesLeft <= 0) {
+        if(this.usesLeft <= 1) {
             CorruptedSludgeListener.shootProjectiles(this.getBlockPos().getCenter(), this.level.random.nextIntBetweenInclusive(8, 16), this.level);
             this.level.destroyBlock(this.getBlockPos(), true);
             
@@ -74,7 +74,7 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
         super.loadAdditional(tag, registries);
         usesLeft = tag.getInt("uses");
     }
-    
+
     public static class CorruptedSludgeListener implements GameEventListener {
         private PositionSource positionSource;
 
@@ -92,8 +92,8 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
             return GameEvent.BLOCK_DESTROY.value().notificationRadius();
         }
 
-        
-        
+
+
         @Override
         public boolean handleGameEvent(ServerLevel pLevel, Holder<GameEvent> pGameEvent, GameEvent.Context pContext, Vec3 pPos) {
             CorruptedSludgeBlockEntity entity;
@@ -102,10 +102,17 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
                 entity = entity1;
             } else return false;
             
-            if(entity.usesLeft <= 0 || entity.getBlockState().getValue(ModStateProperties.CURED)) {
-                return false;
+            boolean validEvent = (pGameEvent != GameEvent.BLOCK_PLACE || pGameEvent != GameEvent.BLOCK_DESTROY);
+            
+            if (entity.usesLeft == -1) {
+                entity.usesLeft = pLevel.random.nextIntBetweenInclusive(16, 32) - 1;
+                entity.stateChange = entity.usesLeft / 4;
             }
             
+            if(entity.usesLeft <= 1 || entity.getBlockState().getValue(ModStateProperties.CURED) || !validEvent) {
+                return false;
+            }
+
             if(pGameEvent.is(GameEvent.BLOCK_PLACE) && Corruptable.canBeCorrupted(pContext.affectedState().getBlock(), pLevel.random)) {
                 Vec3 startPos = this.getListenerSource().getPosition(pLevel).get();
                 Vec3 dirNormal = new Vec3(pPos.x - startPos.x, pPos.y - startPos.y, pPos.z - startPos.z).normalize();
@@ -125,13 +132,13 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
                             0.0D, 0.0D, 0.0D,
                             0.0D
                     );
-                    
+
                     entity.updateUses();
                 });
-                
+
                 return corrupted.isPresent();
             }
-            
+
             if(pGameEvent.is(GameEvent.BLOCK_DESTROY) && pContext.affectedState().is(ModTags.ModBlockTags.CORRUPTED_SLUDGE) && !pPos.equals(this.positionSource.getPosition(pLevel).get()) && pContext.sourceEntity() instanceof Player player) {
                 var projectileNumber = pContext.affectedState().is(ModBlocks.CORRUPTED_LEAVES) || pContext.affectedState().is(ModBlocks.CORRUPTED_LEAVES_BUSH)  ? pLevel.random.nextInt(1) + 1 : pLevel.random.nextInt(5) + 1;
                 shootProjectiles(this.positionSource.getPosition(pLevel).get(), projectileNumber, pLevel);

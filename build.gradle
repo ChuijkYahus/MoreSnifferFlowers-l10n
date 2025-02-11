@@ -46,29 +46,30 @@ neoForge {
             systemProperty 'forge.logging.console.level', 'debug'
             systemProperty 'forge.logging.markers', 'REGISTRIES'
 
+            }
+            client {
+                client()
+            }
+            clientAuth {
+                client()
+                devLogin = true
+                gameDirectory = layout.projectDir.dir("runs/client")
+            }
+            data {
+                data()
+                programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+            }
+            server {
+                server()
+                programArgument('--nogui')
+            }
         }
-        client {
-            client()
-        }
-        clientAuth {
-            client()
-            devLogin = true
-            gameDirectory = layout.projectDir.dir("runs/client")
-        }
-        data {
-            data()
-            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-        }
-        server {
-            server()
+        mods {
+            more_sniffer_flowers {
+                sourceSet(sourceSets.main)
+            }
         }
     }
-    mods {
-        more_sniffer_flowers {
-            sourceSet(sourceSets.main)
-        }
-    }
-}
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 

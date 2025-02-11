@@ -38,7 +38,7 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 
 import java.util.List;
 
-@EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+@EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public class ForgeEvents {
     @SubscribeEvent
     public static void onLivingJump(LivingEvent.LivingJumpEvent event) {
@@ -87,8 +87,8 @@ public class ForgeEvents {
         }
 
         if(event.getLevel().getBlockEntity(event.getPos()) instanceof GiantCropBlockEntity entity) {
-            BlockPos.betweenClosed(entity.pos1, entity.pos2).forEach(blockPos -> {
-                event.getLevel().destroyBlock(blockPos, true);
+            BlockPos.withinManhattanStream(entity.center, 1, 1, 1).forEach(blockPos -> {
+                if (event.getLevel().getBlockState(blockPos).is(ModTags.ModBlockTags.GIANT_CROPS)) event.getLevel().destroyBlock(blockPos, true);
             });
         }
         
