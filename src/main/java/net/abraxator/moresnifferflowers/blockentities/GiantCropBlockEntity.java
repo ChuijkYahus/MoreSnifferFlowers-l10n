@@ -31,7 +31,7 @@ public class GiantCropBlockEntity extends ModBlockEntity {
         if(canGrow) {
             if(staticGameTime==0){
                 staticGameTime = level.getGameTime();
-                System.out.println("staticgametime="+staticGameTime);
+               // System.out.println("staticgametime="+staticGameTime);
             }
             growProgress += 0.10;
             this.level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
@@ -44,8 +44,7 @@ public class GiantCropBlockEntity extends ModBlockEntity {
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
         var tag = new CompoundTag();
-        tag.putDouble("growProgress", growProgress);
-        tag.putFloat("staticGameTime", staticGameTime);
+        saveAdditional(tag, pRegistries);
         return tag;
     }
 

@@ -1,58 +1,32 @@
 package net.abraxator.moresnifferflowers.init;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.PlayerTrigger;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Optional;
 
 public class ModAdvancementCritters {
-    public static final PlayerTrigger EARN_SNIFFER_ADVANCEMENT = new PlayerTrigger();
-    public static final PlayerTrigger USED_DYESPRIA = new PlayerTrigger();
-    public static final PlayerTrigger USED_BONMEEL = new PlayerTrigger();
-    public static final PlayerTrigger PLACED_DYESPRIA_PLANT = new PlayerTrigger();
-    public static final PlayerTrigger BOBLING_ATTACK = new PlayerTrigger();
-    public static final PlayerTrigger DYE_BOAT = new PlayerTrigger();
-    public static final PlayerTrigger USED_CURE = new PlayerTrigger();
 
+    public static final DeferredRegister<CriterionTrigger<?>> TRIGGERS = DeferredRegister.create(Registries.TRIGGER_TYPE, MoreSnifferFlowers.MOD_ID);
 
-    public static Criterion<?> getSnifferAdvancement() {
-        return EARN_SNIFFER_ADVANCEMENT.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()));
-    }
-
-    public static Criterion<?> usedDyespria() {
-        return USED_DYESPRIA.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()));
-    }
-
-    public static Criterion<?> usedBonmeel() {
-        return USED_BONMEEL.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()));
-    }
-
-    public static Criterion<?> placedDyespriaPlant() {
-        return PLACED_DYESPRIA_PLANT.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()));
-    }
-
-    public static Criterion<?> boblingAttack() {
-        return BOBLING_ATTACK.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()));
-    }
-
-    public static Criterion<?> dyeBoat() {
-        return DYE_BOAT.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()));
-    }
-
-    public static Criterion<?> usedCure() {
-        return USED_CURE.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()));
-    }
-
-    public static void init() {
-        CriteriaTriggers.register(MoreSnifferFlowers.sLoc("earn_sniffer_advancement"), EARN_SNIFFER_ADVANCEMENT);
-        CriteriaTriggers.register(MoreSnifferFlowers.sLoc("used_dyespria"), USED_DYESPRIA);
-        CriteriaTriggers.register(MoreSnifferFlowers.sLoc("used_bonmeel"), USED_BONMEEL);
-        CriteriaTriggers.register(MoreSnifferFlowers.sLoc("placed_dyespria_plant"), PLACED_DYESPRIA_PLANT);
-        CriteriaTriggers.register(MoreSnifferFlowers.sLoc("bobling_attack"), BOBLING_ATTACK);
-        CriteriaTriggers.register(MoreSnifferFlowers.sLoc("dye_boat"), DYE_BOAT);
-        CriteriaTriggers.register(MoreSnifferFlowers.sLoc("used_cure"), USED_CURE);
-    }
+    public static final DeferredHolder<CriterionTrigger<?>, SimpleAdvancementTrigger> EARN_SNIFFER_ADVANCEMENT = TRIGGERS.register("earn_sniffer_advancement", SimpleAdvancementTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SimpleAdvancementTrigger> USED_DYESPRIA = TRIGGERS.register("used_dyespria", SimpleAdvancementTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SimpleAdvancementTrigger> USED_BONMEEL = TRIGGERS.register("used_bonmeel", SimpleAdvancementTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SimpleAdvancementTrigger> PLACED_DYESPRIA_PLANT = TRIGGERS.register("placed_dyespria_plant", SimpleAdvancementTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SimpleAdvancementTrigger> BOBLING_ATTACK = TRIGGERS.register("bobling_attack", SimpleAdvancementTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SimpleAdvancementTrigger> DYE_BOAT = TRIGGERS.register("dye_boat", SimpleAdvancementTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SimpleAdvancementTrigger> USED_CURE = TRIGGERS.register("used_cure", SimpleAdvancementTrigger::new);
 }
 

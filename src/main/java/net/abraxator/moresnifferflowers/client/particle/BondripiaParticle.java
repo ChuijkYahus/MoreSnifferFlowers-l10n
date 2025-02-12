@@ -1,52 +1,225 @@
 package net.abraxator.moresnifferflowers.client.particle;
 
+import net.abraxator.moresnifferflowers.init.ModParticles;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.DripParticle;
+import net.minecraft.client.particle.*;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
-public class BondripiaParticle extends DripParticle {
-    public BondripiaParticle(ClientLevel pLevel, double pX, double pY, double pZ, Fluid pType) {
-        super(pLevel, pX, pY, pZ, pType);
-        this.gravity = 0.5F;
-        this.lifetime = 40;
-        this.setColor(0.6666F, 0.3176F, 0.6980F);
+public class BondripiaParticle extends TextureSheetParticle {
+    protected BondripiaParticle(ClientLevel level, double x, double y, double z) {
+        super(level, x, y, z);
+        this.setSize(0.01F, 0.01F);
+        this.gravity = 0.06F;
     }
 
-    @Override
-    protected void preMoveUpdate() {
-        
-    }
-
-    @Override
-    protected void postMoveUpdate() {
-        this.xd *= 0.02;
-        this.yd *= 0.02;
-        this.zd *= 0.02;
-        
-        if(this.onGround) {
-            this.remove();
+    public void tick() {
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
+        this.preMoveUpdate();
+        if (!this.removed) {
+            this.yd -= this.gravity;
+            this.move(this.xd, this.yd, this.zd);
+            this.postMoveUpdate();
+            if (!this.removed) {
+                this.xd *= 0.98F;
+                this.yd *= 0.98F;
+                this.zd *= 0.98F;
+            }
         }
     }
-    
-    public static class BondripiaParticleProvider implements ParticleProvider<SimpleParticleType> {
+
+    protected void preMoveUpdate() {
+        if (this.lifetime-- <= 0) {
+            this.remove();
+        }
+
+    }
+
+    protected void postMoveUpdate() {
+    }
+
+    static class DripHangParticle extends BondripiaParticle {
+        private final ParticleOptions fallingParticle;
+
+        DripHangParticle(ClientLevel level, double x, double y, double z, ParticleOptions fallingParticle) {
+            super(level, x, y, z);
+            this.fallingParticle = fallingParticle;
+            this.gravity *= 0.02F;
+            this.lifetime = 40;
+        }
+
+        protected void preMoveUpdate() {
+            if (this.lifetime-- <= 0) {
+                this.remove();
+                this.level.addParticle(this.fallingParticle, this.x, this.y, this.z, this.xd, this.yd, this.zd);
+            }
+
+        }
+
+        protected void postMoveUpdate() {
+            this.xd *= 0.02D;
+            this.yd *= 0.02D;
+            this.zd *= 0.02D;
+        }
+    }
+    static class FallingParticle extends BondripiaParticle {
+        FallingParticle(ClientLevel level, double x, double y, double z) {
+            this(level, x, y, z, (int)(64.0 / (Math.random() * 0.8 + 0.2)));
+        }
+
+        FallingParticle(ClientLevel level, double x, double y, double z, int lifetime) {
+            super(level, x, y, z);
+            this.lifetime = lifetime;
+        }
+
+        protected void postMoveUpdate() {
+            if (this.onGround) {
+                this.remove();
+            }
+
+        }
+    }
+
+    static class FallAndLandParticle extends BondripiaParticle.FallingParticle {
+        protected final ParticleOptions landParticle;
+
+        FallAndLandParticle(ClientLevel level, double x, double y, double z, ParticleOptions landParticle) {
+            super(level, x, y, z);
+            this.landParticle = landParticle;
+        }
+
+        protected void postMoveUpdate() {
+            if (this.onGround) {
+                this.remove();
+                this.level.addParticle(this.landParticle, this.x, this.y, this.z, 0.0D, 0.0D, 0.0D);
+            }
+
+        }
+    }
+
+    static class BondripiaSplashParticle extends WaterDropParticle {
+        BondripiaSplashParticle(ClientLevel level, double x, double y, double z, double xS, double yS, double zS) {
+            super(level, x, y, z);
+            this.gravity = 0.01F;
+            this.yd = 0.05;
+        }
+    }
+
+    @Override
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    }
+
+    public static class BondripiaDripProvider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet spriteSet;
 
-        public BondripiaParticleProvider(SpriteSet spriteSet) {
+        public BondripiaDripProvider(SpriteSet spriteSet) {
             this.spriteSet = spriteSet;
         }
 
         @Nullable
         @Override
         public Particle createParticle(SimpleParticleType pType, ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
-            BondripiaParticle bondripiaParticle = new BondripiaParticle(pLevel, pX, pY, pZ, Fluids.WATER);
-            bondripiaParticle.pickSprite(spriteSet);
+            BondripiaParticle bondripiaParticle = new BondripiaParticle.DripHangParticle(pLevel, pX, pY, pZ, ModParticles.BONDRIPIA_FALL.get());
+            bondripiaParticle.pickSprite(this.spriteSet);
+            bondripiaParticle.lifetime = (int)(16.0 / (Math.random() * 0.4 + 0.2));
+            bondripiaParticle.gravity = 0.007F;
             return bondripiaParticle;
         }
+    }
+
+    public static class BondripiaFallProvider implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet spriteSet;
+
+        public BondripiaFallProvider(SpriteSet spriteSet) {
+            this.spriteSet = spriteSet;
+        }
+
+        @Nullable
+        @Override
+        public Particle createParticle(SimpleParticleType pType, ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
+            BondripiaParticle bondripiaParticle = new BondripiaParticle.FallAndLandParticle(pLevel, pX, pY, pZ, ModParticles.BONDRIPIA_LAND.get());
+            bondripiaParticle.pickSprite(this.spriteSet);
+            bondripiaParticle.lifetime = (int)(16.0 / (Math.random() * 0.4 + 0.2));
+            bondripiaParticle.gravity = 0.007F;
+            return bondripiaParticle;
+        }
+    }
+
+    public static class BondripiaLandProvider implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet spriteSet;
+
+        public BondripiaLandProvider(SpriteSet spriteSet) {
+            this.spriteSet = spriteSet;
+        }
+
+        @Nullable
+        @Override
+        public Particle createParticle(SimpleParticleType pType, ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
+            var splashParticle = new BondripiaSplashParticle(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
+            splashParticle.pickSprite(this.spriteSet);
+            return splashParticle;
+        }
+    }
+
+    public static class AcidripiaDripProvider implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet spriteSet;
+
+        public AcidripiaDripProvider(SpriteSet spriteSet) {
+            this.spriteSet = spriteSet;
+        }
+
+        @Nullable
+        @Override
+        public Particle createParticle(SimpleParticleType pType, ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
+            BondripiaParticle bondripiaParticle = new BondripiaParticle.DripHangParticle(pLevel, pX, pY, pZ, ModParticles.ACIDRIPIA_FALL.get());
+            bondripiaParticle.pickSprite(this.spriteSet);
+            bondripiaParticle.lifetime = (int)(16.0 / (Math.random() * 0.4 + 0.2));
+            bondripiaParticle.gravity = 0.007F;
+            return bondripiaParticle;
+        }
+
+    }
+
+    public static class AcidripiaFallProvider implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet spriteSet;
+
+        public AcidripiaFallProvider(SpriteSet spriteSet) {
+            this.spriteSet = spriteSet;
+        }
+
+        @Nullable
+        @Override
+        public Particle createParticle(SimpleParticleType pType, ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
+            BondripiaParticle bondripiaParticle = new BondripiaParticle.FallAndLandParticle(pLevel, pX, pY, pZ, ModParticles.ACIDRIPIA_LAND.get());
+            bondripiaParticle.pickSprite(this.spriteSet);
+            bondripiaParticle.lifetime = (int)(16.0 / (Math.random() * 0.4 + 0.2));
+            bondripiaParticle.gravity = 0.007F;
+            return bondripiaParticle;
+        }
+
+    }
+
+    public static class AcidripiaLandProvider implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet spriteSet;
+
+        public AcidripiaLandProvider(SpriteSet spriteSet) {
+            this.spriteSet = spriteSet;
+        }
+
+        @Nullable
+        @Override
+        public Particle createParticle(SimpleParticleType pType, ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
+            var splashParticle = new BondripiaSplashParticle(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
+            splashParticle.pickSprite(this.spriteSet);
+            return splashParticle;
+        }
+
     }
 }

@@ -19,7 +19,7 @@ public class BoblingAttackPlayerGoal extends MeleeAttackGoal {
             this.mob.swing(InteractionHand.MAIN_HAND);
             this.mob.doHurtTarget(pTarget);
             if(this.mob instanceof BoblingEntity bobling && pTarget instanceof ServerPlayer serverPlayer) {
-                ModAdvancementCritters.BOBLING_ATTACK.trigger(serverPlayer);
+                ModAdvancementCritters.BOBLING_ATTACK.get().trigger(serverPlayer);
                 bobling.setRunning(true);
             }
         }

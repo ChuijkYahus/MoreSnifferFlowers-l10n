@@ -33,7 +33,7 @@ public class VivicusAntidoteItem extends Item {
             }
             
             if (player instanceof ServerPlayer serverPlayer) {
-                ModAdvancementCritters.USED_CURE.trigger(serverPlayer);
+                ModAdvancementCritters.USED_CURE.get().trigger(serverPlayer);
             }
             
             return InteractionResult.sidedSuccess(level.isClientSide);

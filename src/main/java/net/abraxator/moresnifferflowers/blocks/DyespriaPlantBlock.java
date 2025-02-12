@@ -71,7 +71,7 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
     @Override
     public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity pPlacer, ItemStack pStack) {
         if(pPlacer instanceof ServerPlayer serverPlayer) {
-            ModAdvancementCritters.PLACED_DYESPRIA_PLANT.trigger(serverPlayer);
+            ModAdvancementCritters.PLACED_DYESPRIA_PLANT.get().trigger(serverPlayer);
         }
     }
 

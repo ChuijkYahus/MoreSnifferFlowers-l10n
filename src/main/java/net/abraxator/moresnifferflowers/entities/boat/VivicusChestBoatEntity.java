@@ -69,7 +69,7 @@ public class VivicusChestBoatEntity extends ModChestBoatEntity implements Colora
             Dye.setDyeToDyeHolderStack(dyespria, stack, stack.getCount());
 
             if(pPlayer instanceof ServerPlayer player) {
-                ModAdvancementCritters.DYE_BOAT.trigger(player);
+                ModAdvancementCritters.DYE_BOAT.get().trigger(player);
             }
             
             if(this.level().isClientSide) {

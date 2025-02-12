@@ -56,7 +56,7 @@ public class ForgeEvents {
     public static void onUseItemOnBlock(UseItemOnBlockEvent event) {
         var itemStack = event.getPlayer().getItemInHand(event.getHand()).getItem().getDefaultInstance();
         var block = event.getLevel().getBlockState(event.getPos());
-        
+
         if(itemStack.getItem() instanceof JarOfBonmeelItem && block.is(ModTags.ModBlockTags.BONMEELABLE)) {
             event.setCanceled(true);
             ((JarOfBonmeelItem) itemStack.getItem()).useOn(event.getUseOnContext());
@@ -67,15 +67,15 @@ public class ForgeEvents {
             var state = strippedBlock.defaultBlockState()
                     .setValue(RotatedPillarBlock.AXIS, block.getValue(RotatedPillarBlock.AXIS))
                     .setValue(ModStateProperties.COLOR, block.getValue(ModStateProperties.COLOR));
-            
+
             if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
                 CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, event.getPos(), itemStack);
             }
-            
+
             event.getLevel().setBlock(event.getPos(), state, 3);
             event.getLevel().gameEvent(GameEvent.BLOCK_CHANGE, event.getPos(), GameEvent.Context.of(event.getPlayer(), state));
             itemStack.hurtAndBreak(1, event.getPlayer(), LivingEntity.getSlotForHand(event.getHand()));
-            
+
             event.cancelWithResult(ItemInteractionResult.sidedSuccess(event.getLevel().isClientSide));
         }
     }
@@ -88,7 +88,7 @@ public class ForgeEvents {
 
         if(event.getLevel().getBlockEntity(event.getPos()) instanceof GiantCropBlockEntity entity) {
             BlockPos.withinManhattanStream(entity.center, 1, 1, 1).forEach(blockPos -> {
-                if (event.getLevel().getBlockState(blockPos).is(ModTags.ModBlockTags.GIANT_CROPS)) event.getLevel().destroyBlock(blockPos, true);
+               if (event.getLevel().getBlockState(blockPos).is(ModTags.ModBlockTags.GIANT_CROPS)) event.getLevel().destroyBlock(blockPos, true);
             });
         }
         
@@ -105,7 +105,7 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onGetAdvancement(AdvancementEvent.AdvancementEarnEvent event) {
         if(event.getAdvancement().id().equals(ResourceLocation.parse("husbandry/obtain_sniffer_egg")) && event.getEntity() instanceof ServerPlayer serverPlayer) {
-            ModAdvancementCritters.EARN_SNIFFER_ADVANCEMENT.trigger(serverPlayer);
+            ModAdvancementCritters.EARN_SNIFFER_ADVANCEMENT.get().trigger(serverPlayer);
         }
     }
 

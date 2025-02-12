@@ -78,9 +78,9 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 			pPoseStack.scale(1, yScale, 1);
 			modelPartMap.get(blockState.getBlock()).render(pPoseStack, vertexConsumer, pPackedLight, pPackedOverlay);
             pPoseStack.popPose();
-            if (pBlockEntity.growProgress < 1 && blockState.is(ModTags.ModBlockTags.GIANT_CROPS) && blockState.getValue(ModStateProperties.CENTER)) {
+/*            if (pBlockEntity.growProgress < 1 && blockState.is(ModTags.ModBlockTags.GIANT_CROPS) && blockState.getValue(ModStateProperties.CENTER)) {
                 System.out.println("Pticks=" + coolPartialTick + " Growprogress=" + pBlockEntity.growProgress + " Height=" + yCord + " Scale=" + yScale + " coolGrowProgress=" + coolGrowProgress+ " static=" + pBlockEntity.staticGameTime);
-            }
+            }*/
         }
 	}
 

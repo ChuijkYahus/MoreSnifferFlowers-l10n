@@ -215,7 +215,7 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCr
     public void colorBlock(Level level, BlockPos blockPos, BlockState blockState, Dye dye) {
         Colorable.super.colorBlock(level, blockPos, blockState.setValue(getColorAndEmptyProperties().getB(), false), dye);
         if(level.getNearestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 6, false) instanceof ServerPlayer serverPlayer)
-            ModAdvancementCritters.USED_DYESPRIA.trigger(serverPlayer);
+            ModAdvancementCritters.USED_DYESPRIA.get().trigger(serverPlayer);
     }
 
     @Override

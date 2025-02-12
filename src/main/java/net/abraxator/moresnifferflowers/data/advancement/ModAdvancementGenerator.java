@@ -1,10 +1,7 @@
 package net.abraxator.moresnifferflowers.data.advancement;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.init.ModAdvancementCritters;
-import net.abraxator.moresnifferflowers.init.ModBlocks;
-import net.abraxator.moresnifferflowers.init.ModItems;
-import net.abraxator.moresnifferflowers.init.ModTags;
+import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
@@ -47,7 +44,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         true,
                         false)
-                .addCriterion("planted_dyespria_plant", ModAdvancementCritters.placedDyespriaPlant())
+                .addCriterion("planted_dyespria_plant", SimpleAdvancementTrigger.TriggerInstance.placedDyespriaPlant())
                 .save(saver, MoreSnifferFlowers.loc("dyespria_plant").toString());
 
         Advancement.Builder.advancement()
@@ -61,7 +58,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         true,
                         false)
-                .addCriterion("used_dyespria", ModAdvancementCritters.usedDyespria())
+                .addCriterion("used_dyespria", SimpleAdvancementTrigger.TriggerInstance.usedDyespria())
                 .save(saver, MoreSnifferFlowers.loc("dyespria").toString());
 
         var bonmeel = Advancement.Builder.advancement()
@@ -76,7 +73,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false
                 )
-                .addCriterion("used_bonmeel", ModAdvancementCritters.usedBonmeel())
+                .addCriterion("used_bonmeel", SimpleAdvancementTrigger.TriggerInstance.usedBonmeel())
                 .save(saver, MoreSnifferFlowers.loc("bonmeel").toString());
 
         Advancement.Builder.advancement()
@@ -121,7 +118,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false
                 )
-                .addCriterion("bobling_attacked", ModAdvancementCritters.boblingAttack())
+                .addCriterion("bobling_attacked", SimpleAdvancementTrigger.TriggerInstance.boblingAttack())
                 .save(saver, MoreSnifferFlowers.loc("bobling").toString());
         
         Advancement.Builder.advancement()
@@ -151,7 +148,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false
                 )
-                .addCriterion("used_antidote", ModAdvancementCritters.usedCure())
+                .addCriterion("used_antidote", SimpleAdvancementTrigger.TriggerInstance.usedCure())
                 .save(saver, MoreSnifferFlowers.loc("cure").toString());
 
         var ambush = Advancement.Builder.advancement()
@@ -196,7 +193,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false
                 )
-                .addCriterion("dye_boat", ModAdvancementCritters.dyeBoat())
+                .addCriterion("dye_boat", SimpleAdvancementTrigger.TriggerInstance.dyeBoat())
                 .save(saver, MoreSnifferFlowers.loc("dye_boat").toString());
     }
 

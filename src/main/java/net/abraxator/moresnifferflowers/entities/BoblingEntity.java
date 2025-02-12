@@ -162,7 +162,7 @@ public class BoblingEntity extends PathfinderMob {
             Set<Vec3> set = new HashSet<>();
 
             if (pDamageSource.getEntity() instanceof ServerPlayer serverPlayer) {
-                ModAdvancementCritters.BOBLING_ATTACK.trigger(serverPlayer);
+                ModAdvancementCritters.BOBLING_ATTACK.get().trigger(serverPlayer);
             }
 
             for (double theta = 0; theta <= Mth.TWO_PI * 3; theta += Mth.TWO_PI / random.nextIntBetweenInclusive(2, 5)) {

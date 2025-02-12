@@ -2,7 +2,7 @@ package net.abraxator.moresnifferflowers;
 
 import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
-import net.abraxator.moresnifferflowers.client.ClientEvents;
+import net.abraxator.moresnifferflowers.client.ClientRegistration;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.worldgen.configurations.ModTreeDecoratorTypes;
@@ -28,9 +28,8 @@ public class MoreSnifferFlowers {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public MoreSnifferFlowers(IEventBus modEventBus, Dist dist) {
-        if(dist.isClient()) modEventBus.addListener(ClientEvents::clientSetup);
+        if(dist.isClient()) modEventBus.addListener(ClientRegistration::clientSetup);
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener((RegisterEvent e) -> ModAdvancementCritters.init());
 
         ModItems.ITEMS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
@@ -46,6 +45,7 @@ public class MoreSnifferFlowers {
         ModTrunkPlacerTypes.TRUNKS.register(modEventBus);
         ModRecipeTypes.RECIPE_TYPES.register(modEventBus);
         ModPieceTypes.STRUCTURE_PIECE.register(modEventBus);
+        ModAdvancementCritters.TRIGGERS.register(modEventBus);
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModLootModifiers.LOOT_MODIFIERS.register(modEventBus);
         ModTreeDecoratorTypes.DECORATORS.register(modEventBus);
