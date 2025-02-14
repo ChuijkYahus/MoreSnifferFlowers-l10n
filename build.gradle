@@ -78,7 +78,9 @@ dependencies {
     compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
-    compileOnly("curse.maven:rightclickharvest-452834:5427523")
+    compileOnly("curse.maven:rightclickharvest-452834:6134804")
+    //implementation "curse.maven:architectury-api-419699:5786327"
+    //implementation "curse.maven:jamlib-623764:5988164"
     //implementation("me.shedaniel.cloth:cloth-config-neoforge:${cloth_version}")
     //implementation("dev.architectury:architectury-neoforge:${architectury_version}")
     implementation("net.neoforged:neoforge:${neoforge_version}")
@@ -91,7 +93,7 @@ final manifestAttributes = [
         'Implementation-Title'  : project.name,
         'Implementation-Version': project.jar.archiveVersion,
         'Implementation-Vendor' : 'AbraXator',
-        "MixinConfigs": "more_sniffer_flowers.mixins.json"
+        "MixinConfigs": "more_sniffer_flowers.neoforge.mixins.json"
 ]
 
 jar {
