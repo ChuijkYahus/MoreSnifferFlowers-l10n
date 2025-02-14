@@ -1,10 +1,7 @@
 package net.abraxator.moresnifferflowers.entities;
 
 import net.abraxator.moresnifferflowers.blocks.Corruptable;
-import net.abraxator.moresnifferflowers.init.ModBlocks;
-import net.abraxator.moresnifferflowers.init.ModEntityTypes;
-import net.abraxator.moresnifferflowers.init.ModItems;
-import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.recipes.CorruptionRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,6 +10,7 @@ import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -147,6 +145,10 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
                     corruptable.onCorrupt(level, blockPos, level.getBlockState(blockPos), block);
                 } else {
                     level.setBlockAndUpdate(blockPos, block.withPropertiesOf(state));
+                }
+
+                if (level.getNearestPlayer(this, 15) instanceof ServerPlayer serverPlayer) {
+                    ModAdvancementCritters.CORRUPTED_BLOCK.trigger(serverPlayer);
                 }
 
                 state.getShape(level, blockPos).forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> {

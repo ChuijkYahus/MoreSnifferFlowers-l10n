@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "moresnifferflowers:garbush_seeds"
+              "moresnifferflowers:garnet_shard"
             ]
           }
         ]
@@ -28,7 +28,7 @@
     "show_toast": true,
     "title": {
       "fallback": "Garbushed by garbush loot",
-      "translate": "advancements.more_sniffer_flowers.garbush"
+      "translate": "advancements.more_sniffer_flowers.garbuh"
     }
   },
   "requirements": [

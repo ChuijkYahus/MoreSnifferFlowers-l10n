@@ -134,7 +134,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                         true,
                         false
                 )
-                .addCriterion("has_corrupted_slime_ball", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(ModItems.CORRUPTED_SLIME_BALL.get()).build()))
+                .addCriterion("has_corrupted_slime_ball", ModAdvancementCritters.corruptedBlock())
                 .save(consumer, MoreSnifferFlowers.loc("corruption").toString());
 
         Advancement.Builder.advancement()
@@ -164,7 +164,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                         true,
                         false
                 )
-                .addCriterion("has_ambush", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.AMBUSH_SEEDS.get()))
+                .addCriterion("has_ambush", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.AMBER_SHARD.get()))
                 .save(consumer, MoreSnifferFlowers.loc("ambush").toString());
 
         Advancement.Builder.advancement()
@@ -179,7 +179,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                         true,
                         false
                 )
-                .addCriterion("has_garbush", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.GARBUSH_SEEDS.get()))
+                .addCriterion("has_garbush", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.GARNET_SHARD.get()))
                 .save(consumer, MoreSnifferFlowers.loc("garbush").toString());
 
         Advancement.Builder.advancement()
