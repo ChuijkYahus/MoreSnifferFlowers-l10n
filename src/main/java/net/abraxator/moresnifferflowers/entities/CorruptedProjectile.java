@@ -9,6 +9,7 @@ import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -141,6 +142,11 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
                 } else {
                     level.setBlockAndUpdate(blockPos, block.withPropertiesOf(state));
                 }
+
+                if (level.getNearestPlayer(this, 15) instanceof ServerPlayer serverPlayer) {
+                    ModAdvancementCritters.CORRUPTED_BLOCK.get().trigger(serverPlayer);
+                }
+
                 level.addParticle(
                         new DustParticleOptions(Vec3.fromRGB24(0x0443248).toVector3f(), 1.0F),
                         blockPos.getX() + level.random.nextDouble(), blockPos.getY() + level.random.nextDouble(), blockPos.getZ() + level.random.nextDouble(),

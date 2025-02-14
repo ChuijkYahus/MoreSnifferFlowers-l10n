@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Consumer;
 
 public class ModAdvancementGenerator implements AdvancementProvider.AdvancementGenerator {
-    
+
     @Override
     public void generate(HolderLookup.@NotNull Provider registries, @NotNull Consumer<AdvancementHolder> saver, @NotNull ExistingFileHelper existingFileHelper) {
         var root = Advancement.Builder.advancement()
@@ -120,7 +120,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                 )
                 .addCriterion("bobling_attacked", SimpleAdvancementTrigger.TriggerInstance.boblingAttack())
                 .save(saver, MoreSnifferFlowers.loc("bobling").toString());
-        
+
         Advancement.Builder.advancement()
                 .parent(bobling)
                 .display(
@@ -133,7 +133,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false
                 )
-                .addCriterion("has_corrupted_slime_ball", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(ModItems.CORRUPTED_SLIME_BALL).build()))
+                .addCriterion("has_corrupted_slime_ball", SimpleAdvancementTrigger.TriggerInstance.corruptedBlock())
                 .save(saver, MoreSnifferFlowers.loc("corruption").toString());
 
         Advancement.Builder.advancement()
@@ -163,7 +163,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false
                 )
-                .addCriterion("has_ambush", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.AMBUSH_SEEDS))
+                .addCriterion("has_ambush", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.AMBER_SHARD.get()))
                 .save(saver, MoreSnifferFlowers.loc("ambush").toString());
 
         Advancement.Builder.advancement()
@@ -178,7 +178,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false
                 )
-                .addCriterion("has_garbush", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.GARBUSH_SEEDS))
+                .addCriterion("has_garbush", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.GARNET_SHARD.get()))
                 .save(saver, MoreSnifferFlowers.loc("garbush").toString());
 
         Advancement.Builder.advancement()

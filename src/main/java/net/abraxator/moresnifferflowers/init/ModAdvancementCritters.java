@@ -28,5 +28,7 @@ public class ModAdvancementCritters {
     public static final DeferredHolder<CriterionTrigger<?>, SimpleAdvancementTrigger> BOBLING_ATTACK = TRIGGERS.register("bobling_attack", SimpleAdvancementTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SimpleAdvancementTrigger> DYE_BOAT = TRIGGERS.register("dye_boat", SimpleAdvancementTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SimpleAdvancementTrigger> USED_CURE = TRIGGERS.register("used_cure", SimpleAdvancementTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SimpleAdvancementTrigger> CORRUPTED_BLOCK = TRIGGERS.register("corrupted_block", SimpleAdvancementTrigger::new);
+
 }
 

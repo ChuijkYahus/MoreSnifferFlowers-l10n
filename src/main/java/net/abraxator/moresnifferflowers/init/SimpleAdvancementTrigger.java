@@ -27,9 +27,6 @@ public class SimpleAdvancementTrigger extends SimpleCriterionTrigger<SimpleAdvan
                         EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player))
                 .apply(instance, TriggerInstance::new));
 
-        public static Criterion<?> getSnifferAdvancement() {
-            return ModAdvancementCritters.EARN_SNIFFER_ADVANCEMENT.get().createCriterion(new TriggerInstance(Optional.empty()));
-        }
 
         public static Criterion<?> usedDyespria() {
             return ModAdvancementCritters.USED_DYESPRIA.get().createCriterion(new TriggerInstance(Optional.empty()));
@@ -55,5 +52,8 @@ public class SimpleAdvancementTrigger extends SimpleCriterionTrigger<SimpleAdvan
             return ModAdvancementCritters.USED_CURE.get().createCriterion(new TriggerInstance(Optional.empty()));
         }
 
+        public static Criterion<?> corruptedBlock() {
+            return ModAdvancementCritters.CORRUPTED_BLOCK.get().createCriterion(new TriggerInstance(Optional.empty()));
+        }
     }
 }

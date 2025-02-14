@@ -1,4 +1,5 @@
 {
+# Items ⚔️⚔️⚔️
 	"item.moresnifferflowers.dawnberry": "Dawnberry",
 	"item.moresnifferflowers.dawnberry_vine_seeds": "Dawnberry Vine Seeds",
 	"item.moresnifferflowers.gloomberry": "Gloomberry",
@@ -64,9 +65,11 @@
 	"item.moresnifferflowers.caulorflower_seeds": "Caulorflower Seed",
 
 
-
+# Blocks🎲🎲🎲
 	"block.moresnifferflowers.dawnberry_vine": "Dawnberry Vine",
 	"block.moresnifferflowers.ambush": "Ambush",
+	"block.moresnifferflowers.ambush_bottom": "Ambush",
+	"block.moresnifferflowers.ambush_top": "Ambush",
 	"block.moresnifferflowers.amber_block": "Amber Block",
 	"block.moresnifferflowers.amber_mosaic": "Amber Mosaic",
 	"block.moresnifferflowers.amber_mosaic_stairs": "Amber Mosaic Stairs",
@@ -78,6 +81,8 @@
 	
 	"block.moresnifferflowers.gloomberry_vine": "Gloomberry Vine",
 	"block.moresnifferflowers.garbush": "Garbush",
+	"block.moresnifferflowers.garbush_bottom": "Garbush",
+	"block.moresnifferflowers.garbush_top": "Garbush",
 	"block.moresnifferflowers.garnet_block": "Garnet Block",
 	"block.moresnifferflowers.garnet_mosaic": "Garnet Mosaic",
 	"block.moresnifferflowers.garnet_mosaic_stairs": "Garnet Mosaic Stairs",
@@ -153,7 +158,7 @@
 
 
 
-
+# Tooltips 📜📜📜
 	"message.more_sniffer_flowers.dyespria_mode": "Current Mode",
 
 	"tooltip.dyespria.usage": "Hover+Right-click to insert dye \nRight-click Caulorflower to paint \nSneak to paint whole column\n",
@@ -167,7 +172,7 @@
 	"tooltip.extracted_bottle.obtain": "Obtainable using Bottle o' Extraction",
 	"tooltip.wip": "WIP",
 
-
+# Advancements 🏆🏆🏆
 	"advancements.more_sniffer_flowers.dyespria_plant": "Colorful plants",
 	"advancements.more_sniffer_flowers.dyespria_plant.desc": "Place the Dyespria!!!",
 	"advancements.more_sniffer_flowers.dyespria": "Spriaing your dye",
@@ -193,7 +198,7 @@
 	"advancements.more_sniffer_flowers.dye_boat": "Whatever colors your boat",
 	"advancements.more_sniffer_flowers.dye_boat.desc": "Dye the vivicus boat any color, pretty unlikely to happen during actual gameplay",
 
-
+# Trims 🛡️🛡️🛡️
 	"trim_pattern.moresnifferflowers.aroma": "Aroma Armor Trim",
 	"trim_pattern.moresnifferflowers.carnage": "Carnage Armor Trim",
 	"trim_pattern.moresnifferflowers.nether_wart": "Nether Wart Armor Trim",
@@ -210,6 +215,7 @@
 	"trim_material.moresnifferflowers.wheat": "Wheat Material",
 	"trim_material.moresnifferflowers.beetroot": "Beetroot Material",
 
+# Banners🏳️🏳️🏳️
 	"block.minecraft.banner.moresnifferflowers.ambush.white": "White Ambush",
 	"block.minecraft.banner.moresnifferflowers.ambush.light_gray": "Light Gray Ambush",
 	"block.minecraft.banner.moresnifferflowers.ambush.gray": "Gray Ambush",
