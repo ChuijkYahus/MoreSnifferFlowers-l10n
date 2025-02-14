@@ -111,13 +111,6 @@ public class ForgeEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void onGetAdvancement(AdvancementEvent.AdvancementEarnEvent event) {
-        if(event.getAdvancement().getId().equals(ResourceLocation.tryParse("husbandry/obtain_sniffer_egg")) && event.getEntity() instanceof ServerPlayer serverPlayer) {
-            ModAdvancementCritters.EARN_SNIFFER_ADVANCEMENT.trigger(serverPlayer);
-        }
-    }
-
     private static void fireFlyLogic(BlockState state, ServerLevel serverLevel, BlockPos pos, Player player, Event event) {
         List<ItemStack> list = Block.getDrops(state, serverLevel, pos, serverLevel.getBlockEntity(pos), player, player.getMainHandItem());
         RandomSource randomSource = serverLevel.getRandom();
