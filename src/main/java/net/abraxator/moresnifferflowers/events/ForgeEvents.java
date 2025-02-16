@@ -71,7 +71,7 @@ public class ForgeEvents {
             event.setCanceled(true);
             event.setCancellationResult(InteractionResult.SUCCESS);
             item2.useOn(new UseOnContext(event.getEntity(), event.getHand(), event.getHitVec()));
-            event.getEntity().setItemInHand(event.getHand(), ItemUtils.createFilledResult(item, event.getEntity(), new ItemStack(Items.GLASS_BOTTLE)));
+            event.getEntity().setItemInHand(event.getHand(), ItemUtils.createFilledResult(event.getItemStack(), event.getEntity(), new ItemStack(Items.GLASS_BOTTLE)));
 
         } else
             if((item.is(ModItems.REBREWED_POTION.get()) || item.is(ModItems.EXTRACTED_BOTTLE.get())) && block.is(Blocks.DIRT)) {
