@@ -31,6 +31,7 @@ public record CorruptedSludgePacket(Vector3f start, Vector3f target, Vector3f di
                 if (level.isClientSide()) {
                     float distance = packet.start.distance(packet.target);
 
+
                     for (int i = 0; i < 15; i++) {
                         double progress = (double) i / 15;
                         Vector3f pos = new Vector3f(packet.start).add(new Vector3f(packet.direction).mul((float) (distance * progress)));

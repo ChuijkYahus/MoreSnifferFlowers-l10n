@@ -26,7 +26,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "moresnifferflowers:press_piece",
+          "name": "moresnifferflowers:engine_piece",
           "weight": 50
         },
         {

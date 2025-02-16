@@ -3,13 +3,21 @@ package net.abraxator.moresnifferflowers.items;
 import net.abraxator.moresnifferflowers.init.ModAdvancementCritters;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class VivicusAntidoteItem extends Item {
     public VivicusAntidoteItem(Properties pProperties) {
@@ -60,5 +68,13 @@ public class VivicusAntidoteItem extends Item {
         }
         
         return super.useOn(pContext);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltip, TooltipFlag pFlag) {
+        super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
+        pTooltip.add(Component.translatableWithFallback("tooltip.wip", "WIP").withStyle(ChatFormatting.DARK_RED));
+        pTooltip.add(Component.translatableWithFallback("tooltip.vivicus_antidote", "Cures Boblings and Corrupted Grass").withStyle(ChatFormatting.GOLD));
+        ;
     }
 }
