@@ -46,9 +46,6 @@ public class BoblingEntity extends PathfinderMob {
     private static final EntityDataAccessor<Optional<BlockPos>> DATA_WANTED_POS = SynchedEntityData.defineId(BoblingEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     private static final EntityDataAccessor<Boolean> DATA_PLANTING = SynchedEntityData.defineId(BoblingEntity.class, EntityDataSerializers.BOOLEAN);
     
-    private BoblingAttackPlayerGoal attackPlayerGoal;
-    private BoblingAvoidPlayerGoal<Player> avoidPlayerGoal;
-    
     private int idleAnimationTimeout = 0;
     public AnimationState idleAnimationState = new AnimationState();
     public AnimationState plantingAnimationState = new AnimationState();
@@ -84,7 +81,6 @@ public class BoblingEntity extends PathfinderMob {
 
     public void setRunning(boolean running) {
         this.entityData.set(DATA_RUNNING, running);
-        if(running) this.updateRunningGoals();
     }
 
     @Nullable
@@ -135,19 +131,14 @@ public class BoblingEntity extends PathfinderMob {
 
     @Override
     protected void registerGoals() {
-        if(!isCured()) {
-            if (this.attackPlayerGoal == null) {
-                this.attackPlayerGoal = new BoblingAttackPlayerGoal(this, 1.5F, false);
-            }
-
-            this.goalSelector.addGoal(2, this.attackPlayerGoal);
-        }
         /* else if (this.getBoblingType() == Type.CURED) {
             this.goalSelector.addGoal(3, new TemptGoal(this, 0.9F, itemStack ->
                     itemStack.is(ModItems.JAR_OF_BONMEEL), false));
         }*/
 
         this.goalSelector.addGoal(1, new FloatGoal(this));
+        this.goalSelector.addGoal(2, new BoblingAttackPlayerGoal(this, 1.5F, false));
+        this.goalSelector.addGoal(2, new BoblingAvoidPlayerGoal<>(this, Player.class, 16.0F, 1.0F, 1.3F));
         this.goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 0.8F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, false));
@@ -254,30 +245,12 @@ public class BoblingEntity extends PathfinderMob {
         }
     }
 
-    public void updateRunningGoals() {
-        if (this.avoidPlayerGoal == null) {
-            this.avoidPlayerGoal = new BoblingAvoidPlayerGoal<>(this, Player.class, 16.0F, 1.0F, 1.3F);
-        }
-
-        if (this.attackPlayerGoal != null && goalSelector.getAvailableGoals().stream().anyMatch(wrappedGoal -> wrappedGoal.getGoal() == attackPlayerGoal)) {
-            this.goalSelector.removeGoal(this.attackPlayerGoal);
-        }
-        
-        if(goalSelector.getAvailableGoals().stream().noneMatch(wrappedGoal -> wrappedGoal.getGoal() == avoidPlayerGoal)) {
-            this.goalSelector.addGoal(2, this.avoidPlayerGoal);
-        }
-    }
-
     @Override
     protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
         ItemStack itemStack = pPlayer.getItemInHand(pHand);
         
         if (itemStack.is(ModItems.VIVICUS_ANTIDOTE) && !isCured()) {
             this.setCured(true);
-            
-            if (this.attackPlayerGoal != null) {
-                this.goalSelector.removeGoal(this.attackPlayerGoal);
-            }
             
             particles(new DustParticleOptions(Vec3.fromRGB24(7118872).toVector3f(), 1));
             itemStack.shrink(1);
