@@ -155,6 +155,10 @@
 	"block.moresnifferflowers.decayed_log": "Decayed Log",
 	"block.moresnifferflowers.corrupted_grass_block": "Corrupted Grass Block",
 	"block.moresnifferflowers.cured_grass_block": "Cured Grass Block",
+	
+	"block.moresnifferflowers.bonmeel_filled_cauldron": "Bonmeel Filled Cauldron",
+	"block.moresnifferflowers.acid_filled_cauldron": "Acid Filled Cauldron",
+
 
 
 
@@ -171,6 +175,7 @@
 	"tooltip.acid_jar": "Ungrows organic blocks",
 	"tooltip.extracted_bottle.obtain": "Obtainable using Bottle o' Extraction",
 	"tooltip.wip": "WIP",
+	"tooltip.vivicus_antidote": "Cures Boblings and Corrupted Grass",
 
 # Advancements 🏆🏆🏆
 	"advancements.more_sniffer_flowers.dyespria_plant": "Colorful plants",
@@ -257,6 +262,7 @@
 	"moresnifferflowers.creative_tab": "More Sniffer Flowers",
 
 	"gui.mores_sniffer_flowers.cropressing_category": "Cropressing",
+	"gui.moresnifferflowers.corrupting_category": "Corrupting",
 
 	"entity.moresnifferflowers.dragonfly": "Dragonfly",
 	"entity.moresnifferflowers.bobling": "Bobling",

@@ -9,12 +9,20 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
@@ -39,31 +47,51 @@ public class ForgeEvents {
     }
 
     @SubscribeEvent
-    public static void onUseItemOnBlock(UseItemOnBlockEvent event) {
-        var itemStack = event.getPlayer().getItemInHand(event.getHand()).getItem().getDefaultInstance();
+    public static void onPlayerInteractRightClickItem(UseItemOnBlockEvent event) {
+        var item = event.getPlayer().getItemInHand(event.getHand()).getItem().getDefaultInstance();
         var block = event.getLevel().getBlockState(event.getPos());
 
-        if(itemStack.getItem() instanceof JarOfBonmeelItem && block.is(ModTags.ModBlockTags.BONMEELABLE)) {
+        if (event.isCanceled()) return;
+        if(item.getItem() instanceof JarOfBonmeelItem item2 && block.is(ModTags.ModBlockTags.BONMEELABLE)) {
             event.setCanceled(true);
-            ((JarOfBonmeelItem) itemStack.getItem()).useOn(event.getUseOnContext());
-        } else if((itemStack.is(ModItems.REBREWED_POTION) || itemStack.is(ModItems.EXTRACTED_BOTTLE)) && block.is(Blocks.DIRT) && event.getUsePhase() == UseItemOnBlockEvent.UsePhase.ITEM_AFTER_BLOCK) {
+            event.setCancellationResult(ItemInteractionResult.SUCCESS);
+            item2.useOn(event.getUseOnContext());
+            event.getPlayer().setItemInHand(event.getHand(), ItemUtils.createFilledResult(item, event.getPlayer(), new ItemStack(Items.GLASS_BOTTLE)));
+
+        } else
+            if((item.is(ModItems.REBREWED_POTION.get()) || item.is(ModItems.EXTRACTED_BOTTLE.get())) && block.is(Blocks.DIRT)) {
             event.setCanceled(true);
-        } else if(itemStack.is(ItemTags.AXES) && (block.is(ModBlocks.VIVICUS_LOG) || block.is(ModBlocks.VIVICUS_WOOD))) {
+        } else
+            if(item.is(ItemTags.AXES) && (block.is(ModBlocks.VIVICUS_LOG.get()) || block.is(ModBlocks.VIVICUS_WOOD.get()))) {
             var strippedBlock = AxeItem.STRIPPABLES.get(block.getBlock());
             var state = strippedBlock.defaultBlockState()
                     .setValue(RotatedPillarBlock.AXIS, block.getValue(RotatedPillarBlock.AXIS))
                     .setValue(ModStateProperties.COLOR, block.getValue(ModStateProperties.COLOR));
 
             if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
-                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, event.getPos(), itemStack);
+                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, event.getPos(), item);
             }
+
+            event.getLevel().playSound(event.getPlayer(), event.getPos(), SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
 
             event.getLevel().setBlock(event.getPos(), state, 3);
             event.getLevel().gameEvent(GameEvent.BLOCK_CHANGE, event.getPos(), GameEvent.Context.of(event.getPlayer(), state));
-            itemStack.hurtAndBreak(1, event.getPlayer(), LivingEntity.getSlotForHand(event.getHand()));
 
-            event.cancelWithResult(ItemInteractionResult.sidedSuccess(event.getLevel().isClientSide));
-        }
+            event.getItemStack().hurtAndBreak(1, event.getPlayer(), LivingEntity.getSlotForHand(event.getHand()));
+
+
+            event.setCancellationResult(ItemInteractionResult.SUCCESS);
+            event.setCanceled(true);
+
+            } else
+            if (((item.is(ModItems.JAR_OF_BONMEEL.get()) || item.is(ModItems.JAR_OF_ACID.get())) && block.is(Blocks.CAULDRON))){
+                var cauldronType = item.is(ModItems.JAR_OF_BONMEEL.get()) ? ModBlocks.BONMEEL_FILLED_CAULDRON.get() :  ModBlocks.ACID_FILLED_CAULDRON.get();
+                var state = cauldronType.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3);
+                event.getLevel().setBlock(event.getPos(), state, 3);
+                event.getPlayer().setItemInHand(event.getHand(), ItemUtils.createFilledResult(event.getItemStack(), event.getPlayer(), new ItemStack(Items.GLASS_BOTTLE)));
+                event.setCancellationResult(ItemInteractionResult.SUCCESS);
+                event.setCanceled(true);
+            }
     }
 
     @SubscribeEvent

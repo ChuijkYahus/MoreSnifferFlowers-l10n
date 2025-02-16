@@ -119,7 +119,9 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
             for (BlockPos blockPos : BlockPos.betweenClosed(entity.center.below().north().east(), entity.center.below().south().west())) {
                 BlockPos currentPos = blockPos;
 
-                for (int i = 0; i < 10; i++) {
+                    int y = pLevel.getRandom().nextIntBetweenInclusive(1, 11);
+                    currentPos = currentPos.below(y);
+
                     if (isBondripable(pLevel, currentPos)) {
                         BlockState blockState = pLevel.getBlockState(currentPos);
 
@@ -142,8 +144,7 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
                         fillCauldron(pLevel, currentPos, pLevel.getBlockState(currentPos));
                     }
 
-                    currentPos = currentPos.below();
-                }
+
             }
         }
     }

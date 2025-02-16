@@ -77,7 +77,7 @@ public class BonmeeliaBlock extends BushBlock implements ModCropBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
         if(pStack.is(Items.GLASS_BOTTLE) && canInsertBottle(pState)) {
-            return addBottle(pLevel, pPos, pState, pStack);
+            return addBottle(pLevel, pPos, pState, pStack, pPlayer);
         } else if(pStack.is(Items.BONE_MEAL) && pState.getValue(AGE) < 3)  {
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         } 
@@ -101,10 +101,10 @@ public class BonmeeliaBlock extends BushBlock implements ModCropBlock {
         pLevel.setBlock(pPos, pState.setValue(SHOW_HINT, false), 3);
     }
     
-    private ItemInteractionResult addBottle(Level level, BlockPos blockPos, BlockState blockState, ItemStack stack) {
+    private ItemInteractionResult addBottle(Level level, BlockPos blockPos, BlockState blockState, ItemStack stack, Player player) {
         if(!level.isClientSide) {
             level.setBlock(blockPos, blockState.setValue(HAS_BOTTLE, true), 3);
-            stack.shrink(1);
+            if (!player.isCreative()) stack.shrink(1);
         }
 
         return ItemInteractionResult.sidedSuccess(level.isClientSide);

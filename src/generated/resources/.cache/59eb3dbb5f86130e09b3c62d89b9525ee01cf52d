@@ -1,4 +1,4 @@
-// 1.21.1	2025-02-12T19:43:16.2217739	Loot Tables
+// 1.21.1	2025-02-16T18:14:45.2620469	Loot Tables
 3d52630c5d3ea1bc964bfbca9110a18bb946ee46 data/moresnifferflowers/loot_table/blocks/acidripia.json
 16882dced81963aacd1b4d32ed8e0ca33a618998 data/moresnifferflowers/loot_table/blocks/acid_filled_cauldron.json
 867be0e1c64c89c59a6ef95f1d02bf10cf067d66 data/moresnifferflowers/loot_table/blocks/amber_block.json
@@ -55,9 +55,9 @@ d536ae10a5cb8f208db459088b49d2d36d15b98f data/moresnifferflowers/loot_table/bloc
 d375826896ca54d92d06fe3ee64cf19c03467429 data/moresnifferflowers/loot_table/blocks/garnet_mosaic_slab.json
 ed913a65495229be3e719adc7ac96f6b5e1bbd7f data/moresnifferflowers/loot_table/blocks/garnet_mosaic_stairs.json
 ecf1637366a63fdf33aea50ada462267e15d09aa data/moresnifferflowers/loot_table/blocks/garnet_mosaic_wall.json
-4cf6cb49a0b5f53d37435a5338c423ae8f5ad893 data/moresnifferflowers/loot_table/blocks/giant_beetroot.json
+59aabafa9b89ac77fa0047cf7d686f734d516522 data/moresnifferflowers/loot_table/blocks/giant_beetroot.json
 c341fb5a22d3b4b473723f57bd74566f6320a75b data/moresnifferflowers/loot_table/blocks/giant_carrot.json
-de4ed107c58519a8e6dd800475565b5214826c9b data/moresnifferflowers/loot_table/blocks/giant_netherwart.json
+88da766cf0049eb1ef381ccabcb8b84b474ee0e6 data/moresnifferflowers/loot_table/blocks/giant_netherwart.json
 0c55a4c23f10c4042b10a2f7c87545840f30f8f5 data/moresnifferflowers/loot_table/blocks/giant_potato.json
 8d08e4ba666cce76ccce5ea047a834a992e33b5a data/moresnifferflowers/loot_table/blocks/giant_wheat.json
 c0285bf2c3012443b9dfd40dac1f7755e57631c2 data/moresnifferflowers/loot_table/blocks/gloomberry_vine.json
