@@ -8,16 +8,14 @@ plugins {
 }
 
 repositories {
-    maven {
-        url 'https://cursemaven.com'
-    }
-    mavenCentral()
+    maven { url 'https://cursemaven.com'}
     maven { url "https://maven.blamejared.com/" }
     maven { url "https://modmaven.dev" }
+    mavenCentral()
 }
 
 group = 'net.abraxator.moresnifferflowers'
-archivesBaseName = 'MoreSnifferFlowers-'+mc_version+'-Forge'
+archivesBaseName = 'MoreSnifferFlowers-'+minecraft_version+'-Forge'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -53,6 +51,7 @@ println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty '
             }
             server {
                 server()
+                programArgument('--nogui')
             }
         }
         mods {
@@ -67,13 +66,14 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
     //jei
-    compileOnlyApi("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
-    modRuntimeOnly("mezz.jei:jei-${mc_version}-forge:${jei_version}")
+    modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    modRuntimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
     
     //mixin
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    implementation 'org.jetbrains:annotations:24.1.0'
+    implementation 'org.jetbrains:annotations:26.0.1'
 
     //quark
     compileOnly("curse.maven:Quark-${quark_id}:${quark_version}")
@@ -93,7 +93,9 @@ final manifestAttributes = [
         'Specification-Version' : '1',
         'Implementation-Title'  : project.name,
         'Implementation-Version': project.jar.archiveVersion,
-        'Implementation-Vendor' : 'AbraXator'
+        'Implementation-Vendor' : 'AbraXator',
+        "MixinConfigs"          : "more_sniffer_flowers.mixins.json",
+        'jei_version'           : project.jei_version_range,
 ]
 
 jar {

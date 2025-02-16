@@ -74,7 +74,7 @@ public class CorruptedSlimeLayerBlock extends SnowLayerBlock {
     }
 
     public boolean isFree(BlockState pState) {
-        return pState.isAir() || pState.is(BlockTags.FIRE) || pState.liquid() || pState.canBeReplaced() || pState.is(this);
+        return pState.isAir() || pState.is(BlockTags.FIRE) || pState.liquid() || pState.canBeReplaced();
     }
 
     @Override
@@ -112,5 +112,9 @@ public class CorruptedSlimeLayerBlock extends SnowLayerBlock {
                         .addParticle(new BlockParticleOption(ParticleTypes.BLOCK, this.defaultBlockState()), pEntity.getX(), pEntity.getY(), pEntity.getZ(), 0.0, 0.0, 0.0);
             }
         }
+    }
+
+    public boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side) {
+        return (adjacentBlockState.is(this) && (adjacentBlockState.getValue(SnowLayerBlock.LAYERS)>=(state.getValue(SnowLayerBlock.LAYERS)) || side.getAxis().equals(Direction.Axis.Y))) || super.skipRendering(state, adjacentBlockState, side);
     }
 }

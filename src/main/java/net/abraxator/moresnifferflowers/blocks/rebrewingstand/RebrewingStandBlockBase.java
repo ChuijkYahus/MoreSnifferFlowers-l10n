@@ -36,7 +36,7 @@ public class RebrewingStandBlockBase extends ModEntityDoubleTallBlock {
     public RebrewingStandBlockBase(Properties pProperties) {
         super(pProperties);
         if(!(this instanceof RebrewingStandBlockTop)) {
-            defaultBlockState().setValue(HAS_BOTTLE[0], false).setValue(HAS_BOTTLE[1], false).setValue(HAS_BOTTLE[2], false);
+            this.registerDefaultState(defaultBlockState().setValue(HAS_BOTTLE[0], false).setValue(HAS_BOTTLE[1], false).setValue(HAS_BOTTLE[2], false));
         }
     }
 
@@ -83,8 +83,18 @@ public class RebrewingStandBlockBase extends ModEntityDoubleTallBlock {
     }
 
     @Override
+    public Block getCorruptedLowerBlock() {
+        return null;
+    }
+
+    @Override
     public Block getUpperBlock() {
         return ModBlocks.REBREWING_STAND_TOP.get();
+    }
+
+    @Override
+    public Block getCorruptedUpperBlock() {
+        return null;
     }
 
     @Override

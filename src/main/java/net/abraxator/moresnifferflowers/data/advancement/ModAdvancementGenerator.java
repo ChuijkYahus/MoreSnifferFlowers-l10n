@@ -9,12 +9,11 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeAdvancementProvider;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -32,7 +31,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                         true,
                         false,
                         false)
-                .addCriterion("has_advancement", ModAdvancementCritters.getSnifferAdvancement())
+                .addCriterion("has_advancement", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(Blocks.SNIFFER_EGG).build()))
                 .save(consumer, MoreSnifferFlowers.loc("root").toString());
 
         var dyespria_plant = Advancement.Builder.advancement()
@@ -113,7 +112,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                 .display(
                         ModItems.CORRUPTED_BOBLING_CORE.get(),
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.bobling", "Fight back!"),
-                        Component.translatableWithFallback("advancements.more_sniffer_flowers.bobling.desc", "Fight back the tree madness"),
+                        Component.translatableWithFallback("advancements.more_sniffer_flowers.bobling.desc", "Fight back against the trees"),
                         null,
                         FrameType.TASK,
                         true,
@@ -128,14 +127,14 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                 .display(
                         ModItems.CORRUPTED_SLIME_BALL.get(),
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.corruption", "Evil Blocks"),
-                        Component.translatableWithFallback("advancements.more_sniffer_flowers.corruption.desc", "Corrupt blocks around you, to make them evil"),
+                        Component.translatableWithFallback("advancements.more_sniffer_flowers.corruption.desc", "Corrupt blocks around you, making them evil"),
                         null,
                         FrameType.TASK,
                         true,
                         true,
                         false
                 )
-                .addCriterion("has_corrupted_slime_ball", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(ModItems.CORRUPTED_SLIME_BALL.get()).build()))
+                .addCriterion("has_corrupted_slime_ball", ModAdvancementCritters.corruptedBlock())
                 .save(consumer, MoreSnifferFlowers.loc("corruption").toString());
 
         Advancement.Builder.advancement()
@@ -150,8 +149,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                         true,
                         false
                 )
-                .addCriterion("used_antidote",
-                        ItemUsedOnLocationTrigger.TriggerInstance.itemUsedOnBlock(LocationPredicate.Builder.location(), ItemPredicate.Builder.item().of(ModItems.VIVICUS_ANTIDOTE.get())))
+                .addCriterion("dye_boat", ModAdvancementCritters.usedCure())
                 .save(consumer, MoreSnifferFlowers.loc("cure").toString());
 
         var ambush = Advancement.Builder.advancement()
@@ -159,14 +157,14 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                 .display(
                         ModItems.AMBUSH_SEEDS.get(),
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.ambush", "Ambushed by great loot"),
-                        Component.translatableWithFallback("advancements.more_sniffer_flowers.ambush.desc", "Break an amber block to get whats inside (the \"great\" part not quaranteed)"),
+                        Component.translatableWithFallback("advancements.more_sniffer_flowers.ambush.desc", "Break an amber block to get whats inside (the \"great\" part not guaranteed)"),
                         null,
                         FrameType.TASK,
                         true,
                         true,
                         false
                 )
-                .addCriterion("has_ambush", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.AMBUSH_SEEDS.get()))
+                .addCriterion("has_ambush", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.AMBER_SHARD.get()))
                 .save(consumer, MoreSnifferFlowers.loc("ambush").toString());
 
         Advancement.Builder.advancement()
@@ -181,7 +179,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                         true,
                         false
                 )
-                .addCriterion("has_garbush", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.GARBUSH_SEEDS.get()))
+                .addCriterion("has_garbush", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.GARNET_SHARD.get()))
                 .save(consumer, MoreSnifferFlowers.loc("garbush").toString());
 
         Advancement.Builder.advancement()
@@ -199,7 +197,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                 .addCriterion("dye_boat", ModAdvancementCritters.dyeBoat())
                 .save(consumer, MoreSnifferFlowers.loc("dye_boat").toString());
     }
-    
+
     private String id(String name) {
         return "%s:%s".formatted(MoreSnifferFlowers.MOD_ID, name);
     }

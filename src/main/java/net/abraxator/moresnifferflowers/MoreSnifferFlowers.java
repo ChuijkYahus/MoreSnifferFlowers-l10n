@@ -2,7 +2,7 @@ package net.abraxator.moresnifferflowers;
 
 import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
-import net.abraxator.moresnifferflowers.data.NutritionLoader;
+import net.abraxator.moresnifferflowers.compat.quark.OtherModEvents;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.worldgen.configurations.ModTreeDecoratorTypes;
@@ -16,9 +16,9 @@ import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidInteractionRegistry;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -36,6 +36,7 @@ public class MoreSnifferFlowers {
         
         ModItems.ITEMS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
+        ModLoot.CONDITIONS.register(modEventBus);
         ModFeatures.FEATURES.register(modEventBus);
         ModCreativeTabs.TABS.register(modEventBus);
         ModMobEffects.EFFECTS.register(modEventBus);
@@ -52,10 +53,12 @@ public class MoreSnifferFlowers {
         ModStructureTypes.STRUCTURE_PIECE.register(modEventBus);
         ModBannerPatterns.BANNER_PATTERNS.register(modEventBus);
         ModRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
+
+        if(ModList.get().isLoaded("quark")) {
+            MinecraftForge.EVENT_BUS.addListener(OtherModEvents::onSimpleHarvest);
+        }
         
         ModPacketHandler.init();
-        
-        MinecraftForge.EVENT_BUS.addListener(this::addReloadListener);
     }
     
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -121,10 +124,6 @@ public class MoreSnifferFlowers {
             ComposterBlock.add(1.0F, ModBlocks.VIVICUS_LEAVES.get());
             ModCauldronInteractions.bootstrap();
         });
-    }
-    
-    public void addReloadListener(AddReloadListenerEvent event) {
-        event.addListener(new NutritionLoader());
     }
     
     public static ResourceLocation loc(String path) {

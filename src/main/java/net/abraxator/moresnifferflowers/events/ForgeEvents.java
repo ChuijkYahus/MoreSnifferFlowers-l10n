@@ -10,9 +10,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
@@ -20,18 +21,19 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.VanillaGameEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -40,7 +42,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
     @SubscribeEvent
     public void onVanillaGame(VanillaGameEvent event) {
@@ -61,32 +63,50 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void onPlayerInteractRightClickItem(PlayerInteractEvent.RightClickBlock event) {
-        var itemStack = event.getEntity().getItemInHand(event.getHand()).getItem().getDefaultInstance();
+        var item = event.getEntity().getItemInHand(event.getHand()).getItem().getDefaultInstance();
         var block = event.getLevel().getBlockState(event.getPos());
 
-        if(itemStack.getItem() instanceof JarOfBonmeelItem item && block.is(ModTags.ModBlockTags.BONMEELABLE)) {
+        if (event.isCanceled()) return;
+        if(item.getItem() instanceof JarOfBonmeelItem item2 && block.is(ModTags.ModBlockTags.BONMEELABLE)) {
             event.setCanceled(true);
-            item.useOn(new UseOnContext(event.getEntity(), event.getHand(), event.getHitVec()));
-        } else if((itemStack.is(ModItems.REBREWED_POTION.get()) || itemStack.is(ModItems.EXTRACTED_BOTTLE.get())) && block.is(Blocks.DIRT)) {
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            item2.useOn(new UseOnContext(event.getEntity(), event.getHand(), event.getHitVec()));
+            event.getEntity().setItemInHand(event.getHand(), ItemUtils.createFilledResult(item, event.getEntity(), new ItemStack(Items.GLASS_BOTTLE)));
+
+        } else
+            if((item.is(ModItems.REBREWED_POTION.get()) || item.is(ModItems.EXTRACTED_BOTTLE.get())) && block.is(Blocks.DIRT)) {
             event.setCanceled(true);
-        } else if(itemStack.is(ItemTags.AXES) && (block.is(ModBlocks.VIVICUS_LOG.get()) || block.is(ModBlocks.VIVICUS_WOOD.get()))) {
+        } else
+            if(item.is(ItemTags.AXES) && (block.is(ModBlocks.VIVICUS_LOG.get()) || block.is(ModBlocks.VIVICUS_WOOD.get()))) {
             var strippedBlock = AxeItem.STRIPPABLES.get(block.getBlock());
             var state = strippedBlock.defaultBlockState()
                     .setValue(RotatedPillarBlock.AXIS, block.getValue(RotatedPillarBlock.AXIS))
                     .setValue(ModStateProperties.COLOR, block.getValue(ModStateProperties.COLOR));
 
             if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, event.getPos(), itemStack);
+                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, event.getPos(), item);
             }
+
+            event.getLevel().playSound(event.getEntity(), event.getPos(), SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
 
             event.getLevel().setBlock(event.getPos(), state, 3);
             event.getLevel().gameEvent(GameEvent.BLOCK_CHANGE, event.getPos(), GameEvent.Context.of(event.getEntity(), state));
-            itemStack.hurtAndBreak(1, event.getEntity(), player -> {
+            event.getItemStack().hurtAndBreak(1, event.getEntity(), player -> {
                 player.broadcastBreakEvent(player.getUsedItemHand());
             });
 
-            event.setCancellationResult(InteractionResult.sidedSuccess(event.getLevel().isClientSide));
-        }
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCanceled(true);
+
+            } else
+            if (((item.is(ModItems.JAR_OF_BONMEEL.get()) || item.is(ModItems.JAR_OF_ACID.get())) && block.is(Blocks.CAULDRON))){
+                var cauldronType = item.is(ModItems.JAR_OF_BONMEEL.get()) ? ModBlocks.BONMEEL_FILLED_CAULDRON.get() :  ModBlocks.ACID_FILLED_CAULDRON.get();
+                var state = cauldronType.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3);
+                event.getLevel().setBlock(event.getPos(), state, 3);
+                event.getEntity().setItemInHand(event.getHand(), ItemUtils.createFilledResult(event.getItemStack(), event.getEntity(), new ItemStack(Items.GLASS_BOTTLE)));
+                event.setCancellationResult(InteractionResult.SUCCESS);
+                event.setCanceled(true);
+            }
     }
     
     @SubscribeEvent
@@ -97,7 +117,7 @@ public class ForgeEvents {
 
         if(event.getLevel().getBlockEntity(event.getPos()) instanceof GiantCropBlockEntity entity) {
             BlockPos.withinManhattanStream(entity.center, 1, 1, 1).forEach(blockPos -> {
-                event.getLevel().destroyBlock(blockPos, true);
+               if (event.getLevel().getBlockState(blockPos).is(ModTags.ModBlockTags.GIANT_CROPS)) event.getLevel().destroyBlock(blockPos, true);
             });
         }
         
@@ -107,15 +127,7 @@ public class ForgeEvents {
 
                 event.getLevel().destroyBlock(blockPos, true);
             });
-
             event.getLevel().destroyBlock(entity.center, true);
-        }
-    }
-
-    @SubscribeEvent
-    public static void onGetAdvancement(AdvancementEvent.AdvancementEarnEvent event) {
-        if(event.getAdvancement().getId().equals(ResourceLocation.tryParse("husbandry/obtain_sniffer_egg")) && event.getEntity() instanceof ServerPlayer serverPlayer) {
-            ModAdvancementCritters.EARN_SNIFFER_ADVANCEMENT.trigger(serverPlayer);
         }
     }
 

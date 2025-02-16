@@ -72,7 +72,7 @@ public class BonmeeliaBlock extends BushBlock implements ModCropBlock, Corruptab
         ItemStack itemStack = pPlayer.getMainHandItem();
 
         if (itemStack.is(Items.GLASS_BOTTLE) && canInsertBottle(pState)) {
-            return addBottle(pLevel, pPos, pState, itemStack);
+            return addBottle(pLevel, pPos, pState, itemStack, pPlayer);
         } else if (pState.getValue(HAS_BOTTLE) && pState.getValue(AGE) >= MAX_AGE) {
             return takeJarOfBonmeel(pLevel, pPos, pState, pPlayer);
         } else if (!pState.getValue(HAS_BOTTLE) && getAge(pState) >= 3) {
@@ -92,14 +92,14 @@ public class BonmeeliaBlock extends BushBlock implements ModCropBlock, Corruptab
         onCorruptByEntity(entity, pos, state, this, level);
     }
 
-    private InteractionResult addBottle(Level level, BlockPos blockPos, BlockState blockState, ItemStack stack) {
+    private InteractionResult addBottle(Level level, BlockPos blockPos, BlockState blockState, ItemStack stack, Player player) {
         level.setBlock(blockPos, blockState.setValue(HAS_BOTTLE, true), 3);
-        stack.shrink(1);
+        if (!player.isCreative()) stack.shrink(1);
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     private InteractionResult takeJarOfBonmeel(Level level, BlockPos blockPos, BlockState blockState, Player player) {
-        level.setBlock(blockPos, blockState.setValue(AGE, 0).setValue(HAS_BOTTLE, false), 3);
+        level.setBlock(blockPos, blockState.setValue(AGE, 3).setValue(HAS_BOTTLE, false), 3);
         popResource(level, blockPos, wilted ? ModItems.JAR_OF_ACID.get().getDefaultInstance() : ModItems.JAR_OF_BONMEEL.get().getDefaultInstance());
         return InteractionResult.sidedSuccess(level.isClientSide());
     }

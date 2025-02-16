@@ -209,7 +209,7 @@ public class ModRecipesProvider extends RecipeProvider {
     private void partsRecycling(Consumer<FinishedRecipe> pRecipeOutput, Item part, Item result, int count) {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, result, count)
                 .requires(part)
-                .unlockedBy("has_" + getItemName(part), has(ModItems.BELT_PIECE.get()))
+                .unlockedBy("has_" + getItemName(part), has(part))
                 .save(pRecipeOutput, MoreSnifferFlowers.loc(getItemName(result) + "_from_part_recycling"));
     }
 }

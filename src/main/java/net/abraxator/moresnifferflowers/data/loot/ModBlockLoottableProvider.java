@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.data.loot;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.blocks.BondripiaBlock;
 import net.abraxator.moresnifferflowers.blocks.BonmeeliaBlock;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
@@ -126,8 +127,6 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
                         .add(LootItem.lootTableItem(Items.NETHERITE_INGOT).setWeight(12))
                         .add(LootItem.lootTableItem(Items.DIAMOND_BLOCK).setWeight(12))));
 
-        dropSelf(ModBlocks.BOBLING_HEAD.get());
-
         dropWhenSilkTouch(ModBlocks.CRACKED_AMBER.get());
         dropWhenSilkTouch(ModBlocks.CHISELED_AMBER.get());
         dropWhenSilkTouch(ModBlocks.CHISELED_AMBER_SLAB.get());
@@ -152,8 +151,8 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
 
         add(ModBlocks.GIANT_CARROT.get(), giantCropLoot(Items.CARROT, ModItems.CROPRESSED_CARROT.get(), Items.AIR, ModItems.BELT_PIECE.get(), ModItems.CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
         add(ModBlocks.GIANT_POTATO.get(), giantCropLoot(Items.POTATO, ModItems.CROPRESSED_POTATO.get(), Items.AIR, ModItems.TUBE_PIECE.get(), ModItems.TATER_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
-        add(ModBlocks.GIANT_NETHERWART.get(), giantCropLoot(Items.NETHER_WART, ModItems.CROPRESSED_NETHERWART.get(), ModItems.BROKEN_REBREWING_STAND.get(), ModItems.ENGINE_PIECE.get(), ModItems.NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
-        add(ModBlocks.GIANT_BEETROOT.get(), giantCropLoot(Items.BEETROOT, ModItems.CROPRESSED_BEETROOT.get(), Items.AIR, ModItems.PRESS_PIECE.get(), ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
+        add(ModBlocks.GIANT_NETHERWART.get(), giantCropLoot(Items.NETHER_WART, ModItems.CROPRESSED_NETHERWART.get(), ModItems.BROKEN_REBREWING_STAND.get(), ModItems.PRESS_PIECE.get(), ModItems.NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
+        add(ModBlocks.GIANT_BEETROOT.get(), giantCropLoot(Items.BEETROOT, ModItems.CROPRESSED_BEETROOT.get(), Items.AIR, ModItems.ENGINE_PIECE.get(), ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
         add(ModBlocks.GIANT_WHEAT.get(), giantCropLoot(Items.WHEAT, ModItems.CROPRESSED_WHEAT.get(), Items.AIR, ModItems.SCRAP_PIECE.get(), ModItems.GRAIN_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
 
         add(ModBlocks.BONMEELIA.get(), LootTable.lootTable()
@@ -196,7 +195,6 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
 
         dropSelf(ModBlocks.CROPRESSOR_OUT.get());
         dropSelf(ModBlocks.CROPRESSOR_CENTER.get());
-        dropSelf(ModBlocks.MORE_SNIFFER_FLOWER.get());
         dropSelf(ModBlocks.REBREWING_STAND_BOTTOM.get());
         add(ModBlocks.REBREWING_STAND_TOP.get(), noDrop());
         add(ModBlocks.DYESPRIA_PLANT.get(), LootTable.lootTable()
@@ -239,6 +237,7 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
                 )
         ));
         add(ModBlocks.CORRUPTED_GRASS_BLOCK.get(), block -> this.createSingleItemTableWithSilkTouch(block, Blocks.COARSE_DIRT));
+        add(ModBlocks.CURED_GRASS_BLOCK.get(), block -> this.createSingleItemTableWithSilkTouch(block, Blocks.DIRT));
 
         dropSelf(ModBlocks.VIVICUS_LOG.get());
         dropSelf(ModBlocks.VIVICUS_WOOD.get());
@@ -294,8 +293,23 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         add(ModBlocks.ACID_FILLED_CAULDRON.get(), createSingleItemTable(Blocks.CAULDRON));
 
 
-        add(ModBlocks.BONDRIPIA.get(), noDrop());
-        add(ModBlocks.ACIDRIPIA.get(), noDrop());
+        add(ModBlocks.BONDRIPIA.get(),
+                LootTable.lootTable()
+                        .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(ModItems.BONDRIPIA_SEEDS.get()))
+                                .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.BONDRIPIA.get())
+                                        .setProperties(StatePropertiesPredicate.Builder.properties()
+                                                .hasProperty(ModStateProperties.CENTER, true)))
+                        ));
+
+        add(ModBlocks.ACIDRIPIA.get(),
+                LootTable.lootTable()
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(ModItems.ACIDRIPIA_SEEDS.get()))
+                        .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.ACIDRIPIA.get())
+                                .setProperties(StatePropertiesPredicate.Builder.properties()
+                                        .hasProperty(ModStateProperties.CENTER, true)))
+                ));
     }
 
     private LootTable.Builder giantCropLoot(Item crop, Item cropressed, Item special, Item piece, Item trim) {

@@ -18,6 +18,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.BlockPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -45,22 +46,29 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
 
     public void updateUses() {
         this.usesLeft--;
-         
-        if(this.usesLeft <= 0) {
-            CorruptedSludgeListener.shootProjectiles(this.getBlockPos().getCenter(), this.level.random.nextIntBetweenInclusive(8, 16), this.level);
-            this.level.destroyBlock(this.getBlockPos(), false);
-            
-            return;
-        }
-        
+
         if(this.usesLeft % stateChange == 0 && this.getBlockState().getValue(ModStateProperties.USES_4) - 1 != -1) {
             this.level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(ModStateProperties.USES_4, this.getBlockState().getValue(ModStateProperties.USES_4) - 1));
         }
+
+        if(this.usesLeft <= 0) {
+            CorruptedSludgeListener.shootProjectiles(this.getBlockPos().getCenter(), this.level.random.nextIntBetweenInclusive(8, 16), this.level);
+            super.setRemoved();
+            this.level.setBlockAndUpdate(this.getBlockPos(), Blocks.AIR.defaultBlockState());
+        }
+
     }
     
     @Override
     public CorruptedSludgeListener getListener() {
         return corruptedSludgeListener;
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        var tag = new CompoundTag();
+        saveAdditional(tag);
+        return tag;
     }
 
     @Override
@@ -138,14 +146,14 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
                     entity.updateUses();
                 });
 
-                return corrupted.isPresent();
+                return !corrupted.isPresent();
             }
 
             if(pGameEvent == GameEvent.BLOCK_DESTROY && pContext.affectedState().is(ModTags.ModBlockTags.CORRUPTED_SLUDGE) && !pPos.equals(this.positionSource.getPosition(pLevel).get())) {
                 var projectileNumber = (pContext.affectedState().is(ModBlocks.CORRUPTED_LEAVES.get()) || pContext.affectedState().is(ModBlocks.CORRUPTED_LEAVES_BUSH.get())  ? pLevel.random.nextInt(1) : pLevel.random.nextInt(5)) + 2;
                 shootProjectiles(this.positionSource.getPosition(pLevel).get(), projectileNumber, pLevel);
                 entity.updateUses();
-                return true;
+                return false;
             }
 
             return false;
