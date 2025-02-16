@@ -99,7 +99,7 @@ public class JarOfAcidProjectile extends ThrowableItemProjectile {
         areaeffectcloud.setParticle(new DustParticleOptions(Vec3.fromRGB24(0xaeff5c).toVector3f(), 1));
         areaeffectcloud.setWaitTime(10);
         areaeffectcloud.setRadiusPerTick(-areaeffectcloud.getRadius() / (float)areaeffectcloud.getDuration());
-        areaeffectcloud.setPotion(new Potion(new MobEffectInstance(MobEffects.POISON, 60, 2)));
+        areaeffectcloud.setPotion(new Potion(new MobEffectInstance(MobEffects.POISON, 100, 2)));
         this.level().addFreshEntity(areaeffectcloud);
     }
 

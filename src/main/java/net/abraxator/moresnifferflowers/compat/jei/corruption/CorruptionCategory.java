@@ -100,13 +100,13 @@ public class CorruptionCategory implements IRecipeCategory<CorruptionRecipe> {
                                     .map(entry -> Map.entry(entry.block().asItem().getDefaultInstance(), entry.weight()))
                                     .forEach(entry -> o.put(entry.getKey().getItem(), entry.getValue()));
                     });
-                    int weight = 100;
+                    float weight = 100;
                     int totalWeight = recipe.list().stream().mapToInt(CorruptionRecipe.Entry::weight).sum();
                     Optional<ItemStack> current = recipeSlotView.getDisplayedItemStack();
                     if(current.isPresent()) {
                         weight = map.getOrDefault(current.get().getItem(), -5);
                     }
-                    int percentage = (weight / totalWeight) * 100;
+                    float percentage = Math.round((weight / totalWeight) * 100);
                     tooltip.add(FormattedText.of("Chance: " + percentage + "%"));
                 });
     }

@@ -112,22 +112,31 @@ public record CorruptionRecipe(ResourceLocation id, String source, List<Entry> l
     
     public Block getResultBlock(RandomSource randomSource) {
         int totalWeight = list.stream().mapToInt(Entry::weight).sum();
-        int randomValue = randomSource.nextInt(totalWeight);
         int cumulativeWeight = 0;
 
-        for (Entry entry : list) {
-            cumulativeWeight += entry.weight;
-            if(randomValue < cumulativeWeight) {
+        if (randomSource != null) {
+            int randomValue = randomSource.nextInt(totalWeight);
+
+            for (Entry entry : list) {
+                cumulativeWeight += entry.weight;
+                if (randomValue < cumulativeWeight) {
+                    return entry.block;
+                }
+            }
+        } else {
+            for (Entry entry : list) {
                 return entry.block;
             }
         }
-        
+
         return Blocks.AIR;
     }
     
     @Override
     public ItemStack getResultItem(RegistryAccess registryAccess) {
-        return getResultBlock(Minecraft.getInstance().level.getRandom()).asItem().getDefaultInstance();
+        if (Minecraft.getInstance().level != null)
+            return getResultBlock(Minecraft.getInstance().level.getRandom()).asItem().getDefaultInstance();
+        return getResultBlock(null).asItem().getDefaultInstance();
     }
 
     @Override

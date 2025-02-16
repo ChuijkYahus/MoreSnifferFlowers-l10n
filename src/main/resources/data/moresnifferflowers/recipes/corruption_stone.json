@@ -1,6 +1,6 @@
 {
   "type": "moresnifferflowers:corruption",
-  "source": "minecraft:dirt",
+  "source": "minecraft:stone",
   "corrupted": [
     {
       "block": "minecraft:netherrack",

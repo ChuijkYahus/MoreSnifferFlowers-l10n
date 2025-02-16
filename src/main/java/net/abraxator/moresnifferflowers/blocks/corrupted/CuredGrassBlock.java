@@ -55,16 +55,16 @@ public class CuredGrassBlock extends SpreadingSnowyDirtBlock {
             if (!level.isAreaLoaded(pos, 3)) return;
             BlockState blockstate = this.defaultBlockState();
 
-            for (int i = 0; i < 4; i++) {
-                BlockPos blockpos = pos.offset(random.nextInt(5) - 3, random.nextInt(5) - 3, random.nextInt(5) - 5);
-                if (level.getBlockState(blockpos).is(ModBlocks.CORRUPTED_GRASS_BLOCK.get()) && canBeGrass(blockstate, level, blockpos)) {
+            for (int i = 0; i < 10; i++) {
+                BlockPos blockpos = pos.offset(random.nextIntBetweenInclusive(-4,4), random.nextIntBetweenInclusive(-3,3), random.nextIntBetweenInclusive(-4,4));
+                if (level.getBlockState(blockpos).is(ModBlocks.CORRUPTED_GRASS_BLOCK.get())) {
                     level.setBlockAndUpdate(
                             blockpos, blockstate.setValue(SNOWY, level.getBlockState(blockpos.above()).is(Blocks.SNOW))
                     );
                 }
             }
             AtomicInteger CorruptedCount = new AtomicInteger();
-            var aabb = AABB.ofSize(pos.getCenter(), 2, 2, 2);
+            var aabb = AABB.ofSize(pos.getCenter(), 4, 4, 4);
             BlockPos.betweenClosedStream(aabb).forEach(blockPos -> {
                 if (level.getBlockState(blockPos).is(ModBlocks.CORRUPTED_GRASS_BLOCK.get())) {
                     level.setBlockAndUpdate(

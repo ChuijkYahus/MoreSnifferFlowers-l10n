@@ -47,30 +47,29 @@ public class AciddripiaBlock extends BondripiaBlock {
                 pLevel.getEntities((Entity) null, aabb, entity1 -> entity1.getType() == EntityType.PLAYER)
                         .stream().map(entity1 -> ((Player) entity1))
                         .forEach(entity1 -> {
-                            entity1.addEffect(new MobEffectInstance(MobEffects.POISON, 50, 1));
+                            entity1.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 2));
                         });
-                for (BlockPos currentPos : BlockPos.betweenClosed(entity.center.below().north().east(), entity.center.below().south().west())) {
-                    BlockPos blockPos = currentPos;
+                for (BlockPos blockPos : BlockPos.betweenClosed(entity.center.below().north().east(), entity.center.below().south().west())) {
+                    BlockPos currentPos = blockPos;
 
-                    for (int i = 0; i < 10; i++) {
-                        if (getProperty(blockPos, pLevel).isPresent()) {
-                            BlockState state = pLevel.getBlockState(blockPos);
-                            state = state.setValue((IntegerProperty) getProperty(blockPos, pLevel).get(), 0);
-                            pLevel.setBlock(blockPos, state, 2);
+                    int y = pLevel.getRandom().nextIntBetweenInclusive(1, 11);
+                    currentPos = currentPos.below(y);
+                    if (getProperty(currentPos, pLevel).isPresent()) {
+                            BlockState state = pLevel.getBlockState(currentPos);
+                            state = state.setValue((IntegerProperty) getProperty(currentPos, pLevel).get(), 0);
+                            pLevel.setBlock(currentPos, state, 2);
                         }
 
-                        BlockState state = pLevel.getBlockState(blockPos);
+                        BlockState state = pLevel.getBlockState(currentPos);
                         if (state.is(BlockTags.LEAVES)) {
-                            pLevel.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 2);
-                        } else if (pLevel.getBlockState(blockPos).getBlock() instanceof AbstractCauldronBlock) {
-                            fillCauldron(pLevel, blockPos, this.defaultBlockState());
+                            pLevel.setBlock(currentPos, Blocks.AIR.defaultBlockState(), 2);
+                        } else if (pLevel.getBlockState(currentPos).getBlock() instanceof AbstractCauldronBlock) {
+                            fillCauldron(pLevel, currentPos, this.defaultBlockState());
                         } else if (state.is(BlockTags.DIRT) && !state.is(Blocks.DIRT)) {
-                            pLevel.setBlock(blockPos, Blocks.DIRT.defaultBlockState(), 2);
+                            pLevel.setBlock(currentPos, Blocks.DIRT.defaultBlockState(), 2);
                         }
 
-                        blockPos = blockPos.below();
                     }
-                }
             }
         }
     }

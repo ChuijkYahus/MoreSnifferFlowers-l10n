@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.blocks.corrupted;
 
+import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -61,8 +62,8 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
                 BlockState blockstate = this.defaultBlockState();
 
                 for (int i = 0; i < 4; i++) {
-                    BlockPos blockpos = pos.offset(random.nextInt(3) - 1, random.nextInt(5) - 3, random.nextInt(3) - 1);
-                    if (level.getBlockState(blockpos).is(BlockTags.DIRT) && canPropagate(blockstate, level, blockpos)) {
+                    BlockPos blockpos = pos.offset(random.nextIntBetweenInclusive(-2,2), random.nextIntBetweenInclusive(-2,2), random.nextIntBetweenInclusive(-2,2));
+                    if (level.getBlockState(blockpos).is(BlockTags.DIRT) && canPropagate(blockstate, level, blockpos) && !level.getBlockState(blockpos).is(ModBlocks.CURED_GRASS_BLOCK.get()) ) {
                         level.setBlockAndUpdate(
                                 blockpos, blockstate.setValue(SNOWY, Boolean.valueOf(level.getBlockState(blockpos.above()).is(Blocks.SNOW)))
                         );
