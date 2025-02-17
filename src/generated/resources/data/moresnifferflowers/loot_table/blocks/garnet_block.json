@@ -103,6 +103,11 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "name": "minecraft:experience_bottle",
+          "weight": 100
+        },
+        {
+          "type": "minecraft:item",
           "name": "minecraft:raw_copper",
           "weight": 100
         },
@@ -128,6 +133,16 @@
         },
         {
           "type": "minecraft:item",
+          "name": "minecraft:golden_carrot",
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:lapis_lazuli",
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
           "name": "minecraft:iron_ingot",
           "weight": 50
         },
@@ -143,12 +158,7 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:netherite_scrap",
-          "weight": 50
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_block",
+          "name": "minecraft:golden_apple",
           "weight": 25
         },
         {
@@ -170,6 +180,21 @@
           "type": "minecraft:item",
           "name": "moresnifferflowers:evil_banner_pattern",
           "weight": 25
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:netherite_scrap",
+          "weight": 25
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:enchanted_golden_apple",
+          "weight": 12
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_block",
+          "weight": 12
         },
         {
           "type": "minecraft:item",

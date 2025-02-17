@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.AxeItem;
@@ -55,9 +56,7 @@ public class ForgeEvents {
         if (event.isCanceled()) return;
         if(item.getItem() instanceof JarOfBonmeelItem item2 && block.is(ModTags.ModBlockTags.BONMEELABLE)) {
             event.setCanceled(true);
-            event.setCancellationResult(ItemInteractionResult.SUCCESS);
-            item2.useOn(event.getUseOnContext());
-            event.getPlayer().setItemInHand(event.getHand(), ItemUtils.createFilledResult(event.getItemStack(), event.getPlayer(), new ItemStack(Items.GLASS_BOTTLE)));
+            if (item2.useOn(event.getUseOnContext()).equals(InteractionResult.SUCCESS))event.setCancellationResult(ItemInteractionResult.SUCCESS);
 
         } else
             if((item.is(ModItems.REBREWED_POTION.get()) || item.is(ModItems.EXTRACTED_BOTTLE.get())) && block.is(Blocks.DIRT)) {

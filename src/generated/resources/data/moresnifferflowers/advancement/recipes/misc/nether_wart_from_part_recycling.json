@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_amber_shard": {
+    "has_cropressed_nether_wart": {
       "conditions": {
         "items": [
           {
-            "items": "moresnifferflowers:amber_shard"
+            "items": "moresnifferflowers:cropressed_nether_wart"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "moresnifferflowers:ambush_banner_pattern"
+        "recipe": "moresnifferflowers:nether_wart_from_part_recycling"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_amber_shard"
+      "has_cropressed_nether_wart"
     ]
   ],
   "rewards": {
     "recipes": [
-      "moresnifferflowers:ambush_banner_pattern"
+      "moresnifferflowers:nether_wart_from_part_recycling"
     ]
   }
 }

@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_amber_shard": {
+    "has_logs": {
       "conditions": {
         "items": [
           {
-            "items": "moresnifferflowers:amber_shard"
+            "items": "#moresnifferflowers:vivicus_logs"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "moresnifferflowers:amber_block"
+        "recipe": "moresnifferflowers:vivicus_planks"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_amber_shard"
+      "has_logs"
     ]
   ],
   "rewards": {
     "recipes": [
-      "moresnifferflowers:amber_block"
+      "moresnifferflowers:vivicus_planks"
     ]
   }
 }

@@ -1,14 +1,11 @@
 package net.abraxator.moresnifferflowers.data.loot;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.blocks.BondripiaBlock;
 import net.abraxator.moresnifferflowers.blocks.BonmeeliaBlock;
-import net.abraxator.moresnifferflowers.blocks.DawnberryVineBlock;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -20,7 +17,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.MultifaceBlock;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -34,7 +30,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyC
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.neoforged.fml.common.Mod;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -107,24 +102,33 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
                                 .apply(ApplyBonusCount.addBonusBinomialDistributionCount(registrylookup.getOrThrow(Enchantments.FORTUNE), 0.5F, 2))))
                 .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
                         .when(doesNotHaveSilkTouch())
+
                         //COMMON
+                        .add(LootItem.lootTableItem(Items.EXPERIENCE_BOTTLE).setWeight(100))
                         .add(LootItem.lootTableItem(Items.RAW_COPPER).setWeight(100))
                         .add(LootItem.lootTableItem(Items.EMERALD).setWeight(100))
                         .add(LootItem.lootTableItem(Items.RAW_IRON).setWeight(100))
                         .add(LootItem.lootTableItem(ModItems.GARNET_SHARD.get()).setWeight(100))
                         .add(LootItem.lootTableItem(Items.RAW_GOLD).setWeight(100))
                         //UNCOMMON
+
+                        .add(LootItem.lootTableItem(Items.GOLDEN_CARROT).setWeight(50))
+                        .add(LootItem.lootTableItem(Items.LAPIS_LAZULI).setWeight(50))
                         .add(LootItem.lootTableItem(Items.IRON_INGOT).setWeight(50))
                         .add(LootItem.lootTableItem(Items.GOLD_INGOT).setWeight(50))
                         .add(LootItem.lootTableItem(Items.DIAMOND).setWeight(50))
-                        .add(LootItem.lootTableItem(Items.NETHERITE_SCRAP).setWeight(50))
+
                         //RARE
-                        .add(LootItem.lootTableItem(Items.IRON_BLOCK).setWeight(25))
+                        .add(LootItem.lootTableItem(Items.GOLDEN_APPLE).setWeight(25))
                         .add(LootItem.lootTableItem(Items.TOTEM_OF_UNDYING).setWeight(25))
                         .add(LootItem.lootTableItem(ModBlocks.CORRUPTED_SAPLING.get()).setWeight(25))
                         .add(LootItem.lootTableItem(ModItems.CARNAGE_ARMOR_TRIM_SMITHING_TEMPLATE.get()).setWeight(25))
                         .add(LootItem.lootTableItem(ModItems.EVIL_BANNER_PATTERN.get()).setWeight(25))
+                        .add(LootItem.lootTableItem(Items.NETHERITE_SCRAP).setWeight(25))
+
                         //VERY RARE
+                        .add(LootItem.lootTableItem(Items.ENCHANTED_GOLDEN_APPLE).setWeight(12))
+                        .add(LootItem.lootTableItem(Items.IRON_BLOCK).setWeight(12))
                         .add(LootItem.lootTableItem(Items.SNIFFER_EGG).setWeight(12))
                         .add(LootItem.lootTableItem(Items.WITHER_SKELETON_SKULL).setWeight(12))
                         .add(LootItem.lootTableItem(Items.NETHERITE_INGOT).setWeight(12))

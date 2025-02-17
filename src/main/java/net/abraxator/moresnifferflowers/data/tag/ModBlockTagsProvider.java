@@ -10,7 +10,6 @@ import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.concurrent.CompletableFuture;
@@ -43,7 +42,7 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         this.tag(ModTags.ModBlockTags.BONMEELABLE).add(Blocks.WHEAT, Blocks.CARROTS, Blocks.POTATOES, Blocks.BEETROOTS, Blocks.NETHER_WART);
         this.tag(ModTags.ModBlockTags.GIANT_CROPS).add(ModBlocks.GIANT_CARROT.get(), ModBlocks.GIANT_POTATO.get(), ModBlocks.GIANT_NETHERWART.get(), ModBlocks.GIANT_BEETROOT.get(), ModBlocks.GIANT_WHEAT.get());
 
-        this.tag(BlockTags.LOGS).add(ModBlocks.DECAYED_LOG.get(), ModBlocks.CORRUPTED_LOG.get(), ModBlocks.VIVICUS_LOG.get(), ModBlocks.STRIPPED_CORRUPTED_LOG.get(), ModBlocks.STRIPPED_VIVICUS_LOG.get(), ModBlocks.CORRUPTED_WOOD.get(), ModBlocks.VIVICUS_WOOD.get(), ModBlocks.STRIPPED_CORRUPTED_WOOD.get(), ModBlocks.STRIPPED_VIVICUS_WOOD.get());
+        this.tag(BlockTags.LOGS_THAT_BURN).add(ModBlocks.DECAYED_LOG.get(), ModBlocks.CORRUPTED_LOG.get(), ModBlocks.VIVICUS_LOG.get(), ModBlocks.STRIPPED_CORRUPTED_LOG.get(), ModBlocks.STRIPPED_VIVICUS_LOG.get(), ModBlocks.CORRUPTED_WOOD.get(), ModBlocks.VIVICUS_WOOD.get(), ModBlocks.STRIPPED_CORRUPTED_WOOD.get(), ModBlocks.STRIPPED_VIVICUS_WOOD.get());
         this.tag(BlockTags.LEAVES).add(ModBlocks.CORRUPTED_LEAVES.get(), ModBlocks.CORRUPTED_LEAVES_BUSH.get(), ModBlocks.VIVICUS_LEAVES.get());
 
         this.tag(BlockTags.WOODEN_BUTTONS).add(ModBlocks.CORRUPTED_BUTTON.get(), ModBlocks.VIVICUS_BUTTON.get());

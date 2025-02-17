@@ -13,7 +13,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
 import java.util.concurrent.CompletableFuture;
@@ -50,14 +49,7 @@ public class ModRecipesProvider extends RecipeProvider {
                 .unlockedBy("has_amethyst", has(Items.AMETHYST_SHARD))
                 .save(pRecipeOutput);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.AMBUSH_BANNER_PATTERN.get())
-                .requires(Items.PAPER)
-                .requires(ModItems.AMBER_SHARD.get())
-                .unlockedBy("has_amber_shard", has(ModItems.AMBER_SHARD.get()))
-                .save(pRecipeOutput);
-
-
-        threeByThreePacker(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMBER_BLOCK.get(), ModItems.AMBER_SHARD.get());
+        //threeByThreePacker(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMBER_BLOCK.get(), ModItems.AMBER_SHARD.get());
         twoByTwoPacker(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMBER_MOSAIC.get(), ModItems.AMBER_SHARD.get());
         slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMBER_MOSAIC_SLAB.get(), ModBlocks.AMBER_MOSAIC.get());
         stairBuilder(ModBlocks.AMBER_MOSAIC_STAIRS, Ingredient.of(ModBlocks.AMBER_MOSAIC))
@@ -70,7 +62,7 @@ public class ModRecipesProvider extends RecipeProvider {
                 .unlockedBy("has_amber_mosaic", has(ModBlocks.AMBER_MOSAIC))
                 .save(pRecipeOutput);
 
-        threeByThreePacker(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.GARNET_BLOCK.get(), ModItems.GARNET_SHARD.get());
+        //threeByThreePacker(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.GARNET_BLOCK.get(), ModItems.GARNET_SHARD.get());
         twoByTwoPacker(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.GARNET_MOSAIC.get(), ModItems.GARNET_SHARD.get());
         slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.GARNET_MOSAIC_SLAB.get(), ModBlocks.GARNET_MOSAIC.get());
         stairBuilder(ModBlocks.GARNET_MOSAIC_STAIRS, Ingredient.of(ModBlocks.GARNET_MOSAIC))
@@ -110,6 +102,15 @@ public class ModRecipesProvider extends RecipeProvider {
         partsRecycling(pRecipeOutput, ModItems.PRESS_PIECE.get(), Items.NETHERITE_SCRAP, 1);
         partsRecycling(pRecipeOutput, ModItems.BROKEN_REBREWING_STAND.get(), ModItems.CROPRESSED_NETHERWART.get(), 4);
 
+        partsRecycling(pRecipeOutput, ModItems.CROPRESSED_BEETROOT.get(), Items.BEETROOT, 16);
+        partsRecycling(pRecipeOutput, ModItems.CROPRESSED_CARROT.get(), Items.CARROT, 16);
+        partsRecycling(pRecipeOutput, ModItems.CROPRESSED_POTATO.get(), Items.POTATO, 16);
+        partsRecycling(pRecipeOutput, ModItems.CROPRESSED_WHEAT.get(), Items.WHEAT, 16);
+        partsRecycling(pRecipeOutput, ModItems.CROPRESSED_NETHERWART.get(), Items.NETHER_WART, 16);
+
+
+
+        planksFromLogs(pRecipeOutput, ModBlocks.CORRUPTED_PLANKS, ModTags.ModItemTags.CORRUPTED_LOGS, 4);
         woodFromLogs(pRecipeOutput, ModBlocks.CORRUPTED_WOOD, ModBlocks.CORRUPTED_LOG);
         woodFromLogs(pRecipeOutput, ModBlocks.STRIPPED_CORRUPTED_WOOD, ModBlocks.STRIPPED_CORRUPTED_LOG);
         stairBuilder(ModBlocks.CORRUPTED_STAIRS, Ingredient.of(ModBlocks.CORRUPTED_PLANKS))
@@ -139,7 +140,7 @@ public class ModRecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput);
         hangingSign(pRecipeOutput, ModItems.CORRUPTED_HANGING_SIGN.get(), ModBlocks.CORRUPTED_PLANKS.get());
 
-
+        planksFromLogs(pRecipeOutput, ModBlocks.VIVICUS_PLANKS, ModTags.ModItemTags.VIVICUS_LOGS, 4);
         woodFromLogs(pRecipeOutput, ModBlocks.VIVICUS_WOOD, ModBlocks.VIVICUS_LOG);
         woodFromLogs(pRecipeOutput, ModBlocks.STRIPPED_VIVICUS_WOOD, ModBlocks.STRIPPED_VIVICUS_LOG);
         stairBuilder(ModBlocks.VIVICUS_STAIRS, Ingredient.of(ModBlocks.VIVICUS_PLANKS))
