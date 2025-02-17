@@ -26,6 +26,11 @@ public class ModCauldronInteractions {
             emptyBottle(pLevel, pPos,  pPlayer, pHand, pStack, ModBlocks.BONMEEL_FILLED_CAULDRON.get().defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3));
     public static final CauldronInteraction FILL_JAR_OF_ACID = (pState, pLevel, pPos, pPlayer, pHand, pStack) ->
             emptyBottle(pLevel, pPos,  pPlayer, pHand, pStack, ModBlocks.ACID_FILLED_CAULDRON.get().defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3));
+    public static final CauldronInteraction EMPTY_JAR_OF_BONMEEL = (pState, pLevel, pPos, pPlayer, pHand, pStack) ->
+            CauldronInteraction.fillBucket(pState, pLevel, pPos, pPlayer, pHand, pStack, ModItems.JAR_OF_BONMEEL.get().getDefaultInstance(), blockState -> blockState.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BOTTLE_FILL);
+    public static final CauldronInteraction EMPTY_JAR_OF_ACID = (pState, pLevel, pPos, pPlayer, pHand, pStack) ->
+            CauldronInteraction.fillBucket(pState, pLevel, pPos, pPlayer, pHand, pStack, ModItems.JAR_OF_BONMEEL.get().getDefaultInstance(), blockState -> blockState.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BOTTLE_FILL);
+
 
     static InteractionResult emptyBottle(Level level, BlockPos pos, Player player, InteractionHand hand, ItemStack filledStack, BlockState state) {
         if (level.getBlockState(pos).getValue(LayeredCauldronBlock.LEVEL) < 3) {
@@ -44,24 +49,12 @@ public class ModCauldronInteractions {
         return InteractionResult.FAIL;
     }
 
+
     public static void bootstrap() {
-        BONMEEL.put(
-                Items.GLASS_BOTTLE,
-                (pState, pLevel, pPos, pPlayer, pHand, pStack) -> 
-                        CauldronInteraction.fillBucket(pState, pLevel, pPos, pPlayer, pHand, pStack,
-                                ModItems.JAR_OF_BONMEEL.get().getDefaultInstance(), 
-                                blockState -> blockState.getValue(LayeredCauldronBlock.LEVEL) == 3, 
-                                SoundEvents.BOTTLE_FILL)
-        );
+        BONMEEL.put(Items.GLASS_BOTTLE, EMPTY_JAR_OF_BONMEEL);
         BONMEEL.put(ModItems.JAR_OF_BONMEEL.get(), FILL_JAR_OF_BONMEEL);
-        
-        ACID.put(Items.GLASS_BOTTLE,
-                (pState, pLevel, pPos, pPlayer, pHand, pStack) ->
-                        CauldronInteraction.fillBucket(pState, pLevel, pPos, pPlayer, pHand, pStack,
-                                ModItems.JAR_OF_ACID.get().getDefaultInstance(), 
-                                blockState -> blockState.getValue(LayeredCauldronBlock.LEVEL) == 3, 
-                                SoundEvents.BOTTLE_FILL)
-        );
+
+        ACID.put(Items.GLASS_BOTTLE, EMPTY_JAR_OF_ACID);
         ACID.put(ModItems.JAR_OF_ACID.get(), FILL_JAR_OF_ACID);
     }
 }

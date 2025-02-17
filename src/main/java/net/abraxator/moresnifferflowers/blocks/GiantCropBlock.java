@@ -1,6 +1,8 @@
 package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
+import net.abraxator.moresnifferflowers.blocks.Bonmeelable;
+import net.abraxator.moresnifferflowers.blocks.ModEntityBlock;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -10,20 +12,16 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.datafix.fixes.AddFlagIfNotPresentFix;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.piston.PistonBaseBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -32,8 +30,6 @@ import net.minecraft.world.ticks.ScheduledTick;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
@@ -103,9 +99,6 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         });
 
         if(player != null) {
-            if (!player.getAbilities().instabuild) {
-                player.getMainHandItem().shrink(1);
-            }
 
             if (player instanceof ServerPlayer serverPlayer) {
                 ModAdvancementCritters.USED_BONMEEL.trigger(serverPlayer);

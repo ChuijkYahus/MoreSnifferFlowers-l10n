@@ -19,6 +19,8 @@ public class ModTags {
         public static final TagKey<Item> REBREWING_STAND_INGREDIENTS = create(Registries.ITEM ,"rebrewing_stand_ingredients");
         public static final TagKey<Item> CROPRESSED_CROPS = create(Registries.ITEM ,"cropressed_crops");
         public static final TagKey<Item> REBREWED_POTIONS = create(Registries.ITEM ,"rebrewed_potions");
+        public static final TagKey<Item> VIVICUS_LOGS = create(Registries.ITEM ,"vivicus_logs");
+        public static final TagKey<Item> CORRUPTED_LOGS = create(Registries.ITEM ,"corrupted_logs");
 
     }
 

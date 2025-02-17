@@ -69,9 +69,7 @@ public class ForgeEvents {
         if (event.isCanceled()) return;
         if(item.getItem() instanceof JarOfBonmeelItem item2 && block.is(ModTags.ModBlockTags.BONMEELABLE)) {
             event.setCanceled(true);
-            event.setCancellationResult(InteractionResult.SUCCESS);
-            item2.useOn(new UseOnContext(event.getEntity(), event.getHand(), event.getHitVec()));
-            event.getEntity().setItemInHand(event.getHand(), ItemUtils.createFilledResult(event.getItemStack(), event.getEntity(), new ItemStack(Items.GLASS_BOTTLE)));
+            event.setCancellationResult(item2.useOn(new UseOnContext(event.getEntity(), event.getHand(), event.getHitVec())));
 
         } else
             if((item.is(ModItems.REBREWED_POTION.get()) || item.is(ModItems.EXTRACTED_BOTTLE.get())) && block.is(Blocks.DIRT)) {
@@ -103,17 +101,16 @@ public class ForgeEvents {
                 var cauldronType = item.is(ModItems.JAR_OF_BONMEEL.get()) ? ModBlocks.BONMEEL_FILLED_CAULDRON.get() :  ModBlocks.ACID_FILLED_CAULDRON.get();
                 var state = cauldronType.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3);
                 event.getLevel().setBlock(event.getPos(), state, 3);
+                event.getLevel().playSound(null, event.getPos(), SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                event.getLevel().gameEvent(null, GameEvent.FLUID_PLACE, event.getPos());
                 event.getEntity().setItemInHand(event.getHand(), ItemUtils.createFilledResult(event.getItemStack(), event.getEntity(), new ItemStack(Items.GLASS_BOTTLE)));
                 event.setCancellationResult(InteractionResult.SUCCESS);
                 event.setCanceled(true);
             }
     }
-    
+
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        if(event.getState().is(ModBlocks.AMBER_BLOCK.get()) && event.getLevel() instanceof ServerLevel serverLevel) {
-            fireFlyLogic(event.getState(), serverLevel, event.getPos(), event.getPlayer(), event);
-        }
 
         if(event.getLevel().getBlockEntity(event.getPos()) instanceof GiantCropBlockEntity entity) {
             BlockPos.withinManhattanStream(entity.center, 1, 1, 1).forEach(blockPos -> {
@@ -128,28 +125,6 @@ public class ForgeEvents {
                 event.getLevel().destroyBlock(blockPos, true);
             });
             event.getLevel().destroyBlock(entity.center, true);
-        }
-    }
-
-    private static void fireFlyLogic(BlockState state, ServerLevel serverLevel, BlockPos pos, Player player, Event event) {
-        List<ItemStack> list = Block.getDrops(state, serverLevel, pos, serverLevel.getBlockEntity(pos), player, player.getMainHandItem());
-        RandomSource randomSource = serverLevel.getRandom();
-        if ((randomSource.nextInt(list.size())) == list.size()) {
-            event.setCanceled(true);
-            serverLevel.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-            serverLevel.sendParticles(
-                    new BlockParticleOption(ParticleTypes.BLOCK, state),
-                    pos.getX(),
-                    pos.getY(),
-                    pos.getZ(),
-                   10, 0, 0, 0, 0);
-            Vec3 vecPos = pos.getCenter();
-            serverLevel.sendParticles(
-                    ModParticles.FLY.get(),
-                    vecPos.x() + (randomSource.nextInt(10) - 5) / 10,
-                    vecPos.y() + (randomSource.nextInt(10) - 5) / 10,
-                    vecPos.z() + (randomSource.nextInt(10) - 5) / 10,
-                    0, 0, 0, 0, 0);
         }
     }
 }

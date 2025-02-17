@@ -5,12 +5,9 @@ import net.abraxator.moresnifferflowers.init.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,15 +27,17 @@ public class JarOfBonmeelItem extends Item {
         BlockPos blockPos = pContext.getClickedPos();
         BlockState blockState = pContext.getLevel().getBlockState(blockPos);
         Player player = pContext.getPlayer();
-        
-        if (pContext.getHand() != InteractionHand.MAIN_HAND) {
-            return InteractionResult.PASS;
-        }
     
         if(blockState.is(ModTags.ModBlockTags.BONMEELABLE)) {
             Bonmeelable bonmeelable = ((Bonmeelable) Bonmeelable.MAP.get(blockState.getBlock()));
-            if(bonmeelable.canBonmeel(blockPos,blockState,level))
+            if(bonmeelable.canBonmeel(blockPos,blockState,level) && player != null) {
                 bonmeelable.performBonmeel(blockPos, blockState, level, player);
+                player.setItemInHand(pContext.getHand(), ItemUtils.createFilledResult(player.getItemInHand(pContext.getHand()), player, new ItemStack(Items.GLASS_BOTTLE)));
+
+                return InteractionResult.SUCCESS;
+
+            }
+
         }
 
         return InteractionResult.PASS;

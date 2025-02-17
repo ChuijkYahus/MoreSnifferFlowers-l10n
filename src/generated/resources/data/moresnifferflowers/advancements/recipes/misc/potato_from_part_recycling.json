@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_garnet_shard": {
+    "has_cropressed_potato": {
       "conditions": {
         "items": [
           {
             "items": [
-              "moresnifferflowers:garnet_shard"
+              "moresnifferflowers:cropressed_potato"
             ]
           }
         ]
@@ -15,20 +15,20 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "moresnifferflowers:garnet_block"
+        "recipe": "moresnifferflowers:potato_from_part_recycling"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_garnet_shard",
+      "has_cropressed_potato",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "moresnifferflowers:garnet_block"
+      "moresnifferflowers:potato_from_part_recycling"
     ]
   },
   "sends_telemetry_event": false
