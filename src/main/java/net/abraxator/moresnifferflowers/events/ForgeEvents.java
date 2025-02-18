@@ -88,6 +88,8 @@ public class ForgeEvents {
                 var cauldronType = item.is(ModItems.JAR_OF_BONMEEL.get()) ? ModBlocks.BONMEEL_FILLED_CAULDRON.get() :  ModBlocks.ACID_FILLED_CAULDRON.get();
                 var state = cauldronType.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3);
                 event.getLevel().setBlock(event.getPos(), state, 3);
+                event.getLevel().playSound(null, event.getPos(), SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                event.getLevel().gameEvent(null, GameEvent.FLUID_PLACE, event.getPos());
                 event.getPlayer().setItemInHand(event.getHand(), ItemUtils.createFilledResult(event.getItemStack(), event.getPlayer(), new ItemStack(Items.GLASS_BOTTLE)));
                 event.setCancellationResult(ItemInteractionResult.SUCCESS);
                 event.setCanceled(true);

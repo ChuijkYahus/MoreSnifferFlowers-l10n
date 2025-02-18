@@ -4,7 +4,6 @@ import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +41,7 @@ public class GiantCropItem extends BlockItem {
         var level = pContext.getLevel();
         var aabb = AABB.ofSize(pContext.getClickedPos().relative(pContext.getClickedFace(), 1).getCenter(), 2, 2, 2);
         var ret = BlockPos.betweenClosedStream(aabb)
-                .allMatch(blockPos -> level.getBlockState(blockPos).isEmpty());
+                .allMatch(blockPos -> level.getBlockState(blockPos).canBeReplaced());
 
         return ret;
     }

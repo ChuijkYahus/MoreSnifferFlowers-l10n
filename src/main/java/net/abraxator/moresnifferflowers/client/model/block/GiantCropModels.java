@@ -124,16 +124,16 @@ public class GiantCropModels {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-        PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create().texOffs(0, 149).addBox(-10.0F, -47.0F, -10.0F, 20.0F, 48.0F, 20.0F, new CubeDeformation(0.0F))
-                .texOffs(188, 51).addBox(-23.0F, -50.0F, -11.0F, 46.0F, 51.0F, 0.0F, new CubeDeformation(0.0F))
-                .texOffs(188, 0).addBox(-23.0F, -50.0F, 11.0F, 46.0F, 51.0F, 0.0F, new CubeDeformation(0.0F))
-                .texOffs(172, 149).addBox(-23.0F, -50.0F, 17.0F, 46.0F, 51.0F, 0.0F, new CubeDeformation(0.0F))
-                .texOffs(94, 52).addBox(-11.0F, -50.0F, -23.0F, 0.0F, 51.0F, 46.0F, new CubeDeformation(0.0F))
-                .texOffs(94, 1).addBox(-17.0F, -50.0F, -23.0F, 0.0F, 51.0F, 46.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 1).addBox(11.0F, -50.0F, -23.0F, 0.0F, 51.0F, 46.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 52).addBox(17.0F, -50.0F, -23.0F, 0.0F, 51.0F, 46.0F, new CubeDeformation(0.0F))
-                .texOffs(80, 149).addBox(-23.0F, -50.0F, -17.0F, 46.0F, 51.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+        PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create().texOffs(0, 52).addBox(-10.0F, -47.0F, -10.0F, 20.0F, 48.0F, 20.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 1).addBox(-23.0F, -50.0F, -11.0F, 46.0F, 51.0F, 0.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 1).addBox(-23.0F, -50.0F, 11.0F, 46.0F, 51.0F, 0.0F, new CubeDeformation(0.0F))
+                .texOffs(98, 1).addBox(-23.0F, -50.0F, 17.0F, 46.0F, 51.0F, 0.0F, new CubeDeformation(0.0F))
+                .texOffs(0, -45).addBox(-11.0F, -50.0F, -23.0F, 0.0F, 51.0F, 46.0F, new CubeDeformation(0.0F))
+                .texOffs(98, -45).addBox(-17.0F, -50.0F, -23.0F, 0.0F, 51.0F, 46.0F, new CubeDeformation(0.0F))
+                .texOffs(0, -45).addBox(11.0F, -50.0F, -23.0F, 0.0F, 51.0F, 46.0F, new CubeDeformation(0.0F))
+                .texOffs(98, -45).addBox(17.0F, -50.0F, -23.0F, 0.0F, 51.0F, 46.0F, new CubeDeformation(0.0F))
+                .texOffs(98, 1).addBox(-23.0F, -50.0F, -17.0F, 46.0F, 51.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-        return LayerDefinition.create(meshdefinition, 512, 512);
+        return LayerDefinition.create(meshdefinition, 256, 256);
     }
 }
