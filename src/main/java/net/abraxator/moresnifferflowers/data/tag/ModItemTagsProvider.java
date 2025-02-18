@@ -42,6 +42,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 
         this.tag(ModTags.ModItemTags.VIVICUS_LOGS).add(ModBlocks.VIVICUS_LOG.get().asItem(), ModBlocks.VIVICUS_WOOD.get().asItem(), ModBlocks.STRIPPED_VIVICUS_LOG.get().asItem(), ModBlocks.STRIPPED_VIVICUS_WOOD.get().asItem() );
         this.tag(ModTags.ModItemTags.CORRUPTED_LOGS).add(ModBlocks.CORRUPTED_LOG.get().asItem(), ModBlocks.CORRUPTED_WOOD.get().asItem(), ModBlocks.STRIPPED_CORRUPTED_LOG.get().asItem(), ModBlocks.STRIPPED_CORRUPTED_WOOD.get().asItem() );
+        this.tag(ItemTags.LOGS_THAT_BURN).addTags(ModTags.ModItemTags.CORRUPTED_LOGS, ModTags.ModItemTags.VIVICUS_LOGS);
 
         this.tag(ItemTags.WOODEN_BUTTONS).add(ModBlocks.CORRUPTED_BUTTON.get().asItem(), ModBlocks.VIVICUS_BUTTON.get().asItem());
         this.tag(ItemTags.WOODEN_PRESSURE_PLATES).add(ModBlocks.CORRUPTED_PRESSURE_PLATE.get().asItem(), ModBlocks.VIVICUS_PRESSURE_PLATE.get().asItem());

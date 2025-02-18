@@ -1,6 +1,7 @@
-// 1.20.1	2025-02-17T22:49:18.757875	Tags for minecraft:item mod id moresnifferflowers
+// 1.20.1	2025-02-18T21:11:56.5916388	Tags for minecraft:item mod id moresnifferflowers
 840aac17023f4b3090f7a16bdac7a2917619a7ee data/forge/tags/items/seeds.json
 6d8903ab7204569206b2f7cb5c89b74235cf79d6 data/minecraft/tags/items/fence_gates.json
+333c0cd687a06b67b797ce6b6e4c0790ccab28a4 data/minecraft/tags/items/logs_that_burn.json
 cc87198368386d83a3e3bab1c343988afb547f61 data/minecraft/tags/items/planks.json
 4624239ad2a34409633762b810c001740df32e54 data/minecraft/tags/items/saplings.json
 0154551d24498e9ebaf136bcc2000b01c48e627a data/minecraft/tags/items/sniffer_food.json

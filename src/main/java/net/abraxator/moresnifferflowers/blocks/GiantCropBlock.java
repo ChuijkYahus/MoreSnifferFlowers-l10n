@@ -179,7 +179,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
     public VoxelShape makeShapeWheat(){
         VoxelShape shape = Shapes.empty();
-        shape = Shapes.join(shape, Shapes.box(-0.5, -0.0625, -0.5, 1.5625, 3.125, 1.5625), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.5625, -0.0625, -0.5625, 1.5625, 2.9375, 1.5625), BooleanOp.OR);
 
         return shape;
     }

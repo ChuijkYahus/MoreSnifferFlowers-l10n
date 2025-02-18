@@ -29,7 +29,7 @@ public class ModCauldronInteractions {
     public static final CauldronInteraction EMPTY_JAR_OF_BONMEEL = (pState, pLevel, pPos, pPlayer, pHand, pStack) ->
             CauldronInteraction.fillBucket(pState, pLevel, pPos, pPlayer, pHand, pStack, ModItems.JAR_OF_BONMEEL.get().getDefaultInstance(), blockState -> blockState.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BOTTLE_FILL);
     public static final CauldronInteraction EMPTY_JAR_OF_ACID = (pState, pLevel, pPos, pPlayer, pHand, pStack) ->
-            CauldronInteraction.fillBucket(pState, pLevel, pPos, pPlayer, pHand, pStack, ModItems.JAR_OF_BONMEEL.get().getDefaultInstance(), blockState -> blockState.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BOTTLE_FILL);
+            CauldronInteraction.fillBucket(pState, pLevel, pPos, pPlayer, pHand, pStack, ModItems.JAR_OF_ACID.get().getDefaultInstance(), blockState -> blockState.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BOTTLE_FILL);
 
 
     static InteractionResult emptyBottle(Level level, BlockPos pos, Player player, InteractionHand hand, ItemStack filledStack, BlockState state) {
