@@ -48,7 +48,7 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         this.tag(ModTags.ModBlockTags.BONMEELABLE).add(Blocks.WHEAT, Blocks.CARROTS, Blocks.POTATOES, Blocks.BEETROOTS, Blocks.NETHER_WART);
         this.tag(ModTags.ModBlockTags.GIANT_CROPS).add(ModBlocks.GIANT_CARROT.get(), ModBlocks.GIANT_POTATO.get(), ModBlocks.GIANT_NETHERWART.get(), ModBlocks.GIANT_BEETROOT.get(), ModBlocks.GIANT_WHEAT.get());
 
-        this.tag(BlockTags.LOGS).add(ModBlocks.DECAYED_LOG.get(), ModBlocks.CORRUPTED_LOG.get(), ModBlocks.VIVICUS_LOG.get(), ModBlocks.STRIPPED_CORRUPTED_LOG.get(), ModBlocks.STRIPPED_VIVICUS_LOG.get(), ModBlocks.CORRUPTED_WOOD.get(), ModBlocks.VIVICUS_WOOD.get(), ModBlocks.STRIPPED_CORRUPTED_WOOD.get(), ModBlocks.STRIPPED_VIVICUS_WOOD.get());
+        this.tag(BlockTags.LOGS_THAT_BURN).add(ModBlocks.DECAYED_LOG.get(), ModBlocks.CORRUPTED_LOG.get(), ModBlocks.VIVICUS_LOG.get(), ModBlocks.STRIPPED_CORRUPTED_LOG.get(), ModBlocks.STRIPPED_VIVICUS_LOG.get(), ModBlocks.CORRUPTED_WOOD.get(), ModBlocks.VIVICUS_WOOD.get(), ModBlocks.STRIPPED_CORRUPTED_WOOD.get(), ModBlocks.STRIPPED_VIVICUS_WOOD.get());
         this.tag(BlockTags.LEAVES).add(ModBlocks.CORRUPTED_LEAVES.get(), ModBlocks.CORRUPTED_LEAVES_BUSH.get(), ModBlocks.VIVICUS_LEAVES.get());
 
         this.tag(BlockTags.WOODEN_BUTTONS).add(ModBlocks.CORRUPTED_BUTTON.get(), ModBlocks.VIVICUS_BUTTON.get());
@@ -84,9 +84,9 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         this.tag(BlockTags.CAULDRONS).add(ModBlocks.ACID_FILLED_CAULDRON.get(), ModBlocks.BONMEEL_FILLED_CAULDRON.get());
         this.tag(BlockTags.DIRT).add(ModBlocks.CORRUPTED_GRASS_BLOCK.get(), ModBlocks.CURED_GRASS_BLOCK.get());
         this.tag(BlockTags.FLOWER_POTS).add(ModBlocks.POTTED_DYESPRIA.get(), ModBlocks.POTTED_CORRUPTED_SAPLING.get(), ModBlocks.POTTED_VIVICUS_SAPLING.get());
-        
-        this.tag(ModTags.ModBlockTags.DYED).addTags(Tags.Blocks.STAINED_GLASS_PANES, Tags.Blocks.STAINED_GLASS).add(Blocks.CANDLE, Blocks.SHULKER_BOX);
-        addColored(ModTags.ModBlockTags.DYED, "{c}_wool", "{c}_carpet", "{c}_terracotta", "{c}_concrete", "{c}_concrete_powder", "{c}_glazed_terracotta", "{c}_shulker_box", "{c}_bed", "{c}_candle", "{c}_banner");
+
+        this.tag(ModTags.ModBlockTags.DYED).addTags(Tags.Blocks.STAINED_GLASS_PANES, Tags.Blocks.STAINED_GLASS).add(Blocks.GLASS, Blocks.GLASS_PANE, Blocks.TERRACOTTA, Blocks.SHULKER_BOX, Blocks.CANDLE);
+        addColored(ModTags.ModBlockTags.DYED, "{c}_wool", "{c}_carpet", "{c}_terracotta", "{c}_concrete", "{c}_concrete_powder", "{c}_glazed_terracotta", "{c}_shulker_box", "{c}_candle", "{c}_banner");
     }
 
     private void addColored(TagKey<Block> group, String... pattern) {
@@ -96,7 +96,7 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
                 Block item = ForgeRegistries.BLOCKS.getValue(key);
                 if (item == null || item  == Blocks.AIR)
                     throw new IllegalStateException("Unknown vanilla item: " + key);
-                tag(group).add(item);   
+                tag(group).add(item);
             }
         }
     }

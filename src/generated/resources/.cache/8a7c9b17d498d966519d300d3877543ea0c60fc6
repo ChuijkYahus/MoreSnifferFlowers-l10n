@@ -1,4 +1,4 @@
-// 1.20.1	2025-02-19T15:08:18.2286439	Tags for minecraft:block mod id moresnifferflowers
+// 1.20.1	2025-02-23T21:09:18.7000432	Tags for minecraft:block mod id moresnifferflowers
 a4a6a65c9ff027e1e1a8624a3079962b61fb88d4 data/minecraft/tags/blocks/cauldrons.json
 6e65e09e93f94f05212cbc66135b682b8722b50d data/minecraft/tags/blocks/dirt.json
 6d8903ab7204569206b2f7cb5c89b74235cf79d6 data/minecraft/tags/blocks/fence_gates.json
@@ -6,7 +6,7 @@ a35451bb68f3a8a583bedb76e58fb615112996fd data/minecraft/tags/blocks/flowers.json
 ba3ad935e689eea8825820b9de4cc87ab3e3c8fb data/minecraft/tags/blocks/flower_pots.json
 1424c10516e0b8ebd3694dc68da1cf2555b062c3 data/minecraft/tags/blocks/inside_step_sound_blocks.json
 308fcc9349aecab7431ce452f8a55dcb1bff156f data/minecraft/tags/blocks/leaves.json
-b54d66bc3e28b09da9c8e0f1cb93e812d4aab2e8 data/minecraft/tags/blocks/logs.json
+b54d66bc3e28b09da9c8e0f1cb93e812d4aab2e8 data/minecraft/tags/blocks/logs_that_burn.json
 7147f6e1dab213e3dc51bc838d8b27e97d7086c3 data/minecraft/tags/blocks/mineable/axe.json
 fbf78cb333faf0e471a1ce905b94dfe7465afb19 data/minecraft/tags/blocks/mineable/hoe.json
 c9646f36423face24d636d355cd7d17fbb9a92cf data/minecraft/tags/blocks/mineable/pickaxe.json
@@ -27,7 +27,7 @@ dc0e33338cd8a401a4eac3bb7984e64b1f1c3740 data/minecraft/tags/blocks/wooden_trapd
 1b936596007ade636660f80c65acae52326a2fef data/moresnifferflowers/tags/blocks/corrupted_blocks.json
 212835d5b634fd6adeea8b2152b4043eb6a9828a data/moresnifferflowers/tags/blocks/corrupted_sludge.json
 e695bf022d47bc0866910b50fc28cf5d67f4c273 data/moresnifferflowers/tags/blocks/corruption_transformables.json
-809454992b3e403ef05514a639ef8f684c9d8e7e data/moresnifferflowers/tags/blocks/dyed.json
+028f3b2736f48bf77d83cb1194bdd9ad000881c3 data/moresnifferflowers/tags/blocks/dyed.json
 b42f07c9e56255eb3cb6e28412a82ceb5fb3d939 data/moresnifferflowers/tags/blocks/giant_crops.json
 fa65bc9035bab0dd0ee981473e293cec15435f1d data/moresnifferflowers/tags/blocks/vivicus_blocks.json
 c7238092e8339b9a6c33ae605e1fe6553f9775e3 data/moresnifferflowers/tags/blocks/vivicus_tree_replacable.json

@@ -4,9 +4,12 @@ import net.abraxator.moresnifferflowers.blockentities.DyespriaPlantBlockEntity;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
+import net.abraxator.moresnifferflowers.init.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -16,9 +19,16 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import java.awt.*;
+
+import static net.abraxator.moresnifferflowers.items.DyespriaItem.copyAllBlockStateProperties;
 
 public class DyescrapiaItem extends BlockItem {
     public DyescrapiaItem(Properties pProperties) {
@@ -32,12 +42,12 @@ public class DyescrapiaItem extends BlockItem {
         var player = pContext.getPlayer();
         var level = pContext.getLevel();
         var stack = pContext.getItemInHand();
-        
+        int uses = getDyescrapiaUses(stack) + 1;
+
+
         if(state.getBlock() instanceof Colorable colorable) {
             var dye = new Dye(colorable.getDyeFromBlock(state).color(), 1);
             if(!dye.color().equals(DyeColor.WHITE)) {
-                int uses = getDyescrapiaUses(stack) + 1;
-                
                 colorable.colorBlock(level, pos, state, new Dye(DyeColor.WHITE, 1));
                 
                 if(uses >= 4) {
@@ -50,6 +60,56 @@ public class DyescrapiaItem extends BlockItem {
                 stack.setTag(tag);
                 return InteractionResult.sidedSuccess(level.isClientSide);
             }            
+        } else if (state.is(ModTags.ModBlockTags.DYED)){
+
+            ResourceLocation location = BuiltInRegistries.BLOCK.getKey(state.getBlock());
+            String modId = location.getNamespace();
+            String blockId = location.getPath();
+            String finalBlockId;
+            String validColorName = "white|light_gray|gray|black|brown|red|orange|yellow|lime|green|cyan|light_blue|blue|purple|magenta|pink";
+            boolean colorless = false;
+
+
+            if(blockId.endsWith("candle") || blockId.endsWith("shulker_box") || (blockId.endsWith("terracotta") && !blockId.endsWith("glazed_terracotta"))) {
+                finalBlockId = blockId.replaceFirst((validColorName), "").replaceFirst("_","");
+                colorless = true;
+            } else if (blockId.endsWith("stained_glass") || blockId.endsWith("stained_glass_pane") ){
+                finalBlockId = blockId.replaceFirst((validColorName), "").replaceFirst("_stained_", "");
+                colorless = true;
+            } else {
+                finalBlockId = blockId.replaceFirst(validColorName, "");
+            }
+
+            if ((!blockId.contains("white_") || colorless) && !finalBlockId.equals(blockId)){
+                Block finalBlock = colorless ? BuiltInRegistries.BLOCK.get(new ResourceLocation(modId, finalBlockId)) : BuiltInRegistries.BLOCK.get(new ResourceLocation(modId,"white" + finalBlockId));
+                BlockState finalBlockState = finalBlock.defaultBlockState();
+
+                BlockEntity originalShulker = level.getBlockEntity(pos);
+                CompoundTag shulkerData = null;
+
+                if(originalShulker instanceof ShulkerBoxBlockEntity entity) {
+                    shulkerData = entity.saveWithoutMetadata();
+                }
+
+                if (finalBlock != Blocks.AIR) level.setBlockAndUpdate(pos, copyAllBlockStateProperties(state, finalBlockState));
+
+                if (shulkerData != null && level.getBlockEntity(pos) instanceof ShulkerBoxBlockEntity newShulkerBox) {
+                    newShulkerBox.loadFromTag(shulkerData);
+                }
+
+                if(uses >= 4) {
+                    String dyeName = blockId.replace(blockId.replaceFirst(validColorName, ""), "") + "_dye";
+                    player.addItem(BuiltInRegistries.ITEM.get(new ResourceLocation("minecraft", dyeName)).getDefaultInstance());
+                    uses = 0;
+                }
+
+                CompoundTag tag = stack.getOrCreateTag();
+                tag.putInt("uses", uses);
+                stack.setTag(tag);
+                return InteractionResult.sidedSuccess(level.isClientSide);
+
+            } else return InteractionResult.FAIL;
+
         }
         
         return handlePlacement(pos, level, player, pContext.getHand(), pContext.getItemInHand());
