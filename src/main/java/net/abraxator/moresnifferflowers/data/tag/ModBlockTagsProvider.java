@@ -85,8 +85,8 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         this.tag(BlockTags.DIRT).add(ModBlocks.CORRUPTED_GRASS_BLOCK.get(), ModBlocks.CURED_GRASS_BLOCK.get());
         this.tag(BlockTags.FLOWER_POTS).add(ModBlocks.POTTED_DYESPRIA.get(), ModBlocks.POTTED_CORRUPTED_SAPLING.get(), ModBlocks.POTTED_VIVICUS_SAPLING.get());
 
-        this.tag(ModTags.ModBlockTags.DYED).addTags(Tags.Blocks.STAINED_GLASS_PANES, Tags.Blocks.STAINED_GLASS);
-        addColored(ModTags.ModBlockTags.DYED, "{c}_wool", "{c}_carpet", "{c}_terracotta", "{c}_concrete", "{c}_concrete_powder", "{c}_glazed_terracotta", "{c}_shulker_box", "{c}_bed", "{c}_candle", "{c}_banner");
+        this.tag(ModTags.ModBlockTags.DYED).addTags(Tags.Blocks.STAINED_GLASS_PANES, Tags.Blocks.STAINED_GLASS).add(Blocks.GLASS, Blocks.GLASS_PANE, Blocks.TERRACOTTA, Blocks.SHULKER_BOX, Blocks.CANDLE);
+        addColored(ModTags.ModBlockTags.DYED, "{c}_wool", "{c}_carpet", "{c}_terracotta", "{c}_concrete", "{c}_concrete_powder", "{c}_glazed_terracotta", "{c}_shulker_box", "{c}_candle", "{c}_banner");
     }
 
     private void addColored(TagKey<Block> group, String... pattern) {
