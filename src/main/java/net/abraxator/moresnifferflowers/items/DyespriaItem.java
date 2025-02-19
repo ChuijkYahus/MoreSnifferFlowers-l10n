@@ -15,6 +15,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -37,6 +38,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
@@ -86,7 +89,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
 
         return handlePlacement(blockPos, level, player, pContext.getHand(), stack);
     }
-    
+
     private @Nullable TagKey<Block> getMatchTag(BlockState blockState) {
         return blockState instanceof Colorable colorable ? colorable.matchTag() : null;
     }
@@ -204,28 +207,37 @@ public class DyespriaItem extends BlockItem implements Colorable {
     public static boolean checkDyedBlock(BlockState blockState) {
         return blockState.is(Tags.Blocks.DYED);
     }
-    
+
     private void dyeNonColorableBlock(BlockState blockState, BlockPos blockPos, DyeColor newColor, Level level) {
         if(!checkDyedBlock(blockState)) {
             return;
         }
-        
-        String blockIdentifier = blockState.getBlock().toString().replace("Block{", "").replace("}", "");
-        String[] identifiers = blockIdentifier.split(":");
-        String blockId = identifiers[1]; 
-        String modId = identifiers[0];   
-        String[] splitBlockId = blockId.split("_");
-        List<String> validColors = Arrays.stream(DyeColor.values())
-                .map(DyeColor::getName)
-                .toList();
-        int colorIndex = validColors.contains(splitBlockId[0]) ? 0 : 1;
-        splitBlockId[colorIndex] = newColor.getName();
-        
-        String finalBlockName = String.join("_", splitBlockId);
+
+        ResourceLocation location = BuiltInRegistries.BLOCK.getKey(blockState.getBlock());
+        String modId = location.getNamespace();
+        String blockId = location.getPath();
+
+        if(blockId.equals("candle") || blockId.equals("shulker_box")) {
+            blockId = "white_" + blockId;
+        }
+
+        String validColorName = "(?:white|light_gray|gray|black|brown|red|orange|yellow|lime|green|cyan|light_blue|blue|purple|magenta|pink)";
+        String finalBlockName = blockId.replaceFirst(validColorName, newColor.getName());
         Block finalBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(modId, finalBlockName));
         BlockState finalBlockState = finalBlock.defaultBlockState();
-        
+
+        BlockEntity originalShulker = level.getBlockEntity(blockPos);
+        CompoundTag shulkerData = null;
+
+        if(originalShulker instanceof ShulkerBoxBlockEntity entity) {
+            shulkerData = entity.saveWithoutMetadata(level.registryAccess());
+        }
+
         level.setBlockAndUpdate(blockPos, copyAllBlockStateProperties(blockState, finalBlockState));
+
+        if (shulkerData != null && level.getBlockEntity(blockPos) instanceof ShulkerBoxBlockEntity newShulkerBox) {
+            newShulkerBox.loadFromTag(shulkerData, level.registryAccess());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -273,7 +285,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
             return ItemStack.EMPTY;
         }
     }
-    
+
     @Override
     public void appendHoverText(ItemStack pStack, TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
         super.appendHoverText(pStack, pContext, pTooltipComponents, pTooltipFlag);
@@ -336,7 +348,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
     public static DyespriaMode getCurrentMode(ItemStack itemStack) {
         return itemStack.getOrDefault(ModDataComponents.DYESPRIA_MODE.get(), DyespriaMode.SINGLE);
     }
-    
+
     public static Component getCurrentModeComponent(DyespriaMode dyespriaMode) {
         var baseText = Component.translatable("message.more_sniffer_flowers.dyespria_mode").append(": ").withStyle(ChatFormatting.GOLD);
         var modeText = Component.literal(dyespriaMode.getSerializedName()).withStyle(dyespriaMode.getTextColor());
