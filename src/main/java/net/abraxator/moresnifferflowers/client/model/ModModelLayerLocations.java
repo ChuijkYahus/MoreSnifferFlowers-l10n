@@ -22,4 +22,5 @@ public class ModModelLayerLocations {
     public static final ModelLayerLocation GIANT_WHEAT = new ModelLayerLocation(MoreSnifferFlowers.loc("giant_wheat"), "main");
     public static final ModelLayerLocation CROPRESSOR = new ModelLayerLocation(MoreSnifferFlowers.loc("cropressor"), "main");
     public static final ModelLayerLocation BONDRIPIA = new ModelLayerLocation(MoreSnifferFlowers.loc("bondripia"), "main");
+    public static final ModelLayerLocation SOUP_CAULDRON = new ModelLayerLocation(MoreSnifferFlowers.loc("soup_cauldron"), "main");
 }

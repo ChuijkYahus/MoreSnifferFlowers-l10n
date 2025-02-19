@@ -8,22 +8,17 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.datafix.fixes.AddFlagIfNotPresentFix;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.piston.PistonBaseBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -32,8 +27,6 @@ import net.minecraft.world.ticks.ScheduledTick;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
@@ -154,7 +147,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         );
     }
 
-    public static BlockBehaviour.StatePredicate statePredicate = (p_152641_, p_152642_, p_152643_) -> p_152641_.getValue(ModStateProperties.CENTER);
+    public static final BlockBehaviour.StatePredicate STATE_PREDICATE = (p_152641_, p_152642_, p_152643_) -> p_152641_.getValue(ModStateProperties.CENTER);
 
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
         if(getter.getBlockEntity(pos) instanceof GiantCropBlockEntity entity) {

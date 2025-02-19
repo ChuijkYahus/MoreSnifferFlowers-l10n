@@ -1,0 +1,12 @@
+{
+  "sweet":{
+    "moresnifferflowers:dawnberry": 60
+  },
+  "spicy":{
+    "moresnifferflowers:gloomberry": 70
+  },
+  "sour":{
+    "moresnifferflowers:dawnberry": 60,
+    "moresnifferflowers:gloomberry": 60
+  }
+}

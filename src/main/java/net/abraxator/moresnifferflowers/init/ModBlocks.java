@@ -65,11 +65,11 @@ public class ModBlocks {
 
     public static final RegistryObject<Block> CAULORFLOWER = registerBlockNoItem("caulorflower", () ->  new CaulorflowerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).sound(SoundType.GRASS).strength(2.0F).noCollission().noOcclusion().randomTicks()));
     
-    public static final RegistryObject<Block> GIANT_CARROT = registerGiantCrop("giant_carrot", () ->  new GiantCropBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).instrument(NoteBlockInstrument.BANJO).strength(3.0F).sound(SoundType.MOSS_CARPET).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(GiantCropBlock.statePredicate)));
-    public static final RegistryObject<Block> GIANT_POTATO = registerGiantCrop("giant_potato", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.statePredicate)));
-    public static final RegistryObject<Block> GIANT_NETHERWART = registerGiantCrop("giant_netherwart", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.statePredicate)));
-    public static final RegistryObject<Block> GIANT_BEETROOT = registerGiantCrop("giant_beetroot", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.statePredicate)));
-    public static final RegistryObject<Block> GIANT_WHEAT = registerGiantCrop("giant_wheat", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.statePredicate)));
+    public static final RegistryObject<Block> GIANT_CARROT = registerGiantCrop("giant_carrot", () ->  new GiantCropBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).instrument(NoteBlockInstrument.BANJO).strength(3.0F).sound(SoundType.MOSS_CARPET).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(GiantCropBlock.STATE_PREDICATE)));
+    public static final RegistryObject<Block> GIANT_POTATO = registerGiantCrop("giant_potato", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE)));
+    public static final RegistryObject<Block> GIANT_NETHERWART = registerGiantCrop("giant_netherwart", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE)));
+    public static final RegistryObject<Block> GIANT_BEETROOT = registerGiantCrop("giant_beetroot", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE)));
+    public static final RegistryObject<Block> GIANT_WHEAT = registerGiantCrop("giant_wheat", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE)));
     
     public static final RegistryObject<Block> BONMEELIA = registerBlockNoItem("bonmeelia", () ->  new BonmeeliaBlock(BlockBehaviour.Properties.copy(Blocks.WHEAT).strength(0.2F).lightLevel(value -> 3).noOcclusion(), false));
     public static final RegistryObject<Block> BONWILTIA = registerBlockNoItem("bonwiltia", () ->  new BonmeeliaBlock(BlockBehaviour.Properties.copy(Blocks.WHEAT).strength(0.2F).lightLevel(value -> 3).noOcclusion(), true));
@@ -141,7 +141,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> POTTED_CORRUPTED_SAPLING = registerBlockNoItem("potted_corrupted_sapling", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, CORRUPTED_SAPLING, BlockBehaviour.Properties.copy(Blocks.FLOWER_POT)));
     public static final RegistryObject<Block> POTTED_VIVICUS_SAPLING = registerBlockNoItem("potted_vivicus_sapling", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, VIVICUS_SAPLING, BlockBehaviour.Properties.copy(Blocks.FLOWER_POT)));
 
-    public static final RegistryObject<Block> SOUP_CAULDRON = registerBlockNoItem("soup_cauldron", () -> new SoupCauldronBlock(BlockBehaviour.Properties.copy(Blocks.ANVIL)));
+    public static final RegistryObject<Block> SOUP_CAULDRON = registerBlockWithItem("soup_cauldron", () -> new SoupCauldronBlock(BlockBehaviour.Properties.copy(Blocks.ANVIL)));
     
     private static <T extends Block> RegistryObject<T> registerBlockNoItem(String name, Supplier<T> block) {
         return BLOCKS.register(name, block);

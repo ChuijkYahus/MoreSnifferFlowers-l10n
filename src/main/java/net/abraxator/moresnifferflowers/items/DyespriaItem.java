@@ -16,6 +16,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -38,18 +39,19 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.PacketDistributor;
 import org.apache.commons.lang3.text.WordUtils;
+import org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class DyespriaItem extends BlockItem implements Colorable {
     public DyespriaItem(Properties pProperties) {
@@ -217,22 +219,31 @@ public class DyespriaItem extends BlockItem implements Colorable {
             return;
         }
         
-        String blockIdentifier = blockState.getBlock().toString().replace("Block{", "").replace("}", "");
-        String[] identifiers = blockIdentifier.split(":");
-        String blockId = identifiers[1]; 
-        String modId = identifiers[0];   
-        String[] splitBlockId = blockId.split("_");
-        List<String> validColors = Arrays.stream(DyeColor.values())
-                .map(DyeColor::getName)
-                .toList();
-        int colorIndex = validColors.contains(splitBlockId[0]) ? 0 : 1;
-        splitBlockId[colorIndex] = newColor.getName();
+        ResourceLocation location = BuiltInRegistries.BLOCK.getKey(blockState.getBlock());
+        String modId = location.getNamespace();
+        String blockId = location.getPath();
         
-        String finalBlockName = String.join("_", splitBlockId);
+        if(blockId.equals("candle") || blockId.equals("shulker_box")) {
+            blockId = "white_" + blockId;
+        }
+        
+        String validColorName = "(?:white|light_gray|gray|black|brown|red|orange|yellow|lime|green|cyan|light_blue|blue|purple|magenta|pink)";
+        String finalBlockName = blockId.replaceFirst(validColorName, newColor.getName());
         Block finalBlock = BuiltInRegistries.BLOCK.get(new ResourceLocation(modId, finalBlockName));
         BlockState finalBlockState = finalBlock.defaultBlockState();
         
+        BlockEntity originalShulker = level.getBlockEntity(blockPos);
+        CompoundTag shulkerData = null;
+        
+        if(originalShulker instanceof ShulkerBoxBlockEntity entity) {
+            shulkerData = entity.saveWithoutMetadata();
+        }
+        
         level.setBlockAndUpdate(blockPos, copyAllBlockStateProperties(blockState, finalBlockState));
+
+        if (shulkerData != null && level.getBlockEntity(blockPos) instanceof ShulkerBoxBlockEntity newShulkerBox) {
+            newShulkerBox.loadFromTag(shulkerData);
+        }
     }
 
     @SuppressWarnings("unchecked")

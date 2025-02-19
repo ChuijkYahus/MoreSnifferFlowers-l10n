@@ -227,7 +227,8 @@ public class BoblingEntity extends PathfinderMob {
                 this.isRunning() && 
                 this.isAlive() && 
                 !this.isPlanting() && 
-                this.getWantedPos() != null && 
+                this.getWantedPos() != null &&
+                this.level().getBlockState(this.getWantedPos()).canBeReplaced() &&        
                 this.position().closerThan(getWantedPos().getCenter(), 0.75F);
     }
 

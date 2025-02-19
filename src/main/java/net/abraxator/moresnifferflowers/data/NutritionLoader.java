@@ -8,6 +8,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.MapEncoder;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.nutrition.Nutrition;
 import net.abraxator.moresnifferflowers.nutrition.NutritionEntry;
@@ -49,8 +50,8 @@ public class NutritionLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-        Map<String, List<Nutrition>> modNutritions = ImmutableMap.of();
-        List<Nutrition> allNutritions = ImmutableList.of();
+        Map<String, List<Nutrition>> modNutritions = new HashMap<>();
+        List<Nutrition> allNutritions = new ArrayList<>();
 
         for (Map.Entry<ResourceLocation, JsonElement> entry : object.entrySet()) {
             Map<Item, List<NutritionEntry>> currentModNutritions = Maps.newHashMap();
@@ -60,34 +61,36 @@ public class NutritionLoader extends SimpleJsonResourceReloadListener {
                 for (NutritionType nutritionType : NutritionType.values()) {
                     JsonObject entries = entry.getValue().getAsJsonObject().getAsJsonObject(nutritionType.name);
                     var values = CODEC.parse(JsonOps.INSTANCE, entries).get();
+                    Map<Item, NutritionEntry> map = Maps.newHashMap(); 
                     if(values.left().isPresent()) {
-                        var map = values.left().get().entrySet().stream()
-                                .map(mapEntry -> {
-                                    List<Item> itemList = new ArrayList<>();
-                                    Map<Item, NutritionEntry> list = new HashMap<>();
-                                    if(mapEntry.getKey().left().isPresent()) {
-                                        itemList = (Arrays.stream(Ingredient.of(mapEntry.getKey().left().get()).getItems())
-                                                .map(ItemStack::getItem)
-                                                .toList()
-                                        );
-                                    } 
-                                    if(mapEntry.getKey().right().isPresent()) {
-                                        itemList = List.of(mapEntry.getKey().right().get());
-                                    }
+                        var left = values.left().get();
+                        for (Map.Entry<Either<TagKey<Item>, Item>, Integer> mapEntry : left.entrySet()) {
+                            List<Item> itemList = new ArrayList<>();
 
-                                    for (Item item : itemList) {
-                                        list.put(item, new NutritionEntry(nutritionType, mapEntry.getValue()));
-                                    }
-                                    
-                                    return list;
-                                }).findAny().orElseGet(HashMap::new);
+                            if(mapEntry.getKey().left().isPresent()) {
+                                itemList = (Arrays.stream(Ingredient.of(mapEntry.getKey().left().get()).getItems())
+                                        .map(ItemStack::getItem)
+                                        .toList()
+                                );
+                            }
+                            if(mapEntry.getKey().right().isPresent()) {
+                                itemList = List.of(mapEntry.getKey().right().get());
+                            }
+
+                            for (Item item : itemList) {
+                                map.put(item, new NutritionEntry(nutritionType, mapEntry.getValue()));
+                            }
+                        }
                         
                         map.forEach((item, nutritionEntry) -> {
+                            List<NutritionEntry> nutritions = new ArrayList<>();
+                            nutritions.add(nutritionEntry);
+                            
                             if (currentModNutritions.containsKey(item)) {
-                                List<NutritionEntry> nutritions = new ArrayList<>(currentModNutritions.get(item));
-                                nutritions.add(nutritionEntry);
-                                currentModNutritions.put(item, nutritions);
+                                nutritions.addAll(currentModNutritions.get(item));
                             }
+                            
+                            currentModNutritions.put(item, nutritions);
                         });
                     }
                 }

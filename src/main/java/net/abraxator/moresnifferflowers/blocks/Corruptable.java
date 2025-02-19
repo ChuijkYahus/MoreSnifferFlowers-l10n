@@ -25,7 +25,7 @@ public interface Corruptable {
     default void onCorruptByEntity(Entity entity, BlockPos blockPos, BlockState blockState, Block block, Level level) {
         if(entity instanceof CorruptedProjectile corruptedProjectile && CorruptionRecipe.canBeCorrupted(block, level)) {
             onCorrupt(level, blockPos, blockState, getCorruptedBlock(block, level).get());
-            corruptedProjectile.discard();
+            corruptedProjectile.remove(Entity.RemovalReason.DISCARDED);
             
             if(level.isClientSide) {
                 level.addParticle(new DustParticleOptions(Vec3.fromRGB24(0x36283D).toVector3f(), 1.0F), entity.getX(), entity.getY(), entity.getZ(), 0.0, 0.0, 0.0);

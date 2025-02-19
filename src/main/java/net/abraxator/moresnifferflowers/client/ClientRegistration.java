@@ -6,6 +6,7 @@ import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
 import net.abraxator.moresnifferflowers.client.model.block.BondripiaModel;
 import net.abraxator.moresnifferflowers.client.model.block.CropressorModel;
 import net.abraxator.moresnifferflowers.client.model.block.GiantCropModels;
+import net.abraxator.moresnifferflowers.client.model.block.SoupCauldronModel;
 import net.abraxator.moresnifferflowers.client.model.entity.BoblingModel;
 import net.abraxator.moresnifferflowers.client.model.entity.CorruptedProjectileModel;
 import net.abraxator.moresnifferflowers.client.model.entity.DragonflyModel;
@@ -48,8 +49,7 @@ public class ClientRegistration {
         ModItemProperties.register();
         MenuScreens.register(ModMenuTypes.REBREWING_STAND.get(), RebrewingStandScreen::new);
     }
-
-
+    
     @SubscribeEvent
     public static void onEntityRenderersRegisterLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         //ENTITY
@@ -69,6 +69,7 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModModelLayerLocations.GIANT_WHEAT, GiantCropModels::createWheatLayer);
         event.registerLayerDefinition(ModModelLayerLocations.CROPRESSOR, CropressorModel::createBodyLayer);
         event.registerLayerDefinition(ModModelLayerLocations.BONDRIPIA, BondripiaModel::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayerLocations.SOUP_CAULDRON, SoupCauldronModel::createBodyLayer);
     }
     
     @SubscribeEvent
@@ -94,6 +95,7 @@ public class ClientRegistration {
         event.registerBlockEntityRenderer(ModBlockEntities.MOD_HANGING_SIGN.get(), HangingSignRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.VIVICUS_HANGING_SIGN.get(), VivicusHangingSignRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.BONDRIPIA.get(), BondripiaBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.SOUP_CAULDRON.get(), SoupCauldronRenderer::new);
     }
     
     @SubscribeEvent

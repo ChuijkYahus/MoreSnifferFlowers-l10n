@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.blocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,6 +14,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
@@ -21,8 +23,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.IPlantable;
 
-;
+;import java.util.OptionalLong;
 
 public interface ModCropBlock extends BonemealableBlock {
     IntegerProperty getAgeProperty();
@@ -70,7 +73,7 @@ public interface ModCropBlock extends BonemealableBlock {
         });
     }
 
-    public static float getGrowthSpeed(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
+    static float getGrowthSpeed(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
         float f = 1.0F;
         BlockPos blockpos = pPos.below();
         var pBlock = pState.getBlock();
@@ -79,7 +82,7 @@ public interface ModCropBlock extends BonemealableBlock {
             for(int j = -1; j <= 1; ++j) {
                 float f1 = 0.0F;
                 BlockState blockstate = pLevel.getBlockState(blockpos.offset(i, 0, j));
-                if (pState.getBlock() instanceof net.minecraftforge.common.IPlantable && blockstate.canSustainPlant(pLevel, blockpos.offset(i, 0, j), net.minecraft.core.Direction.UP, (net.minecraftforge.common.IPlantable) pState.getBlock())) {
+                if (pState.getBlock() instanceof IPlantable plantable && blockstate.canSustainPlant(pLevel, blockpos.offset(i, 0, j), Direction.UP, plantable)) {
                     f1 = 1.0F;
                     if (blockstate.isFertile(pLevel, pPos.offset(i, 0, j))) {
                         f1 = 3.0F;

@@ -103,7 +103,9 @@ public class ModCreativeTabs {
                 output.accept(ModBlocks.DECAYED_LOG.get());
                 output.accept(ModBlocks.CORRUPTED_GRASS_BLOCK.get());
                 output.accept(ModBlocks.CURED_GRASS_BLOCK.get());
-
+            
+                output.accept(ModBlocks.SOUP_CAULDRON.get());
+                
                 output.accept(ModBlocks.VIVICUS_LOG.get());
                 output.accept(ModBlocks.VIVICUS_WOOD.get());
                 output.accept(ModBlocks.STRIPPED_VIVICUS_LOG.get());
@@ -148,7 +150,7 @@ public class ModCreativeTabs {
                 output.accept(ModItems.CORRUPTED_BOAT.get());
                 output.accept(ModItems.CORRUPTED_CHEST_BOAT.get());
 
-
+                
             })
             .withBackgroundLocation(MoreSnifferFlowers.loc("textures/gui/container/tab_items.png"))
             .withTabsImage(MoreSnifferFlowers.loc("textures/gui/container/tabs.png"))

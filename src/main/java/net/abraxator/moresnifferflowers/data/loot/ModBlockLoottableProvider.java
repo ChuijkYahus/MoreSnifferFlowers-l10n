@@ -310,6 +310,8 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
                                 .setProperties(StatePropertiesPredicate.Builder.properties()
                                         .hasProperty(ModStateProperties.CENTER, true)))
                 ));
+        
+        dropSelf(ModBlocks.SOUP_CAULDRON.get());
     }
 
     private LootTable.Builder giantCropLoot(Item crop, Item cropressed, Item special, Item piece, Item trim) {

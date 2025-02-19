@@ -21,7 +21,8 @@ public class ModItemProperties {
 
         ItemProperties.register(ModItems.DRAGONFLY.get(), MoreSnifferFlowers.loc("og"), (pStack, pLevel, pEntity, pSeed) -> {
             Component component = pStack.getDisplayName();
-            if(component != null && component.getString().equals("og")) {
+            String s = component.getString();
+            if(s.equals("[og]")) {
                 return 1.0F;
             } else {
                 return 0.0F;
