@@ -90,7 +90,7 @@ public class ForgeEvents {
                 event.getLevel().setBlock(event.getPos(), state, 3);
                 event.getLevel().playSound(null, event.getPos(), SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
                 event.getLevel().gameEvent(null, GameEvent.FLUID_PLACE, event.getPos());
-                event.getPlayer().setItemInHand(event.getHand(), ItemUtils.createFilledResult(event.getItemStack(), event.getPlayer(), new ItemStack(Items.GLASS_BOTTLE)));
+                if (!event.getPlayer().isCreative()) event.getPlayer().setItemInHand(event.getHand(), ItemUtils.createFilledResult(event.getItemStack(), event.getPlayer(), new ItemStack(Items.GLASS_BOTTLE)));
                 event.setCancellationResult(ItemInteractionResult.SUCCESS);
                 event.setCanceled(true);
             }
