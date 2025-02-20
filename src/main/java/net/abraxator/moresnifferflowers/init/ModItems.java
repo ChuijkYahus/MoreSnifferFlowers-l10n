@@ -119,6 +119,8 @@ public class ModItems {
 
     public static final RegistryObject<Item> CAULORFLOWER_SEEDS = ITEMS.register("caulorflower_seeds", () -> new ItemNameBlockItem(ModBlocks.CAULORFLOWER.get(), new Item.Properties()));
     
+    public static final RegistryObject<Item> GIANT_SOUP = ITEMS.register("giant_soup", () -> new GiantSoupItem(new Item.Properties()));
+    
     public static final RegistryObject<Item> CREATIVE_TAB_ICON = ITEMS.register("creative_tab_icon", () -> new CreativeTabItem(new Item.Properties()));
     public static final RegistryObject<Item> WAND_OF_CUBING = ITEMS.register("wand_of_cubing", () -> new WandOfCubingItem(new Item.Properties()));
 

@@ -29,8 +29,8 @@ public class NutritionLoader extends SimpleJsonResourceReloadListener {
             ), Codec.INT
     );
     
-    private Map<String, List<Nutrition>> modNutritions = ImmutableMap.of();
-    private List<Nutrition> allNutritions = ImmutableList.of();
+    public static Map<String, List<Nutrition>> modNutritions = ImmutableMap.of();
+    public static List<Nutrition> allNutritions = ImmutableList.of();
     
     public NutritionLoader() {
         super(GSON, "nutrition");
@@ -38,8 +38,8 @@ public class NutritionLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-        Map<String, List<Nutrition>> modNutritions = ImmutableMap.of();
-        List<Nutrition> allNutritions = ImmutableList.of();
+        Map<String, List<Nutrition>> modNutritions = new HashMap<>();
+        List<Nutrition> allNutritions = new ArrayList<>();
 
         for (Map.Entry<ResourceLocation, JsonElement> entry : object.entrySet()) {
             Map<Item, List<NutritionEntry>> currentModNutritions = Maps.newHashMap();
@@ -72,11 +72,12 @@ public class NutritionLoader extends SimpleJsonResourceReloadListener {
                                 }).findAny().orElseGet(HashMap::new);
                         
                         map.forEach((item, nutritionEntry) -> {
-                            if (currentModNutritions.containsKey(item)) {
-                                List<NutritionEntry> nutritions = new ArrayList<>(currentModNutritions.get(item));
-                                nutritions.add(nutritionEntry);
-                                currentModNutritions.put(item, nutritions);
-                            }
+                            currentModNutritions.merge(item,
+                                    new ArrayList<>(List.of(nutritionEntry)),
+                                    (existingList, newList) -> {
+                                        existingList.addAll(newList);
+                                        return existingList;
+                                    });
                         });
                     }
                 }

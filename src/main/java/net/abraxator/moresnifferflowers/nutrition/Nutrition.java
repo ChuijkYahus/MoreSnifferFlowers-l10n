@@ -1,18 +1,24 @@
 package net.abraxator.moresnifferflowers.nutrition;
 
 import com.mojang.datafixers.util.Either;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import org.apache.commons.io.output.ThresholdingOutputStream;
 
 import java.util.List;
 
 public class Nutrition {
-    private Item item;
-    private List<NutritionEntry> nutritionEntries;
-
+    private final Item item;
+    private final List<NutritionEntry> nutritionEntries;
+    private int saturation;
+    public static final Nutrition EMPTY = new Nutrition(Items.AIR, List.of());
+    
     public Nutrition(Item item, List<NutritionEntry> nutritionEntries) {
         this.item = item;
         this.nutritionEntries = nutritionEntries;
+
     }
 
     public Item getItem() {
@@ -21,5 +27,15 @@ public class Nutrition {
 
     public List<NutritionEntry> getNutritionEntries() {
         return nutritionEntries;
+    }
+    
+    public static Nutrition getNutritionForItem(Item item) {
+        for (Nutrition nutrition : NutritionLoader.allNutritions) {
+            if (nutrition.getItem() == item) {
+                return nutrition;
+            }
+        }
+        
+        return EMPTY;
     }
 }

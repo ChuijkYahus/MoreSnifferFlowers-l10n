@@ -39,25 +39,18 @@ public class SoupCauldronBlock extends HorizontalDirectionalBlock implements Mod
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if(!(entity instanceof ItemEntity itemEntity)) {
-            return;
-        }
-        
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         BlockPos entityPos = BlockPos.withinManhattanStream(level.getBlockState(pos.below()).is(this) ? pos.below() : pos, 2, 1, 2)
                 .filter(blockPos -> isEntityBlock(level, blockPos))
                 .findFirst().orElse(null);
-        boolean flag = false;
-        
-        if(entityPos != null && level.getBlockEntity(entityPos) instanceof SoupCauldronBlockEntity blockEntity && !level.isClientSide) {
-            if(blockEntity.addItem(itemEntity.getItem())) {
-                flag = true;
-            }
+
+        if(entityPos != null && level.getBlockEntity(entityPos) instanceof SoupCauldronBlockEntity blockEntity) {
+            blockEntity.addItem(player.getItemInHand(hand));
+            
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
         
-        if(flag) {
-            itemEntity.discard();
-        }
+        return InteractionResult.PASS;
     }
 
     @Override
