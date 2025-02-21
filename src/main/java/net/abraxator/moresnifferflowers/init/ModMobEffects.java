@@ -13,4 +13,5 @@ public class ModMobEffects {
             ForgeRegistries.MOB_EFFECTS, MoreSnifferFlowers.MOD_ID);
 
     public static final RegistryObject<MobEffect> EXTRACTED = EFFECTS.register("extracted", () -> new ExtractedEffect(MobEffectCategory.NEUTRAL, 14058905));
+    public static final RegistryObject<MobEffect> MID = EFFECTS.register("mid", () -> new ExtractedEffect(MobEffectCategory.NEUTRAL, 14058905));
 }

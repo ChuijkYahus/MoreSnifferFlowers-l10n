@@ -2,13 +2,19 @@ package net.abraxator.moresnifferflowers.blockentities;
 
 import net.abraxator.moresnifferflowers.init.ModBlockEntities;
 import net.abraxator.moresnifferflowers.init.ModItems;
+import net.abraxator.moresnifferflowers.init.ModMobEffects;
 import net.abraxator.moresnifferflowers.nutrition.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffectUtil;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -26,20 +32,42 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
     public void craft() {
         Map<NutritionType, Integer> map = new HashMap<>();
         ItemStack soup = ModItems.GIANT_SOUP.get().getDefaultInstance();
+        MobEffect mobEffect = null;
+        MobEffectInstance mobEffectInstance = null;
         CompoundTag tag = new CompoundTag();
         this.stacks.forEach(stack -> 
                 stack.nutrition.getNutritionEntries().forEach(entry -> 
                         map.merge(entry.nutrition(), entry.weight(), Integer::sum)
         ));
-        map.entrySet()
-            .stream()
-            .sorted(Map.Entry.<NutritionType, Integer>comparingByValue().reversed())
-            .collect(LinkedHashMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), Map::putAll);
+       
+        List<NutritionEntry> entryList = new ArrayList<>(map.entrySet()
+                .stream()
+                .map((Map.Entry<NutritionType, Integer> entry) -> new NutritionEntry(entry.getKey(), entry.getValue()))
+                .sorted(Comparator.comparing(NutritionEntry::weight))
+                .toList());
+        
+        while (entryList.get(entryList.size() - 1).weight() < entryList.get(0).weight() * 0.01) {
+            entryList.remove(entryList.size() - 1);
+        }
+        
+        int nutritionValuesSum = entryList.stream().mapToInt(NutritionEntry::weight).sum();
+        
+        if(valuesClose(entryList, 10)) {
+            mobEffectInstance = new MobEffectInstance(ModMobEffects.MID.get(), nutritionValuesSum, nutritionValuesSum / 100);
+            PotionUtils.setCustomEffects(soup, Collections.singletonList(mobEffectInstance));
+        }
         
         soup.setTag(tag);
-        
         ItemEntity entity = new ItemEntity(this.level, getMiddle().x, getMiddle().y, getMiddle().z, soup);
         this.level.addFreshEntity(entity);
+    }
+    
+    private boolean valuesClose(List<NutritionEntry> entryList, int tolerance) {
+        List<Integer> weights = entryList.stream().map(NutritionEntry::weight).toList();
+        int min = Collections.min(weights);
+        int max = Collections.max(weights);
+        
+        return (max - min) <= tolerance;
     }
     
     public void addItem(ItemStack itemStack) {
