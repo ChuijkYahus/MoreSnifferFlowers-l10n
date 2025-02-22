@@ -36,7 +36,7 @@ public class ModCauldronInteractions {
         if (level.getBlockState(pos).getValue(LayeredCauldronBlock.LEVEL) < 3) {
             if (!level.isClientSide) {
                 Item item = filledStack.getItem();
-                player.setItemInHand(hand, ItemUtils.createFilledResult(filledStack, player, new ItemStack(Items.GLASS_BOTTLE)));
+                if (!player.isCreative()) player.setItemInHand(hand, ItemUtils.createFilledResult(filledStack, player, new ItemStack(Items.GLASS_BOTTLE)));
                 player.awardStat(Stats.FILL_CAULDRON);
                 player.awardStat(Stats.ITEM_USED.get(item));
                 level.setBlockAndUpdate(pos, state);

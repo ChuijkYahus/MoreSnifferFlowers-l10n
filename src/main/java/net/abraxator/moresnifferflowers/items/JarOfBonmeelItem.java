@@ -32,7 +32,7 @@ public class JarOfBonmeelItem extends Item {
             Bonmeelable bonmeelable = ((Bonmeelable) Bonmeelable.MAP.get(blockState.getBlock()));
             if(bonmeelable.canBonmeel(blockPos,blockState,level) && player != null) {
                 bonmeelable.performBonmeel(blockPos, blockState, level, player);
-                player.setItemInHand(pContext.getHand(), ItemUtils.createFilledResult(player.getItemInHand(pContext.getHand()), player, new ItemStack(Items.GLASS_BOTTLE)));
+                if (!player.isCreative()) player.setItemInHand(pContext.getHand(), ItemUtils.createFilledResult(player.getItemInHand(pContext.getHand()), player, new ItemStack(Items.GLASS_BOTTLE)));
 
                 return InteractionResult.SUCCESS;
 
