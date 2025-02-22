@@ -171,7 +171,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                 .parent(ambush)
                 .display(
                         ModItems.GARBUSH_SEEDS.get(),
-                        Component.translatableWithFallback("advancements.more_sniffer_flowers.garbuh", "Garbushed by garbush loot"),
+                        Component.translatableWithFallback("advancements.more_sniffer_flowers.garbush", "Garbushed by garbush loot"),
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.garbush.desc", "Break a Garnet block, like amber but more violent"),
                         null,
                         FrameType.TASK,
