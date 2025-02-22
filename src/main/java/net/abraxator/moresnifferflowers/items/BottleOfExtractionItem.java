@@ -76,6 +76,6 @@ public class BottleOfExtractionItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatableWithFallback("bottle_of_extraction.tooltip.usage", "Drink to extract all effects into single potion").withStyle(ChatFormatting.GOLD));
+        pTooltipComponents.add(Component.translatableWithFallback("tooltip.bottle_of_extraction.usage", "Drink to extract all effects into single potion").withStyle(ChatFormatting.GOLD));
     }
 }
