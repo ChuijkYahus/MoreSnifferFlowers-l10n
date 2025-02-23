@@ -1,21 +1,16 @@
 package net.abraxator.moresnifferflowers.data.loot;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.blocks.BondripiaBlock;
 import net.abraxator.moresnifferflowers.blocks.BonmeeliaBlock;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -310,9 +305,15 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
                                 .setProperties(StatePropertiesPredicate.Builder.properties()
                                         .hasProperty(ModStateProperties.CENTER, true)))
                 ));
-        
-        dropSelf(ModBlocks.SOUP_CAULDRON.get());
-    }
+
+        add(ModBlocks.SOUP_CAULDRON.get(),
+                LootTable.lootTable()
+                        .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(ModBlocks.SOUP_CAULDRON.get().asItem()))
+                                .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.SOUP_CAULDRON.get())
+                                        .setProperties(StatePropertiesPredicate.Builder.properties()
+                                                .hasProperty(ModStateProperties.ENTITY, true)))
+                        ));    }
 
     private LootTable.Builder giantCropLoot(Item crop, Item cropressed, Item special, Item piece, Item trim) {
         return LootTable.lootTable()

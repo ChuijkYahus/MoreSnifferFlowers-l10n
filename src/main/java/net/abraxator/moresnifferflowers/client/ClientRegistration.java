@@ -3,10 +3,10 @@ package net.abraxator.moresnifferflowers.client;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.client.gui.screen.RebrewingStandScreen;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
+import net.abraxator.moresnifferflowers.client.model.block.BerootCauldronModel;
 import net.abraxator.moresnifferflowers.client.model.block.BondripiaModel;
 import net.abraxator.moresnifferflowers.client.model.block.CropressorModel;
 import net.abraxator.moresnifferflowers.client.model.block.GiantCropModels;
-import net.abraxator.moresnifferflowers.client.model.block.SoupCauldronModel;
 import net.abraxator.moresnifferflowers.client.model.entity.BoblingModel;
 import net.abraxator.moresnifferflowers.client.model.entity.CorruptedProjectileModel;
 import net.abraxator.moresnifferflowers.client.model.entity.DragonflyModel;
@@ -69,7 +69,7 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModModelLayerLocations.GIANT_WHEAT, GiantCropModels::createWheatLayer);
         event.registerLayerDefinition(ModModelLayerLocations.CROPRESSOR, CropressorModel::createBodyLayer);
         event.registerLayerDefinition(ModModelLayerLocations.BONDRIPIA, BondripiaModel::createBodyLayer);
-        event.registerLayerDefinition(ModModelLayerLocations.SOUP_CAULDRON, SoupCauldronModel::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayerLocations.BEROOT_CAULDRON, BerootCauldronModel::createBodyLayer);
     }
     
     @SubscribeEvent

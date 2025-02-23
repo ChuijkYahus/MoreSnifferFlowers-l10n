@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.events;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
+import net.abraxator.moresnifferflowers.blockentities.SoupCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
@@ -28,9 +29,11 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -122,6 +125,16 @@ public class ForgeEvents {
         if(level.getBlockEntity(pos) instanceof GiantCropBlockEntity entity) {
             BlockPos.withinManhattanStream(entity.center, 1, 1, 1).forEach(blockPos -> {
                if (level.getBlockState(blockPos).is(ModTags.ModBlockTags.GIANT_CROPS)) level.destroyBlock(blockPos, true);
+            });
+        }
+
+        if(level.getBlockEntity(pos) instanceof SoupCauldronBlockEntity entity && level.getBlockState(entity.center).getBlock().equals(ModBlocks.SOUP_CAULDRON.get())) {
+            var entityState = level.getBlockState(entity.center);
+            var entityPos = entity.center;
+            Direction direction = entityState.getValue(HorizontalDirectionalBlock.FACING).getOpposite();
+            BlockPos relative = entityPos.relative(direction).relative(direction.getClockWise()).above();
+            BlockPos.betweenClosedStream(new AABB(entityPos, relative)).forEach(blockPos -> {
+                if (level.getBlockState(blockPos).is(ModBlocks.SOUP_CAULDRON.get())) level.destroyBlock(blockPos, true);
             });
         }
         
