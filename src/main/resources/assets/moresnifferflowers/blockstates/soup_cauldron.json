@@ -1,10 +1,7 @@
 {
   "variants": {
-    "entity=false": {
+    "": {
       "model": "moresnifferflowers:block/giant_crop"
-    },
-    "entity=true": {
-      "model": "moresnifferflowers:block/vivicus_stairs"
     }
   }
 }

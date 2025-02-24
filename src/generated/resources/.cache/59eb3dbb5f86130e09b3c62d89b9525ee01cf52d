@@ -1,4 +1,4 @@
-// 1.20.1	2025-02-19T15:08:18.2256381	Loot Tables
+// 1.20.1	2025-02-23T22:54:18.351424	Loot Tables
 3d52630c5d3ea1bc964bfbca9110a18bb946ee46 data/moresnifferflowers/loot_tables/blocks/acidripia.json
 16882dced81963aacd1b4d32ed8e0ca33a618998 data/moresnifferflowers/loot_tables/blocks/acid_filled_cauldron.json
 e37d1e0a9608760103f1f41ea813a4050dadc2fc data/moresnifferflowers/loot_tables/blocks/amber_block.json
@@ -66,7 +66,7 @@ da92642078acdf6e1a56f9f083406fada7dd7e38 data/moresnifferflowers/loot_tables/blo
 869ac87169cb031b68c352948b2195ae71d85f19 data/moresnifferflowers/loot_tables/blocks/potted_vivicus_sapling.json
 dd3b26c506feecf14cc7130816321481883f724d data/moresnifferflowers/loot_tables/blocks/rebrewing_stand_bottom.json
 d9de98fedc8ef8c767e2615eefec9fa6c8f0650d data/moresnifferflowers/loot_tables/blocks/rebrewing_stand_top.json
-f1fdd2b3e8c9115b70d0904baab88546ef216494 data/moresnifferflowers/loot_tables/blocks/soup_cauldron.json
+add90df28c3fda35352d2af1d4e12c76590ce183 data/moresnifferflowers/loot_tables/blocks/soup_cauldron.json
 f759a7ffa7cfb207d4f14b87921d508db7942cae data/moresnifferflowers/loot_tables/blocks/stripped_corrupted_log.json
 280dedd674ca54ed97690cd53aea39284809b8af data/moresnifferflowers/loot_tables/blocks/stripped_corrupted_wood.json
 ee052a5b63f9af7a9a5f943050895d50448be34a data/moresnifferflowers/loot_tables/blocks/stripped_vivicus_log.json

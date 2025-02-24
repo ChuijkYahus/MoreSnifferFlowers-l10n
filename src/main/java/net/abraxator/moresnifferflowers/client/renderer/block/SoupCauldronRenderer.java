@@ -2,8 +2,8 @@ package net.abraxator.moresnifferflowers.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.SoupCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
@@ -21,19 +21,20 @@ public class SoupCauldronRenderer<T extends SoupCauldronBlockEntity> implements 
     private final ModelPart model;
 
     public SoupCauldronRenderer(BlockEntityRendererProvider.Context context) {
-        this.model = context.bakeLayer(ModModelLayerLocations.SOUP_CAULDRON);
+        this.model = context.bakeLayer(ModModelLayerLocations.BEROOT_CAULDRON);
     }
 
     @Override
     public void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         Direction direction = blockEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
-        Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/soup_cauldron"));
+        Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/beroot_cauldron"));
         VertexConsumer consumer = TEXTURE.buffer(buffer, RenderType::entityCutout);
         
         if(blockEntity.getBlockState().getValue(ModStateProperties.ENTITY)) {
             poseStack.pushPose();
-            poseStack.translate(-0.5F, 1.5F, 1.5F);
-            poseStack.mulPose(direction.getRotation());
+            poseStack.translate(-0.5, 1.5, 0.5);
+            poseStack.mulPose(Axis.XN.rotationDegrees(180));
+            // poseStack.mulPose(direction.getRotation());
             model.render(poseStack, consumer, packedLight, packedOverlay);
             poseStack.popPose();
         }

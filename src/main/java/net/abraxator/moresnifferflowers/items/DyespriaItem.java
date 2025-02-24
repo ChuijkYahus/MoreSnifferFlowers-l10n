@@ -9,8 +9,6 @@ import net.abraxator.moresnifferflowers.components.EntityDistanceComparator;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.ModTags;
-import net.abraxator.moresnifferflowers.networking.DyespriaDisplayModeChangePacket;
-import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -39,19 +37,20 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.PacketDistributor;
 import org.apache.commons.lang3.text.WordUtils;
-import org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.*;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class DyespriaItem extends BlockItem implements Colorable {
     public DyespriaItem(Properties pProperties) {
@@ -213,33 +212,36 @@ public class DyespriaItem extends BlockItem implements Colorable {
     public static boolean checkDyedBlock(BlockState blockState) {
         return blockState.is(ModTags.ModBlockTags.DYED);
     }
-    
+
     private void dyeNonColorableBlock(BlockState blockState, BlockPos blockPos, DyeColor newColor, Level level) {
         if(!checkDyedBlock(blockState)) {
             return;
         }
-        
+
         ResourceLocation location = BuiltInRegistries.BLOCK.getKey(blockState.getBlock());
         String modId = location.getNamespace();
         String blockId = location.getPath();
-        
-        if(blockId.equals("candle") || blockId.equals("shulker_box")) {
+
+        if(blockId.equals("candle") || blockId.equals("shulker_box") || blockId.equals("terracotta")) {
             blockId = "white_" + blockId;
         }
-        
-        String validColorName = "(?:white|light_gray|gray|black|brown|red|orange|yellow|lime|green|cyan|light_blue|blue|purple|magenta|pink)";
+        if (blockId.equals("glass") || blockId.equals("glass_pane") ){
+            blockId = "white_stained_" + blockId;
+        }
+
+        String validColorName = "white|light_gray|gray|black|brown|red|orange|yellow|lime|green|cyan|light_blue|blue|purple|magenta|pink";
         String finalBlockName = blockId.replaceFirst(validColorName, newColor.getName());
         Block finalBlock = BuiltInRegistries.BLOCK.get(new ResourceLocation(modId, finalBlockName));
         BlockState finalBlockState = finalBlock.defaultBlockState();
-        
+
         BlockEntity originalShulker = level.getBlockEntity(blockPos);
         CompoundTag shulkerData = null;
-        
+
         if(originalShulker instanceof ShulkerBoxBlockEntity entity) {
             shulkerData = entity.saveWithoutMetadata();
         }
-        
-        level.setBlockAndUpdate(blockPos, copyAllBlockStateProperties(blockState, finalBlockState));
+
+        if (finalBlock != Blocks.AIR) level.setBlockAndUpdate(blockPos, copyAllBlockStateProperties(blockState, finalBlockState));
 
         if (shulkerData != null && level.getBlockEntity(blockPos) instanceof ShulkerBoxBlockEntity newShulkerBox) {
             newShulkerBox.loadFromTag(shulkerData);

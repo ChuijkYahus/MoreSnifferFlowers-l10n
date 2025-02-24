@@ -19,11 +19,14 @@ import net.abraxator.moresnifferflowers.blocks.xbush.GarbushBlockLower;
 import net.abraxator.moresnifferflowers.blocks.xbush.GarbushBlockUpper;
 import net.abraxator.moresnifferflowers.items.GiantCropItem;
 import net.abraxator.moresnifferflowers.worldgen.configurations.tree.corrupted.CorruptedTreeGrower;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
@@ -141,7 +144,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> POTTED_CORRUPTED_SAPLING = registerBlockNoItem("potted_corrupted_sapling", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, CORRUPTED_SAPLING, BlockBehaviour.Properties.copy(Blocks.FLOWER_POT)));
     public static final RegistryObject<Block> POTTED_VIVICUS_SAPLING = registerBlockNoItem("potted_vivicus_sapling", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, VIVICUS_SAPLING, BlockBehaviour.Properties.copy(Blocks.FLOWER_POT)));
 
-    public static final RegistryObject<Block> SOUP_CAULDRON = registerBlockWithItem("soup_cauldron", () -> new SoupCauldronBlock(BlockBehaviour.Properties.copy(Blocks.ANVIL)));
+    public static final RegistryObject<Block> SOUP_CAULDRON = registerBlockWithItem("soup_cauldron", () -> new SoupCauldronBlock(BlockBehaviour.Properties.copy(Blocks.ANVIL).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
     
     private static <T extends Block> RegistryObject<T> registerBlockNoItem(String name, Supplier<T> block) {
         return BLOCKS.register(name, block);
@@ -175,5 +178,9 @@ public class ModBlocks {
     
     public static Block stair(Block pBaseBlock) {
         return new StairBlock(pBaseBlock.defaultBlockState(), BlockBehaviour.Properties.copy(pBaseBlock));
+    }
+
+    private static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) {
+        return false;
     }
 }

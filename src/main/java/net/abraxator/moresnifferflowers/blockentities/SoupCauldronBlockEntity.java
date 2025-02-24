@@ -3,30 +3,39 @@ package net.abraxator.moresnifferflowers.blockentities;
 import net.abraxator.moresnifferflowers.init.ModBlockEntities;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModMobEffects;
-import net.abraxator.moresnifferflowers.nutrition.*;
+import net.abraxator.moresnifferflowers.nutrition.Nutrition;
+import net.abraxator.moresnifferflowers.nutrition.NutritionEntry;
+import net.abraxator.moresnifferflowers.nutrition.NutritionStack;
+import net.abraxator.moresnifferflowers.nutrition.NutritionType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffectUtil;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class SoupCauldronBlockEntity extends ModBlockEntity {
     public boolean beetroot = false;
     public List<NutritionStack> stacks = new ArrayList<>();
-    
+    public BlockPos center;
+
+
     public SoupCauldronBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.SOUP_CAULDRON.get(), pPos, pBlockState);
+        this.center = this.getBlockPos();
     }
     
     public void craft() {
@@ -117,6 +126,7 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
         super.saveAdditional(tag);
         tag.putBoolean("beetroot", this.beetroot);
         tag.putInt("itemCount", stacks.size());
+        tag.put("center", NbtUtils.writeBlockPos(this.center));
         for (int i = 0; i < stacks.size(); i++) {
             tag.put("stack" + i, stacks.get(i).serialize(new CompoundTag()));
         }
@@ -127,9 +137,23 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
         super.load(tag);
         this.stacks = new ArrayList<>();
         this.beetroot = tag.getBoolean("beetroot");
+        this.center = NbtUtils.readBlockPos(tag.getCompound("center"));
         for (int i = 0; i < tag.getInt("itemCount"); i++) {
             this.stacks.add(NutritionStack.deserialize(tag.getCompound("stack" + i)));
         }
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        var tag = new CompoundTag();
+        saveAdditional(tag);
+        return tag;
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
     
     @Override
