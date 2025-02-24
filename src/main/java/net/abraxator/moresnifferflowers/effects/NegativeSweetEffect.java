@@ -3,8 +3,8 @@ package net.abraxator.moresnifferflowers.effects;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 
-public class MidEffect extends MobEffect {
-    public MidEffect(MobEffectCategory category, int color) {
+public class NegativeSweetEffect extends MobEffect {
+    protected NegativeSweetEffect(MobEffectCategory category, int color) {
         super(category, color);
     }
 }

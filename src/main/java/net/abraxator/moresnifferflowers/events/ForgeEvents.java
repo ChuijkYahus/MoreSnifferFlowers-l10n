@@ -18,6 +18,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
@@ -33,7 +34,9 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.VanillaGameEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -46,6 +49,34 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
+    @SubscribeEvent
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        Player player = event.player;
+        
+        if (event.phase == TickEvent.Phase.END && player.hasEffect(ModMobEffects.NEGATIVE_SWEET.get())) {
+            MobEffectInstance instance = player.getEffect(ModMobEffects.NEGATIVE_SWEET.get());
+            int amplifier = instance.getAmplifier();
+            
+            if(player.getRandom().nextDouble() > 0.01 * amplifier) {
+                return;
+            }
+            
+            if(player.getRandom().nextBoolean()) {
+                Vec3 oldMovement = player.getDeltaMovement();
+                Vec3 laggyMovement = new Vec3(-oldMovement.x * (0.5 * amplifier), oldMovement.y, -oldMovement.z * (0.8 * amplifier));
+
+                player.setDeltaMovement(laggyMovement);
+            } else {
+                Vec3 jitter = new Vec3(
+                        (Math.random() - 0.5) * (0.2 * amplifier),
+                        0,
+                        (Math.random() - 0.5) * (0.2 * amplifier)
+                );
+                player.setDeltaMovement(player.getDeltaMovement().add(jitter));
+            }
+        }
+    }
+
     @SubscribeEvent
     public static void onAddReloadListener(AddReloadListenerEvent event) {
         event.addListener(new NutritionLoader());

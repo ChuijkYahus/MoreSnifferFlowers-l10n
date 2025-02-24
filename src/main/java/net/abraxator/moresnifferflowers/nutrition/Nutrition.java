@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.nutrition;
 
 import com.mojang.datafixers.util.Either;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -30,7 +31,7 @@ public class Nutrition {
     }
     
     public static Nutrition getNutritionForItem(Item item) {
-        for (Nutrition nutrition : NutritionLoader.allNutritions) {
+        for (Nutrition nutrition : NutritionLoader.modNutritions.get(BuiltInRegistries.ITEM.getKey(item).getNamespace())) {
             if (nutrition.getItem() == item) {
                 return nutrition;
             }

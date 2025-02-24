@@ -98,7 +98,7 @@ public class RebrewingStandBlockEntity extends BaseContainerBlockEntity {
         var ingredientStack = inv.get(2);
         var potionBits = getPotionBits();
         this.cost = 0;
-
+        
         if(fuel < MAX_FUEL && fuelStack.is(ModItems.CROPRESSED_NETHERWART.get())) {
             fuel++;
             fuelStack.shrink(1);

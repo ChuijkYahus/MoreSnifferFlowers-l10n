@@ -1,5 +1,7 @@
 package net.abraxator.moresnifferflowers.items;
 
+import net.abraxator.moresnifferflowers.client.gui.screen.cookbook.CookbookScreen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -16,7 +18,9 @@ public class CookbookItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        player.openItemGui(itemstack, hand);
+        if(level.isClientSide) {
+            Minecraft.getInstance().setScreen(new CookbookScreen());
+        }
         player.awardStat(Stats.ITEM_USED.get(this));
         return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
     }
