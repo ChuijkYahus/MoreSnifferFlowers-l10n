@@ -1,6 +1,5 @@
 package net.abraxator.moresnifferflowers.client.gui.screen.cookbook;
 
-import com.google.common.collect.Lists;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.nutrition.Nutrition;
 import net.abraxator.moresnifferflowers.nutrition.NutritionEntry;
@@ -8,20 +7,14 @@ import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.checkerframework.checker.units.qual.C;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class CookbookScreen extends Screen {
     private static final ResourceLocation TEXTURE = MoreSnifferFlowers.loc("textures/gui/cookbook.png");
@@ -45,8 +38,11 @@ public class CookbookScreen extends Screen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         int x = (this.width - 272) / 2;
         int y = (this.height - 180) / 2;
+        guiGraphics.pose().scale(2,1,1);
         this.renderBackground(guiGraphics);
-        guiGraphics.blit(TEXTURE, x, y, 0, 0, 272, 180);
+        guiGraphics.blit(TEXTURE, x/2, y, 0, 0, 272/2, 180);
+        guiGraphics.pose().scale(0.5F,1,1);
+
         if(page == Page.CONTENTS) {
             this.renderContents(guiGraphics, mouseX, mouseY, x, y);
         } else {

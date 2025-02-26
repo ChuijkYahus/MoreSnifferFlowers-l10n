@@ -48,86 +48,28 @@ public class ForgeEvents {
         event.addListener(new NutritionLoader());
     }
 
-
-
     @SubscribeEvent
-
-
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-
-
         Player player = event.player;
-
-
-
-
-
         if (event.phase == TickEvent.Phase.END && player.hasEffect(ModMobEffects.NEGATIVE_SWEET.get())) {
-
-
             MobEffectInstance instance = player.getEffect(ModMobEffects.NEGATIVE_SWEET.get());
-
-
             int amplifier = instance.getAmplifier();
-
-
-
-
-
             if(player.getRandom().nextDouble() > 0.01 * amplifier) {
-
-
                 return;
-
-
             }
-
-
-
-
-
             if(player.getRandom().nextBoolean()) {
-
-
                 Vec3 oldMovement = player.getDeltaMovement();
-
-
                 Vec3 laggyMovement = new Vec3(-oldMovement.x * (0.5 * amplifier), oldMovement.y, -oldMovement.z * (0.8 * amplifier));
-
-
-
-
-
                 player.setDeltaMovement(laggyMovement);
-
-
             } else {
-
-
                 Vec3 jitter = new Vec3(
-
-
                         (Math.random() - 0.5) * (0.2 * amplifier),
-
-
                         0,
-
-
                         (Math.random() - 0.5) * (0.2 * amplifier)
-
-
                 );
-
-
                 player.setDeltaMovement(player.getDeltaMovement().add(jitter));
-
-
             }
-
-
         }
-
-
     }
     
     @SubscribeEvent
