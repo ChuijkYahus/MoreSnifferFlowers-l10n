@@ -105,6 +105,7 @@ public class ModCreativeTabs {
                 output.accept(ModBlocks.CURED_GRASS_BLOCK.get());
             
                 output.accept(ModBlocks.SOUP_CAULDRON.get());
+                output.accept(ModItems.COOK_BOOK.get());
                 
                 output.accept(ModBlocks.VIVICUS_LOG.get());
                 output.accept(ModBlocks.VIVICUS_WOOD.get());
