@@ -5,11 +5,13 @@ import com.mojang.logging.LogUtils;
 import net.abraxator.moresnifferflowers.compat.quark.OtherModEvents;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
+import net.abraxator.moresnifferflowers.nutrition.capability.NutritionCapabilityHandler;
 import net.abraxator.moresnifferflowers.worldgen.configurations.ModTreeDecoratorTypes;
 import net.abraxator.moresnifferflowers.worldgen.configurations.ModTrunkPlacerTypes;
 import net.abraxator.moresnifferflowers.worldgen.feature.ModFeatures;
 import net.abraxator.moresnifferflowers.worldgen.structures.ModStructureTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ComposterBlock;
@@ -33,6 +35,7 @@ public class MoreSnifferFlowers {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         
         modEventBus.addListener(this::commonSetup);
+        MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, NutritionCapabilityHandler::attachCapibility);
         
         ModItems.ITEMS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);

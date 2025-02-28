@@ -4,6 +4,7 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.nutrition.Nutrition;
 import net.abraxator.moresnifferflowers.nutrition.NutritionEntry;
 import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
+import net.abraxator.moresnifferflowers.nutrition.NutritionType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -11,27 +12,34 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.ModList;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CookbookScreen extends Screen {
     private static final ResourceLocation TEXTURE = MoreSnifferFlowers.loc("textures/gui/cookbook.png");
+    protected static final ResourceLocation RENDERABLES = MoreSnifferFlowers.loc("textures/gui/cookbook_renderables.png");
     private final int ROWS = 8;
     private final int COLUMNS = 5;
-    private final int DISPLAYED_RECIPES = ROWS * COLUMNS;
+    private final int PAGE_SIZE = ROWS * COLUMNS;
+    private final int SCROLLBAR_HEIGHT = 142;
+    private final int SCROLLER_HEIGHT = 15;
     private final List<String> mods;
+    private final List<Item> unlocked;
     private Page page = Page.CONTENTS;
-    private String modid = "moresnifferflowers";
+    private NutritionType type;
     private List<Nutrition> nutritions = new ArrayList<>();
     private float scrollOffs;
     private int startIndex;
     private boolean isScrolling;
     
-    public CookbookScreen() {
+    public CookbookScreen(List<Item> unlocked) {
         super(Component.empty());
         this.mods = new ArrayList<>(NutritionLoader.modNutritions.keySet());
+        this.unlocked = unlocked;
     }
 
     @Override
@@ -66,30 +74,38 @@ public class CookbookScreen extends Screen {
     }
     
     private void renderItems(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
-        int xPos = x + 19;
-        int yPos = y + 16;
+        int xPos = 18;
+        int yPos = 16;
+        guiGraphics.blit(RENDERABLES, x + 17, y + 15, 25, 0, 111, 144);
         
-        for (int i = startIndex; i < startIndex + DISPLAYED_RECIPES && i < this.nutritions.size(); i++) {
-            addRenderableWidget(new ItemWidget(xPos, yPos, 16, 16, Component.empty(), nutritions.get(i), this));
+        for (int i = startIndex + 1; i < startIndex + 1 + PAGE_SIZE && i < this.nutritions.size() + 1; i++) {
+            addRenderableWidget(new ItemWidget(x + xPos, y + yPos, 16, 16, Component.empty(), nutritions.get(i - 1), this));
 
             if (i % COLUMNS != 0) {
                 xPos += 18;
             } else {
                 yPos += 18;
+                xPos = 18;
             }
         }
+        
+        boolean scrollable = this.nutritions.size() > PAGE_SIZE;
+        int scrollAmount = (int) ((SCROLLBAR_HEIGHT - SCROLLER_HEIGHT) * this.scrollOffs);
+        guiGraphics.blit(RENDERABLES, x + 115, y + 16 + scrollAmount, scrollable ? 0 : 12, 0, 12, 15);
     }
 
     private void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
-        for (int i = 1; i < mods.size() + 1; i++) {
-            this.addRenderableWidget(Button.builder(Component.literal(mods.get(i - 1)), button -> {
-                modid = button.getMessage().getString().replaceAll("literal\\{|}", "");
-                this.nutritions = NutritionLoader.modNutritions.get(modid);
-                this.turnPage(Page.ITEMS);
-            }).pos(x + 30, y + i * 10).size(50, 10).build());
+        for (int i = 0; i < NutritionType.values().length; i++) {
+            NutritionType type = NutritionType.byId(i);
+            this.addRenderableWidget(new TypeWidget(x + 50, 18 * i + 5, type, 18, 18, Component.literal(type.name), this));
         }
     }
-
+    
+    public void pageToItems(NutritionType type) {
+        this.nutritions = NutritionLoader.typeNutritions.get(type);
+        this.turnPage(Page.ITEMS);
+    }
+    
     private void turnPage(Page page) {
         this.page = page;
         this.clearWidgets();
@@ -112,11 +128,15 @@ public class CookbookScreen extends Screen {
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if(this.page == Page.ITEMS && this.isScrolling) {
             int y = (this.height - 180) / 2;
-            int i = y + 15;
-            int j = i + 72;
-            this.scrollOffs = ((float)mouseY - (float)i - 7.5F) / ((float)(j - i) - 15.0F);
+            int i = y + 16;
+            int j = i + 157;
+            int totalRows = Math.max(0, (this.nutritions.size() + 4) / 5 - ROWS);
+
+            this.scrollOffs = ((float) mouseY - (float) i) / ((float)(j - i) - 15.0F);
             this.scrollOffs = Mth.clamp(this.scrollOffs, 0.0F, 1.0F);
-            this.startIndex = (int)((double)(this.scrollOffs * (float)this.startIndex) + 0.5D) * 5;
+            this.startIndex = (int) (this.scrollOffs * totalRows) * 5;
+            
+            clearWidgets();
             return true;
         }
         
@@ -125,12 +145,20 @@ public class CookbookScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        if(this.getTotalRowCount() > ROWS) {
-            float f = (float)delta / (float)this.getTotalRowCount();
+        int totalItems = this.nutritions.size();
+        int maxRows = Math.max(1, (int) Math.ceil((double) totalItems / COLUMNS));
+        int scrollableRows = Math.max(0, maxRows - ROWS);
+
+        if (scrollableRows > 0) {
+            float f = (float) delta / (float) scrollableRows;
             this.scrollOffs = Mth.clamp(this.scrollOffs - f, 0.0F, 1.0F);
-            this.startIndex = (int) ((double) (this.scrollOffs * this.getTotalRowCount()) + 0.5) * COLUMNS;
+            
+            int maxStartIndex = (maxRows - ROWS) * COLUMNS;
+            this.startIndex = Math.min((int)((this.scrollOffs * scrollableRows) * COLUMNS), maxStartIndex);
+
+            clearWidgets();
         }
-        
+
         return true;
     }
     
