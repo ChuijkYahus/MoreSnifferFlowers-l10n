@@ -14,19 +14,25 @@ import javax.security.auth.x500.X500Principal;
 public class ItemWidget extends AbstractWidget {
     private final Nutrition nutrition;
     private final CookbookScreen screen;
-
-    public ItemWidget(int x, int y, int width, int height, Component message, Nutrition nutrition, CookbookScreen screen) {
-        super(x, y, width, height, message);
+    private final boolean unlocked;
+    
+    public ItemWidget(int x, int y, Component message, Nutrition nutrition, CookbookScreen screen) {
+        super(x, y, 16, 16, message);
         this.nutrition = nutrition;
         this.screen = screen;
+        this.unlocked = !nutrition.isEmpty();
     }
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        guiGraphics.renderItem(nutrition.getItem().getDefaultInstance(), this.getX(), this.getY());
-        
-        if(this.isHovered()) {
-            screen.renderNutritionInfo(guiGraphics, nutrition);
+        if (unlocked) {
+            guiGraphics.renderItem(nutrition.getItem().getDefaultInstance(), this.getX(), this.getY());
+
+            if (this.isHovered()) {
+                screen.renderNutritionInfo(guiGraphics, nutrition);
+            }
+        } else {
+            guiGraphics.blit(CookbookScreen.RENDERABLES, this.getX(), this.getY(), 156, 0, 16, 16);
         }
     }
 

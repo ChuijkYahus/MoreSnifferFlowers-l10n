@@ -1,6 +1,8 @@
 package net.abraxator.moresnifferflowers.items;
 
 import net.abraxator.moresnifferflowers.client.gui.screen.cookbook.CookbookScreen;
+import net.abraxator.moresnifferflowers.nutrition.capability.NutritionCapability;
+import net.abraxator.moresnifferflowers.nutrition.capability.NutritionCapabilityHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -9,6 +11,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 public class CookbookItem extends Item {
     public CookbookItem(Properties properties) {
@@ -19,7 +24,9 @@ public class CookbookItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         if(level.isClientSide) {
-            Minecraft.getInstance().setScreen(new CookbookScreen());
+            Minecraft.getInstance().setScreen(new CookbookScreen(player.getCapability(NutritionCapabilityHandler.CAPABILITY)
+                    .map(NutritionCapability::getItems)
+                    .orElse(new HashSet<>())));
         }
         player.awardStat(Stats.ITEM_USED.get(this));
         return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());

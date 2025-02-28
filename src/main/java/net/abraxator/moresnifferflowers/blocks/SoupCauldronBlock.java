@@ -47,7 +47,7 @@ public class SoupCauldronBlock extends HorizontalDirectionalBlock implements Mod
                 .findFirst().orElse(null);
 
         if(entityPos != null && level.getBlockEntity(entityPos) instanceof SoupCauldronBlockEntity blockEntity) {
-            blockEntity.addItem(player.getItemInHand(hand));
+            blockEntity.addItem(player.getItemInHand(hand), player);
             
             return InteractionResult.sidedSuccess(level.isClientSide);
         }

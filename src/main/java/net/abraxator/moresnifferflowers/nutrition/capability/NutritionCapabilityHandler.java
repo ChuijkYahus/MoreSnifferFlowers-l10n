@@ -13,23 +13,31 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.security.DrbgParameters;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class NutritionCapabilityHandler implements NutritionCapability {
     public static final Capability<NutritionCapability> CAPABILITY = CapabilityManager.get(new CapabilityToken() {});
     
-    private List<Item> items;;
+    private Set<Item> items;;
     
     @Override
-    public List<Item> getItems() {
+    public Set<Item> getItems() {
         return this.items;
     }
 
     @Override
-    public void setItems(List<Item> items) {
+    public void setItems(Set<Item> items) {
         this.items = items;
+    }
+
+    @Override
+    public void addItem(Item item) {
+        var set = getItems();
+        set.add(item);
+        setItems(set);
     }
 
     @Override
@@ -46,7 +54,7 @@ public class NutritionCapabilityHandler implements NutritionCapability {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        items = new ArrayList<>();
+        items = new HashSet<>();
         
         for (int i = 0; i < nbt.getInt("size"); i++) {
             ResourceLocation location = ResourceLocation.of(nbt.getString("unlocked" + i), ':');

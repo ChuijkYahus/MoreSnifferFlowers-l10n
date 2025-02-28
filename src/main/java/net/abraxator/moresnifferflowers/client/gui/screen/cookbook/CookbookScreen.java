@@ -18,6 +18,7 @@ import net.minecraftforge.fml.ModList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class CookbookScreen extends Screen {
     private static final ResourceLocation TEXTURE = MoreSnifferFlowers.loc("textures/gui/cookbook.png");
@@ -28,7 +29,7 @@ public class CookbookScreen extends Screen {
     private final int SCROLLBAR_HEIGHT = 142;
     private final int SCROLLER_HEIGHT = 15;
     private final List<String> mods;
-    private final List<Item> unlocked;
+    private final Set<Item> unlocked;
     private Page page = Page.CONTENTS;
     private NutritionType type;
     private List<Nutrition> nutritions = new ArrayList<>();
@@ -36,7 +37,7 @@ public class CookbookScreen extends Screen {
     private int startIndex;
     private boolean isScrolling;
     
-    public CookbookScreen(List<Item> unlocked) {
+    public CookbookScreen(Set<Item> unlocked) {
         super(Component.empty());
         this.mods = new ArrayList<>(NutritionLoader.modNutritions.keySet());
         this.unlocked = unlocked;
@@ -79,7 +80,11 @@ public class CookbookScreen extends Screen {
         guiGraphics.blit(RENDERABLES, x + 17, y + 15, 25, 0, 111, 144);
         
         for (int i = startIndex + 1; i < startIndex + 1 + PAGE_SIZE && i < this.nutritions.size() + 1; i++) {
-            addRenderableWidget(new ItemWidget(x + xPos, y + yPos, 16, 16, Component.empty(), nutritions.get(i - 1), this));
+            Nutrition nutrition = nutritions.get(i - 1);
+            boolean unlocked = this.unlocked.contains(nutrition.getItem());
+            
+            nutrition = unlocked ? nutrition : Nutrition.EMPTY;
+            addRenderableWidget(new ItemWidget(x + xPos, y + yPos, Component.empty(), nutrition, this));
 
             if (i % COLUMNS != 0) {
                 xPos += 18;

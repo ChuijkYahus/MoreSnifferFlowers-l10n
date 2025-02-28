@@ -7,13 +7,15 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 import net.minecraftforge.common.util.INBTSerializable;
 
-import java.util.List;
+import java.util.Set;
 
 @AutoRegisterCapability
 public interface NutritionCapability extends INBTSerializable<CompoundTag> {
     ResourceLocation ID = MoreSnifferFlowers.loc("unlocked_nutrition");
     
-    List<Item> getItems();
+    Set<Item> getItems();
     
-    void setItems(List<Item> items);
+    void setItems(Set<Item> items);
+    
+    void addItem(Item item);
 }

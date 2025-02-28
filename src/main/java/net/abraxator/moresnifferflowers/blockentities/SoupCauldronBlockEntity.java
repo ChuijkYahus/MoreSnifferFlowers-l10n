@@ -7,6 +7,7 @@ import net.abraxator.moresnifferflowers.nutrition.Nutrition;
 import net.abraxator.moresnifferflowers.nutrition.NutritionEntry;
 import net.abraxator.moresnifferflowers.nutrition.NutritionStack;
 import net.abraxator.moresnifferflowers.nutrition.NutritionType;
+import net.abraxator.moresnifferflowers.nutrition.capability.NutritionCapabilityHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -18,7 +19,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PlaceOnWaterBlockItem;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -38,7 +42,7 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
         this.center = this.getBlockPos();
     }
     
-    public void craft() {
+    public void craft(Player player) {
         Map<NutritionType, Integer> map = new HashMap<>();
         ItemStack soup = ModItems.GIANT_SOUP.get().getDefaultInstance();
         MobEffect mobEffect = null;
@@ -68,6 +72,11 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
         
         soup.setTag(tag);
         ItemEntity entity = new ItemEntity(this.level, getMiddle().x, getMiddle().y, getMiddle().z, soup);
+        player.getCapability(NutritionCapabilityHandler.CAPABILITY).ifPresent(nutritionCapability -> {
+            for (NutritionStack stack : this.stacks) {
+                nutritionCapability.addItem(stack.stack.getItem());
+            }
+        });
         this.level.addFreshEntity(entity);
     }
     
@@ -79,23 +88,23 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
         return (max - min) <= tolerance;
     }
     
-    public void addItem(ItemStack itemStack) {
+    public void addItem(ItemStack itemStack, Player player) {
         if(itemStack.is(ModItems.CROPRESSED_BEETROOT.get())) {
             addBeetroot();
         } else if (this.stacks.size() < 5) {
-            addIngredient(itemStack);
+            addIngredient(itemStack, player);
         }
         
         itemStack.shrink(1);
     }
     
-    private void addIngredient(ItemStack itemStack) {
+    private void addIngredient(ItemStack itemStack, Player player) {
         Nutrition nutrition = Nutrition.getNutritionForItem(itemStack.getItem());
 
         this.stacks.add(new NutritionStack(itemStack, nutrition));
 
         if(this.stacks.size() == 5) {
-            craft();
+            craft(player);
         }
     }
     

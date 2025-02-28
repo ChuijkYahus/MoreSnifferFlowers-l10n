@@ -39,4 +39,8 @@ public class Nutrition {
         
         return EMPTY;
     }
+    
+    public boolean isEmpty() {
+        return this.equals(EMPTY);
+    }
 }
