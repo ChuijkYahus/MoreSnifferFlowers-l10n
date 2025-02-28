@@ -75,6 +75,6 @@ public class GiantCropBlockEntity extends ModBlockEntity {
 
     @Override
     public AABB getRenderBoundingBox() {
-        return INFINITE_EXTENT_AABB;
+        return AABB.ofSize(this.center.getCenter(), 3, 3, 3);
     }
 }

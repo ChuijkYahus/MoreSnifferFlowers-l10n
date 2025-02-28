@@ -20,9 +20,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PlaceOnWaterBlockItem;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -167,6 +165,6 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
     
     @Override
     public AABB getRenderBoundingBox() {
-        return AABB.ofSize(this.getBlockPos().getCenter(), 2, 2, 2);
+        return AABB.ofSize(this.center.getCenter(), 3, 3, 3);
     }
 }

@@ -153,7 +153,7 @@ public class ForgeEvents {
         if(level.getBlockEntity(pos) instanceof SoupCauldronBlockEntity entity && level.getBlockState(entity.center).getBlock().equals(ModBlocks.SOUP_CAULDRON.get())) {
             var entityState = level.getBlockState(entity.center);
             var entityPos = entity.center;
-            Direction direction = entityState.getValue(HorizontalDirectionalBlock.FACING).getOpposite();
+            Direction direction = entityState.getValue(HorizontalDirectionalBlock.FACING);
             BlockPos relative = entityPos.relative(direction).relative(direction.getClockWise()).above();
             BlockPos.betweenClosedStream(new AABB(entityPos, relative)).forEach(blockPos -> {
                 if (level.getBlockState(blockPos).is(ModBlocks.SOUP_CAULDRON.get())) level.destroyBlock(blockPos, true);

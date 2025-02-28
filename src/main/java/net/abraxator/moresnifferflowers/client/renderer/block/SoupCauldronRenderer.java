@@ -32,16 +32,17 @@ public class SoupCauldronRenderer<T extends SoupCauldronBlockEntity> implements 
         
         if(blockEntity.getBlockState().getValue(ModStateProperties.ENTITY)) {
             poseStack.pushPose();
-            poseStack.translate(-0.5, 1.5, 0.5);
-            poseStack.mulPose(Axis.XN.rotationDegrees(180));
-            // poseStack.mulPose(direction.getRotation());
+            switch (direction){
+                case EAST -> poseStack.translate(1, 0, 1);
+                case NORTH -> poseStack.translate(1, 0, 0);
+                case SOUTH -> poseStack.translate(0, 0, 1);
+            }
+            poseStack.translate(0, 1.5, 0);
+            poseStack.mulPose(direction.getRotation());
+            poseStack.mulPose(Axis.XN.rotationDegrees(-90));
             model.render(poseStack, consumer, packedLight, packedOverlay);
             poseStack.popPose();
         }
     }
 
-    @Override
-    public boolean shouldRenderOffScreen(T pBlockEntity) {
-        return true;
-    }
 }
