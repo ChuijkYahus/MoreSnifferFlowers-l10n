@@ -45,8 +45,11 @@ public class NutritionCapabilityHandler implements NutritionCapability {
         final CompoundTag tag = new CompoundTag();
         
         tag.putInt("size", items.size());
-        for (int i = 0; i < items.size(); i++) {
-            tag.putString("unlocked" + i, ForgeRegistries.ITEMS.getKey(items.get(i)).toString());
+        
+        int i = 0;
+        for (Item item : items) {
+            tag.putString("unlocked" + i, ForgeRegistries.ITEMS.getKey(item).toString());
+            i++;
         }
         
         return tag;
