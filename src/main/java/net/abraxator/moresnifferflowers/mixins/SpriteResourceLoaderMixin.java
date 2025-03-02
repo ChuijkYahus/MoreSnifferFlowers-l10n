@@ -24,9 +24,10 @@ public abstract class SpriteResourceLoaderMixin {
             at = @At("RETURN"))
     private static void moresnifferflowers$load(ResourceManager resourceManager, ResourceLocation location, CallbackInfoReturnable<SpriteResourceLoader> cir) {
         final List<String> trims = List.of("aroma", "carnage", "tater", "nether_wart", "carotene", "grain", "beat");
-        
-        if (location.getPath().equals("armor_trims")) {
-            for (SpriteSource source : ((SpriteResourceLoaderMixin) (Object) cir.getReturnValue()).getSources()) {
+
+        if (location.equals(new ResourceLocation("minecraft", "armor_trims"))) {
+            SpriteResourceLoader ret = cir.getReturnValue();
+            for (SpriteSource source : ((SpriteResourceLoaderAccessor) ret).getSources()) {
                 if(source instanceof PalettedPermutationsAccessor permutations) {
                     for (String trim : trims) {
                         ResourceLocation trimLocation = MoreSnifferFlowers.loc("trims/models/armor/" + trim);
@@ -37,9 +38,6 @@ public abstract class SpriteResourceLoaderMixin {
             }
         }
     }
-
-    @Accessor("sources")
-    abstract List<SpriteSource> getSources();
 
     @Mixin(PalettedPermutations.class)
     private interface PalettedPermutationsAccessor {
