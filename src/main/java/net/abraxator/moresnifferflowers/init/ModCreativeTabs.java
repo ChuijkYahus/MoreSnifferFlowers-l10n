@@ -85,7 +85,9 @@ public class ModCreativeTabs {
                 output.accept(ModItems.CROPRESSED_BEETROOT.get());
                 output.accept(ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get());
                 output.accept(ModBlocks.GIANT_BEETROOT.get());
-                
+                output.accept(ModBlocks.SOUP_CAULDRON.get());
+                output.accept(ModItems.COOK_BOOK.get());
+
                 output.accept(ModItems.CROPRESSED_NETHERWART.get());
                 output.accept(ModItems.NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE.get());
                 output.accept(ModBlocks.GIANT_NETHERWART.get());
@@ -103,10 +105,7 @@ public class ModCreativeTabs {
                 output.accept(ModBlocks.DECAYED_LOG.get());
                 output.accept(ModBlocks.CORRUPTED_GRASS_BLOCK.get());
                 output.accept(ModBlocks.CURED_GRASS_BLOCK.get());
-            
-                output.accept(ModBlocks.SOUP_CAULDRON.get());
-                output.accept(ModItems.COOK_BOOK.get());
-                
+
                 output.accept(ModBlocks.VIVICUS_LOG.get());
                 output.accept(ModBlocks.VIVICUS_WOOD.get());
                 output.accept(ModBlocks.STRIPPED_VIVICUS_LOG.get());
