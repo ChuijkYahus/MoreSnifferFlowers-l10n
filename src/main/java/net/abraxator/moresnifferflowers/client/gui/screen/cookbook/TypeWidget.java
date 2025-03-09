@@ -5,8 +5,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import org.apache.commons.compress.archivers.zip.X000A_NTFS;
-import org.checkerframework.common.returnsreceiver.qual.This;
 
 public class TypeWidget extends AbstractWidget {
     final NutritionType type;
@@ -20,7 +18,10 @@ public class TypeWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        guiGraphics.blit(CookbookScreen.RENDERABLES, this.getX(), this.getY(), 137, this.type.ordinal() * 18, this.width, this.height);
+        if (isMouseOver(mouseX,mouseY)){
+            guiGraphics.blit(CookbookScreen.RENDERABLES, this.getX(), this.getY(), 200, this.type.ordinal() * 24, this.width, this.height);
+        } else
+            guiGraphics.blit(CookbookScreen.RENDERABLES, this.getX(), this.getY(), 176, this.type.ordinal() * 24, this.width, this.height);
     }
 
     @Override
