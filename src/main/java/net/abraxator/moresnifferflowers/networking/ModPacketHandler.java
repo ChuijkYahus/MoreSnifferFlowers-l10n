@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.networking;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
@@ -18,5 +19,6 @@ public class ModPacketHandler {
         CHANNEL.registerMessage(id++, CorruptedSludgePacket.class, CorruptedSludgePacket::encode, CorruptedSludgePacket::new, CorruptedSludgePacket.Handler::handle);
         CHANNEL.registerMessage(id++, DyespriaDisplayModeChangePacket.class, DyespriaDisplayModeChangePacket::encode, DyespriaDisplayModeChangePacket::new, DyespriaDisplayModeChangePacket.Handler::handle);
         CHANNEL.registerMessage(id++, DyespriaModePacket.class, DyespriaModePacket::encode, DyespriaModePacket::new, DyespriaModePacket::handle);
+        CHANNEL.messageBuilder(UpdateNutritionPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT).encoder(UpdateNutritionPacket::encode).decoder(UpdateNutritionPacket::decode).consumerMainThread(UpdateNutritionPacket::handle).add();
     }
 }

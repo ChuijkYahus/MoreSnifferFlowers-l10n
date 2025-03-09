@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.blocks;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
 import net.abraxator.moresnifferflowers.entities.CorruptedProjectile;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
@@ -9,7 +10,6 @@ import net.abraxator.moresnifferflowers.init.ModTags;
 import net.abraxator.moresnifferflowers.recipes.CorruptionRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ParticleUtils;
 import net.minecraft.util.RandomSource;
@@ -26,14 +26,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -186,8 +183,8 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
                 if(level.getBlockState(entity.center.relative(direction)).is(this)) {
                     makeGrowOnBonemeal(level, entity.center.relative(direction), level.getBlockState(entity.center.relative(direction)));
                 }else {
-                    System.out.println("Acidripia or Bondripia goofed up, centre = " + entity.center.toString());
-                    System.out.println("If this happens often, you might wanna report it to the More Sniffer Flowers devs");
+                    MoreSnifferFlowers.LOGGER.warn("Acidripia or Bondripia goofed up, centre = {}", entity.center.toString());
+                    MoreSnifferFlowers.LOGGER.warn("If this happens often, you might wanna report it to the More Sniffer Flowers devs");
                     level.destroyBlock(entity.center.relative(direction), false);
                     if (direction.equals(Direction.NORTH)) level.destroyBlock(entity.center, false);
                 }
