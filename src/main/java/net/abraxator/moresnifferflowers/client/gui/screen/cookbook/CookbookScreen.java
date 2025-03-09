@@ -7,14 +7,12 @@ import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
 import net.abraxator.moresnifferflowers.nutrition.NutritionType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.ModList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,11 +50,10 @@ public class CookbookScreen extends Screen {
         guiGraphics.blit(TEXTURE, x/2, y, 0, 0, 272/2, 180);
         guiGraphics.pose().scale(0.5F,1,1);
 
-        if(page == Page.CONTENTS) {
-            this.renderContents(guiGraphics, mouseX, mouseY, x, y);
-        } else {
+        if(page == Page.ITEMS) {
             this.renderItems(guiGraphics, mouseX, mouseY, x, y);
         }
+        this.renderContents(guiGraphics, mouseX, mouseY, x, y);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
@@ -102,7 +99,7 @@ public class CookbookScreen extends Screen {
     private void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
         for (int i = 0; i < NutritionType.values().length; i++) {
             NutritionType type = NutritionType.byId(i);
-            this.addRenderableWidget(new TypeWidget(x + 50, 18 * i + 5, type, 18, 18, Component.literal(type.name), this));
+            this.addRenderableWidget(new TypeWidget(x + 271, y + 24*i + 13 + i*2, type, 24, 24, Component.literal(type.name), this));
         }
     }
     
