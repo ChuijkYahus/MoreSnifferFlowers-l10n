@@ -4,12 +4,8 @@ package net.abraxator.moresnifferflowers.client.gui.screen.cookbook;
 import net.abraxator.moresnifferflowers.nutrition.Nutrition;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.ImageWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-
-import javax.security.auth.x500.X500Principal;
 
 public class ItemWidget extends AbstractWidget {
     private final Nutrition nutrition;

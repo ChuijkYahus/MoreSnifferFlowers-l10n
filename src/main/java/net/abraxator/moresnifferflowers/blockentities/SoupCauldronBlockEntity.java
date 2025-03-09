@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.blockentities;
 
+import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.init.ModBlockEntities;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModMobEffects;
@@ -7,7 +8,6 @@ import net.abraxator.moresnifferflowers.nutrition.Nutrition;
 import net.abraxator.moresnifferflowers.nutrition.NutritionEntry;
 import net.abraxator.moresnifferflowers.nutrition.NutritionStack;
 import net.abraxator.moresnifferflowers.nutrition.NutritionType;
-import net.abraxator.moresnifferflowers.nutrition.capability.NutritionCapabilityHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -20,7 +20,9 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PlaceOnWaterBlockItem;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -70,7 +72,7 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
         
         soup.setTag(tag);
         ItemEntity entity = new ItemEntity(this.level, getMiddle().x, getMiddle().y, getMiddle().z, soup);
-        player.getCapability(NutritionCapabilityHandler.CAPABILITY).ifPresent(nutritionCapability -> {
+        player.getCapability(CapabilityList.UNLOCKED_NUTRITIONS).ifPresent(nutritionCapability -> {
             for (NutritionStack stack : this.stacks) {
                 nutritionCapability.addItem(stack.stack.getItem());
             }
@@ -165,6 +167,6 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
     
     @Override
     public AABB getRenderBoundingBox() {
-        return AABB.ofSize(this.center.getCenter(), 3, 3, 3);
+        return AABB.ofSize(this.getBlockPos().getCenter(), 2, 2, 2);
     }
 }

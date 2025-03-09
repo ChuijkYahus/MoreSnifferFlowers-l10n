@@ -2,10 +2,11 @@ package net.abraxator.moresnifferflowers;
 
 import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
+import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.compat.quark.OtherModEvents;
+import net.abraxator.moresnifferflowers.events.CapabilityEvents;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
-import net.abraxator.moresnifferflowers.nutrition.capability.NutritionCapabilityHandler;
 import net.abraxator.moresnifferflowers.worldgen.configurations.ModTreeDecoratorTypes;
 import net.abraxator.moresnifferflowers.worldgen.configurations.ModTrunkPlacerTypes;
 import net.abraxator.moresnifferflowers.worldgen.feature.ModFeatures;
@@ -19,7 +20,6 @@ import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fluids.FluidInteractionRegistry;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -35,8 +35,8 @@ public class MoreSnifferFlowers {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         
         modEventBus.addListener(this::commonSetup);
-        MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, NutritionCapabilityHandler::attachCapibility);
-        
+        MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, CapabilityList::attachCapabilities);
+
         ModItems.ITEMS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
         ModLoot.CONDITIONS.register(modEventBus);
@@ -57,6 +57,8 @@ public class MoreSnifferFlowers {
         ModBannerPatterns.BANNER_PATTERNS.register(modEventBus);
         ModRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
 
+        modEventBus.addListener(CapabilityList::registerCapabilities);
+        
         if(ModList.get().isLoaded("quark")) {
             MinecraftForge.EVENT_BUS.addListener(OtherModEvents::onSimpleHarvest);
         }

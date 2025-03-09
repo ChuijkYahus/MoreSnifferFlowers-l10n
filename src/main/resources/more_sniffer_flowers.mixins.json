@@ -9,12 +9,13 @@
     "FarmBlockMixin",
     "RightClickHarvestModInitMixin",
     "SnifferEggMixin",
-    "ThrownPotionMixin"
+    "ThrownPotionMixin",
+    "ServerPlayerMixin"
   ],
   "client": [
-    "SpriteResourceLoaderAccessor",
-    "SpriteResourceLoaderMixin",
-    "SpriteResourceLoaderMixin$PalettedPermutationsAccessor"
+    "accessor.SpriteResourceLoaderAccessor",
+    "accessor.PalettedPermutationsAccessor",
+    "SpriteResourceLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

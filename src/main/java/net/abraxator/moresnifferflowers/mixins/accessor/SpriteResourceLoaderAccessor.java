@@ -1,4 +1,4 @@
-package net.abraxator.moresnifferflowers.mixins;
+package net.abraxator.moresnifferflowers.mixins.accessor;
 
 import net.minecraft.client.renderer.texture.atlas.SpriteResourceLoader;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
