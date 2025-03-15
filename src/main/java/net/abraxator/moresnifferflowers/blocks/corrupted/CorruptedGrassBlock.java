@@ -11,10 +11,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.SpreadingSnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.lighting.LightEngine;
 
 public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
@@ -68,6 +70,14 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
                                 blockpos, blockstate.setValue(SNOWY, Boolean.valueOf(level.getBlockState(blockpos.above()).is(Blocks.SNOW)))
                         );
                     }
+                }
+
+                if (level.getBlockState(pos.above()).is(Blocks.GRASS))
+                    level.setBlock(pos.above(), ModBlocks.CORRUPTED_GRASS.get().defaultBlockState(), 18);
+
+                if (level.getBlockState(pos.above()).is(Blocks.TALL_GRASS)) {
+                    level.setBlock(pos.above(), ModBlocks.CORRUPTED_TALL_GRASS.get().defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER), 18);
+                    level.setBlock(pos.above(2), ModBlocks.CORRUPTED_TALL_GRASS.get().defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER), 18);
                 }
             }
         }

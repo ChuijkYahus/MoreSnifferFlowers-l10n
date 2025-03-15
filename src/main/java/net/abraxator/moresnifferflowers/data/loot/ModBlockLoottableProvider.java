@@ -218,21 +218,24 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         dropWhenSilkTouch(ModBlocks.CORRUPTED_LEAVES_BUSH.get());
 
         dropSelf(ModBlocks.CORRUPTED_SAPLING.get());
-        add(ModBlocks.CORRUPTED_SLUDGE.get(), block -> this.createSilkTouchDispatchTable(
+        add(ModBlocks.CORRUPTED_SLUDGE.get(), block -> createSilkTouchDispatchTable(
                 block, this.applyExplosionCondition(
                         block, LootItem.lootTableItem(ModItems.CORRUPTED_SLIME_BALL.get())
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(8.0F, 12.0F)))
                 )
         ));
 
-        add(ModBlocks.DECAYED_LOG.get(), block -> this.createSilkTouchDispatchTable(
+        add(ModBlocks.DECAYED_LOG.get(), block -> createSilkTouchDispatchTable(
                 block, this.applyExplosionCondition(
                         block, LootItem.lootTableItem(Items.STICK)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 4.0F)))
                 )
         ));
         add(ModBlocks.CORRUPTED_GRASS_BLOCK.get(), block -> this.createSingleItemTableWithSilkTouch(block, Blocks.COARSE_DIRT));
+        add(ModBlocks.CORRUPTED_TALL_GRASS.get(), block -> this.createDoublePlantWithSeedDrops(block, ModBlocks.CORRUPTED_GRASS.get()));
+        add(ModBlocks.CORRUPTED_GRASS.get(), block -> createShearsDispatchTable(block, this.applyExplosionDecay(block, LootItem.lootTableItem(ModItems.CORRUPTED_SLIME_BALL.get()).when(LootItemRandomChanceCondition.randomChance(0.125F)).apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE, 2)))));
         add(ModBlocks.CURED_GRASS_BLOCK.get(), block -> this.createSingleItemTableWithSilkTouch(block, Blocks.DIRT));
+        dropWhenSilkTouch(ModBlocks.CORRUPTED_WART.get());
 
         dropSelf(ModBlocks.VIVICUS_LOG.get());
         dropSelf(ModBlocks.VIVICUS_WOOD.get());

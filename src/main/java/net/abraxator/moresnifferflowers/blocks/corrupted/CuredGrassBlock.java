@@ -9,9 +9,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.SpreadingSnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.lighting.LightEngine;
 import net.minecraft.world.phys.AABB;
 
@@ -63,6 +65,15 @@ public class CuredGrassBlock extends SpreadingSnowyDirtBlock {
                     );
                 }
             }
+
+            if (level.getBlockState(pos.above()).is(ModBlocks.CORRUPTED_GRASS.get()))
+                level.setBlock(pos.above(), Blocks.GRASS.defaultBlockState(), 18);
+
+            if (level.getBlockState(pos.above()).is(ModBlocks.CORRUPTED_TALL_GRASS.get())) {
+                level.setBlock(pos.above(), Blocks.TALL_GRASS.defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER), 18);
+                level.setBlock(pos.above(2), Blocks.TALL_GRASS.defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER), 18);
+            }
+
             AtomicInteger CorruptedCount = new AtomicInteger();
             var aabb = AABB.ofSize(pos.getCenter(), 4, 4, 4);
             BlockPos.betweenClosedStream(aabb).forEach(blockPos -> {
