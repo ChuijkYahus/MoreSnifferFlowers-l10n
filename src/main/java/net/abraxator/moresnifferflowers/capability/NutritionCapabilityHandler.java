@@ -1,17 +1,21 @@
 package net.abraxator.moresnifferflowers.capability;
 
+import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
+import net.abraxator.moresnifferflowers.networking.UpdateNutritionPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.capabilities.*;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class NutritionCapabilityHandler implements NutritionCapability {
+public class NutritionCapabilityHandler implements NutritionCapability{
     private Set<Item> items = new HashSet<>();
-    
+
     @Override
     public Set<Item> getItems() {
         return this.items;
@@ -30,17 +34,27 @@ public class NutritionCapabilityHandler implements NutritionCapability {
     }
 
     @Override
+    public void sync(Player player) {
+        if (!player.level().isClientSide) {
+            ModPacketHandler.CHANNEL.send(
+                    PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
+                    new UpdateNutritionPacket(this.items)
+            );
+        }
+    }
+
+    @Override
     public CompoundTag serializeNBT() {
         final CompoundTag tag = new CompoundTag();
-        
+
         tag.putInt("size", items.size());
-        
+
         int i = 0;
         for (Item item : items) {
             tag.putString("unlocked" + i, ForgeRegistries.ITEMS.getKey(item).toString());
             i++;
         }
-        
+
         return tag;
     }
 
@@ -53,4 +67,5 @@ public class NutritionCapabilityHandler implements NutritionCapability {
             items.add(ForgeRegistries.ITEMS.getValue(location));
         }
     }
+
 }

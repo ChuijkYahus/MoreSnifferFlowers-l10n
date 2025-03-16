@@ -1,12 +1,8 @@
 package net.abraxator.moresnifferflowers.nutrition;
 
-import com.mojang.datafixers.util.Either;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import org.apache.commons.io.output.ThresholdingOutputStream;
 
 import java.util.List;
 
