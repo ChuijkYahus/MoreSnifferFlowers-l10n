@@ -92,7 +92,8 @@ public class SoupCauldronBlock extends HorizontalDirectionalBlock implements Mod
         return tickerHelper(level);
     }
 
-    public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context){
         if (getter.getBlockEntity(pos) instanceof SoupCauldronBlockEntity entity) {
             var x = entity.center.getX() - pos.getX();
             var y = entity.center.getY() - pos.getY();
@@ -115,6 +116,28 @@ public class SoupCauldronBlock extends HorizontalDirectionalBlock implements Mod
 
         return Shapes.block();
     }
+
+    public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
+        if (getter.getBlockEntity(pos) instanceof SoupCauldronBlockEntity entity) {
+            var x = entity.center.getX() - pos.getX();
+            var y = entity.center.getY() - pos.getY();
+            var z = entity.center.getZ() - pos.getZ() + 1.125;
+
+            switch (state.getValue(HorizontalDirectionalBlock.FACING)){
+                case EAST -> x +=1;
+                case NORTH -> {
+                    x += 1;
+                    z -= 1;
+                }
+                case WEST -> z -= 1;
+            }
+
+            return makeShapeFull().move(x,y,z);
+        }
+
+        return Shapes.block();
+    }
+
     public static VoxelShape makeShapeUpper(){
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(-0.875, 0.5, -1, 0.875, 1.6875, 0.75), BooleanOp.OR);
@@ -142,6 +165,11 @@ public class SoupCauldronBlock extends HorizontalDirectionalBlock implements Mod
         return shape.optimize();
     }
 
+    public static VoxelShape makeShapeFull(){
+        VoxelShape shape = Shapes.empty();
+        shape = Shapes.join(shape, Shapes.box(-0.875, 0.5, -1, 0.875, 1.6875, 0.75), BooleanOp.OR);
 
+        return shape.optimize();
+    }
 
 }
