@@ -16,6 +16,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractCauldronBlock;
@@ -72,6 +73,11 @@ public class AciddripiaBlock extends BondripiaBlock {
                     }
             }
         }
+    }
+
+    @Override
+    public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
+        ((ItemEntity) entity).getItem().is(ModBlocks.AMBER_BLOCK.get().asItem());
     }
 
     public static void afterCorruption(BlockPos centrePos, Level level, BlockPos pos){

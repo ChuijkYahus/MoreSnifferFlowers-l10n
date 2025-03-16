@@ -1,8 +1,6 @@
 package net.abraxator.moresnifferflowers.init;
 
-import com.mojang.serialization.Codec;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.client.particle.options.BoblingMarkerOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -26,11 +24,4 @@ public class ModParticles {
     public static final RegistryObject<SimpleParticleType> ACIDRIPIA_DRIP = PARTICLES.register("acidripia_drip", () -> new SimpleParticleType(false));
     public static final RegistryObject<SimpleParticleType> ACIDRIPIA_FALL = PARTICLES.register("acidripia_fall", () -> new SimpleParticleType(false));
     public static final RegistryObject<SimpleParticleType> ACIDRIPIA_LAND = PARTICLES.register("acidripia_land", () -> new SimpleParticleType(false));
-    
-    public static final RegistryObject<ParticleType<BoblingMarkerOptions>> BOBLING_MARKER = PARTICLES.register("bobling_marker", () -> new ParticleType<>(false, BoblingMarkerOptions.DESERIALIZER) {
-        @Override
-        public Codec<BoblingMarkerOptions> codec() {
-            return BoblingMarkerOptions.CODEC;
-        }
-    });
 }

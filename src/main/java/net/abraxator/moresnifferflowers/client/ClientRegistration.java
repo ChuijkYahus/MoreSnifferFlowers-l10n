@@ -69,7 +69,8 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModModelLayerLocations.GIANT_WHEAT, GiantCropModels::createWheatLayer);
         event.registerLayerDefinition(ModModelLayerLocations.CROPRESSOR, CropressorModel::createBodyLayer);
         event.registerLayerDefinition(ModModelLayerLocations.BONDRIPIA, BondripiaModel::createBodyLayer);
-        event.registerLayerDefinition(ModModelLayerLocations.BEROOT_CAULDRON, BerootCauldronModel::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayerLocations.BEROOT_CAULDRON, BerootCauldronModel::createCauldronLayer);
+        event.registerLayerDefinition(ModModelLayerLocations.BEROOT_SPOON, BerootCauldronModel::createSpoonLayer);
     }
     
     @SubscribeEvent

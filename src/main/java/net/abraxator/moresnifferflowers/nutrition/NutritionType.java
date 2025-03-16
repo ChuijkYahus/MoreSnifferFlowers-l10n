@@ -1,7 +1,10 @@
 package net.abraxator.moresnifferflowers.nutrition;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.minecraft.ChatFormatting;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.IntFunction;
 
@@ -24,5 +27,9 @@ public enum NutritionType {
     
     public static NutritionType byId(int id) {
         return BY_ID.apply(id);
+    }
+    
+    public static MobEffect getEffect(NutritionType nutritionType, boolean positive) {
+        return ForgeRegistries.MOB_EFFECTS.getValue(MoreSnifferFlowers.loc((positive ? "positive" : "negative") + "_" + nutritionType.name()));
     }
 }

@@ -36,7 +36,7 @@ public class MoreSnifferFlowers {
         
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, CapabilityList::attachCapabilities);
-
+            
         ModItems.ITEMS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
         ModLoot.CONDITIONS.register(modEventBus);
