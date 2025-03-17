@@ -19,6 +19,7 @@ public class ModPacketHandler {
         CHANNEL.registerMessage(id++, CorruptedSludgePacket.class, CorruptedSludgePacket::encode, CorruptedSludgePacket::new, CorruptedSludgePacket.Handler::handle);
         CHANNEL.registerMessage(id++, DyespriaDisplayModeChangePacket.class, DyespriaDisplayModeChangePacket::encode, DyespriaDisplayModeChangePacket::new, DyespriaDisplayModeChangePacket.Handler::handle);
         CHANNEL.registerMessage(id++, DyespriaModePacket.class, DyespriaModePacket::encode, DyespriaModePacket::new, DyespriaModePacket::handle);
+        CHANNEL.registerMessage(id++, SoupCauldronCraftPacket.class, SoupCauldronCraftPacket::encode, SoupCauldronCraftPacket::new, SoupCauldronCraftPacket::handle);
         CHANNEL.messageBuilder(UpdateNutritionPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT).encoder(UpdateNutritionPacket::encode).decoder(UpdateNutritionPacket::decode).consumerMainThread(UpdateNutritionPacket::handle).add();
     }
 }
