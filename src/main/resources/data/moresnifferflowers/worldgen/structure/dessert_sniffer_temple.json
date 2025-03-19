@@ -3,7 +3,6 @@
   "biomes": "#moresnifferflowers:has_structure/dessert_sniffer_temple_biomes",
   "step": "surface_structures",
   "spawn_overrides": {},
-  "terrain_adaptation": "beard_thin",
   "start_pool": "moresnifferflowers:dessert_sniffer_temple",
   "size": 1,
   "start_height": {
