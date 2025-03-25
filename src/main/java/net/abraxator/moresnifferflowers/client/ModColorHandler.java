@@ -53,7 +53,7 @@ public class ModColorHandler {
                         var dyedValue = Dye.colorForDye(colorable, pState.getValue(colorable.getColorProperty()));
                         var color = colorable.getDyeFromBlock(pState).color();
 
-                        if(pState.is(ModBlocks.VIVICUS_LEAVES.get()) || pState.is(ModBlocks.VIVICUS_LEAVES_SPROUT.get()) || pState.is(ModBlocks.VIVICUS_SAPLING.get())) {
+                        if(pState.is(ModBlocks.VIVICUS_LEAVES.get()) || pState.is(ModBlocks.VIVICUS_LEAVES_SPROUT.get())) {
                             int startRed = (dyedValue >> 16) & 0xFF;
                             int startGreen = (dyedValue >> 8) & 0xFF;
                             int startBlue = dyedValue & 0xFF;
@@ -78,7 +78,7 @@ public class ModColorHandler {
                     }
 
                     return -1;
-                }, ModBlocks.VIVICUS_LOG.get(), ModBlocks.VIVICUS_WOOD.get(), ModBlocks.STRIPPED_VIVICUS_LOG.get(),
+                }, ModBlocks.VIVICUS_LOG.get(), ModBlocks.VIVICUS_WOOD.get(), ModBlocks.STRIPPED_VIVICUS_LOG.get(), ModBlocks.STRIPPED_VIVICUS_LOG.get(),
                 ModBlocks.STRIPPED_VIVICUS_WOOD.get(), ModBlocks.VIVICUS_PLANKS.get(), ModBlocks.VIVICUS_STAIRS.get(),
                 ModBlocks.VIVICUS_SLAB.get(), ModBlocks.VIVICUS_FENCE.get(), ModBlocks.VIVICUS_FENCE_GATE.get(),
                 ModBlocks.VIVICUS_DOOR.get(), ModBlocks.VIVICUS_TRAPDOOR.get(), ModBlocks.VIVICUS_PRESSURE_PLATE.get(),
