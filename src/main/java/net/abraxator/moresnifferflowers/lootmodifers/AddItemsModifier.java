@@ -33,6 +33,8 @@ public class AddItemsModifier extends LootModifier {
     public static final List<ResourceLocation> SNIFFERENT_ITEMS_LOC = List.of(snifferentLoc("spindlefern_seeds"), snifferentLoc("spineflower_seeds"), snifferentLoc("lumibulb_seeds"), snifferentLoc("sniffberry_seedling"), snifferentLoc("bloom_plant_nut"), snifferentLoc("globar_sapling"), snifferentLoc("club_moss_patch"), snifferentLoc("amber"));
     public static final List<ResourceLocation> HELLIONS_ITEMS_LOC = List.of(hellionsLoc("stone_pine_sapling"), hellionsLoc("fiddlefern"), hellionsLoc("ivy"));
     public static final List<ResourceLocation> QUARK_ITEMS_LOC = List.of(ResourceLocation.fromNamespaceAndPath("quark", "ancient_sapling"));
+    public static final List<ResourceLocation> ARTS_AND_CRAFTS_ITEMS_LOC = List.of(ResourceLocation.fromNamespaceAndPath("arts_and_crafts", "lotus_pistils"));
+
 
     private final List<Item> items;
 
@@ -50,13 +52,14 @@ public class AddItemsModifier extends LootModifier {
                 return generatedLoot;
             }
         }
-        
+
         generatedLoot.clear();
         generatedLoot.add(Items.PITCHER_POD.getDefaultInstance());
         generatedLoot.add(Items.TORCHFLOWER_SEEDS.getDefaultInstance());
         modSupport(SNIFFERENT_ITEMS_LOC, generatedLoot);
         modSupport(HELLIONS_ITEMS_LOC, generatedLoot);
         modSupport(QUARK_ITEMS_LOC, generatedLoot);
+        modSupport(ARTS_AND_CRAFTS_ITEMS_LOC, generatedLoot);
 
         items.forEach(item -> generatedLoot.add(item.getDefaultInstance()));
         newLoot.add(Util.getRandom(generatedLoot, context.getRandom()));
