@@ -65,7 +65,7 @@
 	"item.moresnifferflowers.vivicus_chest_boat": "Vivicus Boat with Chest",
 	"item.moresnifferflowers.corrupted_boat": "Corrupted Boat",
 	"item.moresnifferflowers.corrupted_chest_boat": "Corrupted Boat with Chest",
-	"item.moresnifferflowers.caulorflower_seeds": "Caulorflower Seed",
+	"item.moresnifferflowers.caulorflower_seeds": "Wokerflower Seed",
 
 
 # Blocks🎲🎲🎲
@@ -95,7 +95,7 @@
 	"block.moresnifferflowers.chiseled_garnet": "Chiseled Garnet",
 	"block.moresnifferflowers.chiseled_garnet_slab": "Chiseled Garnet Slab",
 
-	"block.moresnifferflowers.caulorflower": "Caulorflower",
+	"block.moresnifferflowers.caulorflower": "Wokerflower",
 	"block.moresnifferflowers.bonmeelia": "Bonmeelia",
 	"block.moresnifferflowers.bondripia": "Bondripia",
 	"block.moresnifferflowers.bonwiltia": "Bonwiltia",
@@ -184,7 +184,7 @@
 	"advancements.more_sniffer_flowers.dyespria_plant": "Colorful plants",
 	"advancements.more_sniffer_flowers.dyespria_plant.desc": "Place the Dyespria!!!",
 	"advancements.more_sniffer_flowers.dyespria": "Spriaing your dye",
-	"advancements.more_sniffer_flowers.dyespria.desc": "Bring color to Caulorflower using a Dyespria",
+	"advancements.more_sniffer_flowers.dyespria.desc": "Bring color to Wokerflower using a Dyespria",
 	"advancements.more_sniffer_flowers.any_seed": "More Sniffer Flowers",
 	"advancements.more_sniffer_flowers.any_seed.desc": "Discover More Sniffer Flowers",
 	"advancements.more_sniffer_flowers.bonmeel": "Let It Grow!",
