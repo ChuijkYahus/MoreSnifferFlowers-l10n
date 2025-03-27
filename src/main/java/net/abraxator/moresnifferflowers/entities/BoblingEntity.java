@@ -3,20 +3,20 @@ package net.abraxator.moresnifferflowers.entities;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.entities.goals.BoblingAttackPlayerGoal;
 import net.abraxator.moresnifferflowers.entities.goals.BoblingAvoidPlayerGoal;
-import net.abraxator.moresnifferflowers.init.*;
+import net.abraxator.moresnifferflowers.init.ModAdvancementCritters;
+import net.abraxator.moresnifferflowers.init.ModBlocks;
+import net.abraxator.moresnifferflowers.init.ModEntityTypes;
+import net.abraxator.moresnifferflowers.init.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -42,7 +42,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.IntFunction;
 
 public class BoblingEntity extends PathfinderMob {
     private static final EntityDataAccessor<Boolean> DATA_CURED = SynchedEntityData.defineId(BoblingEntity.class, EntityDataSerializers.BOOLEAN);
@@ -228,7 +227,7 @@ public class BoblingEntity extends PathfinderMob {
                 this.isAlive() && 
                 !this.isPlanting() && 
                 this.getWantedPos() != null && 
-                this.position().closerThan(getWantedPos().getCenter(), 0.75F);
+                this.position().closerThan(getWantedPos().getCenter(), 2.75F);
     }
 
     private void setupAnimationStates() {
