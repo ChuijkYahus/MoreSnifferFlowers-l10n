@@ -121,5 +121,14 @@ public class ModItems {
     
     public static final RegistryObject<Item> CREATIVE_TAB_ICON = ITEMS.register("creative_tab_icon", () -> new CreativeTabItem(new Item.Properties()));
     public static final RegistryObject<Item> WAND_OF_CUBING = ITEMS.register("wand_of_cubing", () -> new WandOfCubingItem(new Item.Properties()));
+    public static final RegistryObject<Item> MORE_SNIFFER_FLOWER_SEEDS = ITEMS.register("more_sniffer_flower_seeds", () -> new ItemNameBlockItem(ModBlocks.MORE_SNIFFER_FLOWER_LOWER.get(), new Item.Properties().stacksTo(1)) {
+        @Override
+        public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltip, TooltipFlag pFlag) {
+            super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
+            pTooltip.add(Component.translatableWithFallback("tooltip.more_sniffer_flower", "Grows a completely original More Sniffer Flower").withStyle(ChatFormatting.GOLD));
+            pTooltip.add(Component.translatableWithFallback("tooltip.more_sniffer_flower2", "Infinite possibilities!").withStyle(ChatFormatting.LIGHT_PURPLE));
+
+        }
+    });
 
 }

@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -199,6 +200,46 @@ public class ModColorHandler {
                 ModBlocks.VIVICUS_DOOR.get(), ModBlocks.VIVICUS_TRAPDOOR.get(), ModBlocks.VIVICUS_PRESSURE_PLATE.get(),
                 ModBlocks.VIVICUS_BUTTON.get(), ModBlocks.VIVICUS_LEAVES.get(), ModBlocks.VIVICUS_SAPLING.get(),
                 ModBlocks.VIVICUS_LEAVES_SPROUT.get(), ModBlocks.VIVICUS_SIGN.get(), ModBlocks.VIVICUS_HANGING_SIGN.get());
+        event.register((pState, pLevel, pPos, pTintIndex) -> {
+            Colorable colorable = ((Colorable) pState.getBlock());
+            Dye dye = colorable.getDyeFromBlock(pState);
+            int color = Dye.colorForDye(colorable, dye.color());
+
+            if (pState.is(ModBlocks.MORE_SNIFFER_FLOWER_UPPER.get())){
+                //  lower = 1 upper = 2 leaves = 3
+                if (pTintIndex == 3){
+                    return color;
+                }
+                Colorable colorableLow = colorable;
+                BlockState stateLow = pLevel.getBlockState(pPos.below());
+                if (stateLow.is(ModBlocks.MORE_SNIFFER_FLOWER_LOWER.get())) colorableLow = ((Colorable) stateLow.getBlock());
+                Dye dyeLow = colorable.getDyeFromBlock(stateLow);
+                int colorLow = Dye.colorForDye(colorableLow, dyeLow.color());
+
+
+                int startRed = (color >> 16) & 0xFF;
+                int startGreen = (color >> 8) & 0xFF;
+                int startBlue = color & 0xFF;
+                float[] colorHSB = Color.RGBtoHSB(startRed, startGreen, startBlue, null);
+
+                int startRedLow = (colorLow >> 16) & 0xFF;
+                int startGreenLow = (colorLow >> 8) & 0xFF;
+                int startBlueLow = colorLow & 0xFF;
+                float[] colorHSBLow = Color.RGBtoHSB(startRedLow, startGreenLow, startBlueLow, null);
+
+                float finalHue = colorHSBLow[0] + colorHSB[0] -0.5F;
+
+                return Color.HSBtoRGB(finalHue, Math.max(colorHSB[1] * 1.7F, 0.5F), Math.max(colorHSB[2], 0));
+
+            }
+
+            if (pState.is(ModBlocks.MORE_SNIFFER_FLOWER_LOWER.get())){
+
+                return color;
+            }
+
+            return -1;
+        }, ModBlocks.MORE_SNIFFER_FLOWER_LOWER.get(), ModBlocks.MORE_SNIFFER_FLOWER_UPPER.get());
     }
 
     @SubscribeEvent

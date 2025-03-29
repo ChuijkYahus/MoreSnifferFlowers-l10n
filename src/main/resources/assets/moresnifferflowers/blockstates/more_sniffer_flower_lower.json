@@ -1,0 +1,55 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "age": "0"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/more_sniffer_flower0"
+      }
+    },
+    {
+      "when": {
+        "age": "1"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/more_sniffer_flower1"
+      }
+    },
+    {
+      "when": {
+        "age": "2"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/more_sniffer_flower2"
+      }
+    },
+    {
+      "when": {
+        "age": "3",
+        "stalk_type": "1"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/more_sniffer_flower_s1l"
+      }
+    },
+    {
+      "when": {
+        "age": "3",
+        "stalk_type": "2"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/more_sniffer_flower_s2l"
+      }
+    },
+    {
+      "when": {
+        "age": "3",
+        "stalk_type": "3"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/more_sniffer_flower_s3l"
+      }
+    }
+  ]
+}

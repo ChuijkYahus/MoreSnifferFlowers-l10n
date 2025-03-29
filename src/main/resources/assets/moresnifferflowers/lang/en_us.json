@@ -4,6 +4,8 @@
 	"item.moresnifferflowers.gloomberry": "Gloomberry",
 	"item.moresnifferflowers.gloomberry_vine_seeds": "Gloomberry Vine Seeds",
 
+	"item.moresnifferflowers.more_sniffer_flower_seeds": "More Sniffer Flower Seed",
+
 	"item.moresnifferflowers.ambush_seeds": "Ambush Seeds",
 	"item.moresnifferflowers.garbush_seeds": "Garbush Seeds",
 	"item.moresnifferflowers.ambush_banner_pattern": "Banner Pattern",
@@ -82,6 +84,8 @@
 	"block.moresnifferflowers.chiseled_amber": "Chiseled Amber",
 	"block.moresnifferflowers.chiseled_amber_slab": "Chiseled Amber Slab",
 	
+	"block.moresnifferflowers.more_sniffer_flower": "More Sniffer Flower",
+
 	"block.moresnifferflowers.gloomberry_vine": "Gloomberry Vine",
 	"block.moresnifferflowers.garbush": "Garbush",
 	"block.moresnifferflowers.garbush_bottom": "Garbush",
@@ -178,6 +182,9 @@
 	"tooltip.wip": "WIP",
 	"tooltip.vivicus_antidote": "Cures Boblings and Corrupted Grass",
 	"tooltip.dyescrapia": "Scrapes the dye off of colored blocks",
+	"tooltip.more_sniffer_flower": "Grows a completely original More Sniffer Flower",
+	"tooltip.more_sniffer_flower2": "Infinite possibilities!",
+
 
 
 	# Advancements 🏆🏆🏆

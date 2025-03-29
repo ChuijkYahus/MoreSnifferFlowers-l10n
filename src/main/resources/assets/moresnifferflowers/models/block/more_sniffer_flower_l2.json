@@ -1,0 +1,6 @@
+{
+    "parent": "moresnifferflowers:block/double_base_upper3",
+    "textures": {
+        "0": "moresnifferflowers:block/doubleparts/more_sniffer_flower_l2"
+    }
+}

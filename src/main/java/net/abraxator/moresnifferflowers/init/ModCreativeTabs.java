@@ -16,6 +16,8 @@ public class ModCreativeTabs {
             .title(Component.translatable("moresnifferflowers.creative_tab"))
             .icon(() -> new ItemStack(ModItems.CREATIVE_TAB_ICON.get()))
             .displayItems((parameters, output) -> {
+                output.accept(ModItems.MORE_SNIFFER_FLOWER_SEEDS.get());
+
                 output.accept(ModItems.DAWNBERRY_VINE_SEEDS.get());
                 output.accept(ModItems.DAWNBERRY.get());
                 output.accept(ModItems.GLOOMBERRY_VINE_SEEDS.get());

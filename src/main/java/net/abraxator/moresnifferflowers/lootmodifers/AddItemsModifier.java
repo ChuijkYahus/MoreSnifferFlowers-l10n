@@ -4,6 +4,7 @@ import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.abraxator.moresnifferflowers.init.ModItems;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
@@ -50,6 +51,7 @@ public class AddItemsModifier extends LootModifier {
 
         generatedLoot.clear();
         generatedLoot.add(Items.PITCHER_POD.getDefaultInstance());
+        for (int i = 0; i < 10; i++) generatedLoot.add(ModItems.MORE_SNIFFER_FLOWER_SEEDS.get().getDefaultInstance());
         generatedLoot.add(Items.TORCHFLOWER_SEEDS.getDefaultInstance());
         modSupport(SNIFFERENT_ITEMS_LOC, generatedLoot);
         modSupport(HELLIONS_ITEMS_LOC, generatedLoot);
