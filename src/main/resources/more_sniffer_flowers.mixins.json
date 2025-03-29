@@ -14,8 +14,7 @@
   ],
   "client": [
     "SpriteResourceLoaderMixin",
-    "accessor.PalettedPermutationsAccessor",
-    "accessor.SpriteResourceLoaderAccessor"
+    "SpriteResourceLoaderMixin$PalettedPermutationsAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
