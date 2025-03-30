@@ -58,6 +58,7 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
                         .add(LootItem.lootTableItem(Items.STICK).setWeight(100))
                         .add(LootItem.lootTableItem(ModItems.AMBER_SHARD.get()).setWeight(100))
                         .add(LootItem.lootTableItem(ModItems.DRAGONFLY.get()).setWeight(100))
+                        .add(LootItem.lootTableItem(ModItems.CREATIVITY_PILL.get()).setWeight(500))
                         //UNCOMMON
                         .add(LootItem.lootTableItem(Items.CARROT).setWeight(50))
                         .add(LootItem.lootTableItem(Items.POTATO).setWeight(50))

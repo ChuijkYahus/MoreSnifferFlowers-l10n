@@ -3,11 +3,10 @@ package net.abraxator.moresnifferflowers.events;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
-import net.abraxator.moresnifferflowers.init.ModBlocks;
-import net.abraxator.moresnifferflowers.init.ModItems;
-import net.abraxator.moresnifferflowers.init.ModStateProperties;
-import net.abraxator.moresnifferflowers.init.ModTags;
+import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
+import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
+import net.abraxator.moresnifferflowers.networking.PlaySoundPacket;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,7 +16,9 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
@@ -32,11 +33,14 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.VanillaGameEvent;
+import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
+import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 
 @Mod.EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
@@ -55,6 +59,64 @@ public class ForgeEvents {
         if(level.getBlockState(blockPos).is(ModBlocks.CORRUPTED_SLIME_LAYER.get()) || level.getBlockState(blockPos.below()).is(ModBlocks.CORRUPTED_SLIME_LAYER.get())) {
             livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().multiply(1, 0.3, 1));
         }
+
+        if (livingEntity instanceof ServerPlayer && livingEntity.hasEffect(ModMobEffects.CREATIVITY.get()) && livingEntity.hasEffect(MobEffects.WITHER) && (level.getGameTime() % 10 < 3))
+            level.playSound(null, livingEntity, ModSoundEvents.C_WITHER.get(), SoundSource.PLAYERS, 1.0F, (float) (0.75F + (level.getRandom().nextFloat() /2)));
+    }
+
+    @SubscribeEvent
+    public static void dimensionEvent(EntityTravelToDimensionEvent event){
+        var dimension = event.getDimension();
+        var entity = event.getEntity();
+        String dimString = dimension.toString();
+        Level level = entity.level();
+
+        if (entity instanceof ServerPlayer player && player.hasEffect(ModMobEffects.CREATIVITY.get())) {
+
+            if (dimString.equals("ResourceKey[minecraft:dimension / minecraft:overworld]")) {
+                ModPacketHandler.CHANNEL.send(
+                        PacketDistributor.PLAYER.with(() -> player),
+                        new PlaySoundPacket(ModSoundEvents.C_OVERWORLD.get(), player.getX(), player.getY(), player.getZ()));
+            }
+
+            if (dimString.equals("ResourceKey[minecraft:dimension / minecraft:the_nether]"))
+                ModPacketHandler.CHANNEL.send(
+                        PacketDistributor.PLAYER.with(() -> player),
+                        new PlaySoundPacket(ModSoundEvents.C_NETHER.get(), player.getX(), player.getY(), player.getZ()));
+
+        }
+    }
+
+    @SubscribeEvent
+    public static void livingChangeTargetEvent(LivingChangeTargetEvent event){
+        var changer = event.getEntity();
+        var target = event.getNewTarget();
+        var ogTarget = event.getOriginalTarget();
+        int modulo = 100;
+
+         if (target != null && target.hasEffect(ModMobEffects.CREATIVITY.get())) {
+             System.out.println(target.level().getGameTime() % modulo);
+             if (changer instanceof Zombie && changer.isBaby() && changer.isPassenger() && (target.level().getGameTime() % modulo < 3)) {
+                target.level().playSound(null, target, ModSoundEvents.C_CHICKEN_JOCKEY.get(), SoundSource.HOSTILE, 1.0F, (float) (0.2F + (target.level().getRandom().nextFloat() * 3F)));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void rightClickItem(PlayerInteractEvent.RightClickItem event){
+        Player player = event.getEntity();
+        InteractionHand hand = event.getHand();
+        ItemStack itemStack = event.getItemStack();
+        Level level = event.getLevel();
+        BlockPos pos = event.getPos();
+        var item = player.getItemInHand(hand).getItem().getDefaultInstance();
+
+        if (item.is(ModItems.CREATIVITY_PILL.get())) level.playSound(null, player, ModSoundEvents.C_CREATIVITY.get(), SoundSource.PLAYERS, 1.0F, (float) (0.75F + (level.getRandom().nextFloat() / 2)));
+
+        if (player.hasEffect(ModMobEffects.CREATIVITY.get())){
+            if (item.is(Items.ELYTRA)) level.playSound(null, player, ModSoundEvents.C_ELYTRA.get(), SoundSource.PLAYERS, 1.0F, (float) (0.75F + (level.getRandom().nextFloat() /2)));
+        }
+
     }
 
     @SubscribeEvent
@@ -109,6 +171,11 @@ public class ForgeEvents {
                     event.setCancellationResult(InteractionResult.SUCCESS);
                     event.setCanceled(true);
                 }
+            }
+            if (player.hasEffect(ModMobEffects.CREATIVITY.get())){
+                if (item.is(Items.WATER_BUCKET)) level.playSound(null, player, ModSoundEvents.C_WATER_BUCKET.get(), SoundSource.PLAYERS, 1.0F, (float) (0.75F + (level.getRandom().nextFloat() /2)));
+                if (state.is(Blocks.CRAFTING_TABLE)) level.playSound(null, player, ModSoundEvents.C_CRAFTING.get(), SoundSource.PLAYERS, 1.0F, (float) (0.75F + (level.getRandom().nextFloat() /2)));
+                if (item.is(Items.FLINT_AND_STEEL)) level.playSound(null, player, ModSoundEvents.C_FLINT.get(), SoundSource.PLAYERS, 1.0F, (float) (0.3F + (level.getRandom().nextFloat() *2)));
             }
     }
 

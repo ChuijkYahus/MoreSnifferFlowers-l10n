@@ -5,8 +5,6 @@ import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModRecipeSerializers;
 import net.abraxator.moresnifferflowers.init.ModTags;
-import net.abraxator.moresnifferflowers.recipes.RebrewedTippedArrowRecipe;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.tags.TagKey;
@@ -14,9 +12,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class ModRecipesProvider extends RecipeProvider {
@@ -75,6 +73,14 @@ public class ModRecipesProvider extends RecipeProvider {
         slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CHISELED_GARNET_SLAB.get(), ModBlocks.CHISELED_GARNET.get());
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(ModBlocks.GARNET_MOSAIC.get()), RecipeCategory.BUILDING_BLOCKS, ModBlocks.CRACKED_GARNET.get().asItem(), 0.1F, 200)
                 .unlockedBy("has_garnet_mosaic", has(ModBlocks.GARNET_MOSAIC.get()))
+                .save(pRecipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.CREATIVITY_PILL.get())
+                .requires(ModItems.DAWNBERRY.get())
+                .requires(Blocks.TORCHFLOWER.asItem())
+                .requires(Blocks.PITCHER_PLANT.asItem())
+
+                .unlockedBy("has_dawnberry", has(ModItems.DAWNBERRY.get()))
                 .save(pRecipeOutput);
 
 

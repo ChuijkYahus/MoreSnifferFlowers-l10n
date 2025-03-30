@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "moresnifferflowers:dawnberry"
+    },
+    {
+      "item": "minecraft:torchflower"
+    },
+    {
+      "item": "minecraft:pitcher_plant"
+    }
+  ],
+  "result": {
+    "item": "moresnifferflowers:creativity_pill"
+  }
+}

@@ -17,6 +17,7 @@ public class ModCreativeTabs {
             .icon(() -> new ItemStack(ModItems.CREATIVE_TAB_ICON.get()))
             .displayItems((parameters, output) -> {
                 output.accept(ModItems.MORE_SNIFFER_FLOWER_SEEDS.get());
+                output.accept(ModItems.CREATIVITY_PILL.get());
 
                 output.accept(ModItems.DAWNBERRY_VINE_SEEDS.get());
                 output.accept(ModItems.DAWNBERRY.get());
@@ -150,6 +151,8 @@ public class ModCreativeTabs {
                 output.accept(ModItems.CORRUPTED_BOAT.get());
                 output.accept(ModItems.CORRUPTED_CHEST_BOAT.get());
 
+                output.accept(ModItems.WAND_OF_CUBING.get());
+                output.accept(ModItems.CREATIVE_TAB_ICON.get());
 
             })
             .withBackgroundLocation(MoreSnifferFlowers.loc("textures/gui/container/tab_items.png"))

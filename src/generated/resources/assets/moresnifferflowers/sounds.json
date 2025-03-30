@@ -6,6 +6,60 @@
     ],
     "subtitle": "sound.moresnifferflowers.block.cropressor.belt"
   },
+  "c_chicken_jockey": {
+    "sounds": [
+      "moresnifferflowers:c_chicken_jockey"
+    ],
+    "subtitle": "sound.moresnifferflowers.c_chicken_jockey"
+  },
+  "c_crafting": {
+    "sounds": [
+      "moresnifferflowers:c_crafting"
+    ],
+    "subtitle": "sound.moresnifferflowers.c_crafting"
+  },
+  "c_creativity": {
+    "sounds": [
+      "moresnifferflowers:c_creativity"
+    ],
+    "subtitle": "sound.moresnifferflowers.c_creativity"
+  },
+  "c_elytra": {
+    "sounds": [
+      "moresnifferflowers:c_elytra"
+    ],
+    "subtitle": "sound.moresnifferflowers.c_elytra"
+  },
+  "c_flint": {
+    "sounds": [
+      "moresnifferflowers:c_flint"
+    ],
+    "subtitle": "sound.moresnifferflowers.c_flint"
+  },
+  "c_nether": {
+    "sounds": [
+      "moresnifferflowers:c_nether"
+    ],
+    "subtitle": "sound.moresnifferflowers.c_nether"
+  },
+  "c_overworld": {
+    "sounds": [
+      "moresnifferflowers:c_overworld"
+    ],
+    "subtitle": "sound.moresnifferflowers.c_overworld"
+  },
+  "c_water_bucket": {
+    "sounds": [
+      "moresnifferflowers:c_water_bucket"
+    ],
+    "subtitle": "sound.moresnifferflowers.c_water_bucket"
+  },
+  "c_wither": {
+    "sounds": [
+      "moresnifferflowers:c_wither"
+    ],
+    "subtitle": "sound.moresnifferflowers.c_wither"
+  },
   "item.dyespria.paint": {
     "sounds": [
       "moresnifferflowers:dyespria_paint"

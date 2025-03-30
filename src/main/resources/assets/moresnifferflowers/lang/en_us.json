@@ -5,6 +5,9 @@
 	"item.moresnifferflowers.gloomberry_vine_seeds": "Gloomberry Vine Seeds",
 
 	"item.moresnifferflowers.more_sniffer_flower_seeds": "More Sniffer Flower Seed",
+	"item.moresnifferflowers.creativity_pill": "Creativity pill",
+	"item.moresnifferflowers.creative_tab_icon": "Creative Tab Icon",
+	"item.moresnifferflowers.wand_of_cubing": "Wand of Cubing",
 
 	"item.moresnifferflowers.ambush_seeds": "Ambush Seeds",
 	"item.moresnifferflowers.garbush_seeds": "Garbush Seeds",
@@ -184,6 +187,9 @@
 	"tooltip.dyescrapia": "Scrapes the dye off of colored blocks",
 	"tooltip.more_sniffer_flower": "Grows a completely original More Sniffer Flower",
 	"tooltip.more_sniffer_flower2": "Infinite possibilities!",
+	"tooltip.creativity_pill": "Makes you 53% more creative!",
+	"tooltip.creativity_pill2": "Turn your sounds on!",
+
 
 
 
@@ -266,6 +272,8 @@
 	"block.minecraft.banner.moresnifferflowers.evil.pink": "Pink Pattern of Evil",
 
 	"effect.moresnifferflowers.extracted": "Extracted",
+	"effect.moresnifferflowers.creativity": "Creativity",
+
 	
 	"death.attack.moresnifferflowersveggies": "Já si nemyslim že se tenhle text ukazuje ve hře ale jestli jo tak zdravim 😊😊👋👋",
 

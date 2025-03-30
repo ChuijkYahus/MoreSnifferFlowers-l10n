@@ -131,4 +131,14 @@ public class ModItems {
         }
     });
 
+    public static final RegistryObject<Item> CREATIVITY_PILL = ITEMS.register("creativity_pill", () -> new Item(new Item.Properties().food(ModFoods.CREATIVITY_PILL)) {
+        @Override
+        public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltip, TooltipFlag pFlag) {
+            super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
+            pTooltip.add(Component.translatableWithFallback("tooltip.creativity_pill", "Makes you 53% more creative").withStyle(ChatFormatting.GOLD));
+            pTooltip.add(Component.translatableWithFallback("tooltip.creativity_pill2", "Turn your sounds on!").withStyle(ChatFormatting.RED));
+
+
+        }
+    });
 }
