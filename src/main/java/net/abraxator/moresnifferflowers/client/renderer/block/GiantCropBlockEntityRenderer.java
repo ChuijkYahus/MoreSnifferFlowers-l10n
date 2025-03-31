@@ -13,15 +13,11 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.TadpoleRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BeaconBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
 import java.util.HashMap;
@@ -72,8 +68,8 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 			}
 			
 			pPoseStack.pushPose();
-			pPoseStack.translate(0.5, yCord, 0.5);
-			pPoseStack.scale(1, yScale, 1);
+			pPoseStack.translate(0.5, yCord-1, 0.5);
+			pPoseStack.scale(1/3F, yScale/3, 1/3F);
 			pPoseStack.mulPose(new Quaternionf().rotateX((float) (Math.PI)));
 			modelPartMap.get(blockState.getBlock()).render(pPoseStack, vertexConsumer, pPackedLight, pPackedOverlay);
 			pPoseStack.popPose();

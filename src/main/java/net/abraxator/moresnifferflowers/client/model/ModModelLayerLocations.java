@@ -2,7 +2,6 @@ package net.abraxator.moresnifferflowers.client.model;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.resources.ResourceLocation;
 
 public class ModModelLayerLocations {
     //ENTITY
@@ -13,6 +12,9 @@ public class ModModelLayerLocations {
     public static final ModelLayerLocation CORRUPTED_CHEST_BOAT_LAYER = new ModelLayerLocation(MoreSnifferFlowers.loc("chest_boat/corrupted"), "main");
     public static final ModelLayerLocation VIVICUS_BOAT_LAYER = new ModelLayerLocation(MoreSnifferFlowers.loc("boat/vivicus"), "main");
     public static final ModelLayerLocation VIVICUS_CHEST_BOAT_LAYER = new ModelLayerLocation(MoreSnifferFlowers.loc("chest_boat/vivicus"), "main");
+    public static final ModelLayerLocation CRAB = new ModelLayerLocation(MoreSnifferFlowers.loc("crab"), "main");
+    public static final ModelLayerLocation ARMADILLO = new ModelLayerLocation(MoreSnifferFlowers.loc("armadillo"), "main");
+    public static final ModelLayerLocation PENGUIN = new ModelLayerLocation(MoreSnifferFlowers.loc("penguin"), "main");
 
     //BLOCK
     public static final ModelLayerLocation GIANT_CARROT = new ModelLayerLocation(MoreSnifferFlowers.loc("giant_carrot"), "main");

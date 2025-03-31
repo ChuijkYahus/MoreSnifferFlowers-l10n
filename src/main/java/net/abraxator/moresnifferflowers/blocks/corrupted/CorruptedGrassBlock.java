@@ -1,6 +1,10 @@
 package net.abraxator.moresnifferflowers.blocks.corrupted;
 
+import net.abraxator.moresnifferflowers.entities.ArmadilloEntity;
+import net.abraxator.moresnifferflowers.entities.CrabEntity;
+import net.abraxator.moresnifferflowers.entities.PenguinEntity;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
+import net.abraxator.moresnifferflowers.init.ModEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -53,6 +57,14 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
 
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        Entity entity = new CrabEntity(ModEntityTypes.CRAB.get(), level);
+        float r = random.nextFloat();
+        if (random.nextFloat()  < 0.1F){
+            if (r < 0.3F) entity = new ArmadilloEntity(ModEntityTypes.ARMADILLO.get(), level) ;
+            if (r > 0.6F) entity = new PenguinEntity(ModEntityTypes.PENGUIN.get(), level);
+            entity.setPos(pos.above().getCenter());
+            level.addFreshEntity(entity);
+        }
         if (!canBeGrass(state, level, pos)) {
             if (!level.isAreaLoaded(pos, 1)) return;
             level.setBlockAndUpdate(pos, Blocks.COARSE_DIRT.defaultBlockState());

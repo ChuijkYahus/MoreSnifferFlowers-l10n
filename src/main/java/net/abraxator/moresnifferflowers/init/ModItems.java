@@ -116,6 +116,9 @@ public class ModItems {
     public static final RegistryObject<Item> VIVICUS_CHEST_BOAT = ITEMS.register("vivicus_chest_boat", () -> new ModBoatItem(true, ModBoatEntity.Type.VIVICUS, new Item.Properties()));
 
     public static final RegistryObject<Item> BOBLING_SPAWN_EGG = ITEMS.register("bobling_spawn_egg", () -> new ForgeSpawnEggItem(ModEntityTypes.BOBLING, 0x5b5b5b, 0xffffff, new Item.Properties()));
+    public static final RegistryObject<Item> ARMADILLO_SPAWN_EGG = ITEMS.register("armadillo_spawn_egg", () -> new ForgeSpawnEggItem(ModEntityTypes.ARMADILLO, 0xbe896e, 0xbe896e, new Item.Properties()));
+    public static final RegistryObject<Item> CRAB_SPAWN_EGG = ITEMS.register("crab_spawn_egg", () -> new ForgeSpawnEggItem(ModEntityTypes.CRAB, 0x436bbb, 0xffa25b, new Item.Properties()));
+    public static final RegistryObject<Item> PENGUIN_SPAWN_EGG = ITEMS.register("penguin_spawn_egg", () -> new ForgeSpawnEggItem(ModEntityTypes.PENGUIN, 0x363749, 0xdcf2e9, new Item.Properties()));
 
     public static final RegistryObject<Item> CAULORFLOWER_SEEDS = ITEMS.register("caulorflower_seeds", () -> new ItemNameBlockItem(ModBlocks.CAULORFLOWER.get(), new Item.Properties()));
     

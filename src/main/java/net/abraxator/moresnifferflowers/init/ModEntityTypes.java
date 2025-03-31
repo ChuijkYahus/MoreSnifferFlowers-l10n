@@ -29,6 +29,10 @@ public class ModEntityTypes {
     public static final RegistryObject<EntityType<VivicusChestBoatEntity>> MOD_VIVICUS_CHEST_BOAT = buildNoEgg(MoreSnifferFlowers.loc("mod_vivicus_chest_boat"), makeBuilder(VivicusChestBoatEntity::new, MobCategory.MISC, 1.375f, 0.5625f, 80, 3), false);
     public static final RegistryObject<EntityType<JarOfAcidProjectile>> JAR_OF_ACID = buildNoEgg(MoreSnifferFlowers.loc("jar_of_acid"), makeBuilder(JarOfAcidProjectile::new, MobCategory.MISC, 0.25F, 0.25F, 80, 3), false);
 
+    public static final RegistryObject<EntityType<CrabEntity>> CRAB = buildNoEgg(MoreSnifferFlowers.loc("crab"), makeBuilder(CrabEntity::new, MobCategory.CREATURE, 0.5f, 0.4f, 80, 3), false);
+    public static final RegistryObject<EntityType<ArmadilloEntity>> ARMADILLO = buildNoEgg(MoreSnifferFlowers.loc("armadillo"), makeBuilder(ArmadilloEntity::new, MobCategory.CREATURE, 0.7f, 0.7f, 80, 3), false);
+    public static final RegistryObject<EntityType<PenguinEntity>> PENGUIN = buildNoEgg(MoreSnifferFlowers.loc("penguin"), makeBuilder(PenguinEntity::new, MobCategory.CREATURE, 0.4f, 1.0f, 80, 3), false);
+
     private static <E extends Entity> RegistryObject<EntityType<E>> make(ResourceLocation id, EntityType.EntityFactory<E> factory, MobCategory classification, float width, float height, int primary, int secondary) {
         return make(id, factory, classification, width, height, false, primary, secondary);
     }

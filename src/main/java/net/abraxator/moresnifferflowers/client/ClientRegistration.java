@@ -6,9 +6,7 @@ import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
 import net.abraxator.moresnifferflowers.client.model.block.BondripiaModel;
 import net.abraxator.moresnifferflowers.client.model.block.CropressorModel;
 import net.abraxator.moresnifferflowers.client.model.block.GiantCropModels;
-import net.abraxator.moresnifferflowers.client.model.entity.BoblingModel;
-import net.abraxator.moresnifferflowers.client.model.entity.CorruptedProjectileModel;
-import net.abraxator.moresnifferflowers.client.model.entity.DragonflyModel;
+import net.abraxator.moresnifferflowers.client.model.entity.*;
 import net.abraxator.moresnifferflowers.client.particle.*;
 import net.abraxator.moresnifferflowers.client.renderer.block.*;
 import net.abraxator.moresnifferflowers.client.renderer.entity.BoblingRenderer;
@@ -60,6 +58,9 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModModelLayerLocations.CORRUPTED_CHEST_BOAT_LAYER, ChestBoatModel::createBodyModel);
         event.registerLayerDefinition(ModModelLayerLocations.VIVICUS_BOAT_LAYER, BoatModel::createBodyModel);
         event.registerLayerDefinition(ModModelLayerLocations.VIVICUS_CHEST_BOAT_LAYER, ChestBoatModel::createBodyModel);
+        event.registerLayerDefinition(ModModelLayerLocations.ARMADILLO, ArmadilloModel::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayerLocations.CRAB, CrabModel::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayerLocations.PENGUIN, PenguinModel::createBodyLayer);
 
         //BLOCK
         event.registerLayerDefinition(ModModelLayerLocations.GIANT_CARROT, GiantCropModels::createGiantCarrotLayer);
@@ -81,6 +82,10 @@ public class ClientRegistration {
         event.registerEntityRenderer(ModEntityTypes.MOD_VIVICUS_BOAT.get(), pContext -> new ModBoatRenderer(pContext, false));
         event.registerEntityRenderer(ModEntityTypes.MOD_VIVICUS_CHEST_BOAT.get(), pContext -> new ModBoatRenderer(pContext, true));
         event.registerEntityRenderer(ModEntityTypes.JAR_OF_ACID.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(ModEntityTypes.CRAB.get(), CrabRender::new);
+        event.registerEntityRenderer(ModEntityTypes.ARMADILLO.get(), ArmadilloRenderer::new);
+        event.registerEntityRenderer(ModEntityTypes.PENGUIN.get(), PenguinRenderer::new);
+
     }
 
     @SubscribeEvent

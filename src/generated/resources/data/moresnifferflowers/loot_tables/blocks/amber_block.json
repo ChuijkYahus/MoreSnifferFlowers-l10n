@@ -122,6 +122,11 @@
         },
         {
           "type": "minecraft:item",
+          "name": "moresnifferflowers:creativity_pill",
+          "weight": 500
+        },
+        {
+          "type": "minecraft:item",
           "name": "minecraft:carrot",
           "weight": 50
         },

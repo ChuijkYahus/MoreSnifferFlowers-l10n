@@ -4,15 +4,13 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.init.ModEntityTypes;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.lootmodifers.conditions.BoblingTypeCondition;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.EntityLootSubProvider;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.functions.LootingEnchantFunction;
-import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithLootingCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -38,7 +36,27 @@ public class ModEntityLoot extends EntityLootSubProvider {
                                 .when(LootItemRandomChanceWithLootingCondition.randomChanceAndLootingBoost(0.4F, 0.1F))
                         )
         ));
-        
+        add(ModEntityTypes.CRAB.get(), LootTable.lootTable().withPool(
+                LootPool.lootPool().setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(Blocks.SCAFFOLDING)
+                                .when(LootItemRandomChanceWithLootingCondition.randomChanceAndLootingBoost(0.8F, 0.05F))
+                        )
+
+        ));
+        add(ModEntityTypes.PENGUIN.get(), LootTable.lootTable().withPool(
+                LootPool.lootPool().setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(Blocks.POWDER_SNOW)
+                                .when(LootItemRandomChanceWithLootingCondition.randomChanceAndLootingBoost(0.8F, 0.05F))
+                        )
+
+        ));
+        add(ModEntityTypes.ARMADILLO.get(), LootTable.lootTable().withPool(
+                LootPool.lootPool().setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(Blocks.BROWN_MUSHROOM)
+                                .when(LootItemRandomChanceWithLootingCondition.randomChanceAndLootingBoost(0.8F, 0.05F))
+                        )
+
+        ));
     }
 
 

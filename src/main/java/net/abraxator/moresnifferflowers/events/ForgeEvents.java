@@ -71,7 +71,7 @@ public class ForgeEvents {
         String dimString = dimension.toString();
         Level level = entity.level();
 
-        if (entity instanceof ServerPlayer player && player.hasEffect(ModMobEffects.CREATIVITY.get())) {
+        if (entity instanceof ServerPlayer player && player.hasEffect(ModMobEffects.CREATIVITY.get()) && !level.isClientSide) {
 
             if (dimString.equals("ResourceKey[minecraft:dimension / minecraft:overworld]")) {
                 ModPacketHandler.CHANNEL.send(

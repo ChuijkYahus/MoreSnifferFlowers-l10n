@@ -52,5 +52,6 @@ public class GiantCropItem extends BlockItem {
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
         tooltip.add(Component.literal("CREATIVE ONLY").withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD));
+        tooltip.add(Component.literal("Vanilla sized!").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD));
     }
 }
