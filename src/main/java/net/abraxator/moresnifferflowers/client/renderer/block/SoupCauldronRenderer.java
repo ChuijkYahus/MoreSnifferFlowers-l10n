@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.blockentities.SoupCauldronBlockEntity;
+import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.client.Minecraft;
@@ -16,18 +16,17 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.RandomSequence;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
-import javax.crypto.interfaces.PBEKey;
-
-public class SoupCauldronRenderer<T extends SoupCauldronBlockEntity> implements BlockEntityRenderer<T> {
+public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implements BlockEntityRenderer<T> {
     private final ModelPart cauldron;
     private final ModelPart spoon;
 
@@ -44,12 +43,14 @@ public class SoupCauldronRenderer<T extends SoupCauldronBlockEntity> implements 
         final VertexConsumer cauldron_consumer = CAULDRON_TEXTURE.buffer(buffer, RenderType::entityCutout);
         final VertexConsumer spoon_consumer = SPOON_TEXTURE.buffer(buffer, RenderType::entitySolid);
         final RandomSource randomSource = blockEntity.getLevel().getRandom();
-        
+        final Direction direction = blockEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
+
         if(blockEntity.getBlockState().getValue(ModStateProperties.ENTITY)) {
             //CAULDRON
             poseStack.pushPose();
             poseStack.translate(1, 1.5, 0);
             poseStack.mulPose(Axis.XN.rotationDegrees(-180));
+            rotate(poseStack, direction, false);
             cauldron.render(poseStack, cauldron_consumer, packedLight, packedOverlay);
             poseStack.popPose();
 
@@ -57,6 +58,7 @@ public class SoupCauldronRenderer<T extends SoupCauldronBlockEntity> implements 
             poseStack.pushPose();
             poseStack.translate(1, 0.6, 0);
             poseStack.mulPose(Axis.XN.rotationDegrees(-180));
+            rotate(poseStack, direction, false);
             PoseStack.Pose pose = poseStack.last();
             Matrix4f matrix4f = pose.pose();
             Matrix3f matrix3f = pose.normal();
@@ -68,7 +70,7 @@ public class SoupCauldronRenderer<T extends SoupCauldronBlockEntity> implements 
             float minZ = -halfSize;
             float maxZ = halfSize;
             float y = -((float) 1 / 8 * soupCount);
-            
+
             renderFace(matrix4f, matrix3f, buffer.getBuffer(RenderType.beaconBeam(SOUP_TEXTURE, false)),
                     1.0F, 1.0F, 1.0F, 1.0F,
                     minX, maxX, y, minZ, maxZ);
@@ -80,6 +82,7 @@ public class SoupCauldronRenderer<T extends SoupCauldronBlockEntity> implements 
                 poseStack.pushPose();
                 poseStack.translate(1, 1.5, 0);
                 poseStack.mulPose(Axis.XN.rotationDegrees(-180));
+                rotate(poseStack, direction, false);
                 poseStack.mulPose((new Quaternionf()).rotationY((float) (rot * (Math.PI / 180))));
                 this.spoon.render(poseStack, spoon_consumer, packedLight, packedOverlay);
                 poseStack.popPose();
@@ -88,12 +91,13 @@ public class SoupCauldronRenderer<T extends SoupCauldronBlockEntity> implements 
             //ITEMS
             for (int i = 0; i < blockEntity.ingredients.size(); i++) {
                 poseStack.pushPose();
+                rotate(poseStack, direction, true);
                 ItemStack itemStack = blockEntity.ingredients.get(i);
                 float speed = (float) randomSource.nextIntBetweenInclusive(50, 100) / 100;
                 float rot = (float) (blockEntity.getItemsRotation(partialTick) * ((i + 1) * 0.1));
                 //poseStack.translate(i / 0.2 + 0.1, absoluteY, i / 0.2 + 0.1);
                 float a = (float) (i * 0.05);
-                poseStack.translate(0.8 + a, (float) 1 / 16 * soupCount, 0.0 - a);
+                poseStack.translate(0.8 + a, (float) 1 / 16 * soupCount + 0.8F, 0.0 - a);
                 poseStack.mulPose(new Quaternionf().rotationY((float) (rot * (Math.PI / 180))));
                 poseStack.translate(0.25, 0, 0.25);
                 poseStack.mulPose(new Quaternionf().rotationY((float) ((rot * 0.2) * (Math.PI / 180))));
@@ -103,6 +107,25 @@ public class SoupCauldronRenderer<T extends SoupCauldronBlockEntity> implements 
                 poseStack.popPose();
             }
         }
+    }
+
+    private void rotate(PoseStack poseStack, Direction direction, Boolean isItems){
+        if (!isItems) {
+            switch (direction) {
+                case EAST -> poseStack.translate(0, 0, -1);
+                case WEST -> poseStack.translate(-1, 0, 0);
+                case SOUTH -> poseStack.translate(-1, 0, -1);
+            }
+        } else {
+            switch (direction) {
+                case EAST -> poseStack.translate(0, 0, 1);
+                case WEST -> poseStack.translate(-1, 0, 0);
+                case SOUTH -> poseStack.translate(-1, 0, 1);
+            }
+            poseStack.translate(0, 0, 0.1);
+        }
+        if (!isItems) poseStack.mulPose(direction.getRotation());
+        if (!isItems) poseStack.mulPose(Axis.XN.rotationDegrees(90));
     }
 
     private void renderFace(Matrix4f pose, Matrix3f normal, VertexConsumer consumer, float red, float green, float blue, float alpha, float x0, float x1, float y, float z0, float z1) {

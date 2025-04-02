@@ -22,8 +22,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GiantSoupItem extends Item {
-    public GiantSoupItem(Properties properties) {
+public class RootedSoupItem extends Item {
+    public RootedSoupItem(Properties properties) {
         super(properties);
     }
     

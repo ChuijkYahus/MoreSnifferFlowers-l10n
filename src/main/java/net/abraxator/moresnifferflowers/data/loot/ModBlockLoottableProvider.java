@@ -309,11 +309,11 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
                                         .hasProperty(ModStateProperties.CENTER, true)))
                 ));
 
-        add(ModBlocks.SOUP_CAULDRON.get(),
+        add(ModBlocks.BEROOT_CAULDRON.get(),
                 LootTable.lootTable()
                         .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-                                .add(LootItem.lootTableItem(ModBlocks.SOUP_CAULDRON.get().asItem()))
-                                .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.SOUP_CAULDRON.get())
+                                .add(LootItem.lootTableItem(ModBlocks.BEROOT_CAULDRON.get().asItem()))
+                                .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.BEROOT_CAULDRON.get())
                                         .setProperties(StatePropertiesPredicate.Builder.properties()
                                                 .hasProperty(ModStateProperties.ENTITY, true)))
                         ));    }

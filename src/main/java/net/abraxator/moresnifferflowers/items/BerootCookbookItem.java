@@ -14,8 +14,8 @@ import net.minecraft.world.level.Level;
 
 import java.util.HashSet;
 
-public class CookbookItem extends Item {
-    public CookbookItem(Properties properties) {
+public class BerootCookbookItem extends Item {
+    public BerootCookbookItem(Properties properties) {
         super(properties);
     }
 

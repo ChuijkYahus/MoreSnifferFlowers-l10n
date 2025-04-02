@@ -1,9 +1,9 @@
 package net.abraxator.moresnifferflowers.events;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
-import net.abraxator.moresnifferflowers.blockentities.SoupCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
 import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
@@ -36,12 +36,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.checkerframework.common.value.qual.MatchesRegex;
 
 @Mod.EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
@@ -154,13 +152,13 @@ public class ForgeEvents {
             });
         }
 
-        if(level.getBlockEntity(pos) instanceof SoupCauldronBlockEntity entity && level.getBlockState(entity.center).getBlock().equals(ModBlocks.SOUP_CAULDRON.get())) {
+        if(level.getBlockEntity(pos) instanceof BerootCauldronBlockEntity entity && level.getBlockState(entity.center).getBlock().equals(ModBlocks.BEROOT_CAULDRON.get())) {
             var entityState = level.getBlockState(entity.center);
             var entityPos = entity.center;
             Direction direction = entityState.getValue(HorizontalDirectionalBlock.FACING);
             BlockPos relative = entityPos.relative(direction).relative(direction.getClockWise()).above();
             BlockPos.betweenClosedStream(new AABB(entityPos, relative)).forEach(blockPos -> {
-                if (level.getBlockState(blockPos).is(ModBlocks.SOUP_CAULDRON.get())) level.destroyBlock(blockPos, true);
+                if (level.getBlockState(blockPos).is(ModBlocks.BEROOT_CAULDRON.get())) level.destroyBlock(blockPos, true);
             });
         }
         

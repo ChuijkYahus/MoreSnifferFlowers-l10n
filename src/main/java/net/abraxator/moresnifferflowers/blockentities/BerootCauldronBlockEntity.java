@@ -4,7 +4,9 @@ import net.abraxator.moresnifferflowers.init.ModBlockEntities;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.networking.SoupCauldronCraftPacket;
-import net.abraxator.moresnifferflowers.nutrition.*;
+import net.abraxator.moresnifferflowers.nutrition.Nutrition;
+import net.abraxator.moresnifferflowers.nutrition.NutritionEntry;
+import net.abraxator.moresnifferflowers.nutrition.NutritionType;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -15,9 +17,11 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
-import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -26,13 +30,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class SoupCauldronBlockEntity extends ModBlockEntity {
+public class BerootCauldronBlockEntity extends ModBlockEntity {
     public int beetroots;
     public List<ItemStack> ingredients = new ArrayList<>();
     public int itemRot;
     public ItemStack soup = ItemStack.EMPTY;
     public BlockPos center;
     public int soupCount = 0;
+    public boolean isCrafted = false;
     public final int MAX_SOUP_COUNT = 6;
     private final int foodLimit = 8;
     private final int beetrootLimit = 4;
@@ -41,9 +46,23 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
     int craftingTimeRemaining;
     final int CRAFTING_TIME = 72;
 
-    public SoupCauldronBlockEntity(BlockPos pPos, BlockState pBlockState) {
+    public BerootCauldronBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.SOUP_CAULDRON.get(), pPos, pBlockState);
         this.center = this.getBlockPos();
+    }
+
+    public InteractionResult addItem(ItemStack itemStack, Player player) {
+        if(itemStack.is(ModItems.CROPRESSED_BEETROOT.get()) && this.beetroots < beetrootLimit && !isCrafted) {
+            addBeetroot(itemStack, player);
+        } else if (!itemStack.isEmpty() && this.ingredients.size() < foodLimit && !Nutrition.getNutritionForItem(itemStack.getItem()).isEmpty() && !isCrafted && this.beetroots > 0) {
+            addIngredient(itemStack, player);
+        } else if(itemStack.is(Items.BOWL) && hasSoup() && this.isCrafted) {
+            giveSoup(itemStack, player);
+        } else if (!ingredients.isEmpty() && !this.isCrafted) {
+            this.crafting = true;
+        } else return InteractionResult.PASS;
+
+        return InteractionResult.sidedSuccess(level.isClientSide);
     }
     
     public void craft(Player player) {
@@ -53,7 +72,7 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
         }
         
         Map<NutritionType, Integer> map = new HashMap<>();
-        ItemStack soup = ModItems.GIANT_SOUP.get().getDefaultInstance();
+        ItemStack soup = ModItems.ROOTED_SOUP.get().getDefaultInstance();
         CompoundTag tag = new CompoundTag();
         int neutral = 0;
         this.ingredients.forEach(stack -> {
@@ -71,7 +90,7 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
         int sat = ingredients.stream().mapToInt(value -> (int) value.getFoodProperties(player).getSaturationModifier()).sum();
         int food = ingredients.stream().mapToInt(value -> value.getFoodProperties(player).getNutrition()).sum();
         int ingredients = this.ingredients.size();
-        this.soupCount = beetroots + (ingredients / 4);
+        this.soupCount = this.beetroots + (ingredients / 4);
         int soupFood = 6 + (food / ingredients);
         float soupSat = 7 + ((float) sat / ingredients);
         
@@ -114,8 +133,8 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
         
         //soup creation
         soup.setTag(tag);
-        this.ingredients.clear();
         this.soup = soup;
+        clearIngredients();
     }
 
     @Override
@@ -125,10 +144,11 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
             this.spoonRotation++;
             this.craftingTimeRemaining++;
             if(this.craftingTimeRemaining >= CRAFTING_TIME) {
-                ModPacketHandler.CHANNEL.sendToServer(new SoupCauldronCraftPacket(this.getBlockPos()));
+                 ModPacketHandler.CHANNEL.sendToServer(new SoupCauldronCraftPacket(this.getBlockPos()));
                 this.crafting = false;
                 this.craftingTimeRemaining = 0;
                 this.spoonRotation = 0;
+                clearIngredients();
             }
         }
     }
@@ -144,36 +164,32 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
     public boolean hasSoup() {
         return this.soupCount > 0;
     }
-    
-    public void addItem(ItemStack itemStack, Player player) {
-        if(itemStack.is(ModItems.CROPRESSED_BEETROOT.get()) && beetroots < beetrootLimit) {
-            addBeetroot(itemStack, player);
-        } else if (!itemStack.isEmpty() && this.ingredients.size() < foodLimit) {
-            addIngredient(itemStack, player);
-        } else if(itemStack.is(Items.BOWL) && hasSoup()) {
-            giveSoup(itemStack, player);
-        } else if(itemStack.isEmpty()) {
-            this.crafting = true;
-        }
-    }
+
 
     private void giveSoup(ItemStack itemStack, Player player) {
         itemStack.shrink(1);
-        player.addItem(this.soup);
+        player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getItemInHand(InteractionHand.MAIN_HAND), player, this.soup));
+        if (this.soupCount <= 1){
+            this.soup = ItemStack.EMPTY;
+            this.isCrafted = false;
+        }
+        this.soupCount -= 1;
     }
 
     private void addIngredient(ItemStack itemStack, Player player) {
         this.ingredients.add(new ItemStack(itemStack.getItem(), 1));
         itemStack.shrink(1);
         int ingredients = this.ingredients.size();
-        this.soupCount = beetroots + (ingredients / 4);
+        this.soupCount = this.beetroots + (ingredients / 4);
     }
     
     private void addBeetroot(ItemStack itemStack, Player player) {
-        beetroots++;
+        this.beetroots++;
         int ingredients = this.ingredients.size();
-        this.soupCount = beetroots + (ingredients / 4);
-        
+        this.soupCount = this.beetroots + (ingredients / 4);
+
+        itemStack.shrink(1);
+
         if(!this.level.isClientSide) {
             return;
         }
@@ -187,8 +203,6 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
                         Mth.cos(i), 0.5F, Mth.sin(i));
             }
         }
-        
-        itemStack.shrink(1);
     }
     
     public float getItemsRotation(float partialTick) {
@@ -206,6 +220,12 @@ public class SoupCauldronBlockEntity extends ModBlockEntity {
     
     private Vec3 getMiddle() {
         return this.getBlockPos().getCenter().add(-0.5, 1.5, 0.5);
+    }
+
+    public void clearIngredients() {
+        this.ingredients.clear();
+        this.beetroots = 0;
+        this.isCrafted = true;
     }
     
     @Override

@@ -1,6 +1,6 @@
 package net.abraxator.moresnifferflowers.blocks;
 
-import net.abraxator.moresnifferflowers.blockentities.SoupCauldronBlockEntity;
+import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,8 +27,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class SoupCauldronBlock extends HorizontalDirectionalBlock implements ModEntityBlock {
-    public SoupCauldronBlock(Properties properties) {
+public class BerootCauldronBlock extends HorizontalDirectionalBlock implements ModEntityBlock {
+    public BerootCauldronBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(defaultBlockState().setValue(ModStateProperties.ENTITY, false).setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH));
     }
@@ -52,14 +52,14 @@ public class SoupCauldronBlock extends HorizontalDirectionalBlock implements Mod
 
         @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+            var item = player.getItemInHand(InteractionHand.MAIN_HAND);
         BlockPos entityPos = BlockPos.withinManhattanStream(level.getBlockState(pos.below()).is(this) ? pos.below() : pos, 2, 1, 2)
                 .filter(blockPos -> isEntityBlock(level, blockPos))
                 .findFirst().orElse(null);
 
-        if(entityPos != null && level.getBlockEntity(entityPos) instanceof SoupCauldronBlockEntity blockEntity) {
-            blockEntity.addItem(player.getItemInHand(hand), player);
+        if(entityPos != null && level.getBlockEntity(entityPos) instanceof BerootCauldronBlockEntity blockEntity) {
             
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return blockEntity.addItem(item, player);
         }
         
         return InteractionResult.PASS;
@@ -72,7 +72,7 @@ public class SoupCauldronBlock extends HorizontalDirectionalBlock implements Mod
         BlockPos.betweenClosedStream(new AABB(pos, relative)).forEach(blockPos -> {
             blockPos = blockPos.immutable();
             level.setBlock(blockPos, state.setValue(ModStateProperties.ENTITY, pos.equals(blockPos)), 3);
-            if(level.getBlockEntity(blockPos) instanceof SoupCauldronBlockEntity entity) {
+            if(level.getBlockEntity(blockPos) instanceof BerootCauldronBlockEntity entity) {
                 entity.center = pos;
             }
         });
@@ -84,7 +84,7 @@ public class SoupCauldronBlock extends HorizontalDirectionalBlock implements Mod
     
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new SoupCauldronBlockEntity(blockPos, blockState);
+        return new BerootCauldronBlockEntity(blockPos, blockState);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class SoupCauldronBlock extends HorizontalDirectionalBlock implements Mod
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context){
-        if (getter.getBlockEntity(pos) instanceof SoupCauldronBlockEntity entity) {
+        if (getter.getBlockEntity(pos) instanceof BerootCauldronBlockEntity entity) {
             var x = entity.center.getX() - pos.getX();
             var y = entity.center.getY() - pos.getY();
             var z = entity.center.getZ() - pos.getZ() + 1.125;
@@ -118,7 +118,7 @@ public class SoupCauldronBlock extends HorizontalDirectionalBlock implements Mod
     }
 
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
-        if (getter.getBlockEntity(pos) instanceof SoupCauldronBlockEntity entity) {
+        if (getter.getBlockEntity(pos) instanceof BerootCauldronBlockEntity entity) {
             var x = entity.center.getX() - pos.getX();
             var y = entity.center.getY() - pos.getY();
             var z = entity.center.getZ() - pos.getZ() + 1.125;

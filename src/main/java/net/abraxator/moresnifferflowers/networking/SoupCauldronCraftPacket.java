@@ -1,6 +1,6 @@
 package net.abraxator.moresnifferflowers.networking;
 
-import net.abraxator.moresnifferflowers.blockentities.SoupCauldronBlockEntity;
+import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -21,7 +21,7 @@ public record SoupCauldronCraftPacket(BlockPos blockPos) {
         ctx.enqueueWork(() -> {
             var player = ctx.getSender();
             var level = player.level();
-            SoupCauldronBlockEntity entity = ((SoupCauldronBlockEntity) level.getBlockEntity(packet.blockPos()));
+            BerootCauldronBlockEntity entity = ((BerootCauldronBlockEntity) level.getBlockEntity(packet.blockPos()));
             entity.craft(player);
         });
     }
