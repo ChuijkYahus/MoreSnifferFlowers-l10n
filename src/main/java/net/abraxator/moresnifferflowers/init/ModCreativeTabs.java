@@ -85,7 +85,7 @@ public class ModCreativeTabs {
                 output.accept(ModItems.CROPRESSED_BEETROOT.get());
                 output.accept(ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get());
                 output.accept(ModBlocks.GIANT_BEETROOT.get());
-                output.accept(ModBlocks.BEROOT_CAULDRON.get());
+                output.accept(ModItems.BEROOT_CAULDRON.get());
                 output.accept(ModItems.BEROOT_COOK_BOOK.get());
 
                 output.accept(ModItems.CROPRESSED_NETHERWART.get());

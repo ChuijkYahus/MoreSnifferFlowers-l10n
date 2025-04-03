@@ -118,7 +118,9 @@ public class ModItems {
     public static final RegistryObject<Item> BOBLING_SPAWN_EGG = ITEMS.register("bobling_spawn_egg", () -> new ForgeSpawnEggItem(ModEntityTypes.BOBLING, 0x312f35, 0xa55f85, new Item.Properties()));
 
     public static final RegistryObject<Item> CAULORFLOWER_SEEDS = ITEMS.register("caulorflower_seeds", () -> new ItemNameBlockItem(ModBlocks.CAULORFLOWER.get(), new Item.Properties()));
-    
+
+    public static final RegistryObject<Item> BEROOT_CAULDRON = ITEMS.register("beroot_cauldron", () -> new BerootCauldronItem(ModBlocks.BEROOT_CAULDRON.get(), new Item.Properties()));
+
     public static final RegistryObject<Item> ROOTED_SOUP = ITEMS.register("rooted_soup", () -> new RootedSoupItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> BEROOT_COOK_BOOK = ITEMS.register("beroot_cook_book", () -> new BerootCookbookItem(new Item.Properties().stacksTo(1)));
 

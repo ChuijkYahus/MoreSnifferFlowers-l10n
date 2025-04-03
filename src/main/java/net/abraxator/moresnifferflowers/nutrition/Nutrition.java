@@ -4,7 +4,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Nutrition {
     private final Item item;
@@ -34,6 +37,22 @@ public class Nutrition {
         }
         
         return EMPTY;
+    }
+
+    public static NutritionType getLargestNutrition(Item item){
+        Map<NutritionType, Integer> map = new HashMap<>();
+        Nutrition nutrition = Nutrition.getNutritionForItem(item);
+        nutrition.nutritionEntries.forEach(entry ->
+                map.merge(entry.nutrition(), entry.weight(), Integer::sum));
+        int maxValueInMap = (Collections.max(map.values()));
+        for (Map.Entry<NutritionType, Integer> entry :
+                map.entrySet()) {
+
+            if (entry.getValue() == maxValueInMap) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
     
     public boolean isEmpty() {

@@ -41,7 +41,9 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     public final int MAX_SOUP_COUNT = 6;
     private final int foodLimit = 8;
     private final int beetrootLimit = 4;
+    private final int spoonSpeed = 10;
     int spoonRotation;
+    public boolean redSoup;
     boolean crafting;
     int craftingTimeRemaining;
     final int CRAFTING_TIME = 72;
@@ -54,8 +56,10 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     public InteractionResult addItem(ItemStack itemStack, Player player) {
         if(itemStack.is(ModItems.CROPRESSED_BEETROOT.get()) && this.beetroots < beetrootLimit && !isCrafted) {
             addBeetroot(itemStack, player);
+            this.redSoup = true;
         } else if (!itemStack.isEmpty() && this.ingredients.size() < foodLimit && !Nutrition.getNutritionForItem(itemStack.getItem()).isEmpty() && !isCrafted && this.beetroots > 0) {
             addIngredient(itemStack, player);
+            this.redSoup = false;
         } else if(itemStack.is(Items.BOWL) && hasSoup() && this.isCrafted) {
             giveSoup(itemStack, player);
         } else if (!ingredients.isEmpty() && !this.isCrafted) {
@@ -134,22 +138,26 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         //soup creation
         soup.setTag(tag);
         this.soup = soup;
-        clearIngredients();
+        this.isCrafted = true;
     }
 
     @Override
     public void clientTick(ClientLevel level) {
         this.itemRot++;
-        if(this.crafting) {
+        if(this.crafting && this.craftingTimeRemaining < 9) {
             this.spoonRotation++;
             this.craftingTimeRemaining++;
-            if(this.craftingTimeRemaining >= CRAFTING_TIME) {
+            this.itemRot += 15;
+            if(this.spoonRotation * spoonSpeed >= this.soupCount * 180) {
                  ModPacketHandler.CHANNEL.sendToServer(new SoupCauldronCraftPacket(this.getBlockPos()));
                 this.crafting = false;
+                this.isCrafted = true;
                 this.craftingTimeRemaining = 0;
-                this.spoonRotation = 0;
-                clearIngredients();
+                this.spoonRotation = this.spoonRotation % 36;
             }
+        } else {
+            this.crafting = false;
+            this.craftingTimeRemaining = 0;
         }
     }
 
@@ -171,7 +179,7 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getItemInHand(InteractionHand.MAIN_HAND), player, this.soup));
         if (this.soupCount <= 1){
             this.soup = ItemStack.EMPTY;
-            this.isCrafted = false;
+            clearIngredients();
         }
         this.soupCount -= 1;
     }
@@ -207,15 +215,16 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     
     public float getItemsRotation(float partialTick) {
         int speed = crafting ? -10 : -2;
-        return (this.itemRot + partialTick) * speed;
+        if (this.crafting) partialTick *= 15;
+        return (this.itemRot + partialTick);
     }
     
     public float getSpoonRotation(float partialTick) {
         if(this.crafting) {
-            return (this.spoonRotation + partialTick) * 10;
-        } 
-        
-        return 0;
+           if (this.spoonRotation % 9 != 0) return (this.spoonRotation + partialTick) * 10;
+        }
+
+        return this.spoonRotation*10;
     }
     
     private Vec3 getMiddle() {
@@ -225,7 +234,7 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     public void clearIngredients() {
         this.ingredients.clear();
         this.beetroots = 0;
-        this.isCrafted = true;
+        this.isCrafted = false;
     }
     
     @Override
@@ -245,7 +254,11 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         tag.putInt("soupCount", this.soupCount);
         tag.putBoolean("crafting", this.crafting);
         tag.putInt("craftingTime", this.craftingTimeRemaining);
-        
+        tag.putBoolean("isCrafted", this.isCrafted);
+        tag.putBoolean("redSoup", this.redSoup);
+        tag.putInt("spoonRotation", this.spoonRotation);
+
+
         if(!this.soup.isEmpty()) {
             CompoundTag soupTag = new CompoundTag();
             this.soup.save(soupTag);
@@ -270,10 +283,60 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         this.soupCount = tag.getInt("soupCount");
         this.crafting = tag.getBoolean("crafting");
         this.craftingTimeRemaining = tag.getInt("craftingTime");
-        
+        this.isCrafted = tag.getBoolean("isCrafted");
+        this.redSoup = tag.getBoolean("redSoup");
+        this.spoonRotation = tag.getInt("spoonRotation");
+
+
         if(tag.contains("soup")) {
             this.soup = ItemStack.of(tag.getCompound("soup"));
         }
+    }
+
+    public Vec3 color() {
+        int r = 255;
+        int g = 255;
+        int b = 255;
+
+        var latestIngredient = !this.ingredients.isEmpty() ? this.ingredients.get(this.ingredients.size() -1) : null;
+        if (latestIngredient != null){
+            NutritionType nutritionType = Nutrition.getLargestNutrition(latestIngredient.getItem());
+            switch (nutritionType){
+                case SOUR -> {
+                    r = 255;
+                    g = 205;
+                    b = 0;
+                }
+                case SALTY -> {
+                    r = 185;
+                    g = 165;
+                    b = 195;
+                }
+                case SPICY -> {
+                    r = 187;
+                    g = 67;
+                    b = 48;
+                }
+                case SWEET -> {
+                    r = 230;
+                    g = 120;
+                    b = 150;
+                }
+                case NEUTRAL -> {
+                    r = 140;
+                    g = 102;
+                    b = 30;
+                }
+            }
+        }
+
+        if (this.redSoup) {
+            r = 164;
+            g = 39;
+            b = 44;
+        }
+
+        return new Vec3(r,g,b);
     }
 
     @Override
@@ -291,6 +354,6 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     
     @Override
     public AABB getRenderBoundingBox() {
-        return AABB.ofSize(this.getBlockPos().getCenter(), 2, 2, 2);
+        return AABB.ofSize(this.center.getCenter(), 4, 4, 4);
     }
 }

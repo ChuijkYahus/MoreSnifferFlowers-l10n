@@ -56,7 +56,7 @@ public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implement
 
             //SOUP
             poseStack.pushPose();
-            poseStack.translate(1, 0.6, 0);
+            poseStack.translate(1, 0.5, 0);
             poseStack.mulPose(Axis.XN.rotationDegrees(-180));
             rotate(poseStack, direction, false);
             PoseStack.Pose pose = poseStack.last();
@@ -69,10 +69,13 @@ public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implement
             float maxX = halfSize;
             float minZ = -halfSize;
             float maxZ = halfSize;
-            float y = -((float) 1 / 8 * soupCount);
+            float r = (float) (blockEntity.color().x / 255);
+            float g = (float) (blockEntity.color().y / 255);
+            float b = (float) (blockEntity.color().z / 255);
+            float y = -((float) 1 / 6 * soupCount);
 
             renderFace(matrix4f, matrix3f, buffer.getBuffer(RenderType.beaconBeam(SOUP_TEXTURE, false)),
-                    1.0F, 1.0F, 1.0F, 1.0F,
+                    r, g, b, 0.9F,
                     minX, maxX, y, minZ, maxZ);
             poseStack.popPose();
 
@@ -97,7 +100,7 @@ public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implement
                 float rot = (float) (blockEntity.getItemsRotation(partialTick) * ((i + 1) * 0.1));
                 //poseStack.translate(i / 0.2 + 0.1, absoluteY, i / 0.2 + 0.1);
                 float a = (float) (i * 0.05);
-                poseStack.translate(0.8 + a, (float) 1 / 16 * soupCount + 0.8F, 0.0 - a);
+                poseStack.translate(0.8 + a, (float) -y + 0.51F, 0.0 - a);
                 poseStack.mulPose(new Quaternionf().rotationY((float) (rot * (Math.PI / 180))));
                 poseStack.translate(0.25, 0, 0.25);
                 poseStack.mulPose(new Quaternionf().rotationY((float) ((rot * 0.2) * (Math.PI / 180))));
@@ -133,5 +136,10 @@ public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implement
         consumer.vertex(pose, x1, y, z1).color(red, green, blue, alpha).uv(1.0F / 32.0F * 24.0F, 1.0F / 32.0F * 24.0F).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
         consumer.vertex(pose, x0, y, z1).color(red, green, blue, alpha).uv(0, 1.0F / 32.0F * 24.0F).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
         consumer.vertex(pose, x0, y, z0).color(red, green, blue, alpha).uv(0, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(T pBlockEntity) {
+        return true;
     }
 }
