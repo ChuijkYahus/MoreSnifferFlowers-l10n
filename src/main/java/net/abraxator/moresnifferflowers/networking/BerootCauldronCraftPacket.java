@@ -7,8 +7,8 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public record SoupCauldronCraftPacket(BlockPos blockPos) {
-    public SoupCauldronCraftPacket(FriendlyByteBuf buffer) {
+public record BerootCauldronCraftPacket(BlockPos blockPos) {
+    public BerootCauldronCraftPacket(FriendlyByteBuf buffer) {
         this(buffer.readBlockPos());
     }
 
@@ -16,7 +16,7 @@ public record SoupCauldronCraftPacket(BlockPos blockPos) {
         buf.writeBlockPos(blockPos);
     }
 
-    public static void handle(SoupCauldronCraftPacket packet, Supplier<NetworkEvent.Context> context) {
+    public static void handle(BerootCauldronCraftPacket packet, Supplier<NetworkEvent.Context> context) {
         NetworkEvent.Context ctx = context.get();
         ctx.enqueueWork(() -> {
             var player = ctx.getSender();

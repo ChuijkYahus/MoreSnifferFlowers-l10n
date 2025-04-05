@@ -172,4 +172,11 @@ public class BerootCauldronBlock extends HorizontalDirectionalBlock implements M
         return shape.optimize();
     }
 
+    public static VoxelShape makeShapeInside(){
+        VoxelShape shape = Shapes.empty();
+        shape = Shapes.join(shape, Shapes.box(-0.75, 0.5625, -0.875, 0.75, 1, 0.625), BooleanOp.OR);
+
+        return shape.optimize();
+    }
+
 }

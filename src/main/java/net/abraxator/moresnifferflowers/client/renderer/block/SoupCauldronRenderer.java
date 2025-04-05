@@ -81,7 +81,7 @@ public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implement
 
             //SPOON
             {
-                float rot = blockEntity.getSpoonRotation(partialTick);
+                float rot = -blockEntity.getSpoonRotation(partialTick);
                 poseStack.pushPose();
                 poseStack.translate(1, 1.5, 0);
                 poseStack.mulPose(Axis.XN.rotationDegrees(-180));

@@ -42,7 +42,7 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
                 ModBlocks.AMBER_BLOCK.get(), ModBlocks.GARNET_BLOCK.get(), ModBlocks.CROPRESSOR_OUT.get(), ModBlocks.CROPRESSOR_CENTER.get(), ModBlocks.REBREWING_STAND_BOTTOM.get(),
                 ModBlocks.CHISELED_AMBER.get(), ModBlocks.CHISELED_AMBER_SLAB.get(), ModBlocks.CRACKED_AMBER.get(), ModBlocks.AMBER_MOSAIC.get(), ModBlocks.AMBER_MOSAIC_STAIRS.get(), ModBlocks.AMBER_MOSAIC_WALL.get(), ModBlocks.AMBER_MOSAIC_SLAB.get(),
                 ModBlocks.CHISELED_GARNET.get(), ModBlocks.CHISELED_GARNET_SLAB.get(), ModBlocks.CRACKED_GARNET.get(), ModBlocks.GARNET_MOSAIC.get(), ModBlocks.GARNET_MOSAIC_STAIRS.get(), ModBlocks.GARNET_MOSAIC_WALL.get(), ModBlocks.GARNET_MOSAIC_SLAB.get(),
-                ModBlocks.REBREWING_STAND_TOP.get());
+                ModBlocks.REBREWING_STAND_TOP.get(), ModBlocks.BEROOT_CAULDRON.get() );
         this.tag(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.AMBER_BLOCK.get(), ModBlocks.GARNET_BLOCK.get(), ModBlocks.CROPRESSOR_OUT.get(), ModBlocks.CROPRESSOR_CENTER.get(), ModBlocks.REBREWING_STAND_BOTTOM.get(), ModBlocks.REBREWING_STAND_TOP.get());
 
         this.tag(ModTags.ModBlockTags.BONMEELABLE).add(Blocks.WHEAT, Blocks.CARROTS, Blocks.POTATOES, Blocks.BEETROOTS, Blocks.NETHER_WART);

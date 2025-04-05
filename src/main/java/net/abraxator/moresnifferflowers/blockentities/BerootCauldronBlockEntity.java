@@ -1,15 +1,18 @@
 package net.abraxator.moresnifferflowers.blockentities;
 
+import net.abraxator.moresnifferflowers.blocks.BerootCauldronBlock;
 import net.abraxator.moresnifferflowers.init.ModBlockEntities;
 import net.abraxator.moresnifferflowers.init.ModItems;
+import net.abraxator.moresnifferflowers.networking.BerootCauldronCraftPacket;
+import net.abraxator.moresnifferflowers.networking.BerootCauldronSuckPacket;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
-import net.abraxator.moresnifferflowers.networking.SoupCauldronCraftPacket;
 import net.abraxator.moresnifferflowers.nutrition.Nutrition;
 import net.abraxator.moresnifferflowers.nutrition.NutritionEntry;
 import net.abraxator.moresnifferflowers.nutrition.NutritionType;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -19,16 +22,23 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BerootCauldronBlockEntity extends ModBlockEntity {
     public int beetroots;
@@ -54,19 +64,19 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     }
 
     public InteractionResult addItem(ItemStack itemStack, Player player) {
-        if(itemStack.is(ModItems.CROPRESSED_BEETROOT.get()) && this.beetroots < beetrootLimit && !isCrafted) {
+        if(itemStack.is(ModItems.CROPRESSED_BEETROOT.get()) && this.beetroots < beetrootLimit && !this.isCrafted) {
             addBeetroot(itemStack, player);
             this.redSoup = true;
-        } else if (!itemStack.isEmpty() && this.ingredients.size() < foodLimit && !Nutrition.getNutritionForItem(itemStack.getItem()).isEmpty() && !isCrafted && this.beetroots > 0) {
+        } else if (!itemStack.isEmpty() && this.ingredients.size() < foodLimit && !Nutrition.getNutritionForItem(itemStack.getItem()).isEmpty() && !this.isCrafted && this.beetroots > 0) {
             addIngredient(itemStack, player);
             this.redSoup = false;
         } else if(itemStack.is(Items.BOWL) && hasSoup() && this.isCrafted) {
             giveSoup(itemStack, player);
-        } else if (!ingredients.isEmpty() && !this.isCrafted) {
+        } else if (!ingredients.isEmpty() && !this.isCrafted && player != null) {
             this.crafting = true;
         } else return InteractionResult.PASS;
 
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
     
     public void craft(Player player) {
@@ -134,6 +144,7 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
             }
         }
         tag.put("effects", effectTag);
+
         
         //soup creation
         soup.setTag(tag);
@@ -142,18 +153,33 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     }
 
     @Override
+    public void tick(Level level){
+        suckInItems(level, this.center);
+    }
+
+    @Override
     public void clientTick(ClientLevel level) {
         this.itemRot++;
         if(this.crafting && this.craftingTimeRemaining < 9) {
             this.spoonRotation++;
             this.craftingTimeRemaining++;
-            this.itemRot += 15;
+            this.itemRot += 10;
             if(this.spoonRotation * spoonSpeed >= this.soupCount * 180) {
-                 ModPacketHandler.CHANNEL.sendToServer(new SoupCauldronCraftPacket(this.getBlockPos()));
+                 ModPacketHandler.CHANNEL.sendToServer(new BerootCauldronCraftPacket(this.getBlockPos()));
                 this.crafting = false;
                 this.isCrafted = true;
                 this.craftingTimeRemaining = 0;
                 this.spoonRotation = this.spoonRotation % 36;
+
+                Vec3 center = getMiddle();
+                for (int i = 0; i < 360; i++) {
+                    if (i % 20 == 0) {
+                        this.level.addParticle(
+                                ParticleTypes.LAVA,
+                                center.x, center.y, center.z,
+                                Mth.cos(i), 0.5F, Mth.sin(i));
+                    }
+                }
             }
         } else {
             this.crafting = false;
@@ -186,9 +212,22 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
 
     private void addIngredient(ItemStack itemStack, Player player) {
         this.ingredients.add(new ItemStack(itemStack.getItem(), 1));
-        itemStack.shrink(1);
         int ingredients = this.ingredients.size();
         this.soupCount = this.beetroots + (ingredients / 4);
+
+        if (level.isClientSide){
+            Vec3 center = getMiddle();
+            for (int i = 0; i < 360; i++) {
+                if(i % 20 == 0) {
+                    this.level.addParticle(
+                            new DustParticleOptions(color(itemStack.getItem()).scale(1/255D).toVector3f(), 1.0F),
+                            center.x, center.y, center.z,
+                            Mth.cos(i), 0.5F, Mth.sin(i));
+                }
+            }
+        }
+
+        itemStack.shrink(1);
     }
     
     private void addBeetroot(ItemStack itemStack, Player player) {
@@ -212,11 +251,40 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
             }
         }
     }
+
+
+    public void suckInItems(Level level, BlockPos pos) {
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
+
+        switch (level.getBlockState(pos).getValue(HorizontalDirectionalBlock.FACING)){
+            case EAST -> x +=1;
+            case NORTH -> {
+                x += 1;
+                z -= 1;
+            }
+            case WEST -> z -= 1;
+        }
+
+        for(ItemEntity itementity : getItemsAtAndAbove(level, new BlockPos(x,y,z))) {
+            ItemStack itemStack = itementity.getItem().copy();
+            ItemStack itemStack1 = itemStack.copy();
+
+            if (addItem(itemStack, null).equals(InteractionResult.SUCCESS)) {
+                ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new BerootCauldronSuckPacket(itemStack1,this.getBlockPos()));
+                itementity.setItem(itemStack);
+            }
+        }
+    }
+
+    public static List<ItemEntity> getItemsAtAndAbove(Level level, BlockPos pos) {
+        return BerootCauldronBlock.makeShapeInside().toAabbs().stream().flatMap((p_155558_) -> level.getEntitiesOfClass(ItemEntity.class, p_155558_.move(pos.getX(), pos.getY(), pos.getZ() + 1.125), EntitySelector.ENTITY_STILL_ALIVE).stream()).collect(Collectors.toList());
+    }
     
     public float getItemsRotation(float partialTick) {
-        int speed = crafting ? -10 : -2;
-        if (this.crafting) partialTick *= 15;
-        return (this.itemRot + partialTick);
+        if (this.crafting) partialTick *= 10;
+        return (this.itemRot + partialTick) * 2;
     }
     
     public float getSpoonRotation(float partialTick) {
@@ -228,7 +296,20 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     }
     
     private Vec3 getMiddle() {
-        return this.getBlockPos().getCenter().add(-0.5, 1.5, 0.5);
+        float x = -0.5F;
+        float y = 1.5F;
+        float z = 0.5F;
+
+        switch (this.getBlockState().getValue(HorizontalDirectionalBlock.FACING)){
+            case EAST -> x +=1;
+            case NORTH -> {
+                x += 1;
+                z -= 1;
+            }
+            case WEST -> z -= 1;
+        }
+
+        return this.center.getCenter().add(x, y, z);
     }
 
     public void clearIngredients() {
@@ -275,10 +356,7 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         ListTag items = tag.getList("items", 10);
         for (int i = 0; i < items.size(); i++) {
             CompoundTag itemTag = items.getCompound(i);
-            int slot = itemTag.getByte("Slot") & 255;
-            if(slot < ingredients.size()) {
                 this.ingredients.add(ItemStack.of(itemTag));
-            }
         }
         this.soupCount = tag.getInt("soupCount");
         this.crafting = tag.getBoolean("crafting");
@@ -294,13 +372,20 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     }
 
     public Vec3 color() {
+       return color(null);
+    }
+
+    public Vec3 color(Item item) {
         int r = 255;
         int g = 255;
         int b = 255;
 
-        var latestIngredient = !this.ingredients.isEmpty() ? this.ingredients.get(this.ingredients.size() -1) : null;
+        var latestIngredient = !this.ingredients.isEmpty() ? this.ingredients.get(this.ingredients.size() -1).getItem() : null;
+        if (item != null)
+            latestIngredient = item;
+
         if (latestIngredient != null){
-            NutritionType nutritionType = Nutrition.getLargestNutrition(latestIngredient.getItem());
+            NutritionType nutritionType = Nutrition.getLargestNutrition(latestIngredient);
             switch (nutritionType){
                 case SOUR -> {
                     r = 255;
@@ -330,7 +415,7 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
             }
         }
 
-        if (this.redSoup) {
+        if (this.redSoup && item == null) {
             r = 164;
             g = 39;
             b = 44;

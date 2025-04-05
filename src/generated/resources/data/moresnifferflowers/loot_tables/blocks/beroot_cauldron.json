@@ -5,7 +5,7 @@
       "bonus_rolls": 0.0,
       "conditions": [
         {
-          "block": "moresnifferflowers:soup_cauldron",
+          "block": "moresnifferflowers:beroot_cauldron",
           "condition": "minecraft:block_state_property",
           "properties": {
             "entity": "true"
@@ -15,11 +15,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "moresnifferflowers:soup_cauldron"
+          "name": "moresnifferflowers:beroot_cauldron"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "moresnifferflowers:blocks/soup_cauldron"
+  "random_sequence": "moresnifferflowers:blocks/beroot_cauldron"
 }
