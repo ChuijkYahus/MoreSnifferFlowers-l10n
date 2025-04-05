@@ -124,6 +124,9 @@ public class ModItems {
     public static final RegistryObject<Item> ROOTED_SOUP = ITEMS.register("rooted_soup", () -> new RootedSoupItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> BEROOT_COOK_BOOK = ITEMS.register("beroot_cook_book", () -> new BerootCookbookItem(new Item.Properties().stacksTo(1)));
 
+    public static final RegistryObject<Item> SALTEMONE_SEEDS = ITEMS.register("saltemone_seeds", () -> new SaltemoneSeedsItem(ModBlocks.SALTEMONE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> SOURLEMON_SEEDS = ITEMS.register("sourlemon_seeds", () -> new SaltemoneSeedsItem(ModBlocks.SOURLEMON.get(), new Item.Properties()));
+
     public static final RegistryObject<Item> CREATIVE_TAB_ICON = ITEMS.register("creative_tab_icon", () -> new CreativeTabItem(new Item.Properties()));
     public static final RegistryObject<Item> WAND_OF_CUBING = ITEMS.register("wand_of_cubing", () -> new WandOfCubingItem(new Item.Properties()));
 }

@@ -4,6 +4,8 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
+import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
+import net.abraxator.moresnifferflowers.blocks.SaltemoneBlock;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
 import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
@@ -151,6 +153,13 @@ public class ForgeEvents {
                if (level.getBlockState(blockPos).is(ModTags.ModBlockTags.GIANT_CROPS)) level.destroyBlock(blockPos, true);
             });
         }
+
+        if(level.getBlockEntity(pos) instanceof SaltemoneBlockEntity entity) {
+            SaltemoneBlock.blockPosStream(entity.center, level.getBlockState(entity.center)).forEach(pos1 -> {
+                if (level.getBlockState(pos1).is(ModBlocks.SALTEMONE.get()) || level.getBlockState(pos1).is(ModBlocks.SOURLEMON.get())) level.destroyBlock(pos1, true);
+            });
+        }
+
 
         if(level.getBlockEntity(pos) instanceof BerootCauldronBlockEntity entity && level.getBlockState(entity.center).getBlock().equals(ModBlocks.BEROOT_CAULDRON.get())) {
             var entityState = level.getBlockState(entity.center);

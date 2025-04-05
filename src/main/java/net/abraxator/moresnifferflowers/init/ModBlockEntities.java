@@ -19,10 +19,11 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<BoblingSackBlockEntity>> BOBLING_SACK = BLOCK_ENTITIES.register("bobling_sack", () -> BlockEntityType.Builder.of(BoblingSackBlockEntity::new, ModBlocks.BOBLING_SACK.get()).build(null));
     public static final RegistryObject<BlockEntityType<CorruptedSludgeBlockEntity>> CORRUPTED_SLUDGE = BLOCK_ENTITIES.register("corrupted_sludge", () -> BlockEntityType.Builder.of(CorruptedSludgeBlockEntity::new, ModBlocks.CORRUPTED_SLUDGE.get()).build(null));
     public static final RegistryObject<BlockEntityType<BondripiaBlockEntity>> BONDRIPIA = BLOCK_ENTITIES.register("bondripia", () -> BlockEntityType.Builder.of(BondripiaBlockEntity::new, ModBlocks.BONDRIPIA.get(), ModBlocks.ACIDRIPIA.get()).build(null));
-    
+    public static final RegistryObject<BlockEntityType<SaltemoneBlockEntity>> SALTEMONE = BLOCK_ENTITIES.register("saltemone", () -> BlockEntityType.Builder.of(SaltemoneBlockEntity::new, ModBlocks.SALTEMONE.get(), ModBlocks.SOURLEMON.get()).build(null));
+
     public static final RegistryObject<BlockEntityType<ModSignBlockEntity>> MOD_SIGN = BLOCK_ENTITIES.register("mod_sign", () -> BlockEntityType.Builder.of(ModSignBlockEntity::new, ModBlocks.CORRUPTED_SIGN.get(), ModBlocks.CORRUPTED_WALL_SIGN.get()).build(null));
     public static final RegistryObject<BlockEntityType<VivicusSignBlockEntity>> VIVICUS_SIGN = BLOCK_ENTITIES.register("vivicus_sign", () -> BlockEntityType.Builder.of(VivicusSignBlockEntity::new, ModBlocks.VIVICUS_SIGN.get(), ModBlocks.VIVICUS_WALL_SIGN.get()).build(null));
     public static final RegistryObject<BlockEntityType<ModHangingSignBlockEntity>> MOD_HANGING_SIGN = BLOCK_ENTITIES.register("mod_hanging_sign", () -> BlockEntityType.Builder.of(ModHangingSignBlockEntity::new, ModBlocks.CORRUPTED_HANGING_SIGN.get(), ModBlocks.CORRUPTED_WALL_HANGING_SIGN.get()).build(null));
     public static final RegistryObject<BlockEntityType<VivicusHangingSignBlockEntity>> VIVICUS_HANGING_SIGN = BLOCK_ENTITIES.register("vivicus_hanging_sign", () -> BlockEntityType.Builder.of(VivicusHangingSignBlockEntity::new, ModBlocks.VIVICUS_HANGING_SIGN.get(), ModBlocks.VIVICUS_WALL_HANGING_SIGN.get()).build(null));
-    public static final RegistryObject<BlockEntityType<BerootCauldronBlockEntity>> SOUP_CAULDRON = BLOCK_ENTITIES.register("soup_cauldron", () -> BlockEntityType.Builder.of(BerootCauldronBlockEntity::new, ModBlocks.BEROOT_CAULDRON.get()).build(null));
+    public static final RegistryObject<BlockEntityType<BerootCauldronBlockEntity>> BEROOT_CAULDRON = BLOCK_ENTITIES.register("beroot_cauldron", () -> BlockEntityType.Builder.of(BerootCauldronBlockEntity::new, ModBlocks.BEROOT_CAULDRON.get()).build(null));
 }

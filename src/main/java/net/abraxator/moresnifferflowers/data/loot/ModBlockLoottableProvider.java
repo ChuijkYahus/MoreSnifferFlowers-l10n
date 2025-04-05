@@ -15,6 +15,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -291,32 +292,22 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         add(ModBlocks.ACID_FILLED_CAULDRON.get(), createSingleItemTable(Blocks.CAULDRON));
 
 
-        add(ModBlocks.BONDRIPIA.get(),
-                LootTable.lootTable()
-                        .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-                                .add(LootItem.lootTableItem(ModItems.BONDRIPIA_SEEDS.get()))
-                                .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.BONDRIPIA.get())
-                                        .setProperties(StatePropertiesPredicate.Builder.properties()
-                                                .hasProperty(ModStateProperties.CENTER, true)))
-                        ));
+        add(ModBlocks.BONDRIPIA.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.BONDRIPIA.get(), ModItems.BONDRIPIA_SEEDS.get()));
+        add(ModBlocks.ACIDRIPIA.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.ACIDRIPIA.get(), ModItems.ACIDRIPIA_SEEDS.get()));
+        add(ModBlocks.BEROOT_CAULDRON.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.BEROOT_CAULDRON.get(), ModItems.BEROOT_CAULDRON.get()));
+        add(ModBlocks.SALTEMONE.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.SALTEMONE.get(), ModItems.SALTEMONE_SEEDS.get()));
+        add(ModBlocks.SOURLEMON.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.SOURLEMON.get(), ModItems.SOURLEMON_SEEDS.get()));
 
-        add(ModBlocks.ACIDRIPIA.get(),
-                LootTable.lootTable()
+    }
+
+    private LootTable.Builder simpleConditional(Property<Boolean> property, Block block, Item item){
+        return LootTable.lootTable()
                 .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-                        .add(LootItem.lootTableItem(ModItems.ACIDRIPIA_SEEDS.get()))
-                        .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.ACIDRIPIA.get())
+                        .add(LootItem.lootTableItem(item)
+                        .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
                                 .setProperties(StatePropertiesPredicate.Builder.properties()
-                                        .hasProperty(ModStateProperties.CENTER, true)))
-                ));
-
-        add(ModBlocks.BEROOT_CAULDRON.get(),
-                LootTable.lootTable()
-                        .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-                                .add(LootItem.lootTableItem(ModBlocks.BEROOT_CAULDRON.get().asItem()))
-                                .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.BEROOT_CAULDRON.get())
-                                        .setProperties(StatePropertiesPredicate.Builder.properties()
-                                                .hasProperty(ModStateProperties.ENTITY, true)))
-                        ));    }
+                                        .hasProperty(property, true)))));
+    }
 
     private LootTable.Builder giantCropLoot(Item crop, Item cropressed, Item special, Item piece, Item trim) {
         return LootTable.lootTable()

@@ -3,10 +3,7 @@ package net.abraxator.moresnifferflowers.client;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.client.gui.screen.RebrewingStandScreen;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
-import net.abraxator.moresnifferflowers.client.model.block.BerootCauldronModel;
-import net.abraxator.moresnifferflowers.client.model.block.BondripiaModel;
-import net.abraxator.moresnifferflowers.client.model.block.CropressorModel;
-import net.abraxator.moresnifferflowers.client.model.block.GiantCropModels;
+import net.abraxator.moresnifferflowers.client.model.block.*;
 import net.abraxator.moresnifferflowers.client.model.entity.BoblingModel;
 import net.abraxator.moresnifferflowers.client.model.entity.CorruptedProjectileModel;
 import net.abraxator.moresnifferflowers.client.model.entity.DragonflyModel;
@@ -71,6 +68,7 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModModelLayerLocations.BONDRIPIA, BondripiaModel::createBodyLayer);
         event.registerLayerDefinition(ModModelLayerLocations.BEROOT_CAULDRON, BerootCauldronModel::createCauldronLayer);
         event.registerLayerDefinition(ModModelLayerLocations.BEROOT_SPOON, BerootCauldronModel::createSpoonLayer);
+        event.registerLayerDefinition(ModModelLayerLocations.SALTEMONE, SaltemoneModel::createBodyLayer);
     }
     
     @SubscribeEvent
@@ -96,7 +94,9 @@ public class ClientRegistration {
         event.registerBlockEntityRenderer(ModBlockEntities.MOD_HANGING_SIGN.get(), HangingSignRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.VIVICUS_HANGING_SIGN.get(), VivicusHangingSignRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.BONDRIPIA.get(), BondripiaBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(ModBlockEntities.SOUP_CAULDRON.get(), SoupCauldronRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.BEROOT_CAULDRON.get(), SoupCauldronRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.SALTEMONE.get(), SaltemoneBlockEntityRenderer::new);
+
     }
     
     @SubscribeEvent

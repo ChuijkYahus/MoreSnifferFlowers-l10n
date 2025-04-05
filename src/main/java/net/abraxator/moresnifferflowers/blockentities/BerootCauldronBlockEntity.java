@@ -59,7 +59,7 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     final int CRAFTING_TIME = 72;
 
     public BerootCauldronBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(ModBlockEntities.SOUP_CAULDRON.get(), pPos, pBlockState);
+        super(ModBlockEntities.BEROOT_CAULDRON.get(), pPos, pBlockState);
         this.center = this.getBlockPos();
     }
 
@@ -84,7 +84,9 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         if(ingredients.isEmpty()) {
             return;
         }
-        
+
+        this.isCrafted = true;
+
         Map<NutritionType, Integer> map = new HashMap<>();
         ItemStack soup = ModItems.ROOTED_SOUP.get().getDefaultInstance();
         CompoundTag tag = new CompoundTag();
@@ -111,7 +113,7 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         //calculate neutral factor
         for(NutritionEntry nutritionEntry : entryList) {
             if(nutritionEntry.nutrition().equals(NutritionType.NEUTRAL)) {
-                neutral = nutritionEntry.weight();
+                neutral += nutritionEntry.weight();
             }
         }
         
@@ -123,11 +125,11 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         //effect init
         ListTag effectTag = new ListTag();
         for (NutritionEntry nutritionEntry : entryList) {
-            int scale = nutritionEntry.weight() / (neutral / 2);
+            int scale = nutritionEntry.weight() / (neutral / 2 + 1);
             int dur = scale * 20;
             int amp = (int) (scale / 1.5);
             Boolean positive = null;
-            
+
             if(scale > 0.75) {
                 positive = false;
             } else if (scale > 0.5) {
@@ -149,16 +151,19 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         //soup creation
         soup.setTag(tag);
         this.soup = soup;
-        this.isCrafted = true;
     }
 
     @Override
     public void tick(Level level){
-        suckInItems(level, this.center);
+        var pos = this.getBlockPos();
+        if (pos.equals(this.center)) {
+            suckInItems(level, this.center);
+        }
     }
 
     @Override
     public void clientTick(ClientLevel level) {
+
         this.itemRot++;
         if(this.crafting && this.craftingTimeRemaining < 9) {
             this.spoonRotation++;
@@ -203,11 +208,11 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     private void giveSoup(ItemStack itemStack, Player player) {
         itemStack.shrink(1);
         player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getItemInHand(InteractionHand.MAIN_HAND), player, this.soup));
-        if (this.soupCount <= 1){
+        this.soupCount -= 1;
+        if (this.soupCount <= 0){
             this.soup = ItemStack.EMPTY;
             clearIngredients();
         }
-        this.soupCount -= 1;
     }
 
     private void addIngredient(ItemStack itemStack, Player player) {
@@ -371,8 +376,21 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         }
     }
 
+    @Override
+    public CompoundTag getUpdateTag() {
+        var tag = new CompoundTag();
+        saveAdditional(tag);
+        return tag;
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        this.load(tag);
+    }
+
+
     public Vec3 color() {
-       return color(null);
+        return color(null);
     }
 
     public Vec3 color(Item item) {
@@ -424,12 +442,6 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         return new Vec3(r,g,b);
     }
 
-    @Override
-    public CompoundTag getUpdateTag() {
-        var tag = new CompoundTag();
-        saveAdditional(tag);
-        return tag;
-    }
 
     @Nullable
     @Override

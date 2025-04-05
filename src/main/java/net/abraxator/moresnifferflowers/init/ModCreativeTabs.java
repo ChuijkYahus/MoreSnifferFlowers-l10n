@@ -63,6 +63,9 @@ public class ModCreativeTabs {
                 output.accept(ModItems.JAR_OF_ACID.get());
                 output.accept(ModItems.ACIDRIPIA_SEEDS.get());
 
+                output.accept(ModItems.SALTEMONE_SEEDS.get());
+                output.accept(ModItems.SOURLEMON_SEEDS.get());
+
                 output.accept(ModItems.BELT_PIECE.get());
                 output.accept(ModItems.ENGINE_PIECE.get());
                 output.accept(ModItems.TUBE_PIECE.get());

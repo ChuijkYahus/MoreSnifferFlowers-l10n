@@ -158,8 +158,9 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entityinside) {
-            if(entityinside instanceof CorruptedProjectile && CorruptionRecipe.canBeCorrupted(state.getBlock(), level)) {
+            if(entityinside instanceof CorruptedProjectile corruptedProjectile && CorruptionRecipe.canBeCorrupted(state.getBlock(), level)) {
                 if(level.getBlockEntity(pos) instanceof BondripiaBlockEntity entity) {
+                    corruptedProjectile.discard();
                     BlockPos centrePos = entity.center;
                     BlockState centreState = level.getBlockState(centrePos);
                     Direction.Plane.HORIZONTAL.forEach(direction -> {
