@@ -44,6 +44,7 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     public int beetroots;
     public List<ItemStack> ingredients = new ArrayList<>();
     public int itemRot;
+    public int soupAnimationFrame;
     public ItemStack soup = ItemStack.EMPTY;
     public BlockPos center;
     public int soupCount = 0;
@@ -165,6 +166,7 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     public void clientTick(ClientLevel level) {
 
         this.itemRot++;
+        soupAnimFrame();
         if(this.crafting && this.craftingTimeRemaining < 9) {
             this.spoonRotation++;
             this.craftingTimeRemaining++;
@@ -291,6 +293,13 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         if (this.crafting) partialTick *= 10;
         return (this.itemRot + partialTick) * 2;
     }
+
+    public void soupAnimFrame() {
+        int frameTime = this.crafting ? 5 : 15;
+        int frame = 0;
+        if (this.level.getGameTime() % frameTime == 0) this.soupAnimationFrame++;
+        this.soupAnimationFrame = this.soupAnimationFrame % 5;
+    }
     
     public float getSpoonRotation(float partialTick) {
         if(this.crafting) {
@@ -343,6 +352,8 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         tag.putBoolean("isCrafted", this.isCrafted);
         tag.putBoolean("redSoup", this.redSoup);
         tag.putInt("spoonRotation", this.spoonRotation);
+        tag.putInt("soupAnimationFrame", this.soupAnimationFrame);
+
 
 
         if(!this.soup.isEmpty()) {
@@ -369,6 +380,7 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         this.isCrafted = tag.getBoolean("isCrafted");
         this.redSoup = tag.getBoolean("redSoup");
         this.spoonRotation = tag.getInt("spoonRotation");
+        this.soupAnimationFrame = tag.getInt("soupAnimationFrame");
 
 
         if(tag.contains("soup")) {
@@ -394,46 +406,57 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     }
 
     public Vec3 color(Item item) {
-        int r = 255;
-        int g = 255;
-        int b = 255;
+        int r = 0;
+        int g = 0;
+        int b = 0;
 
         var latestIngredient = !this.ingredients.isEmpty() ? this.ingredients.get(this.ingredients.size() -1).getItem() : null;
         if (item != null)
             latestIngredient = item;
 
+        int loop = this.isCrafted ? this.ingredients.size() : 1;
+
         if (latestIngredient != null){
-            NutritionType nutritionType = Nutrition.getLargestNutrition(latestIngredient);
-            switch (nutritionType){
-                case SOUR -> {
-                    r = 255;
-                    g = 205;
-                    b = 0;
-                }
-                case SALTY -> {
-                    r = 185;
-                    g = 165;
-                    b = 195;
-                }
-                case SPICY -> {
-                    r = 187;
-                    g = 67;
-                    b = 48;
-                }
-                case SWEET -> {
-                    r = 230;
-                    g = 120;
-                    b = 150;
-                }
-                case NEUTRAL -> {
-                    r = 140;
-                    g = 102;
-                    b = 30;
+            for (int i  = 0; i < loop; i++) {
+                if (this.isCrafted) latestIngredient = this.ingredients.get(i).getItem();
+                NutritionType nutritionType = Nutrition.getLargestNutrition(latestIngredient);
+                switch (nutritionType) {
+                    case SOUR -> {
+                        r += 255;
+                        g += 205;
+                        b += 0;
+                    }
+                    case SALTY -> {
+                        r += 185;
+                        g += 165;
+                        b += 195;
+                    }
+                    case SPICY -> {
+                        r += 187;
+                        g += 67;
+                        b += 48;
+                    }
+                    case SWEET -> {
+                        r += 230;
+                        g += 120;
+                        b += 150;
+                    }
+                    case NEUTRAL -> {
+                        r += 140;
+                        g += 102;
+                        b += 30;
+                    }
                 }
             }
         }
 
-        if (this.redSoup && item == null) {
+        if (this.isCrafted){
+            r = r/ingredients.size();
+            g = g/ingredients.size();
+            b = b/ingredients.size();
+        }
+
+        if (this.redSoup && item == null && !this.isCrafted) {
             r = 164;
             g = 39;
             b = 44;

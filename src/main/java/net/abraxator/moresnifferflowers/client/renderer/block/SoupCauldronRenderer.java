@@ -75,8 +75,8 @@ public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implement
             float y = -((float) 1 / 6 * soupCount);
 
             renderFace(matrix4f, matrix3f, buffer.getBuffer(RenderType.beaconBeam(SOUP_TEXTURE, false)),
-                    r, g, b, 0.9F,
-                    minX, maxX, y, minZ, maxZ);
+                    r, g, b, 1F,
+                    minX, maxX, y, minZ, maxZ, blockEntity.soupAnimationFrame);
             poseStack.popPose();
 
             //SPOON
@@ -131,11 +131,17 @@ public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implement
         if (!isItems) poseStack.mulPose(Axis.XN.rotationDegrees(90));
     }
 
-    private void renderFace(Matrix4f pose, Matrix3f normal, VertexConsumer consumer, float red, float green, float blue, float alpha, float x0, float x1, float y, float z0, float z1) {
-        consumer.vertex(pose, x1, y, z0).color(red, green, blue, alpha).uv(1.0F / 32.0F * 24.0F, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-        consumer.vertex(pose, x1, y, z1).color(red, green, blue, alpha).uv(1.0F / 32.0F * 24.0F, 1.0F / 32.0F * 24.0F).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-        consumer.vertex(pose, x0, y, z1).color(red, green, blue, alpha).uv(0, 1.0F / 32.0F * 24.0F).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-        consumer.vertex(pose, x0, y, z0).color(red, green, blue, alpha).uv(0, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+    private void renderFace(Matrix4f pose, Matrix3f normal, VertexConsumer consumer, float red, float green, float blue, float alpha, float x0, float x1, float y, float z0, float z1, int frame) {
+        float ysize = 160F;
+        float xsize = 32F;
+        float betterFrame = (float) frame / 4F;
+        float magicNumberY = (1.0F / ysize * (24F + frame*32));
+        float magicNumberX = 1.0F / xsize * 24.0F;
+        float two = 1.0F / ysize * (32.0F * frame);
+        consumer.vertex(pose, x1, y, z0).color(red, green, blue, alpha).uv(magicNumberX, two).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+        consumer.vertex(pose, x1, y, z1).color(red, green, blue, alpha).uv(magicNumberX, magicNumberY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+        consumer.vertex(pose, x0, y, z1).color(red, green, blue, alpha).uv(0, magicNumberY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+        consumer.vertex(pose, x0, y, z0).color(red, green, blue, alpha).uv(0, two).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
     }
 
     @Override

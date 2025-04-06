@@ -1,0 +1,7 @@
+{
+    "parent": "moresnifferflowers:block/saltemone1",
+    "textures": {
+		"0": "moresnifferflowers:block/sourlemon1",
+		"particle": "moresnifferflowers:block/sourlemon1"
+    }
+}

@@ -1,0 +1,37 @@
+{
+	"credit": "Made with Blockbench",
+	"render_type": "cutout",
+	"texture_size": [128, 128],
+	"textures": {
+		"0": "moresnifferflowers:block/saltemone1",
+		"particle": "moresnifferflowers:block/saltemone1"
+	},
+	"elements": [
+		{
+			"from": [2, 0, -14],
+			"to": [30, 0, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 0, 15]},
+			"faces": {
+				"north": {"uv": [8.75, 9.875, 12.25, 9.875], "texture": "#0"},
+				"east": {"uv": [5.25, 9.875, 8.75, 9.875], "texture": "#0"},
+				"south": {"uv": [15.75, 9.875, 19.25, 9.875], "texture": "#0"},
+				"west": {"uv": [12.25, 9.875, 15.75, 9.875], "texture": "#0"},
+				"up": {"uv": [12.25, 9.875, 8.75, 6.375], "texture": "#0"},
+				"down": {"uv": [15.75, 6.375, 12.25, 9.875], "texture": "#0"}
+			}
+		},
+		{
+			"from": [13, 0.025, -3],
+			"to": [19, 2.025, 3],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 1.025, 15]},
+			"faces": {
+				"north": {"uv": [11.375, 6, 12.125, 6.25], "texture": "#0"},
+				"east": {"uv": [10.625, 6, 11.375, 6.25], "texture": "#0"},
+				"south": {"uv": [12.875, 6, 13.625, 6.25], "texture": "#0"},
+				"west": {"uv": [12.125, 6, 12.875, 6.25], "texture": "#0"},
+				"up": {"uv": [12.125, 6, 11.375, 5.25], "texture": "#0"},
+				"down": {"uv": [12.875, 5.25, 12.125, 6], "texture": "#0"}
+			}
+		}
+	]
+}

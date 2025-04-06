@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 public class SaltemoneBlockEntity extends ModBlockEntity {
     public BlockPos center;
@@ -24,5 +25,10 @@ public class SaltemoneBlockEntity extends ModBlockEntity {
     public void load(CompoundTag pTag) {
         super.load(pTag);
         this.center = NbtUtils.readBlockPos(pTag.getCompound("center"));
+    }
+
+    @Override
+    public AABB getRenderBoundingBox() {
+        return AABB.ofSize(this.center.getCenter(), 3, 3, 3);
     }
 }

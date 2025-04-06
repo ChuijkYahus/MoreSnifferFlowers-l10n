@@ -14,6 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -23,6 +24,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,8 +35,9 @@ public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable
     public SaltemoneBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(defaultBlockState().setValue(ModStateProperties.ENTITY, false).setValue(getAgeProperty(), 0).setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH));
-
     }
+    protected static final VoxelShape AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
+
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         pBuilder.add(HorizontalDirectionalBlock.FACING, ModStateProperties.ENTITY, getAgeProperty());
@@ -132,10 +136,6 @@ public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable
 
     public void grow(Level level, BlockPos blockPos) {
         if(level.getBlockEntity(blockPos) instanceof SaltemoneBlockEntity entity) {
-            if(level.getBlockState(entity.center).is(this))
-                makeGrowOnBonemeal(level, entity.center, level.getBlockState(entity.center));
-            else level.destroyBlock(blockPos, false);
-
             blockPosStream(entity.center, level.getBlockState(blockPos)).forEach(pos -> {
                 if(level.getBlockState(pos).is(this)) {
                     makeGrowOnBonemeal(level, pos, level.getBlockState(pos));
@@ -148,9 +148,13 @@ public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable
         }
     }
 
-
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new SaltemoneBlockEntity(blockPos, blockState);
     }
+
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return AABB;
+    }
+
 }

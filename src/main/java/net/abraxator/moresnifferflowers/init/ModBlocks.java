@@ -149,7 +149,7 @@ public class ModBlocks {
 
     public static final RegistryObject<Block> BEROOT_CAULDRON = registerBlockNoItem("beroot_cauldron", () -> new BerootCauldronBlock(BlockBehaviour.Properties.copy(Blocks.ANVIL).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
 
-    public static final RegistryObject<Block> SALTEMONE = registerBlockNoItem("saltemone", () -> new SaltemoneBlock(BlockBehaviour.Properties.copy(ModBlocks.BONDRIPIA.get()).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
+    public static final RegistryObject<Block> SALTEMONE = registerBlockNoItem("saltemone", () -> new SaltemoneBlock(BlockBehaviour.Properties.of().noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never).strength(0.3F).sound(SoundType.WET_GRASS)));
     public static final RegistryObject<Block> SOURLEMON = registerBlockNoItem("sourlemon", () -> new SaltemoneBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTEMONE.get()).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
 
     private static <T extends Block> RegistryObject<T> registerBlockNoItem(String name, Supplier<T> block) {
