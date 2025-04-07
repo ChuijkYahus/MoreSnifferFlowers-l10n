@@ -32,6 +32,10 @@ public class SaltemoneSeedsItem extends PlaceOnWaterBlockItem {
         pTooltip.add(Component.translatableWithFallback("tooltip.saltemone_seeds", "Plant on water!").withStyle(ChatFormatting.GOLD));
     }
 
+    public String getDescriptionId() {
+        return this.getOrCreateDescriptionId();
+    }
+
     @Override
     public InteractionResult place(BlockPlaceContext context) {
         Level level = context.getLevel();

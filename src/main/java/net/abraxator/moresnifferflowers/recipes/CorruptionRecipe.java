@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModRecipeSerializers;
 import net.abraxator.moresnifferflowers.init.ModRecipeTypes;
+import net.abraxator.moresnifferflowers.init.ModTags;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -40,7 +41,6 @@ public record CorruptionRecipe(ResourceLocation id, String source, List<Entry> l
         map.put(ModBlocks.SALTEMONE.get(), ModBlocks.SOURLEMON.get());
 
     });
-    public static final List<Block> BLACKLIST = List.of(ModBlocks.CORRUPTED_LOG.get(), ModBlocks.STRIPPED_CORRUPTED_LOG.get(), ModBlocks.CORRUPTED_LEAVES.get(), ModBlocks.CORRUPTED_LEAVES_BUSH.get());
     
     public boolean tagOrBlock() {
         return source.charAt(0) == '#';
@@ -99,7 +99,7 @@ public record CorruptionRecipe(ResourceLocation id, String source, List<Entry> l
     }
 
     public static boolean canBeCorrupted(Block block, Level level) {
-        if(block == null || BLACKLIST.contains(block)) {
+        if(block == null || block.defaultBlockState().is(ModTags.ModBlockTags.UNCORRUPTABLE)) {
             return false;
         }
 

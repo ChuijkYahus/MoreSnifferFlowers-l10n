@@ -1,37 +1,31 @@
 package net.abraxator.moresnifferflowers.compat.jei.corruption;
 
 import com.google.common.collect.Maps;
-import com.google.gson.internal.Streams;
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.compat.jei.rebrewing.JeiRebrewingRecipe;
 import net.abraxator.moresnifferflowers.init.ModItems;
+import net.abraxator.moresnifferflowers.init.ModTags;
 import net.abraxator.moresnifferflowers.recipes.CorruptionRecipe;
-import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -83,12 +77,13 @@ public class CorruptionCategory implements IRecipeCategory<CorruptionRecipe> {
             TagKey<Block> tagKey = recipe.inputTag().get();
             List<ItemStack> items = StreamSupport.stream(BuiltInRegistries.BLOCK.getTagOrEmpty(tagKey).spliterator(), false)
                     .map(Holder::get)
+                    .filter(block -> !block.defaultBlockState().is(ModTags.ModBlockTags.UNCORRUPTABLE))
                     .map(block -> block.asItem().getDefaultInstance())
                     .filter(itemStack -> !itemStack.isEmpty())
                     .toList();
             builder.addSlot(RecipeIngredientRole.INPUT, 10, 15).addItemStacks(items);
         } else {
-            builder.addSlot(RecipeIngredientRole.INPUT, 10, 15).addItemStack(recipe.inputBlock().get().asItem().getDefaultInstance());
+            if (!recipe.inputBlock().get().defaultBlockState().is(ModTags.ModBlockTags.UNCORRUPTABLE)) builder.addSlot(RecipeIngredientRole.INPUT, 10, 15).addItemStack(recipe.inputBlock().get().asItem().getDefaultInstance());
         }
         
         builder.addSlot(RecipeIngredientRole.OUTPUT, 92, 15)

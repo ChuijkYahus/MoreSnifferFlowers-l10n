@@ -427,9 +427,9 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
                         b += 0;
                     }
                     case SALTY -> {
-                        r += 185;
-                        g += 165;
-                        b += 195;
+                        r += 190;
+                        g += 233;
+                        b += 233;
                     }
                     case SPICY -> {
                         r += 187;

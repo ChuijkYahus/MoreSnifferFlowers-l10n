@@ -1,6 +1,5 @@
 package net.abraxator.moresnifferflowers.blockentities;
 
-import com.ibm.icu.lang.UScript;
 import net.abraxator.moresnifferflowers.entities.CorruptedProjectile;
 import net.abraxator.moresnifferflowers.init.ModBlockEntities;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
@@ -9,13 +8,11 @@ import net.abraxator.moresnifferflowers.init.ModTags;
 import net.abraxator.moresnifferflowers.networking.CorruptedSludgePacket;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.recipes.CorruptionRecipe;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -105,6 +102,8 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
         @Override
         public boolean handleGameEvent(ServerLevel pLevel, GameEvent pGameEvent, GameEvent.Context pContext, Vec3 pPos) {
             CorruptedSludgeBlockEntity entity;
+
+            if (pContext.affectedState() == null || CorruptionRecipe.canBeCorrupted(pContext.affectedState().getBlock(), pLevel)) return false;
             
             if(pLevel.getBlockEntity(BlockPos.containing(this.positionSource.getPosition(pLevel).get())) instanceof CorruptedSludgeBlockEntity entity1) {
                 entity = entity1;

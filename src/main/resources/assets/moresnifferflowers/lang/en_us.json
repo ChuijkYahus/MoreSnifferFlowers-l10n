@@ -66,6 +66,9 @@
 	"item.moresnifferflowers.corrupted_boat": "Corrupted Boat",
 	"item.moresnifferflowers.corrupted_chest_boat": "Corrupted Boat with Chest",
 	"item.moresnifferflowers.caulorflower_seeds": "Caulorflower Seed",
+	"item.moresnifferflowers.saltemone_seeds": "Saltemone Seed",
+	"item.moresnifferflowers.sourlemon_seeds": "Sourlemon Seed",
+	"item.moresnifferflowers.beroot_cook_book": "Beroot Cookbook",
 
 
 # Blocks🎲🎲🎲
@@ -156,9 +159,18 @@
 	"block.moresnifferflowers.decayed_log": "Decayed Log",
 	"block.moresnifferflowers.corrupted_grass_block": "Corrupted Grass Block",
 	"block.moresnifferflowers.cured_grass_block": "Cured Grass Block",
-	
+	"block.moresnifferflowers.corrupted_grass": "Corrupted Grass",
+	"block.moresnifferflowers.corrupted_tall_grass": "Corrupted Tall Grass",
+	"block.moresnifferflowers.corrupted_wart": "Corrupted Wart",
+
 	"block.moresnifferflowers.bonmeel_filled_cauldron": "Bonmeel Filled Cauldron",
 	"block.moresnifferflowers.acid_filled_cauldron": "Acid Filled Cauldron",
+
+	"block.moresnifferflowers.saltemone": "Saltemone",
+	"block.moresnifferflowers.sourlemon": "Sourlemon",
+	"block.moresnifferflowers.beroot_cauldron": "Beroot Cauldron",
+	"block.moresnifferflowers.rooted_soup": "Rooted Soup",
+
 
 
 
@@ -178,9 +190,9 @@
 	"tooltip.wip": "WIP",
 	"tooltip.vivicus_antidote": "Cures Boblings and Corrupted Grass",
 	"tooltip.dyescrapia": "Scrapes the dye off of colored blocks",
+	"tooltip.saltemone_seeds": "Plant on water!",
 
-
-	# Advancements 🏆🏆🏆
+# Advancements 🏆🏆🏆
 	"advancements.more_sniffer_flowers.dyespria_plant": "Colorful plants",
 	"advancements.more_sniffer_flowers.dyespria_plant.desc": "Place the Dyespria!!!",
 	"advancements.more_sniffer_flowers.dyespria": "Spriaing your dye",

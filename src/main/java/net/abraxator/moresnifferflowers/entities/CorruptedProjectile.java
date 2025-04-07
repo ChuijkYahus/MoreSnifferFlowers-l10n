@@ -9,7 +9,6 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
@@ -22,16 +21,12 @@ import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.*;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 import java.util.Optional;
 
@@ -94,6 +89,8 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
         var state = this.level().getBlockState(pos);
         var stateRelative = this.level().getBlockState(posRelative);
         var stateRelativeBelow = this.level().getBlockState(pResult.getBlockPos().relative(pResult.getDirection()).below());
+
+        if (this.level().getBlockState(pos).is(ModTags.ModBlockTags.NO_CORRUPTED_SLIME_COLLISION)) return;
 
         if(checkState(this.level().getBlockState(pResult.getBlockPos()))) {
             var layer = state.getValue(ModStateProperties.LAYER);
