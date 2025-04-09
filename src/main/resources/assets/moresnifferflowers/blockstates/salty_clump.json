@@ -1,0 +1,160 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice0"
+      },
+      "when": {
+        "facing": "north",
+        "count": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice0",
+        "y": 90
+      },
+      "when": {
+        "facing": "east",
+        "count": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice0",
+        "y": 180
+      },
+      "when": {
+        "facing": "south",
+        "count": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice0",
+        "y": 270
+      },
+      "when": {
+        "facing": "west",
+        "count": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice1"
+      },
+      "when": {
+        "facing": "north",
+        "count": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice1",
+        "y": 90
+      },
+      "when": {
+        "facing": "east",
+        "count": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice1",
+        "y": 180
+      },
+      "when": {
+        "facing": "south",
+        "count": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice1",
+        "y": 270
+      },
+      "when": {
+        "facing": "west",
+        "count": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice2"
+      },
+      "when": {
+        "facing": "north",
+        "count": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice2",
+        "y": 90
+      },
+      "when": {
+        "facing": "east",
+        "count": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice2",
+        "y": 180
+      },
+      "when": {
+        "facing": "south",
+        "count": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice2",
+        "y": 270
+      },
+      "when": {
+        "facing": "west",
+        "count": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice3"
+      },
+      "when": {
+        "facing": "north",
+        "count": "4"
+      }
+    },
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice3",
+        "y": 90
+      },
+      "when": {
+        "facing": "east",
+        "count": "4"
+      }
+    },
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice3",
+        "y": 180
+      },
+      "when": {
+        "facing": "south",
+        "count": "4"
+      }
+    },
+    {
+      "apply": {
+        "model": "moresnifferflowers:block/salty_spice3",
+        "y": 270
+      },
+      "when": {
+        "facing": "west",
+        "count": "4"
+      }
+    }
+  ]
+}

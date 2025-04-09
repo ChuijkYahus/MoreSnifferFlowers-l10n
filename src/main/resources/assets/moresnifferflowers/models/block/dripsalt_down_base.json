@@ -1,0 +1,6 @@
+{
+  "parent": "moresnifferflowers:block/pointed_dripstone",
+  "textures": {
+    "cross": "moresnifferflowers:block/dripsalt_down_base"
+  }
+}

@@ -52,6 +52,7 @@ public class CropressorBlockEntity extends ModBlockEntity {
         suckInItems(level);
 
         for (Crop crop : Crop.values()) {
+            if (cropCount.length < Crop.values().length) this.cropCount = new int[5];
             if (cropCount[crop.ordinal()] >= 16) {
                 if (result.isEmpty()) {
                     currentCrop = new ItemStack(crop.item);
@@ -205,7 +206,7 @@ public class CropressorBlockEntity extends ModBlockEntity {
         return compoundtag;
     }
     
-    public static enum Crop implements StringRepresentable {
+    public enum Crop implements StringRepresentable {
         CARROT("carrot", Items.CARROT, 0xffa135),
         POTATO("potato", Items.POTATO, 0xb88c4c),
         WHEAT("wheat", Items.WHEAT, 0xfff35e),

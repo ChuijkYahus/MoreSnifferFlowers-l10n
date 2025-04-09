@@ -151,6 +151,8 @@ public class ModBlocks {
 
     public static final RegistryObject<Block> SALTEMONE = registerBlockNoItem("saltemone", () -> new SaltemoneBlock(BlockBehaviour.Properties.of().noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never).strength(0.3F).sound(SoundType.WET_GRASS)));
     public static final RegistryObject<Block> SOURLEMON = registerBlockNoItem("sourlemon", () -> new SaltemoneBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTEMONE.get()).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
+    public static final RegistryObject<Block> SALTY_CLUMP = registerBlockNoItem("salty_clump", () -> new Block(BlockBehaviour.Properties.copy(ModBlocks.SALTEMONE.get()).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
+    public static final RegistryObject<Block> DRIPSALT = registerBlockNoItem("dripsalt", () -> new PointedDripstoneBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTEMONE.get()).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
 
     private static <T extends Block> RegistryObject<T> registerBlockNoItem(String name, Supplier<T> block) {
         return BLOCKS.register(name, block);
