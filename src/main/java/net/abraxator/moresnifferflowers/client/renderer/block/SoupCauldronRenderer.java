@@ -40,6 +40,7 @@ public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implement
         final Material CAULDRON_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/beroot_cauldron"));
         final Material SPOON_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/beroot_spoon"));
         final ResourceLocation SOUP_TEXTURE = MoreSnifferFlowers.loc("textures/block/beroot_soup.png");
+        final ResourceLocation FINISHED_SOUP_TEXTURE = MoreSnifferFlowers.loc("textures/block/beroot_soup1.png");
         final VertexConsumer cauldron_consumer = CAULDRON_TEXTURE.buffer(buffer, RenderType::entityCutout);
         final VertexConsumer spoon_consumer = SPOON_TEXTURE.buffer(buffer, RenderType::entitySolid);
         final RandomSource randomSource = blockEntity.getLevel().getRandom();
@@ -73,10 +74,11 @@ public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implement
             float g = (float) (blockEntity.color().y / 255);
             float b = (float) (blockEntity.color().z / 255);
             float y = -((float) 1 / 6 * soupCount);
+            ResourceLocation SOUPY = blockEntity.isCrafted ? FINISHED_SOUP_TEXTURE : SOUP_TEXTURE;
 
-            renderFace(matrix4f, matrix3f, buffer.getBuffer(RenderType.beaconBeam(SOUP_TEXTURE, false)),
+            renderFace(matrix4f, matrix3f, buffer.getBuffer(RenderType.beaconBeam(SOUPY, false)),
                     r, g, b, 1F,
-                    minX, maxX, y, minZ, maxZ, blockEntity.soupAnimationFrame);
+                    minX, maxX, y, minZ, maxZ, blockEntity.soupAnimationFrame, blockEntity.isCrafted);
             poseStack.popPose();
 
             //SPOON
@@ -131,10 +133,11 @@ public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implement
         if (!isItems) poseStack.mulPose(Axis.XN.rotationDegrees(90));
     }
 
-    private void renderFace(Matrix4f pose, Matrix3f normal, VertexConsumer consumer, float red, float green, float blue, float alpha, float x0, float x1, float y, float z0, float z1, int frame) {
-        float ysize = 160F;
+    private void renderFace(Matrix4f pose, Matrix3f normal, VertexConsumer consumer, float red, float green, float blue, float alpha, float x0, float x1, float y, float z0, float z1, int frame, boolean isCrafted) {
+        float ysize = isCrafted ? 192 : 160F;
         float xsize = 32F;
-        float betterFrame = (float) frame / 4F;
+        int frameCount = isCrafted ? 6 : 5;
+        frame = frame % frameCount;
         float magicNumberY = (1.0F / ysize * (24F + frame*32));
         float magicNumberX = 1.0F / xsize * 24.0F;
         float two = 1.0F / ysize * (32.0F * frame);

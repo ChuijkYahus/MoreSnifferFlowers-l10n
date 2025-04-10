@@ -295,10 +295,10 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     }
 
     public void soupAnimFrame() {
-        int frameTime = this.crafting ? 5 : 15;
+        int frameTime = this.crafting ? 5 : 12;
         int frame = 0;
         if (this.level.getGameTime() % frameTime == 0) this.soupAnimationFrame++;
-        this.soupAnimationFrame = this.soupAnimationFrame % 5;
+        this.soupAnimationFrame = this.soupAnimationFrame % 30;
     }
     
     public float getSpoonRotation(float partialTick) {
@@ -352,7 +352,6 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         tag.putBoolean("isCrafted", this.isCrafted);
         tag.putBoolean("redSoup", this.redSoup);
         tag.putInt("spoonRotation", this.spoonRotation);
-        tag.putInt("soupAnimationFrame", this.soupAnimationFrame);
 
 
 
@@ -380,7 +379,6 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
         this.isCrafted = tag.getBoolean("isCrafted");
         this.redSoup = tag.getBoolean("redSoup");
         this.spoonRotation = tag.getInt("spoonRotation");
-        this.soupAnimationFrame = tag.getInt("soupAnimationFrame");
 
 
         if(tag.contains("soup")) {

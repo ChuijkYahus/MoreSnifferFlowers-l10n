@@ -69,6 +69,9 @@
 	"item.moresnifferflowers.saltemone_seeds": "Saltemone Seed",
 	"item.moresnifferflowers.sourlemon_seeds": "Sourlemon Seed",
 	"item.moresnifferflowers.beroot_cook_book": "Beroot Cookbook",
+	"item.moresnifferflowers.rooted_soup": "Rooted Soup",
+	"item.moresnifferflowers.salty_spice": "Salty Spice",
+
 
 
 # Blocks🎲🎲🎲
@@ -170,6 +173,9 @@
 	"block.moresnifferflowers.sourlemon": "Sourlemon",
 	"block.moresnifferflowers.beroot_cauldron": "Beroot Cauldron",
 	"block.moresnifferflowers.rooted_soup": "Rooted Soup",
+	
+	"block.moresnifferflowers.dripsalt": "Dripsalt",
+	"block.moresnifferflowers.salty_clump": "Salty Clump",
 
 
 
