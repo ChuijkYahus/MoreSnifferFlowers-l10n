@@ -1,7 +1,7 @@
 {
 	"credit": "Made with Blockbench",
     "ambientocclusion": true,
-	"render_type": "cutout",
+	"render_type": "cutout_mipped",
 	"texture_size": [128, 128],
 	"textures": {
 		"0": "moresnifferflowers:block/saltemone1",
