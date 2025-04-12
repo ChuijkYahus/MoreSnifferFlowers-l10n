@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dripsalt": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "moresnifferflowers:dripsalt"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "moresnifferflowers:salty_spice_from_part_recycling"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_dripsalt",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "moresnifferflowers:salty_spice_from_part_recycling"
+    ]
+  },
+  "sends_telemetry_event": false
+}

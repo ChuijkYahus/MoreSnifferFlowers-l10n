@@ -298,7 +298,30 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         add(ModBlocks.SALTEMONE.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.SALTEMONE.get(), ModItems.SALTEMONE_SEEDS.get()));
         add(ModBlocks.SOURLEMON.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.SOURLEMON.get(), ModItems.SOURLEMON_SEEDS.get()));
 
+        add(ModBlocks.SALTY_CLUMP.get(), simpleIntegerConditional(ModStateProperties.AMOUNT_4, ModBlocks.SALTY_CLUMP.get(), ModItems.SALTY_SPICE.get()));
+
+        add(ModBlocks.DRIPSALT.get(), createSingleItemTable(ModBlocks.DRIPSALT.get().asItem()));
+
+
     }
+
+    private LootTable.Builder simpleIntegerConditional(Property<Integer> property, Block block, Item item){
+        return LootTable.lootTable()
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1.0F))
+                        .when(LootItemEntityPropertyCondition.entityPresent(LootContext.EntityTarget.THIS))
+                        .add(AlternativesEntry.alternatives(
+                                property.getPossibleValues(),
+                                        integer -> LootItem.lootTableItem(item)
+                                                .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+                                                        .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, integer)))
+                                                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(integer))
+                                )
+
+                        ))
+                );
+    }
+
 
     private LootTable.Builder simpleConditional(Property<Boolean> property, Block block, Item item){
         return LootTable.lootTable()

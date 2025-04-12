@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -68,13 +69,11 @@ public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable
     public boolean canSurvive(BlockState blockState, LevelReader level, BlockPos blockPos) {
         if(level.getBlockEntity(blockPos) instanceof SaltemoneBlockEntity entity) {
             var list = blockPosStream(entity.center, blockState).filter(pos -> super.canSurvive(level.getBlockState(pos), level, pos)).toList();
+            boolean isWaterBelow = blockPosStream(entity.center.below(), blockState).allMatch(level::isWaterAt);
 
-            // System.out.println("postcheck " + Block.canSupportCenter(level, blockPos.above(), Direction.DOWN) + !level.isWaterAt(blockPos) + (list.size() == 4) + " CC needed = "+ (corruptionCheck(entity, level) && !(list.size() == 4)));
-            return !level.isWaterAt(blockPos) && (list.size() == 4 || corruptionCheck(entity, level));
-
+            return !level.isWaterAt(blockPos) && (list.size() == 4 || corruptionCheck(entity, level)) && isWaterBelow;
         }
         var list = blockPosStream(blockPos, blockState).filter(pos -> super.canSurvive(level.getBlockState(pos), level, pos)).toList();
-        // System.out.println("precheck " + Block.canSupportCenter(level, blockPos.above(), Direction.DOWN) + !level.isWaterAt(blockPos) + (list.size() == 4) + getPositionsForPlant(level, blockPos).isPresent());
         return !level.isWaterAt(blockPos) && list.size() == 4;
     }
 
@@ -87,8 +86,21 @@ public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable
         return !(i.get() == 0);
     }
 
-
     @Override
+    public BlockState updateShape(BlockState stateOriginal, Direction dir, BlockState stateNew, LevelAccessor level, BlockPos pCurrentPos, BlockPos pNewPos) {
+        if (level.getBlockEntity(pCurrentPos) instanceof SaltemoneBlockEntity entity){
+            if (!canSurvive(stateOriginal, level, pCurrentPos)){
+                blockPosStream(entity.center, stateOriginal).forEach(pos ->{
+                    level.destroyBlock(pos, true);
+                });
+            }
+        }
+        return stateOriginal;
+    }
+
+
+
+        @Override
     public IntegerProperty getAgeProperty() {
         return ModStateProperties.AGE_2;
     }

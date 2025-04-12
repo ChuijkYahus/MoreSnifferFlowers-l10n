@@ -5,8 +5,6 @@ import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModRecipeSerializers;
 import net.abraxator.moresnifferflowers.init.ModTags;
-import net.abraxator.moresnifferflowers.recipes.RebrewedTippedArrowRecipe;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.tags.TagKey;
@@ -16,7 +14,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class ModRecipesProvider extends RecipeProvider {
@@ -182,6 +179,13 @@ public class ModRecipesProvider extends RecipeProvider {
                         .save(pRecipeOutput);
 
         SpecialRecipeBuilder.special(ModRecipeSerializers.REBREWED_TIPPED_ARROW.get()).save(pRecipeOutput, "rebrewed_tipped_arrow");
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.DRIPSALT.get().asItem())
+                .requires(ModItems.SALTY_SPICE.get(), 5)
+                .unlockedBy("has_salty_spice", has(ModItems.SALTY_SPICE.get()))
+                .save(pRecipeOutput);
+
+        partsRecycling(pRecipeOutput, ModBlocks.DRIPSALT.get().asItem(), ModItems.SALTY_SPICE.get(), 5);
         
         ModCustomRecipeProvider.createRecipes(pRecipeOutput);
     }

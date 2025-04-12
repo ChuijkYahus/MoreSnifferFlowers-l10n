@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/pointed_dripstone",
+  "parent": "moresnifferflowers:block/pointed_dripstone",
   "textures": {
     "cross": "moresnifferflowers:block/dripsalt_up_frustum"
   }

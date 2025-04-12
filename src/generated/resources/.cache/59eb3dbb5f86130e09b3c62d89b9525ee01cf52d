@@ -1,4 +1,4 @@
-// 1.20.1	2025-04-05T21:51:23.8127168	Loot Tables
+// 1.20.1	2025-04-12T22:01:48.3990838	Loot Tables
 421d4c078004a75f24902e1d857ee88a3c0688d2 data/moresnifferflowers/loot_tables/blocks/acidripia.json
 16882dced81963aacd1b4d32ed8e0ca33a618998 data/moresnifferflowers/loot_tables/blocks/acid_filled_cauldron.json
 e37d1e0a9608760103f1f41ea813a4050dadc2fc data/moresnifferflowers/loot_tables/blocks/amber_block.json
@@ -50,6 +50,7 @@ c9d1c42f59fe168d69df20f9bd8e887032077322 data/moresnifferflowers/loot_tables/blo
 47a337d72bad22765f80600196daff766fc4061d data/moresnifferflowers/loot_tables/blocks/cured_grass_block.json
 b3b03eab942b447df7135a1e23d041eb960820c6 data/moresnifferflowers/loot_tables/blocks/dawnberry_vine.json
 4fab1633bd34c1adce3568e10424762a5aa1a07e data/moresnifferflowers/loot_tables/blocks/decayed_log.json
+cacd03e34e7289fb144b2974ca93a0323974ad05 data/moresnifferflowers/loot_tables/blocks/dripsalt.json
 881f7403f0c758a3c766b91a22029a02c66e58ac data/moresnifferflowers/loot_tables/blocks/dyescrapia_plant.json
 14e8f69291189cb3ab885c31a058ddf83a8c9c08 data/moresnifferflowers/loot_tables/blocks/dyespria_plant.json
 db51c22fd53a94a85d4f249e0ecbabe5a1968970 data/moresnifferflowers/loot_tables/blocks/garbush_bottom.json
@@ -71,6 +72,7 @@ da92642078acdf6e1a56f9f083406fada7dd7e38 data/moresnifferflowers/loot_tables/blo
 dd3b26c506feecf14cc7130816321481883f724d data/moresnifferflowers/loot_tables/blocks/rebrewing_stand_bottom.json
 d9de98fedc8ef8c767e2615eefec9fa6c8f0650d data/moresnifferflowers/loot_tables/blocks/rebrewing_stand_top.json
 789c38ba1a8ca50da7b74da0ff361f5598a47e7b data/moresnifferflowers/loot_tables/blocks/saltemone.json
+1c859a4945b0a1f705915ab764de51da1c832bcb data/moresnifferflowers/loot_tables/blocks/salty_clump.json
 9eb8d8c3ec23fe6f6b5b32959f032b43b3026058 data/moresnifferflowers/loot_tables/blocks/sourlemon.json
 f759a7ffa7cfb207d4f14b87921d508db7942cae data/moresnifferflowers/loot_tables/blocks/stripped_corrupted_log.json
 280dedd674ca54ed97690cd53aea39284809b8af data/moresnifferflowers/loot_tables/blocks/stripped_corrupted_wood.json

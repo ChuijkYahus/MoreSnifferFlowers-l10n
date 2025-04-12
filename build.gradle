@@ -68,8 +68,11 @@ dependencies {
     //jei
     modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-    modRuntimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
-    
+
+    // Sometimes JEI disappears for some reason
+    // modRuntimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    modRuntimeOnly("curse.maven:jei-238222:6075247")
+
     //mixin
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
@@ -92,7 +95,7 @@ final manifestAttributes = [
         'Specification-Vendor'  : 'AbraXator',
         'Specification-Version' : '1',
         'Implementation-Title'  : project.name,
-        'Implementation-Version': project.jar.archiveVersion,
+        'Implementation-Version': project.version,
         'Implementation-Vendor' : 'AbraXator',
         "MixinConfigs"          : "more_sniffer_flowers.mixins.json",
         'jei_version'           : project.jei_version_range,
