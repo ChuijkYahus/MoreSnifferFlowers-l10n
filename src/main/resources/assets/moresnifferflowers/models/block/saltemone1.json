@@ -1,6 +1,6 @@
 {
 	"credit": "Made with Blockbench",
-    "ambientocclusion": true,
+    "ambientocclusion": false,
 	"render_type": "cutout_mipped",
 	"texture_size": [128, 128],
 	"textures": {

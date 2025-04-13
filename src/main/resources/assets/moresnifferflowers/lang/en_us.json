@@ -290,5 +290,8 @@
 	"entity.moresnifferflowers.corrupted_slime_ball": "Corrupted Slime Ball",
 	"entity.moresnifferflowers.jar_od_acid": "Jar of Acid",
 	
+	"config.moresnifferflowers.corruption_spread_speed": "Spread speed of corrupted grass blocks, 1 = Default, 0 = Disabled",
+	"config.moresnifferflowers.corrupted_tree_grow_through": "Should the corrupted tree be able to grow through and destroy blocks? Default = true",
+
 	"effect.moresnifferflowers.extracted.description":"Prevents the target from extracting their current potion effects via the Bottle o' Extraction."
 }
