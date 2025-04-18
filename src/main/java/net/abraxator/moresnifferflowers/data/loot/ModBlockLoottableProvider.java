@@ -100,24 +100,31 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
                 .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
                         .when(HAS_NO_SILK_TOUCH)
                         //COMMON
+                        .add(LootItem.lootTableItem(Items.EXPERIENCE_BOTTLE).setWeight(100))
                         .add(LootItem.lootTableItem(Items.RAW_COPPER).setWeight(100))
                         .add(LootItem.lootTableItem(Items.EMERALD).setWeight(100))
                         .add(LootItem.lootTableItem(Items.RAW_IRON).setWeight(100))
                         .add(LootItem.lootTableItem(ModItems.GARNET_SHARD.get()).setWeight(100))
                         .add(LootItem.lootTableItem(Items.RAW_GOLD).setWeight(100))
                         //UNCOMMON
+
+                        .add(LootItem.lootTableItem(Items.GOLDEN_CARROT).setWeight(50))
+                        .add(LootItem.lootTableItem(Items.LAPIS_LAZULI).setWeight(50))
                         .add(LootItem.lootTableItem(Items.IRON_INGOT).setWeight(50))
                         .add(LootItem.lootTableItem(Items.GOLD_INGOT).setWeight(50))
                         .add(LootItem.lootTableItem(Items.DIAMOND).setWeight(50))
-                        .add(LootItem.lootTableItem(Items.NETHERITE_SCRAP).setWeight(50))
+
                         //RARE
-                        .add(LootItem.lootTableItem(Items.SNORT_POTTERY_SHERD).setWeight(25))
-                        .add(LootItem.lootTableItem(Items.IRON_BLOCK).setWeight(25))
+                        .add(LootItem.lootTableItem(Items.GOLDEN_APPLE).setWeight(25))
                         .add(LootItem.lootTableItem(Items.TOTEM_OF_UNDYING).setWeight(25))
                         .add(LootItem.lootTableItem(ModBlocks.CORRUPTED_SAPLING.get()).setWeight(25))
                         .add(LootItem.lootTableItem(ModItems.CARNAGE_ARMOR_TRIM_SMITHING_TEMPLATE.get()).setWeight(25))
                         .add(LootItem.lootTableItem(ModItems.EVIL_BANNER_PATTERN.get()).setWeight(25))
+                        .add(LootItem.lootTableItem(Items.NETHERITE_SCRAP).setWeight(25))
+
                         //VERY RARE
+                        .add(LootItem.lootTableItem(Items.ENCHANTED_GOLDEN_APPLE).setWeight(12))
+                        .add(LootItem.lootTableItem(Items.IRON_BLOCK).setWeight(12))
                         .add(LootItem.lootTableItem(Items.SNIFFER_EGG).setWeight(12))
                         .add(LootItem.lootTableItem(Items.WITHER_SKELETON_SKULL).setWeight(12))
                         .add(LootItem.lootTableItem(Items.NETHERITE_INGOT).setWeight(12))

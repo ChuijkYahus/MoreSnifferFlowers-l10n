@@ -96,9 +96,6 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         });
 
         if(player != null) {
-            if (!player.getAbilities().instabuild) {
-                player.getMainHandItem().shrink(1);
-            }
 
             if (player instanceof ServerPlayer serverPlayer) {
                 ModAdvancementCritters.USED_BONMEEL.trigger(serverPlayer);

@@ -126,7 +126,7 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
 
     public void grow(ServerLevel pLevel, BlockState pState, BlockPos pPos, int i) {
         int k = Math.min(getAge(pState) + i, getMaxAge());
-        if(this.canGrow(pLevel, pPos, pState, k)) {
+        if(this.canGrow(pLevel, pPos, pState, k) && (pLevel.getRandom().nextFloat() < 0.6F)) {
             pLevel.setBlock(pPos, pState.setValue(getAgeProperty(), k), 2);
             if(k >= AGE_TO_GROW_UP && isLower(pState)) {
                 pLevel.setBlock(pPos.above(), getUpperBlock().defaultBlockState().setValue(getAgeProperty(), k), 3);
