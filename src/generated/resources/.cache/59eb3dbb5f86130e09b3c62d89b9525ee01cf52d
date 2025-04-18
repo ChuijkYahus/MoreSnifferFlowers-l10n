@@ -1,4 +1,4 @@
-// 1.20.1	2025-04-12T22:01:48.3990838	Loot Tables
+// 1.20.1	2025-04-18T14:22:53.242676	Loot Tables
 421d4c078004a75f24902e1d857ee88a3c0688d2 data/moresnifferflowers/loot_tables/blocks/acidripia.json
 16882dced81963aacd1b4d32ed8e0ca33a618998 data/moresnifferflowers/loot_tables/blocks/acid_filled_cauldron.json
 e37d1e0a9608760103f1f41ea813a4050dadc2fc data/moresnifferflowers/loot_tables/blocks/amber_block.json
@@ -41,7 +41,7 @@ efc2305b6f1816d2b2c74d844ab78a6d63455514 data/moresnifferflowers/loot_tables/blo
 f816913790bc9944785ed0f6e985c5158b0ddaa7 data/moresnifferflowers/loot_tables/blocks/corrupted_trapdoor.json
 95d7ed5dfc5a75613f45501a95774d9191988748 data/moresnifferflowers/loot_tables/blocks/corrupted_wall_hanging_sign.json
 5e9308fcf004b731f7d445c3268f3c1ed8ee0d41 data/moresnifferflowers/loot_tables/blocks/corrupted_wall_sign.json
-b8472887f7124d3da06960780b2452aee463854c data/moresnifferflowers/loot_tables/blocks/corrupted_wart.json
+64000bf7f04f6fd9fe4ef8da24df344ca8fd1e12 data/moresnifferflowers/loot_tables/blocks/corrupted_wart.json
 2672da549a8bd6856b93a040042529506d39c42e data/moresnifferflowers/loot_tables/blocks/corrupted_wood.json
 a6ae2b8cc7c3c348e26415e885043e43e1ffacd7 data/moresnifferflowers/loot_tables/blocks/cracked_amber.json
 591a02acb5aaa7edcf8a8ad3bdf31b493a3872e2 data/moresnifferflowers/loot_tables/blocks/cracked_garnet.json

@@ -66,10 +66,14 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
 
                 for (int i = 0; i < 4; i++) {
                     BlockPos blockpos = pos.offset(random.nextIntBetweenInclusive(-2,2), random.nextIntBetweenInclusive(-2,2), random.nextIntBetweenInclusive(-2,2));
-                    if (level.getBlockState(blockpos).is(BlockTags.DIRT) && canPropagate(blockstate, level, blockpos) && !level.getBlockState(blockpos).is(ModBlocks.CURED_GRASS_BLOCK.get()) ) {
+                    if (level.getBlockState(blockpos).is(BlockTags.DIRT) && canPropagate(blockstate, level, blockpos) && !level.getBlockState(blockpos).is(ModBlocks.CURED_GRASS_BLOCK.get()) && !level.getBlockState(blockpos).is(ModBlocks.CORRUPTED_GRASS_BLOCK.get()) ) {
                         level.setBlockAndUpdate(
                                 blockpos, blockstate.setValue(SNOWY, Boolean.valueOf(level.getBlockState(blockpos.above()).is(Blocks.SNOW)))
                         );
+                        BlockPos posAbove = blockpos.above();
+                        if (random.nextFloat() < 0.10F && level.getBlockState(posAbove).isAir()){
+                            level.setBlock(posAbove, ModBlocks.CORRUPTED_WART.get().defaultBlockState(), 3);
+                        }
                     }
                 }
 

@@ -236,7 +236,7 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         add(ModBlocks.CORRUPTED_TALL_GRASS.get(), block -> this.createDoublePlantWithSeedDrops(block, ModBlocks.CORRUPTED_GRASS.get()));
         add(ModBlocks.CORRUPTED_GRASS.get(), block -> createShearsDispatchTable(block, this.applyExplosionDecay(block, LootItem.lootTableItem(ModItems.CORRUPTED_SLIME_BALL.get()).when(LootItemRandomChanceCondition.randomChance(0.125F)).apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE, 2)))));
         add(ModBlocks.CURED_GRASS_BLOCK.get(), block -> this.createSingleItemTableWithSilkTouch(block, Blocks.DIRT));
-        dropWhenSilkTouch(ModBlocks.CORRUPTED_WART.get());
+        add(ModBlocks.CORRUPTED_WART.get(), block -> this.createSingleItemTableWithSilkTouch(block, ModItems.CORRUPTED_SLIME_BALL.get(), UniformGenerator.between(0F, 1F)));
 
         dropSelf(ModBlocks.VIVICUS_LOG.get());
         dropSelf(ModBlocks.VIVICUS_WOOD.get());

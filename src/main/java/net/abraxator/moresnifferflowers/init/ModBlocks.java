@@ -118,7 +118,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> DECAYED_LOG = registerBlockWithItem("decayed_log", () -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_LOG)));
     public static final RegistryObject<Block> CORRUPTED_GRASS_BLOCK = registerBlockWithItem("corrupted_grass_block", () -> new CorruptedGrassBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).randomTicks().strength(0.6F).sound(SoundType.WET_GRASS)));
     public static final RegistryObject<Block> CURED_GRASS_BLOCK = registerBlockWithItem("cured_grass_block", () -> new CuredGrassBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).randomTicks().strength(0.6F).sound(SoundType.WET_GRASS)));
-    public static final RegistryObject<Block> CORRUPTED_WART = registerBlockWithItem("corrupted_wart", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).replaceable().noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XYZ).ignitedByLava().pushReaction(PushReaction.DESTROY)));
+    public static final RegistryObject<Block> CORRUPTED_WART = registerBlockWithItem("corrupted_wart", () -> new CorruptedWartBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).replaceable().instabreak().dynamicShape().sound(SoundType.WET_GRASS).offsetType(BlockBehaviour.OffsetType.XYZ).pushReaction(PushReaction.DESTROY)));
 
     public static final RegistryObject<Block> VIVICUS_LOG = registerBlockWithItem("vivicus_log", () -> new VivicusRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.CHERRY_LOG)));
     public static final RegistryObject<Block> VIVICUS_WOOD = registerBlockWithItem("vivicus_wood", () -> new VivicusRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.CHERRY_WOOD)));
@@ -150,7 +150,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> BEROOT_CAULDRON = registerBlockNoItem("beroot_cauldron", () -> new BerootCauldronBlock(BlockBehaviour.Properties.copy(Blocks.ANVIL).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
 
     public static final RegistryObject<Block> SALTEMONE = registerBlockNoItem("saltemone", () -> new SaltemoneBlock(BlockBehaviour.Properties.of().noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never).strength(0.3F).sound(SoundType.WET_GRASS)));
-    public static final RegistryObject<Block> SOURLEMON = registerBlockNoItem("sourlemon", () -> new SaltemoneBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTEMONE.get()).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
+    public static final RegistryObject<Block> SOURLEMON = registerBlockNoItem("sourlemon", () -> new SourlemonBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTEMONE.get()).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
     public static final RegistryObject<Block> SALTY_CLUMP = registerBlockNoItem("salty_clump", () -> new SaltyClumpBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTEMONE.get()).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never).noCollission()));
     public static final RegistryObject<Block> DRIPSALT = registerBlockNoItem("dripsalt", () -> new DripsaltBlock(BlockBehaviour.Properties.copy(Blocks.POINTED_DRIPSTONE)));
 
