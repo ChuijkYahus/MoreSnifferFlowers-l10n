@@ -149,10 +149,13 @@ public class ModBlocks {
 
     public static final RegistryObject<Block> BEROOT_CAULDRON = registerBlockNoItem("beroot_cauldron", () -> new BerootCauldronBlock(BlockBehaviour.Properties.copy(Blocks.ANVIL).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
 
-    public static final RegistryObject<Block> SALTEMONE = registerBlockNoItem("saltemone", () -> new SaltemoneBlock(BlockBehaviour.Properties.of().noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never).strength(0.3F).sound(SoundType.WET_GRASS)));
+    public static final RegistryObject<Block> SALTEMONE = registerBlockNoItem("saltemone", () -> new SaltemoneBlock(BlockBehaviour.Properties.of().noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never).strength(0.3F).sound(SoundType.WET_GRASS).randomTicks()));
     public static final RegistryObject<Block> SOURLEMON = registerBlockNoItem("sourlemon", () -> new SourlemonBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTEMONE.get()).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
-    public static final RegistryObject<Block> SALTY_CLUMP = registerBlockNoItem("salty_clump", () -> new SaltyClumpBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTEMONE.get()).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never).noCollission()));
+    public static final RegistryObject<Block> SALTY_CLUMP = registerBlockNoItem("salty_clump", () -> new SaltyClumpBlock(BlockBehaviour.Properties.copy(Blocks.SMALL_AMETHYST_BUD).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never).noCollission()));
     public static final RegistryObject<Block> DRIPSALT = registerBlockNoItem("dripsalt", () -> new DripsaltBlock(BlockBehaviour.Properties.copy(Blocks.POINTED_DRIPSTONE)));
+    public static final RegistryObject<Block> SOUR_CLUMP = registerBlockWithItem("sour_clump", () -> new SaltyClumpBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTY_CLUMP.get()).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never).noCollission()));
+    public static final RegistryObject<Block> SOUR_PUDDLE = registerBlockWithItem("sour_puddle", () -> new SourPuddleBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTY_CLUMP.get()).friction(0.98F).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never)));
+
 
     private static <T extends Block> RegistryObject<T> registerBlockNoItem(String name, Supplier<T> block) {
         return BLOCKS.register(name, block);

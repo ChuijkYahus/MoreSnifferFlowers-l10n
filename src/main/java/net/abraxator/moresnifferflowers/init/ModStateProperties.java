@@ -23,4 +23,8 @@ public class ModStateProperties {
     public static final BooleanProperty CURED = BooleanProperty.create("cured");
     public static final BooleanProperty ENTITY = BooleanProperty.create("entity");
     public static final IntegerProperty AMOUNT_4 = IntegerProperty.create("amount", 1, 4);
+    public static final BooleanProperty FULL = BooleanProperty.create("full");
+    public static final BooleanProperty NATURAL = BooleanProperty.create("natural");
+    public static final BooleanProperty HYDRATED = BooleanProperty.create("hydrated");
+
 }

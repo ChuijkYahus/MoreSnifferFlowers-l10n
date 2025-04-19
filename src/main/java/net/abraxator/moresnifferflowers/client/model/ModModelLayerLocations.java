@@ -12,6 +12,7 @@ public class ModModelLayerLocations {
     public static final ModelLayerLocation CORRUPTED_CHEST_BOAT_LAYER = new ModelLayerLocation(MoreSnifferFlowers.loc("chest_boat/corrupted"), "main");
     public static final ModelLayerLocation VIVICUS_BOAT_LAYER = new ModelLayerLocation(MoreSnifferFlowers.loc("boat/vivicus"), "main");
     public static final ModelLayerLocation VIVICUS_CHEST_BOAT_LAYER = new ModelLayerLocation(MoreSnifferFlowers.loc("chest_boat/vivicus"), "main");
+    public static final ModelLayerLocation SALT_BUBBLE = new ModelLayerLocation(MoreSnifferFlowers.loc("salt_bubble"), "main");
 
     //BLOCK
     public static final ModelLayerLocation GIANT_CARROT = new ModelLayerLocation(MoreSnifferFlowers.loc("giant_carrot"), "main");

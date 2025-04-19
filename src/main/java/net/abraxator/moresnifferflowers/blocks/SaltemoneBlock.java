@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.blocks;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
 import net.abraxator.moresnifferflowers.entities.CorruptedProjectile;
+import net.abraxator.moresnifferflowers.entities.SaltBubbleProjectile;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.recipes.CorruptionRecipe;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -94,7 +96,8 @@ public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable
                     level.destroyBlock(pos, true);
                 });
             }
-        }
+        } else level.destroyBlock(pCurrentPos, true);
+
         return stateOriginal;
     }
 
@@ -124,6 +127,26 @@ public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable
     public void performBonemeal(ServerLevel pLevel, RandomSource pRandom, BlockPos pPos, BlockState pState) {
         grow(pLevel, pPos);
     }
+
+    public boolean isCorrupted(){
+        return false;
+    }
+
+    @Override
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (level.getBlockEntity(pos) instanceof SaltemoneBlockEntity entity && pos.equals(entity.center)) {
+            if (isMaxAge(state)) {
+                Vec3 vec3 = entity.center.getCenter().relative(state.getValue(HorizontalDirectionalBlock.FACING), 0.5D).relative(state.getValue(HorizontalDirectionalBlock.FACING).getClockWise(), 0.5D).relative(Direction.UP, 1);
+                SaltBubbleProjectile projectile = new SaltBubbleProjectile(vec3.x, vec3.y, vec3.z, level);
+                projectile.setCorrupted(isCorrupted());
+                projectile.shoot(vec3.x, vec3.y, vec3.z, 0.5F, 0.1F);
+                level.addFreshEntity(projectile);
+            } else {
+                grow(level, pos);
+            }
+        }
+    }
+
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entityinside) {
@@ -157,7 +180,7 @@ public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable
                     level.destroyBlock(pos, false);
                 }
             });
-        }
+        } else level.destroyBlock(blockPos, true);
     }
 
     @Override

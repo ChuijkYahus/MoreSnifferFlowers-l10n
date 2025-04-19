@@ -7,12 +7,10 @@ import net.abraxator.moresnifferflowers.client.model.block.*;
 import net.abraxator.moresnifferflowers.client.model.entity.BoblingModel;
 import net.abraxator.moresnifferflowers.client.model.entity.CorruptedProjectileModel;
 import net.abraxator.moresnifferflowers.client.model.entity.DragonflyModel;
+import net.abraxator.moresnifferflowers.client.model.entity.SaltBubbleModel;
 import net.abraxator.moresnifferflowers.client.particle.*;
 import net.abraxator.moresnifferflowers.client.renderer.block.*;
-import net.abraxator.moresnifferflowers.client.renderer.entity.BoblingRenderer;
-import net.abraxator.moresnifferflowers.client.renderer.entity.CorruptedProjectileRenderer;
-import net.abraxator.moresnifferflowers.client.renderer.entity.DragonflyRenderer;
-import net.abraxator.moresnifferflowers.client.renderer.entity.ModBoatRenderer;
+import net.abraxator.moresnifferflowers.client.renderer.entity.*;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.BoatModel;
@@ -57,6 +55,7 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModModelLayerLocations.CORRUPTED_CHEST_BOAT_LAYER, ChestBoatModel::createBodyModel);
         event.registerLayerDefinition(ModModelLayerLocations.VIVICUS_BOAT_LAYER, BoatModel::createBodyModel);
         event.registerLayerDefinition(ModModelLayerLocations.VIVICUS_CHEST_BOAT_LAYER, ChestBoatModel::createBodyModel);
+        event.registerLayerDefinition(ModModelLayerLocations.SALT_BUBBLE, SaltBubbleModel::createBodyLayer);
 
         //BLOCK
         event.registerLayerDefinition(ModModelLayerLocations.GIANT_CARROT, GiantCropModels::createGiantCarrotLayer);
@@ -70,7 +69,7 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModModelLayerLocations.BEROOT_SPOON, BerootCauldronModel::createSpoonLayer);
         event.registerLayerDefinition(ModModelLayerLocations.SALTEMONE, SaltemoneModel::createBodyLayer);
     }
-    
+
     @SubscribeEvent
     public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntityTypes.BOBLING.get(), BoblingRenderer::new);
@@ -81,6 +80,7 @@ public class ClientRegistration {
         event.registerEntityRenderer(ModEntityTypes.MOD_VIVICUS_BOAT.get(), pContext -> new ModBoatRenderer(pContext, false));
         event.registerEntityRenderer(ModEntityTypes.MOD_VIVICUS_CHEST_BOAT.get(), pContext -> new ModBoatRenderer(pContext, true));
         event.registerEntityRenderer(ModEntityTypes.JAR_OF_ACID.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(ModEntityTypes.SALT_BUBBLE.get(), SaltBubbleRenderer::new);
     }
 
     @SubscribeEvent
