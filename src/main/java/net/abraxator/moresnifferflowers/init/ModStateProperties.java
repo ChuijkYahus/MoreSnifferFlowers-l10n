@@ -21,6 +21,7 @@ public class ModStateProperties {
     public static final EnumProperty<CropressorBlockEntity.Crop> CROP = EnumProperty.create("crop", CropressorBlockEntity.Crop.class);
     public static final IntegerProperty USES_4 = IntegerProperty.create("uses", 0, 3);
     public static final BooleanProperty CURED = BooleanProperty.create("cured");
+    public static final BooleanProperty CORRUPTED = BooleanProperty.create("corrupted");
     public static final BooleanProperty ENTITY = BooleanProperty.create("entity");
     public static final IntegerProperty AMOUNT_4 = IntegerProperty.create("amount", 1, 4);
     public static final BooleanProperty FULL = BooleanProperty.create("full");

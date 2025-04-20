@@ -10,6 +10,7 @@ import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.items.DyespriaItem;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,10 +23,16 @@ public class ModColorHandler {
     @SubscribeEvent
     public static void onRegisterBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
         event.register((state, level, pos, tintIndex) -> {
-            if(tintIndex == 0 && state.getValue(ModStateProperties.FULLNESS) > 0) {
-                return state.getValue(ModStateProperties.CROP).tint;
+            if(tintIndex == 0) {
+                return Color.HSBtoRGB(0.85F, 0.6F, 0.3F);
             }        
             
+            return -1;
+        }, Blocks.OAK_LEAVES);
+        event.register((state, level, pos, tintIndex) -> {
+            if(tintIndex == 0 && state.getValue(ModStateProperties.FULLNESS) > 0) {
+                return state.getValue(ModStateProperties.CROP).tint;
+            }
             return -1;
         }, ModBlocks.CROPRESSOR_CENTER.get());
         event.register((pState, pLevel, pPos, pTintIndex) -> {

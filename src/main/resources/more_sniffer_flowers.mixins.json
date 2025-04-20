@@ -7,8 +7,10 @@
   "mixins": [
     "AgeableMobMixin",
     "FarmBlockMixin",
+    "LeavesBlockMixin",
     "RightClickHarvestModInitMixin",
     "ServerPlayerMixin",
+    "SlotMixin",
     "SnifferEggMixin",
     "ThrownPotionMixin"
   ],

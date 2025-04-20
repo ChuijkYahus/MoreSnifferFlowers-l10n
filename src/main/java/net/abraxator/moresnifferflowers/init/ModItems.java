@@ -129,6 +129,9 @@ public class ModItems {
     public static final RegistryObject<Item> SALTY_SPICE = ITEMS.register("salty_spice", () -> new ItemNameBlockItem(ModBlocks.SALTY_CLUMP.get(), new Item.Properties()));
     public static final RegistryObject<Item> DRIPSALT = ITEMS.register("dripsalt", () -> new BlockItem(ModBlocks.DRIPSALT.get(), new Item.Properties()));
 
+    public static final RegistryObject<Item> BURNED_SLOT = ITEMS.register("burned_slot", () -> new BurnedSlotItem(new Item.Properties().stacksTo(1)));
+
+
     public static final RegistryObject<Item> CREATIVE_TAB_ICON = ITEMS.register("creative_tab_icon", () -> new CreativeTabItem(new Item.Properties()));
     public static final RegistryObject<Item> WAND_OF_CUBING = ITEMS.register("wand_of_cubing", () -> new WandOfCubingItem(new Item.Properties()));
 }
