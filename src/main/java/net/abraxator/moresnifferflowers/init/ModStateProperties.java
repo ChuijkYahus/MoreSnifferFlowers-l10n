@@ -1,10 +1,10 @@
 package net.abraxator.moresnifferflowers.init;
 
-import net.abraxator.moresnifferflowers.blockentities.CropressorBlockEntity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.properties.*;
 
 public class ModStateProperties {
+    // CROP z cropressoru je teď v CropressorBlockBase
     public static final IntegerProperty AGE_1 = IntegerProperty.create("age", 0, 1);
     public static final IntegerProperty AGE_2 = IntegerProperty.create("age", 0, 2);
     public static final IntegerProperty AGE_3 = IntegerProperty.create("age", 0, 3);
@@ -18,11 +18,11 @@ public class ModStateProperties {
     public static final BooleanProperty CENTER = BooleanProperty.create("center");
     public static final BooleanProperty EMPTY = BooleanProperty.create("empty");
     public static final IntegerProperty FULLNESS = IntegerProperty.create("fullness", 0, 8);
-    public static final EnumProperty<CropressorBlockEntity.Crop> CROP = EnumProperty.create("crop", CropressorBlockEntity.Crop.class);
     public static final IntegerProperty USES_4 = IntegerProperty.create("uses", 0, 3);
-    public static final BooleanProperty CURED = BooleanProperty.create("cured");
-    public static final BooleanProperty CORRUPTED = BooleanProperty.create("corrupted");
     public static final BooleanProperty ENTITY = BooleanProperty.create("entity");
+    public static final BooleanProperty CURED = BooleanProperty.create("cured");
+    public static final BooleanProperty NOT_CURED = BooleanProperty.create("not_cured");
+    public static final BooleanProperty NOT_CORRUPTED = BooleanProperty.create("not_corrupted");
     public static final IntegerProperty AMOUNT_4 = IntegerProperty.create("amount", 1, 4);
     public static final BooleanProperty FULL = BooleanProperty.create("full");
     public static final BooleanProperty NATURAL = BooleanProperty.create("natural");

@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -39,7 +40,8 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
     protected static final VoxelShape CENTER_SOUTH = Block.box(0, 0, 0, 16, 11, 16);
     protected static final VoxelShape CENTER_WEST = Block.box(0, 0, 0, 16, 11, 16);
     protected static final VoxelShape CENTER_NORTH = Block.box(0, 0, 0, 16, 11, 16);
-    
+    public static final EnumProperty<CropressorBlockEntity.Crop> CROP = EnumProperty.create("crop", CropressorBlockEntity.Crop.class);
+
     public CropressorBlockBase(Properties pProperties, Part part) {
         super(pProperties);
         PART = part;
@@ -67,7 +69,7 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(FACING, ModStateProperties.FULLNESS, ModStateProperties.CROP);
+        pBuilder.add(FACING, ModStateProperties.FULLNESS, CROP);
     }
 
     private Direction getNeighbourDirection(Part part, Direction direction) {

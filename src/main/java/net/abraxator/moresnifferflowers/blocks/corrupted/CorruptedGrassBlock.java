@@ -2,6 +2,7 @@ package net.abraxator.moresnifferflowers.blocks.corrupted;
 
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModServerConfig;
+import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -11,10 +12,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.DoublePlantBlock;
-import net.minecraft.world.level.block.SnowLayerBlock;
-import net.minecraft.world.level.block.SpreadingSnowyDirtBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -66,7 +64,8 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
 
                 for (int i = 0; i < 4; i++) {
                     BlockPos blockpos = pos.offset(random.nextIntBetweenInclusive(-2,2), random.nextIntBetweenInclusive(-2,2), random.nextIntBetweenInclusive(-2,2));
-                    if (level.getBlockState(blockpos).is(BlockTags.DIRT) && canPropagate(blockstate, level, blockpos) && !level.getBlockState(blockpos).is(ModBlocks.CURED_GRASS_BLOCK.get()) && !level.getBlockState(blockpos).is(ModBlocks.CORRUPTED_GRASS_BLOCK.get()) ) {
+                    BlockState state1 = level.getBlockState(blockpos);
+                    if (state1.is(BlockTags.DIRT) && canPropagate(blockstate, level, blockpos) && !state1.is(ModBlocks.CURED_GRASS_BLOCK.get()) && !state1.is(ModBlocks.CORRUPTED_GRASS_BLOCK.get()) ) {
                         level.setBlockAndUpdate(
                                 blockpos, blockstate.setValue(SNOWY, Boolean.valueOf(level.getBlockState(blockpos.above()).is(Blocks.SNOW)))
                         );
@@ -75,6 +74,13 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
                             level.setBlock(posAbove, ModBlocks.CORRUPTED_WART.get().defaultBlockState(), 3);
                         }
                     }
+                    BlockPos blockPos1 = pos.above(random.nextInt(6));
+                    BlockState state2 = level.getBlockState(blockPos1);
+
+                    if (state2.getOptionalValue(ModStateProperties.NOT_CORRUPTED).isPresent() && state2.getValue(ModStateProperties.NOT_CORRUPTED)){
+                        level.setBlock(blockPos1, state2.setValue(ModStateProperties.NOT_CORRUPTED, false), 3);
+                    }
+
                 }
 
                 if (level.getBlockState(pos.above()).is(Blocks.GRASS))

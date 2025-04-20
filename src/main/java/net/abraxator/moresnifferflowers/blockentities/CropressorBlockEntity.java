@@ -173,7 +173,7 @@ public class CropressorBlockEntity extends ModBlockEntity {
     private void updateFullness(int fullness, Crop crop) {
         var pos = getBlockPos().relative(getBlockState().getValue(HorizontalDirectionalBlock.FACING));
         level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(ModStateProperties.FULLNESS, fullness));
-        level.setBlockAndUpdate(pos, level.getBlockState(pos).setValue(ModStateProperties.FULLNESS, fullness).setValue(ModStateProperties.CROP, crop));
+        level.setBlockAndUpdate(pos, level.getBlockState(pos).setValue(ModStateProperties.FULLNESS, fullness).setValue(CropressorBlockBase.CROP, crop));
     }
     
     @Override

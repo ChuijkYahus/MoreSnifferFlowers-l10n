@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.blocks.corrupted;
 
 import net.abraxator.moresnifferflowers.init.ModBlocks;
+import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -58,11 +59,16 @@ public class CuredGrassBlock extends SpreadingSnowyDirtBlock {
             BlockState blockstate = this.defaultBlockState();
 
             for (int i = 0; i < 10; i++) {
-                BlockPos blockpos = pos.offset(random.nextIntBetweenInclusive(-4,4), random.nextIntBetweenInclusive(-3,3), random.nextIntBetweenInclusive(-4,4));
-                if (level.getBlockState(blockpos).is(ModBlocks.CORRUPTED_GRASS_BLOCK.get())) {
+                BlockPos blockpos = pos.offset(random.nextIntBetweenInclusive(-1,1), random.nextIntBetweenInclusive(-3,8), random.nextIntBetweenInclusive(-1,1));
+                BlockState state1 = level.getBlockState(blockpos);
+                if (state1.is(ModBlocks.CORRUPTED_GRASS_BLOCK.get())) {
                     level.setBlockAndUpdate(
                             blockpos, blockstate.setValue(SNOWY, level.getBlockState(blockpos.above()).is(Blocks.SNOW))
                     );
+                }
+
+                if (state1.getOptionalValue(ModStateProperties.NOT_CURED).isPresent() && !state1.getValue(ModStateProperties.NOT_CORRUPTED)){
+                    level.setBlockAndUpdate(blockpos, state1.setValue(ModStateProperties.NOT_CORRUPTED, true).setValue(ModStateProperties.NOT_CURED, false));
                 }
             }
 

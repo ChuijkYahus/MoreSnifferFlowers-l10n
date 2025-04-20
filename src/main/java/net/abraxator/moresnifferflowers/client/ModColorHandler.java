@@ -2,14 +2,17 @@ package net.abraxator.moresnifferflowers.client;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blocks.ColorableVivicusBlock;
+import net.abraxator.moresnifferflowers.blocks.cropressor.CropressorBlockBase;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.items.DyespriaItem;
+import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
@@ -23,15 +26,15 @@ public class ModColorHandler {
     @SubscribeEvent
     public static void onRegisterBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
         event.register((state, level, pos, tintIndex) -> {
-            if(tintIndex == 0) {
-                return Color.HSBtoRGB(0.85F, 0.6F, 0.3F);
+            if(tintIndex == 0 && state.getOptionalValue(ModStateProperties.NOT_CORRUPTED).isPresent() && !state.getValue(ModStateProperties.NOT_CORRUPTED)) {
+                return Color.HSBtoRGB(0.85F, 0.55F, 0.4F);
             }        
             
-            return -1;
-        }, Blocks.OAK_LEAVES);
+            return level != null && pos != null ? BiomeColors.getAverageFoliageColor(level, pos) : FoliageColor.getDefaultColor();
+        }, Blocks.OAK_LEAVES, Blocks.JUNGLE_LEAVES, Blocks.ACACIA_LEAVES, Blocks.DARK_OAK_LEAVES, Blocks.VINE, Blocks.MANGROVE_LEAVES);
         event.register((state, level, pos, tintIndex) -> {
             if(tintIndex == 0 && state.getValue(ModStateProperties.FULLNESS) > 0) {
-                return state.getValue(ModStateProperties.CROP).tint;
+                return state.getValue(CropressorBlockBase.CROP).tint;
             }
             return -1;
         }, ModBlocks.CROPRESSOR_CENTER.get());

@@ -1,5 +1,9 @@
 package net.abraxator.moresnifferflowers.mixins;
 
+import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -9,19 +13,31 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LeavesBlock.class)
 public abstract class LeavesBlockMixin extends Block implements SimpleWaterloggedBlock, net.minecraftforge.common.IForgeShearable {
 
     public LeavesBlockMixin(Properties properties) {
         super(properties);
-        // this.registerDefaultState(this.stateDefinition.any().setValue(ModStateProperties.CURED, false).setValue(ModStateProperties.CORRUPTED, false));
     }
 
     @Inject(method = "createBlockStateDefinition", at = @At("HEAD"))
     public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder, CallbackInfo ci) {
-       // builder.add(ModStateProperties.CURED).add(ModStateProperties.CORRUPTED);
+        builder.add(ModStateProperties.NOT_CORRUPTED).add(ModStateProperties.NOT_CURED);
     }
 
+    @Inject(method = "updateShape", at = @At("TAIL"), cancellable = true)
+    public void updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos, CallbackInfoReturnable<BlockState> cir) {
+        if (facingState.getOptionalValue(ModStateProperties.NOT_CORRUPTED).isPresent() && !facingState.getValue(ModStateProperties.NOT_CORRUPTED)){
+            cir.setReturnValue(state.setValue(ModStateProperties.NOT_CORRUPTED, false));
+        }
+        if (facingState.getOptionalValue(ModStateProperties.NOT_CURED).isPresent() && !facingState.getValue(ModStateProperties.NOT_CURED)){
+            if (!state.getValue(ModStateProperties.NOT_CURED)){
+                cir.setReturnValue(state.setValue(ModStateProperties.NOT_CURED, true).setValue(ModStateProperties.NOT_CORRUPTED, true));
+            }
+            cir.setReturnValue(state.setValue(ModStateProperties.NOT_CURED, false).setValue(ModStateProperties.NOT_CORRUPTED, true));
+        }
+    }
 
 }
