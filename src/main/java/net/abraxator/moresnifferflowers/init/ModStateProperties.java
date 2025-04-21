@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.init;
 
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.*;
 
 public class ModStateProperties {
@@ -27,5 +28,9 @@ public class ModStateProperties {
     public static final BooleanProperty FULL = BooleanProperty.create("full");
     public static final BooleanProperty NATURAL = BooleanProperty.create("natural");
     public static final BooleanProperty HYDRATED = BooleanProperty.create("hydrated");
+
+    public static boolean hasCustomLeavesProperties(BlockState state){
+        return state.getOptionalValue(ModStateProperties.NOT_CORRUPTED).isPresent() && state.getOptionalValue(ModStateProperties.NOT_CORRUPTED).isPresent();
+    }
 
 }

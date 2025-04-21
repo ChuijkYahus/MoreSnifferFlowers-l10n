@@ -18,6 +18,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
@@ -26,12 +27,21 @@ public class ModColorHandler {
     @SubscribeEvent
     public static void onRegisterBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
         event.register((state, level, pos, tintIndex) -> {
-            if(tintIndex == 0 && state.getOptionalValue(ModStateProperties.NOT_CORRUPTED).isPresent() && !state.getValue(ModStateProperties.NOT_CORRUPTED)) {
-                return Color.HSBtoRGB(0.85F, 0.55F, 0.4F);
-            }        
-            
-            return level != null && pos != null ? BiomeColors.getAverageFoliageColor(level, pos) : FoliageColor.getDefaultColor();
-        }, Blocks.OAK_LEAVES, Blocks.JUNGLE_LEAVES, Blocks.ACACIA_LEAVES, Blocks.DARK_OAK_LEAVES, Blocks.VINE, Blocks.MANGROVE_LEAVES);
+
+            int originalColor = level != null && pos != null ? BiomeColors.getAverageFoliageColor(level, pos) : FoliageColor.getDefaultColor();
+
+            if (state.is(Blocks.BIRCH_LEAVES)) originalColor = FoliageColor.getBirchColor();
+            if (state.is(Blocks.SPRUCE_LEAVES)) originalColor = FoliageColor.getEvergreenColor();
+            if (state.is(Blocks.MANGROVE_LEAVES)) originalColor = FoliageColor.getMangroveColor();
+
+            if(tintIndex == 0 && ModStateProperties.hasCustomLeavesProperties(state) && !state.getValue(ModStateProperties.NOT_CORRUPTED)) {
+                float[] colorHSB = getColorHSB(originalColor);
+
+                return Color.HSBtoRGB( -colorHSB[0]/1.5F, colorHSB[1] - 0.25F, colorHSB[2] - 0.23F);
+            }
+
+            return originalColor;
+        }, Blocks.OAK_LEAVES, Blocks.JUNGLE_LEAVES, Blocks.ACACIA_LEAVES, Blocks.DARK_OAK_LEAVES, Blocks.VINE, Blocks.MANGROVE_LEAVES, Blocks.BIRCH_LEAVES, Blocks.SPRUCE_LEAVES, Blocks.MANGROVE_LEAVES);
         event.register((state, level, pos, tintIndex) -> {
             if(tintIndex == 0 && state.getValue(ModStateProperties.FULLNESS) > 0) {
                 return state.getValue(CropressorBlockBase.CROP).tint;
@@ -44,10 +54,7 @@ public class ModColorHandler {
             int color = Dye.colorForDye(colorable, dye.color());
             if(!dye.isEmpty()) {
                 if (pTintIndex == 0) {
-                    int startRed = (color >> 16) & 0xFF;
-                    int startGreen = (color >> 8) & 0xFF;
-                    int startBlue = color & 0xFF;
-                    float[] colorHSB = Color.RGBtoHSB(startRed, startGreen, startBlue, null);
+                    float[] colorHSB = getColorHSB(color);
 
                     return Color.HSBtoRGB(colorHSB[0], Math.max(colorHSB[1] / 1.7F, 0), Math.max(colorHSB[2], 0));
                 }
@@ -64,10 +71,7 @@ public class ModColorHandler {
                         var color = colorable.getDyeFromBlock(pState).color();
 
                         if(pState.is(ModBlocks.VIVICUS_LEAVES.get()) || pState.is(ModBlocks.VIVICUS_LEAVES_SPROUT.get())) {
-                            int startRed = (dyedValue >> 16) & 0xFF;
-                            int startGreen = (dyedValue >> 8) & 0xFF;
-                            int startBlue = dyedValue & 0xFF;
-                            float[] colorHSB =  Color.RGBtoHSB(startRed, startGreen, startBlue, null);
+                            float[] colorHSB = getColorHSB(dyedValue);
 
                             assert pPos != null;
                             float hue = colorHSB[0] + ((1+ Mth.sin((float)pPos.getX() + (float)pPos.getY() + (float)pPos.getZ())) / 15);
@@ -95,6 +99,13 @@ public class ModColorHandler {
                 ModBlocks.VIVICUS_BUTTON.get(), ModBlocks.VIVICUS_LEAVES.get(), ModBlocks.VIVICUS_SAPLING.get(),
                 ModBlocks.VIVICUS_LEAVES_SPROUT.get(), ModBlocks.VIVICUS_SIGN.get(), ModBlocks.VIVICUS_HANGING_SIGN.get(),
                 ModBlocks.VIVICUS_SAPLING.get());
+    }
+
+    private static float @NotNull [] getColorHSB(int originalColor) {
+        int startRed = (originalColor >> 16) & 0xFF;
+        int startGreen = (originalColor >> 8) & 0xFF;
+        int startBlue = originalColor & 0xFF;
+        return Color.RGBtoHSB(startRed, startGreen, startBlue, null);
     }
 
     @SubscribeEvent

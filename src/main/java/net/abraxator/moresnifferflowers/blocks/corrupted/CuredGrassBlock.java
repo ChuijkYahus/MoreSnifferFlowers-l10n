@@ -67,8 +67,13 @@ public class CuredGrassBlock extends SpreadingSnowyDirtBlock {
                     );
                 }
 
-                if (state1.getOptionalValue(ModStateProperties.NOT_CURED).isPresent() && !state1.getValue(ModStateProperties.NOT_CORRUPTED)){
-                    level.setBlockAndUpdate(blockpos, state1.setValue(ModStateProperties.NOT_CORRUPTED, true).setValue(ModStateProperties.NOT_CURED, false));
+                if (state1.getOptionalValue(ModStateProperties.NOT_CURED).isPresent()) {
+                    if (!state1.getValue(ModStateProperties.NOT_CORRUPTED)) {
+                        level.setBlockAndUpdate(blockpos, state1.setValue(ModStateProperties.NOT_CORRUPTED, true).setValue(ModStateProperties.NOT_CURED, false));
+                    }
+                    if (!state1.getValue(ModStateProperties.NOT_CURED)) {
+                        level.setBlockAndUpdate(blockpos, state1.setValue(ModStateProperties.NOT_CORRUPTED, true).setValue(ModStateProperties.NOT_CURED, true));
+                    }
                 }
             }
 

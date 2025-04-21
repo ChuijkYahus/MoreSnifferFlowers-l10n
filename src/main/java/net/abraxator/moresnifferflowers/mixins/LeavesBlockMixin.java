@@ -29,14 +29,22 @@ public abstract class LeavesBlockMixin extends Block implements SimpleWaterlogge
 
     @Inject(method = "updateShape", at = @At("TAIL"), cancellable = true)
     public void updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos, CallbackInfoReturnable<BlockState> cir) {
-        if (facingState.getOptionalValue(ModStateProperties.NOT_CORRUPTED).isPresent() && !facingState.getValue(ModStateProperties.NOT_CORRUPTED)){
-            cir.setReturnValue(state.setValue(ModStateProperties.NOT_CORRUPTED, false));
-        }
-        if (facingState.getOptionalValue(ModStateProperties.NOT_CURED).isPresent() && !facingState.getValue(ModStateProperties.NOT_CURED)){
-            if (!state.getValue(ModStateProperties.NOT_CURED)){
+        if (ModStateProperties.hasCustomLeavesProperties(state) && ModStateProperties.hasCustomLeavesProperties(facingState)) {
+
+            boolean isCorrupted = !facingState.getValue(ModStateProperties.NOT_CORRUPTED);
+            boolean isCured = !facingState.getValue(ModStateProperties.NOT_CURED);
+
+            if (isCorrupted) {
+                cir.setReturnValue(state.setValue(ModStateProperties.NOT_CORRUPTED, false));
+            }
+
+            if (isCured) {
+                cir.setReturnValue(state.setValue(ModStateProperties.NOT_CURED, false).setValue(ModStateProperties.NOT_CORRUPTED, true));
+            }
+
+            if (!isCured && !isCorrupted) {
                 cir.setReturnValue(state.setValue(ModStateProperties.NOT_CURED, true).setValue(ModStateProperties.NOT_CORRUPTED, true));
             }
-            cir.setReturnValue(state.setValue(ModStateProperties.NOT_CURED, false).setValue(ModStateProperties.NOT_CORRUPTED, true));
         }
     }
 
