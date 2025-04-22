@@ -7,7 +7,6 @@ import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.ModTags;
 import net.abraxator.moresnifferflowers.networking.CorruptedSludgePacket;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -34,13 +33,12 @@ import java.util.Set;
 
 public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEventListener.Provider<CorruptedSludgeBlockEntity.CorruptedSludgeListener> {
     public CorruptedSludgeListener corruptedSludgeListener;
-    public int usesLeft;
+    public int usesLeft = -1;
     public int stateChange;
     
     public CorruptedSludgeBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.CORRUPTED_SLUDGE.get(), pPos, pBlockState);
         this.corruptedSludgeListener = new CorruptedSludgeListener(new BlockPositionSource(pPos));
-        this.usesLeft = Minecraft.getInstance().level.random.nextIntBetweenInclusive(16, 32);
         this.stateChange = usesLeft / 4;
     }
 
