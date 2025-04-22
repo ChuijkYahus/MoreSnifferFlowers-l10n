@@ -8,16 +8,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CapabilityList {
     public static final Capability<NutritionCapability> UNLOCKED_NUTRITIONS = CapabilityManager.get(new CapabilityToken<>() {});
-    
+    public static final Capability<HardenedMouthCapability> MOUTH_SLOTS = CapabilityManager.get(new CapabilityToken<>() {});
+
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.register(NutritionCapability.class);
     }
 
+    @SubscribeEvent
     public static void attachCapabilities(AttachCapabilitiesEvent<Entity> event) {
         if(event.getObject() instanceof LivingEntity) {
             if (event.getObject() instanceof Player player) {
@@ -37,6 +40,24 @@ public class CapabilityList {
                     @Override
                     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
                         return UNLOCKED_NUTRITIONS.orEmpty(cap, inst);
+                    }
+                });
+                event.addCapability(HardenedMouthCapability.ID, new ICapabilitySerializable<CompoundTag>() {
+                    final LazyOptional<HardenedMouthCapability> inst = LazyOptional.of(HardenedMouthCapabilityHandler::new);
+
+                    @Override
+                    public CompoundTag serializeNBT() {
+                        return inst.orElseThrow(NullPointerException::new).serializeNBT();
+                    }
+
+                    @Override
+                    public void deserializeNBT(CompoundTag nbt) {
+                        inst.orElseThrow(NullPointerException::new).deserializeNBT(nbt);
+                    }
+
+                    @Override
+                    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+                        return MOUTH_SLOTS.orEmpty(cap, inst);
                     }
                 });
             }

@@ -2,6 +2,7 @@ package net.abraxator.moresnifferflowers.init;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.effects.ExtractedEffect;
+import net.abraxator.moresnifferflowers.effects.HardenedMouthEffect;
 import net.abraxator.moresnifferflowers.effects.PantsOnFireEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -19,7 +20,7 @@ public class ModMobEffects {
     public static final RegistryObject<MobEffect> POSITIVE_SALTY = EFFECTS.register("positive_salty", () -> new ExtractedEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
     //Spicy
     public static final RegistryObject<MobEffect> PANTS_ON_FIRE = EFFECTS.register("pants_on_fire", () -> new PantsOnFireEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
-    public static final RegistryObject<MobEffect> POSITIVE_SPICY = EFFECTS.register("positive_spicy", () -> new ExtractedEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
+    public static final RegistryObject<MobEffect> HARDENED_MOUTH = EFFECTS.register("hardened_mouth", () -> new HardenedMouthEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
 
     public static final RegistryObject<MobEffect> NEGATIVE_SWEET = EFFECTS.register("negative_sweet", () -> new ExtractedEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
     public static final RegistryObject<MobEffect> POSITIVE_SWEET = EFFECTS.register("positive_sweet", () -> new ExtractedEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));

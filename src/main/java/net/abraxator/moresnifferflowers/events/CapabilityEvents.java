@@ -45,6 +45,10 @@ public class CapabilityEvents {
             CompoundTag tag = event.getEntity().getPersistentData().getCompound("NutritionData");
             cap.deserializeNBT(tag);
         });
+        event.getEntity().getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
+            CompoundTag tag = event.getEntity().getPersistentData().getCompound("MouthData");
+            cap.deserializeNBT(tag);
+        });
     }
 
     // Handle saving the capability when the player logs out
@@ -53,6 +57,10 @@ public class CapabilityEvents {
         event.getEntity().getCapability(CapabilityList.UNLOCKED_NUTRITIONS).ifPresent(cap -> {
             CompoundTag tag = cap.serializeNBT();
             event.getEntity().getPersistentData().put("NutritionData", tag);
+        });
+        event.getEntity().getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
+            CompoundTag tag = cap.serializeNBT();
+            event.getEntity().getPersistentData().put("MouthData", tag);
         });
     }
 

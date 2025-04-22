@@ -34,7 +34,8 @@ public class MoreSnifferFlowers {
 
     public MoreSnifferFlowers() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ModClientConfig.CLIENT_CONFIG);
+
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, CapabilityList::attachCapabilities);
             
