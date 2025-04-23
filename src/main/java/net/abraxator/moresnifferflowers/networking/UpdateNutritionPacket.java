@@ -1,7 +1,6 @@
 package net.abraxator.moresnifferflowers.networking;
 
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -39,14 +38,15 @@ public record UpdateNutritionPacket(Set<Item> nutritionItems) {
     }
 
     public static void handle(UpdateNutritionPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            Player player = Minecraft.getInstance().player;
-            if (player != null) {
-                player.getCapability(CapabilityList.UNLOCKED_NUTRITIONS).ifPresent(cap -> {
-                    cap.setItems(msg.nutritionItems);
-                });
-            }
+        NetworkEvent.Context context = ctx.get();
+        context.enqueueWork(() -> {
+                Player player = context.getSender();
+                if (player != null) {
+                    player.getCapability(CapabilityList.UNLOCKED_NUTRITIONS).ifPresent(cap -> {
+                        cap.setItems(msg.nutritionItems);
+                    });
+                }
         });
-        ctx.get().setPacketHandled(true);
+        context.setPacketHandled(true);
     }
 }

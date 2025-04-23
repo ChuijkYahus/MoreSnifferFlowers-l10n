@@ -1,14 +1,17 @@
 package net.abraxator.moresnifferflowers.blocks.vivicus;
 
+import com.google.common.collect.Maps;
 import net.abraxator.moresnifferflowers.blocks.ColorableVivicusBlock;
 import net.abraxator.moresnifferflowers.blocks.ModCropBlock;
 import net.abraxator.moresnifferflowers.entities.BoblingEntity;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -22,10 +25,12 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class VivicusSproutingBlock extends VivicusLeavesBlock implements ModCropBlock, ColorableVivicusBlock {
+import java.util.Map;
+
+public class VivicusSproutingBlock extends Block implements ModCropBlock, ColorableVivicusBlock {
     public VivicusSproutingBlock(Properties p_54422_) {
         super(p_54422_);
-        this.registerDefaultState(defaultBlockState().setValue(ModStateProperties.VIVICUS_CURED, false));
+        this.registerDefaultState(defaultBlockState().setValue(ModStateProperties.VIVICUS_CURED, false).setValue(ModStateProperties.COLOR, DyeColor.WHITE));
     }
     private static final VoxelShape SHAPE0 = Block.box(3, 6,  3, 13, 16, 13);
     private static final VoxelShape SHAPE1 = Block.box(3, 2,  3, 13, 16, 13);
@@ -37,6 +42,7 @@ public class VivicusSproutingBlock extends VivicusLeavesBlock implements ModCrop
         super.createBlockStateDefinition(pBuilder);
         pBuilder.add(ModStateProperties.AGE_3);
         pBuilder.add(ModStateProperties.VIVICUS_CURED);
+        pBuilder.add(ModStateProperties.COLOR);
     }
 
     @Override
@@ -94,6 +100,28 @@ public class VivicusSproutingBlock extends VivicusLeavesBlock implements ModCrop
     @Override
     public void performBonemeal(ServerLevel pLevel, RandomSource pRandom, BlockPos pPos, BlockState pState) {
         grow(pState, pLevel, pPos);
+    }
+
+    @Override
+    public Map<DyeColor, Integer> colorValues() {
+        return Util.make(Maps.newLinkedHashMap(), dyeColorHexFormatMap -> {
+            dyeColorHexFormatMap.put(DyeColor.WHITE, 0xFFf2fcfc);
+            dyeColorHexFormatMap.put(DyeColor.LIGHT_GRAY, 0xFFd2cad8);
+            dyeColorHexFormatMap.put(DyeColor.GRAY, 0xFFa4a9be);
+            dyeColorHexFormatMap.put(DyeColor.BLACK, 0xFF585560);
+            dyeColorHexFormatMap.put(DyeColor.BROWN, 0xFFe8b5bb);
+            dyeColorHexFormatMap.put(DyeColor.RED, 0xFFff9ab7);
+            dyeColorHexFormatMap.put(DyeColor.ORANGE, 0xFFffa586);
+            dyeColorHexFormatMap.put(DyeColor.YELLOW, 0xFFffd2bf);
+            dyeColorHexFormatMap.put(DyeColor.LIME, 0xFFddff97);
+            dyeColorHexFormatMap.put(DyeColor.GREEN, 0xFFa2ffb2);
+            dyeColorHexFormatMap.put(DyeColor.CYAN, 0xFF9bffda);
+            dyeColorHexFormatMap.put(DyeColor.LIGHT_BLUE, 0xFFc7fff2);
+            dyeColorHexFormatMap.put(DyeColor.BLUE, 0xFFa7cdff);
+            dyeColorHexFormatMap.put(DyeColor.PURPLE, 0xFFb4a5fb);
+            dyeColorHexFormatMap.put(DyeColor.MAGENTA, 0xFFe9adff);
+            dyeColorHexFormatMap.put(DyeColor.PINK, 0xFFfbe0ff);
+        });
     }
 
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {

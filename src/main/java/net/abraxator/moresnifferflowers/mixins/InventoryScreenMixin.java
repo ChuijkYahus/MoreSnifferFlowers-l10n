@@ -22,27 +22,27 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
     @Unique
     private static final ResourceLocation TEXTURE_LOCATION = MoreSnifferFlowers.loc("textures/gui/container/hardened_mouth.png");
     @Unique
-    private int mouthSlotX;
+    private int moreSnifferFlowers$mouthSlotX;
     @Unique
-    private int mouthSlotY;
+    private int moreSnifferFlowers$mouthSlotY;
 
-    public InventoryScreenMixin(InventoryMenu menu, Inventory playerInventory, Component title, int mouthSlotX, int mouthSlotY) {
+    public InventoryScreenMixin(InventoryMenu menu, Inventory playerInventory, Component title, int moreSnifferFlowers$mouthSlotX, int moreSnifferFlowers$mouthSlotY) {
         super(menu, playerInventory, title);
-        this.mouthSlotX = mouthSlotX;
-        this.mouthSlotY = mouthSlotY;
+        this.moreSnifferFlowers$mouthSlotX = moreSnifferFlowers$mouthSlotX;
+        this.moreSnifferFlowers$mouthSlotY = moreSnifferFlowers$mouthSlotY;
     }
 
     @Inject(method = "init", at = @At("TAIL"))
     public void init(CallbackInfo ci){
-        this.mouthSlotX = ModClientConfig.CLIENT.HARDENED_MOUTH_X.get();
-        this.mouthSlotY = ModClientConfig.CLIENT.HARDENED_MOUTH_Y.get();
+        this.moreSnifferFlowers$mouthSlotX = ModClientConfig.CLIENT.HARDENED_MOUTH_X.get();
+        this.moreSnifferFlowers$mouthSlotY = ModClientConfig.CLIENT.HARDENED_MOUTH_Y.get();
 
     }
 
     @Inject(method = "render", at = @At("TAIL"))
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         if (this.minecraft.player.hasEffect(ModMobEffects.HARDENED_MOUTH.get())){
-            guiGraphics.blit(TEXTURE_LOCATION, this.leftPos + this.mouthSlotX, this.topPos + this.mouthSlotY, 0, 0, 24, 60);
+            guiGraphics.blit(TEXTURE_LOCATION, this.leftPos + this.moreSnifferFlowers$mouthSlotX, this.topPos + this.moreSnifferFlowers$mouthSlotY, 0, 0, 24, 60);
 
         }
     }

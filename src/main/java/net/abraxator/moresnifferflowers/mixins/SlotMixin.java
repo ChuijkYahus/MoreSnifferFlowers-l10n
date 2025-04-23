@@ -1,11 +1,16 @@
 package net.abraxator.moresnifferflowers.mixins;
 
+import net.abraxator.moresnifferflowers.client.gui.menu.InventoryMenuExtension;
 import net.abraxator.moresnifferflowers.events.custom.SlotTakeEvent;
 import net.abraxator.moresnifferflowers.init.ModItems;
+import net.abraxator.moresnifferflowers.init.ModMobEffects;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,12 +23,35 @@ public abstract class SlotMixin {
 
     @Shadow public abstract ItemStack getItem();
 
+    @Shadow public int index;
+
+    @Shadow @Final public Container container;
+
     @Inject(method = "mayPickup", at = @At("HEAD"), cancellable = true)
     public void mayPickup(Player player, CallbackInfoReturnable<Boolean> cir) {
         if (this.getItem().is(ModItems.BURNED_SLOT.get()) && !player.isCreative()){
             cir.setReturnValue(false);
         }
+        if (player.inventoryMenu instanceof InventoryMenuExtension menuExtension && !player.hasEffect(ModMobEffects.HARDENED_MOUTH.get())){
+            menuExtension.moreSnifferFlowers$getExtraSlotIds().forEach(integer -> {
+                if (this.index == integer) cir.setReturnValue(false);
+            });
+        }
     }
+
+    @Inject(method = "mayPlace",at = @At("HEAD"), cancellable = true)
+    public void mayPlace(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+        if (this.container instanceof Inventory inventory){
+            Player player = inventory.player;
+            if (player.inventoryMenu instanceof InventoryMenuExtension menuExtension && !player.hasEffect(ModMobEffects.HARDENED_MOUTH.get())){
+                menuExtension.moreSnifferFlowers$getExtraSlotIds().forEach(integer -> {
+                    if (this.index == integer) cir.setReturnValue(false);
+                });
+            }
+
+        }
+    }
+
 
     @Inject(method = "onTake", at = @At("HEAD"))
     public void onTake(Player player, ItemStack stack, CallbackInfo ci){
