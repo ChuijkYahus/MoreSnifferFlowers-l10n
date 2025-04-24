@@ -20,15 +20,17 @@ public class ModClientConfig {
 
         public ClientConfigData(ForgeConfigSpec.Builder builder) {
             builder.push("More Sniffer Flowers Client Config");
+
+            builder.comment("Hardened mouth effect GUI location, REQUIRES GAME RESTART!");
             HARDENED_MOUTH_X = builder
                     .comment("Move extra slots from the Hardened mouth effect left to right")
                     .translation("config.moresnifferflowers.hardened_mouth_x")
-                    .defineInRange("Hardened Mouth X", 176, -400, 400);
+                    .defineInRange("Hardened Mouth X", 176, -5000, 5000);
 
             HARDENED_MOUTH_Y = builder
                     .comment("Move extra slots from the Hardened mouth effect up and down")
                     .translation("config.moresnifferflowers.hardened_mouth_y")
-                    .defineInRange("Hardened Mouth Y", 80, -400, 400);
+                    .defineInRange("Hardened Mouth Y", 80, -5000, 5000);
 
             builder.pop();
         }

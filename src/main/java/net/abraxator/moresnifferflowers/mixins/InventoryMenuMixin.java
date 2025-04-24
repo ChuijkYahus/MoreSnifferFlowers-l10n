@@ -1,10 +1,19 @@
 package net.abraxator.moresnifferflowers.mixins;
 
+import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.abraxator.moresnifferflowers.capability.HardenedMouthCapability;
 import net.abraxator.moresnifferflowers.client.gui.menu.InventoryMenuExtension;
+import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
+import net.abraxator.moresnifferflowers.init.ModClientConfig;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.ItemStack;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,6 +25,7 @@ import java.util.List;
 @Mixin(InventoryMenu.class)
 public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingContainer> implements InventoryMenuExtension {
 
+    @Shadow @Final private Player owner;
     @Unique
     public final List<Integer> moreSnifferFlowers$extraSlotIds = new ArrayList<>();
 
@@ -25,14 +35,44 @@ public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingContaine
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void onInit(Inventory playerInventory, boolean active, Player owner, CallbackInfo ci) {
-        // Add two extra slots at fixed positions (example X/Y)
-        int startIndex = playerInventory.items.size(); // Usually 36
-        this.addSlot(new Slot(playerInventory, startIndex, 180, 84)); // Extra Slot 1
-        moreSnifferFlowers$extraSlotIds.add(this.slots.size() - 1);
-        this.addSlot(new Slot(playerInventory, startIndex + 1, 180, 120)); // Extra Slot 2}
-        moreSnifferFlowers$extraSlotIds.add(this.slots.size() - 1);
+        int moreSnifferFlowers$mouthSlotX = 180;
+        int moreSnifferFlowers$mouthSlotY = 80;
+
+        if (owner instanceof LocalPlayer) {
+            moreSnifferFlowers$mouthSlotX = ModClientConfig.CLIENT.HARDENED_MOUTH_X.get();
+            moreSnifferFlowers$mouthSlotY = ModClientConfig.CLIENT.HARDENED_MOUTH_Y.get();
+        }
+
+        this.addSlot(new HardenedMouthSlot(owner , 0, moreSnifferFlowers$mouthSlotX + 4, moreSnifferFlowers$mouthSlotY + 4,
+                () -> owner.getCapability(CapabilityList.MOUTH_SLOTS)
+                .map(HardenedMouthCapability::getMouthSlotItems)
+                .orElse(NonNullList.withSize(2, ItemStack.EMPTY))));
+        // x180, y84
+
+       // moreSnifferFlowers$extraSlotIds.add(this.slots.size() - 1);
+        this.addSlot(new HardenedMouthSlot(owner , 1, moreSnifferFlowers$mouthSlotX + 4, moreSnifferFlowers$mouthSlotY + 40,
+                () -> owner.getCapability(CapabilityList.MOUTH_SLOTS)
+                        .map(HardenedMouthCapability::getMouthSlotItems)
+                        .orElse(NonNullList.withSize(2, ItemStack.EMPTY))));
+        // x180, y120
+
+        // moreSnifferFlowers$extraSlotIds.add(this.slots.size() - 1);
 
     }
+
+    @Override
+    public void clicked(int slotId, int dragType, ClickType clickType, Player player) {
+        if (slotId >= 0 && slotId < this.slots.size()) {
+            Slot slot = this.slots.get(slotId);
+
+            if (slot instanceof HardenedMouthSlot hardenedMouthSlot) {
+                hardenedMouthSlot.handleCapabilitySlotClick(hardenedMouthSlot, player, clickType, dragType);
+                return;
+            }
+        }
+        super.clicked(slotId, dragType, clickType, player);
+    }
+
 
     @Override
     public List<Integer> moreSnifferFlowers$getExtraSlotIds() {

@@ -21,5 +21,7 @@ public class ModPacketHandler {
         CHANNEL.registerMessage(id++, BerootCauldronCraftPacket.class, BerootCauldronCraftPacket::encode, BerootCauldronCraftPacket::new, BerootCauldronCraftPacket::handle);
         CHANNEL.registerMessage(id++, UpdateNutritionPacket.class, UpdateNutritionPacket::encode, UpdateNutritionPacket::decode, UpdateNutritionPacket::handle);
         CHANNEL.registerMessage(id++, BerootCauldronSuckPacket.class, BerootCauldronSuckPacket::encode, BerootCauldronSuckPacket::new, BerootCauldronSuckPacket::handle);
+        CHANNEL.registerMessage(id++, UpdateMouthSlotsPacket.class, UpdateMouthSlotsPacket::encode, UpdateMouthSlotsPacket::decode, UpdateMouthSlotsPacket::handle);
+
     }
 }

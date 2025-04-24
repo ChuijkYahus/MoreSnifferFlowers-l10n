@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.events;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
+import net.abraxator.moresnifferflowers.networking.UpdateMouthSlotsPacket;
 import net.abraxator.moresnifferflowers.networking.UpdateNutritionPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,6 +32,15 @@ public class CapabilityEvents {
             newPlayer.getCapability(CapabilityList.UNLOCKED_NUTRITIONS).ifPresent(newCap -> {
 
                 newCap.setItems(new HashSet<>(oldCap.getItems())); // Copy data
+                newCap.sync(newPlayer);});
+
+        });
+
+        oldPlayer.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(oldCap -> {
+
+            newPlayer.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(newCap -> {
+
+                newCap.setAllItems(oldCap.getMouthSlotItems()); // Copy data
                 newCap.sync(newPlayer);});
 
         });
@@ -72,6 +82,12 @@ public class CapabilityEvents {
                 ModPacketHandler.CHANNEL.send(
                         PacketDistributor.PLAYER.with(() -> serverPlayer),
                         new UpdateNutritionPacket(cap.getItems())
+                );
+            });
+            player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
+                ModPacketHandler.CHANNEL.send(
+                        PacketDistributor.PLAYER.with(() -> serverPlayer),
+                        new UpdateMouthSlotsPacket(cap.getMouthSlotItems())
                 );
             });
         }

@@ -63,7 +63,7 @@ public class NutritionCapabilityHandler implements NutritionCapability{
         items = new HashSet<>();
         
         for (int i = 0; i < nbt.getInt("size"); i++) {
-            ResourceLocation location = ResourceLocation.of(nbt.getString("unlocked" + i), ':');
+            ResourceLocation location = ResourceLocation.bySeparator(nbt.getString("unlocked" + i), ':');
             items.add(ForgeRegistries.ITEMS.getValue(location));
         }
     }

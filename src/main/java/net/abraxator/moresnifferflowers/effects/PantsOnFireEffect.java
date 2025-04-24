@@ -6,7 +6,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
@@ -46,8 +45,7 @@ public class PantsOnFireEffect extends MobEffect {
                 }
 
                 ItemStack stack = slot.getItem();
-                ItemEntity itemEntity = new ItemEntity(level, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), stack);
-                level.addFreshEntity(itemEntity);
+                player.drop(stack, true);
 
                 slot.set(ModItems.BURNED_SLOT.get().getDefaultInstance());
             }

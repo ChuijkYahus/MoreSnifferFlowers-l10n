@@ -6,6 +6,7 @@ import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
 import net.abraxator.moresnifferflowers.blocks.SaltemoneBlock;
+import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.events.custom.SlotTakeEvent;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
@@ -38,6 +39,7 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -54,6 +56,21 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void onSlotTake(SlotTakeEvent event){
+    }
+
+    @SubscribeEvent
+    public static void onEffectExpiration(MobEffectEvent event){
+        MobEffectInstance effectInstance = event.getEffectInstance();
+        LivingEntity entity = event.getEntity();
+        if (effectInstance.getEffect().equals(ModMobEffects.HARDENED_MOUTH.get()) && entity instanceof Player player){
+            player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(hardenedMouthCapability -> {
+                hardenedMouthCapability.getMouthSlotItems().forEach(itemStack -> {
+                    if (itemStack.isEmpty()) return;
+                    player.drop(itemStack, true);
+                });
+                hardenedMouthCapability.clear();
+            });
+        };
     }
 
     @SubscribeEvent

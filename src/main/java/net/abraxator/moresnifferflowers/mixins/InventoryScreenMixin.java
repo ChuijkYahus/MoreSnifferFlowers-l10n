@@ -39,7 +39,7 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
 
     }
 
-    @Inject(method = "render", at = @At("TAIL"))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;renderBackground(Lnet/minecraft/client/gui/GuiGraphics;)V", shift = At.Shift.AFTER))
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         if (this.minecraft.player.hasEffect(ModMobEffects.HARDENED_MOUTH.get())){
             guiGraphics.blit(TEXTURE_LOCATION, this.leftPos + this.moreSnifferFlowers$mouthSlotX, this.topPos + this.moreSnifferFlowers$mouthSlotY, 0, 0, 24, 60);
