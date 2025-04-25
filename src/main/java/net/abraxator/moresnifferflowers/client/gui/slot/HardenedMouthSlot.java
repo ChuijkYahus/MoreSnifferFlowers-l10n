@@ -21,6 +21,7 @@ public class HardenedMouthSlot extends Slot {
         this.player = player;
         this.index = index;
         this.itemStorage = itemStorage;
+
     }
 
     @Override
@@ -40,7 +41,10 @@ public class HardenedMouthSlot extends Slot {
 
     @Override
     public ItemStack getItem() {
-        return itemStorage.get().get(index);
+        if (itemStorage.get().size() == 2)
+            return itemStorage.get().get(index);
+        System.out.println(itemStorage.get());
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -121,7 +125,7 @@ public class HardenedMouthSlot extends Slot {
     }
 
     private static boolean moveToPlayerInventory(AbstractContainerMenu menu, ItemStack stackToMove) {
-        for (int i = 0; i < 36; i++) {
+        for (int i = 8; i < 36; i++) {
             Slot target = menu.getSlot(i);
             if (!target.mayPlace(stackToMove)) continue;
 

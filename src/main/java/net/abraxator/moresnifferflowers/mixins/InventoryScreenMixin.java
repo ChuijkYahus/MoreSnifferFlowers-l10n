@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.mixins;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.init.ModClientConfig;
 import net.abraxator.moresnifferflowers.init.ModMobEffects;
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,6 +11,7 @@ import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -41,8 +43,20 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;renderBackground(Lnet/minecraft/client/gui/GuiGraphics;)V", shift = At.Shift.AFTER))
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        if (this.minecraft.player.hasEffect(ModMobEffects.HARDENED_MOUTH.get())){
-            guiGraphics.blit(TEXTURE_LOCATION, this.leftPos + this.moreSnifferFlowers$mouthSlotX, this.topPos + this.moreSnifferFlowers$mouthSlotY, 0, 0, 24, 60);
+        Player player = this.minecraft.player;
+        if (player.hasEffect(ModMobEffects.HARDENED_MOUTH.get())){
+
+            int x = this.leftPos + this.moreSnifferFlowers$mouthSlotX;
+            int y = this.topPos + this.moreSnifferFlowers$mouthSlotY;
+            guiGraphics.blit(TEXTURE_LOCATION, x, y, 0, 0, 24, 60);
+
+            player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(hardenedMouthCapability -> {
+                float maxCooldown = (float) hardenedMouthCapability.getMaxCooldown(player);
+                float cooldown = (float) hardenedMouthCapability.getCooldown();
+                int height = Math.round(14F - (14F * (cooldown / maxCooldown)));
+                guiGraphics.blit(TEXTURE_LOCATION, x + 5, y + 24, 32, 14 - height, 14, height);
+
+            });
 
         }
     }

@@ -11,9 +11,13 @@ import net.minecraftforge.common.util.INBTSerializable;
 public interface HardenedMouthCapability extends INBTSerializable<CompoundTag> {
      ResourceLocation ID = MoreSnifferFlowers.loc("mouth_inventory");
 
-     NonNullList<ItemStack> getMouthSlotItems();
+     int cooldown = 0;
 
-     void setAllItems(NonNullList<ItemStack> itemStacks);
+    default NonNullList<ItemStack> getMouthSlotItems() {
+       return NonNullList.withSize(2, ItemStack.EMPTY);
+    }
+
+    void setAllItems(NonNullList<ItemStack> itemStacks);
 
      void setItem(int index, ItemStack stack);
 
@@ -22,4 +26,12 @@ public interface HardenedMouthCapability extends INBTSerializable<CompoundTag> {
      void sync(Player player);
 
      void clear();
+
+     void tick(Player player);
+
+     int getCooldown();
+
+     void setCooldown(int cooldown);
+
+     int getMaxCooldown(Player player);
 }

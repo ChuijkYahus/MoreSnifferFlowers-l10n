@@ -106,6 +106,12 @@ public class ForgeEvents {
                 player.setDeltaMovement(player.getDeltaMovement().add(jitter));
             }
         }
+
+        if (event.phase == TickEvent.Phase.END || event.player.level().isClientSide) return;
+
+        event.player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
+            cap.tick(event.player);
+        });
     }
     
     @SubscribeEvent
