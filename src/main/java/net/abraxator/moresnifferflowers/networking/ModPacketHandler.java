@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.networking;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
@@ -15,13 +16,22 @@ public class ModPacketHandler {
     
     public static void init() {
         int id = 0;
-        CHANNEL.registerMessage(id++, CorruptedSludgePacket.class, CorruptedSludgePacket::encode, CorruptedSludgePacket::new, CorruptedSludgePacket.Handler::handle);
-        CHANNEL.registerMessage(id++, DyespriaDisplayModeChangePacket.class, DyespriaDisplayModeChangePacket::encode, DyespriaDisplayModeChangePacket::new, DyespriaDisplayModeChangePacket.Handler::handle);
-        CHANNEL.registerMessage(id++, DyespriaModePacket.class, DyespriaModePacket::encode, DyespriaModePacket::new, DyespriaModePacket::handle);
-        CHANNEL.registerMessage(id++, BerootCauldronCraftPacket.class, BerootCauldronCraftPacket::encode, BerootCauldronCraftPacket::new, BerootCauldronCraftPacket::handle);
-        CHANNEL.registerMessage(id++, UpdateNutritionPacket.class, UpdateNutritionPacket::encode, UpdateNutritionPacket::decode, UpdateNutritionPacket::handle);
-        CHANNEL.registerMessage(id++, BerootCauldronSuckPacket.class, BerootCauldronSuckPacket::encode, BerootCauldronSuckPacket::new, BerootCauldronSuckPacket::handle);
-        CHANNEL.registerMessage(id++, UpdateMouthSlotsPacket.class, UpdateMouthSlotsPacket::encode, UpdateMouthSlotsPacket::decode, UpdateMouthSlotsPacket::handle);
+        CHANNEL.messageBuilder(CorruptedSludgePacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(CorruptedSludgePacket::encode).decoder(CorruptedSludgePacket::new).consumerMainThread(CorruptedSludgePacket::handle).add();
 
+        CHANNEL.messageBuilder(DyespriaModePacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(DyespriaModePacket::encode).decoder(DyespriaModePacket::new).consumerMainThread(DyespriaModePacket::handle).add();
+
+        CHANNEL.messageBuilder(BerootCauldronCraftPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(BerootCauldronCraftPacket::encode).decoder(BerootCauldronCraftPacket::new).consumerMainThread(BerootCauldronCraftPacket::handle).add();
+
+        CHANNEL.messageBuilder(UpdateNutritionPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(UpdateNutritionPacket::encode).decoder(UpdateNutritionPacket::decode).consumerMainThread(UpdateNutritionPacket::handle).add();
+
+        CHANNEL.messageBuilder(BerootCauldronSuckPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(BerootCauldronSuckPacket::encode).decoder(BerootCauldronSuckPacket::new).consumerMainThread(BerootCauldronSuckPacket::handle).add();
+
+        CHANNEL.messageBuilder(UpdateMouthSlotsPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(UpdateMouthSlotsPacket::encode).decoder(UpdateMouthSlotsPacket::decode).consumerMainThread(UpdateMouthSlotsPacket::handle).add();
     }
 }

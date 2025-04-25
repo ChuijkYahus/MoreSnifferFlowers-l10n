@@ -20,7 +20,7 @@ public record UpdateMouthSlotsPacket(NonNullList<ItemStack> itemStacks, int cool
     }
 
     public static UpdateMouthSlotsPacket decode(FriendlyByteBuf buffer) {
-        NonNullList<ItemStack> itemStacks1 = NonNullList.of(buffer.readItem(), buffer.readItem());
+        NonNullList<ItemStack> itemStacks1 = NonNullList.of(ItemStack.EMPTY, buffer.readItem(), buffer.readItem());
         int cooldown = buffer.readInt();
         return new UpdateMouthSlotsPacket(itemStacks1, cooldown);
     }

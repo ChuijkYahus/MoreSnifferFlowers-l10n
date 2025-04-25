@@ -1,13 +1,9 @@
 package net.abraxator.moresnifferflowers.networking;
 
-import com.google.errorprone.annotations.Var;
-import com.mojang.authlib.yggdrasil.request.ValidateRequest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import org.joml.Vector3f;
 
@@ -24,33 +20,20 @@ public record CorruptedSludgePacket(Vector3f start, Vector3f target, Vector3f di
         buf.writeVector3f(direction);
     }
     
-    public class Handler {
-        public static void handle(CorruptedSludgePacket packet, Supplier<NetworkEvent.Context> context) {
-            context.get().enqueueWork(() -> {
-                var level = Minecraft.getInstance().level;
-                if (level.isClientSide()) {
-                    float distance = packet.start.distance(packet.target);
+    public static void handle(CorruptedSludgePacket packet, Supplier<NetworkEvent.Context> context) {
+        context.get().enqueueWork(() -> {
+            var level = Minecraft.getInstance().level;
+            if (level.isClientSide()) {
+                float distance = packet.start.distance(packet.target);
 
 
-                    for (int i = 0; i < 15; i++) {
-                        double progress = (double) i / 15;
-                        Vector3f pos = new Vector3f(packet.start).add(new Vector3f(packet.direction).mul((float) (distance * progress)));
-                        level.addParticle(new DustParticleOptions(Vec3.fromRGB24(0x0443248).toVector3f(), 1.0F), pos.x, pos.y, pos.z, 0.0D, 0.0D, 0.0D);
-                    }
+                for (int i = 0; i < 15; i++) {
+                    double progress = (double) i / 15;
+                    Vector3f pos = new Vector3f(packet.start).add(new Vector3f(packet.direction).mul((float) (distance * progress)));
+                    level.addParticle(new DustParticleOptions(Vec3.fromRGB24(0x0443248).toVector3f(), 1.0F), pos.x, pos.y, pos.z, 0.0D, 0.0D, 0.0D);
                 }
-            });
-
-            context.get().setPacketHandled(true);
-        }   
-        
-        public static boolean handlePacket(CorruptedSludgePacket packet, Supplier<NetworkEvent.Context> context) {
-            NetworkEvent.Context ctx = context.get();
-            ctx.enqueueWork(() -> {
-
-            });
-
-            ctx.setPacketHandled(true);
-            return true;
-        }   
+            }
+        });
+        context.get().setPacketHandled(true);
     }
 }

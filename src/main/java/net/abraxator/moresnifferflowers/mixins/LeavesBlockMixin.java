@@ -43,7 +43,7 @@ public abstract class LeavesBlockMixin extends Block implements SimpleWaterlogge
             }
 
             if (!isCured && !isCorrupted) {
-                cir.setReturnValue(state.setValue(ModStateProperties.NOT_CURED, true).setValue(ModStateProperties.NOT_CORRUPTED, true));
+                cir.setReturnValue(state.setValue(ModStateProperties.NOT_CURED, true));
             }
         }
     }

@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.client.gui.slot;
 
+import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.init.ModMobEffects;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
@@ -54,7 +55,9 @@ public class HardenedMouthSlot extends Slot {
 
     @Override
     public void setChanged() {
-
+        player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(hardenedMouthCapability -> {
+            hardenedMouthCapability.sync(player);
+        });
     }
 
     public void handleCapabilitySlotClick(HardenedMouthSlot slot, Player player, ClickType clickType, int dragType) {
@@ -62,6 +65,8 @@ public class HardenedMouthSlot extends Slot {
         InventoryMenu menu = player.inventoryMenu;
         ItemStack carried = menu.getCarried();
         boolean isRightClick = dragType == 1;
+
+        if (player.level().isClientSide) return;
 
         switch (clickType){
             case PICKUP -> {
@@ -120,11 +125,11 @@ public class HardenedMouthSlot extends Slot {
     }
 
 
-    private static boolean canStack(ItemStack a, ItemStack b) {
+    public static boolean canStack(ItemStack a, ItemStack b) {
         return ItemStack.isSameItemSameTags(a, b);
     }
 
-    private static boolean moveToPlayerInventory(AbstractContainerMenu menu, ItemStack stackToMove) {
+    public static boolean moveToPlayerInventory(AbstractContainerMenu menu, ItemStack stackToMove) {
         for (int i = 8; i < 36; i++) {
             Slot target = menu.getSlot(i);
             if (!target.mayPlace(stackToMove)) continue;

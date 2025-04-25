@@ -28,13 +28,6 @@ public class HardenedMouthCapabilityHandler implements HardenedMouthCapability{
 
     @Override
     public void setAllItems(NonNullList<ItemStack> itemStacks) {
-        while (mouthSlots.size() < itemStacks.size()) {
-            mouthSlots.add(ItemStack.EMPTY);
-        }
-        while (mouthSlots.size() > itemStacks.size()) {
-            mouthSlots.remove(mouthSlots.size() - 1);
-        }
-
         for (int i = 0; i < itemStacks.size(); i++) {
             mouthSlots.set(i, itemStacks.get(i));
         }
@@ -94,14 +87,17 @@ public class HardenedMouthCapabilityHandler implements HardenedMouthCapability{
         }
         if (player.level().isClientSide || !player.hasEffect(ModMobEffects.HARDENED_MOUTH.get())) return;
 
+        ItemStack input = this.getItem(0);
+        ItemStack output = this.getItem(1);
+
+
+        if (getSmeltingResult(player.level(), input).isEmpty() || !getItem(1).isEmpty()) cooldown = getMaxCooldown(player);
+
         if (cooldown > 0) {
             cooldown--;
             sync(player);
             return;
         }
-
-        ItemStack input = this.getItem(0);
-        ItemStack output = this.getItem(1);
 
         getSmeltingResult(player.level(), input).ifPresentOrElse(result -> {
 
@@ -139,7 +135,7 @@ public class HardenedMouthCapabilityHandler implements HardenedMouthCapability{
         int amplifier = 0;
         if (player.hasEffect(ModMobEffects.HARDENED_MOUTH.get())) amplifier = player.getEffect(ModMobEffects.HARDENED_MOUTH.get()).getAmplifier();
 
-        return Math.max(1, 40 - amplifier * 10);
+        return Math.max(1, 80 - amplifier * 10);
     }
 
     public Optional<ItemStack> getSmeltingResult(Level level, ItemStack input) {

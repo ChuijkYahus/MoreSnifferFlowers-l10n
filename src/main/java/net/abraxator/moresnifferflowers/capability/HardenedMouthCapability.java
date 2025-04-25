@@ -13,11 +13,11 @@ public interface HardenedMouthCapability extends INBTSerializable<CompoundTag> {
 
      int cooldown = 0;
 
-    default NonNullList<ItemStack> getMouthSlotItems() {
+     default NonNullList<ItemStack> getMouthSlotItems() {
        return NonNullList.withSize(2, ItemStack.EMPTY);
     }
 
-    void setAllItems(NonNullList<ItemStack> itemStacks);
+     void setAllItems(NonNullList<ItemStack> itemStacks);
 
      void setItem(int index, ItemStack stack);
 
