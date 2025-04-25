@@ -8,7 +8,6 @@ import net.abraxator.moresnifferflowers.init.ModRecipeTypes;
 import net.abraxator.moresnifferflowers.init.ModTags;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -130,8 +129,6 @@ public record CorruptionRecipe(ResourceLocation id, String source, List<Entry> l
     
     @Override
     public ItemStack getResultItem(RegistryAccess registryAccess) {
-        if (Minecraft.getInstance().level != null)
-            return getResultBlock(Minecraft.getInstance().level.getRandom()).asItem().getDefaultInstance();
         return getResultBlock(null).asItem().getDefaultInstance();
     }
 
