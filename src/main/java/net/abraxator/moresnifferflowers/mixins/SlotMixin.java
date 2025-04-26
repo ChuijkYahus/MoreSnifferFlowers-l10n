@@ -24,7 +24,7 @@ public abstract class SlotMixin {
 
     @Inject(method = "mayPickup", at = @At("HEAD"), cancellable = true)
     public void mayPickup(Player player, CallbackInfoReturnable<Boolean> cir) {
-        if (this.getItem().is(ModItems.BURNED_SLOT.get()) && !player.isCreative()){
+        if (this.getItem().is(ModItems.BURNED_SLOT.get())){
             cir.setReturnValue(false);
         }
      //   moreSnifferFlowers$cancelWithoutEffect(cir);

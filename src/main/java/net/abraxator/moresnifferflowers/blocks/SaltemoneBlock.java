@@ -82,7 +82,7 @@ public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable
     private boolean corruptionCheck(SaltemoneBlockEntity entity, LevelReader level){
         AtomicInteger i = new AtomicInteger();
         BlockPos.betweenClosedStream(new AABB(entity.center, entity.center.offset(1, 0, 1))).forEach(pos -> {
-            if (level.getBlockState(pos).is(ModBlocks.SOURLEMON.get()))
+            if (level.getBlockState(pos).is(ModBlocks.SOURLEMONE.get()))
                 i.getAndIncrement();
         });
         return !(i.get() == 0);
@@ -163,7 +163,7 @@ public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable
     }
 
     public static void afterCorruption(BlockPos centrePos, Level level, BlockPos pos){
-        level.setBlockAndUpdate(pos, ModBlocks.SOURLEMON.get().withPropertiesOf(level.getBlockState(pos)));
+        level.setBlockAndUpdate(pos, ModBlocks.SOURLEMONE.get().withPropertiesOf(level.getBlockState(pos)));
         if(level.getBlockEntity(pos) instanceof SaltemoneBlockEntity entity){
             entity.center = centrePos;
         }

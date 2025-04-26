@@ -44,6 +44,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -92,8 +93,9 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
-        if (event.phase == TickEvent.Phase.END && player.hasEffect(ModMobEffects.NEGATIVE_SWEET.get())) {
-            MobEffectInstance instance = player.getEffect(ModMobEffects.NEGATIVE_SWEET.get());
+        Level level = player.level();
+        if (event.phase == TickEvent.Phase.END && player.hasEffect(ModMobEffects.OLD_NEGATIVE_SWEET.get())) {
+            MobEffectInstance instance = player.getEffect(ModMobEffects.OLD_NEGATIVE_SWEET.get());
             int amplifier = instance.getAmplifier();
             if(player.getRandom().nextDouble() > 0.01 * amplifier) {
                 return;
@@ -117,6 +119,22 @@ public class ForgeEvents {
         event.player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
             cap.tick(event.player);
         });
+
+/*        if (player.hasEffect(ModMobEffects.STICKY.get())) {
+            double pullRange = 8.0D;
+            List<ItemEntity> nearbyItems = level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(pullRange), item -> !item.hasPickUpDelay());
+            for (ItemEntity item : nearbyItems) {
+                pullItemTowardPlayer(player, item);
+            }
+        }*/
+    }
+
+    @SubscribeEvent
+    public static void onItemPickup(EntityItemPickupEvent event) {
+        Player player = event.getEntity();
+        if (player.hasEffect(ModMobEffects.STICKY.get()) && !player.isCrouching()) {
+            event.setCanceled(true);
+        }
     }
     
     @SubscribeEvent
@@ -200,7 +218,7 @@ public class ForgeEvents {
 
         if(level.getBlockEntity(pos) instanceof SaltemoneBlockEntity entity) {
             SaltemoneBlock.blockPosStream(entity.center, level.getBlockState(entity.center)).forEach(pos1 -> {
-                if (level.getBlockState(pos1).is(ModBlocks.SALTEMONE.get()) || level.getBlockState(pos1).is(ModBlocks.SOURLEMON.get())) level.destroyBlock(pos1, true);
+                if (level.getBlockState(pos1).is(ModBlocks.SALTEMONE.get()) || level.getBlockState(pos1).is(ModBlocks.SOURLEMONE.get())) level.destroyBlock(pos1, true);
             });
         }
 
@@ -223,5 +241,28 @@ public class ForgeEvents {
             });
             level.destroyBlock(entity.center, true);
         }
+    }
+
+    private static void pullItemTowardPlayer(Player player, ItemEntity item) {
+        Vec3 playerPos = player.position().add(0, 1, 0); // Aim for player's chest, not feet
+        Vec3 itemPos = item.position();
+        Vec3 direction = playerPos.subtract(itemPos);
+
+        double distance = direction.length();
+        if (distance < 0.5) {
+            return; // Already close enough
+        }
+
+        // Lerp (move) toward player manually
+        double speed = 0.2; // adjust as needed (lower = smoother)
+
+        Vec3 move = direction.normalize().scale(Math.min(speed, distance));
+
+        double newX = item.getX() + move.x;
+        double newY = item.getY() + move.y;
+        double newZ = item.getZ() + move.z;
+
+        item.setPos(newX, newY, newZ);
+        item.setDeltaMovement(Vec3.ZERO); // disable natural physics push
     }
 }

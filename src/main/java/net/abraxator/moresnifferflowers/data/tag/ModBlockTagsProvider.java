@@ -82,7 +82,7 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         this.tag(ModTags.ModBlockTags.CORRUPTION_TRANSFORMABLES).add(ModBlocks.DYESPRIA_PLANT.get(), ModBlocks.DAWNBERRY_VINE.get());
         this.tag(ModTags.ModBlockTags.UNCORRUPTABLE).add(ModBlocks.CORRUPTED_LOG.get(), ModBlocks.CORRUPTED_LEAVES_BUSH.get(), ModBlocks.CORRUPTED_LEAVES.get(), ModBlocks.STRIPPED_CORRUPTED_LOG.get()
                 , ModBlocks.CORRUPTED_WOOD.get(), ModBlocks.STRIPPED_CORRUPTED_WOOD.get(), ModBlocks.DECAYED_LOG.get());
-        this.tag(ModTags.ModBlockTags.NO_CORRUPTED_SLIME_COLLISION).add(ModBlocks.SALTEMONE.get(), ModBlocks.SOURLEMON.get());
+        this.tag(ModTags.ModBlockTags.NO_CORRUPTED_SLIME_COLLISION).add(ModBlocks.SALTEMONE.get(), ModBlocks.SOURLEMONE.get());
 
         this.tag(BlockTags.CAULDRONS).add(ModBlocks.ACID_FILLED_CAULDRON.get(), ModBlocks.BONMEEL_FILLED_CAULDRON.get());
         this.tag(BlockTags.DIRT).add(ModBlocks.CORRUPTED_GRASS_BLOCK.get(), ModBlocks.CURED_GRASS_BLOCK.get());

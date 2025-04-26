@@ -91,7 +91,7 @@ public class HardenedMouthCapabilityHandler implements HardenedMouthCapability{
         ItemStack output = this.getItem(1);
 
 
-        if (getSmeltingResult(player.level(), input).isEmpty() || !getItem(1).isEmpty()) cooldown = getMaxCooldown(player);
+        if (getSmeltingResult(player.level(), input).isEmpty() || (!getSmeltingResult(player.level(), input).get().is(output.getItem()) && !output.isEmpty())) cooldown = getMaxCooldown(player);
 
         if (cooldown > 0) {
             cooldown--;

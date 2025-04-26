@@ -21,9 +21,11 @@ public class ModMobEffects {
     //Spicy
     public static final RegistryObject<MobEffect> PANTS_ON_FIRE = EFFECTS.register("pants_on_fire", () -> new PantsOnFireEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
     public static final RegistryObject<MobEffect> HARDENED_MOUTH = EFFECTS.register("hardened_mouth", () -> new HardenedMouthEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
-
-    public static final RegistryObject<MobEffect> NEGATIVE_SWEET = EFFECTS.register("negative_sweet", () -> new ExtractedEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
+    //Sweet
+    public static final RegistryObject<MobEffect> STICKY = EFFECTS.register("sticky", () -> new ExtractedEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
+    public static final RegistryObject<MobEffect> OLD_NEGATIVE_SWEET = EFFECTS.register("old_negative_sweet", () -> new ExtractedEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
     public static final RegistryObject<MobEffect> POSITIVE_SWEET = EFFECTS.register("positive_sweet", () -> new ExtractedEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
+
     public static final RegistryObject<MobEffect> NEGATIVE_NEUTRAL = EFFECTS.register("negative_neutral", () -> new ExtractedEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
     public static final RegistryObject<MobEffect> POSITIVE_NEUTRAL = EFFECTS.register("positive_neutral", () -> new ExtractedEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
 }

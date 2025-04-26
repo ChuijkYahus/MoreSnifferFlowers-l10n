@@ -8,6 +8,7 @@
     "AgeableMobMixin",
     "FarmBlockMixin",
     "InventoryMenuMixin",
+    "ItemEntityMixin",
     "LeavesBlockMixin",
     "RightClickHarvestModInitMixin",
     "ServerPlayerMixin",

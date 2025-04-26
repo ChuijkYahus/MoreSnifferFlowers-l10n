@@ -303,7 +303,7 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         add(ModBlocks.ACIDRIPIA.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.ACIDRIPIA.get(), ModItems.ACIDRIPIA_SEEDS.get()));
         add(ModBlocks.BEROOT_CAULDRON.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.BEROOT_CAULDRON.get(), ModItems.BEROOT_CAULDRON.get()));
         add(ModBlocks.SALTEMONE.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.SALTEMONE.get(), ModItems.SALTEMONE_SEEDS.get()));
-        add(ModBlocks.SOURLEMON.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.SOURLEMON.get(), ModItems.SOURLEMON_SEEDS.get()));
+        add(ModBlocks.SOURLEMONE.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.SOURLEMONE.get(), ModItems.SOURLEMON_SEEDS.get()));
 
         add(ModBlocks.SALTY_CLUMP.get(), simpleIntegerConditional(ModStateProperties.AMOUNT_4, ModBlocks.SALTY_CLUMP.get(), ModItems.SALTY_SPICE.get()));
 

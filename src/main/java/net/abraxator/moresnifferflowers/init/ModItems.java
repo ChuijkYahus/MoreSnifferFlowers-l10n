@@ -125,7 +125,7 @@ public class ModItems {
     public static final RegistryObject<Item> BEROOT_COOK_BOOK = ITEMS.register("beroot_cook_book", () -> new BerootCookbookItem(new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> SALTEMONE_SEEDS = ITEMS.register("saltemone_seeds", () -> new SaltemoneSeedsItem(ModBlocks.SALTEMONE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> SOURLEMON_SEEDS = ITEMS.register("sourlemon_seeds", () -> new SaltemoneSeedsItem(ModBlocks.SOURLEMON.get(), new Item.Properties()));
+    public static final RegistryObject<Item> SOURLEMON_SEEDS = ITEMS.register("sourlemon_seeds", () -> new SaltemoneSeedsItem(ModBlocks.SOURLEMONE.get(), new Item.Properties()));
     public static final RegistryObject<Item> SALTY_SPICE = ITEMS.register("salty_spice", () -> new ItemNameBlockItem(ModBlocks.SALTY_CLUMP.get(), new Item.Properties()));
     public static final RegistryObject<Item> DRIPSALT = ITEMS.register("dripsalt", () -> new BlockItem(ModBlocks.DRIPSALT.get(), new Item.Properties()));
 

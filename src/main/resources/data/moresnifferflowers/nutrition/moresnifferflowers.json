@@ -2,6 +2,9 @@
   "sweet":{
     "moresnifferflowers:dawnberry": 60
   },
+  "salty":{
+    "moresnifferflowers:salty_spice": 100
+  },
   "spicy":{
     "moresnifferflowers:gloomberry": 70
   },

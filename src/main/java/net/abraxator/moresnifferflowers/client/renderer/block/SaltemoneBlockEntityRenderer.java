@@ -40,7 +40,7 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
                 case SOUTH -> poseStack.translate(-1, 0, 0);
                 case NORTH -> poseStack.translate(0, 0, 1);
             }
-            Material material = blockEntity.getBlockState().is(ModBlocks.SOURLEMON.get()) ? SOURLEMON_TEXTURE : SALTEMONE_TEXTURE;
+            Material material = blockEntity.getBlockState().is(ModBlocks.SOURLEMONE.get()) ? SOURLEMON_TEXTURE : SALTEMONE_TEXTURE;
             this.model.render(poseStack, material.buffer(buffer, RenderType::entityCutout), packedLight, packedOverlay);
         }
     }
