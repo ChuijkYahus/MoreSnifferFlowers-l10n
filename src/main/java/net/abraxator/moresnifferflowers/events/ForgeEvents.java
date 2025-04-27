@@ -50,6 +50,8 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.List;
+
 @Mod.EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
     
@@ -94,6 +96,14 @@ public class ForgeEvents {
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         Level level = player.level();
+        if (player.hasEffect(ModMobEffects.STICKY.get())) {
+            double pullRange = 8.0D;
+            List<ItemEntity> nearbyItems = level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(pullRange), item -> !item.hasPickUpDelay());
+            for (ItemEntity item : nearbyItems) {
+                pullItemTowardPlayer(player, item);
+            }
+        }
+
         if (event.phase == TickEvent.Phase.END && player.hasEffect(ModMobEffects.OLD_NEGATIVE_SWEET.get())) {
             MobEffectInstance instance = player.getEffect(ModMobEffects.OLD_NEGATIVE_SWEET.get());
             int amplifier = instance.getAmplifier();
@@ -120,13 +130,6 @@ public class ForgeEvents {
             cap.tick(event.player);
         });
 
-/*        if (player.hasEffect(ModMobEffects.STICKY.get())) {
-            double pullRange = 8.0D;
-            List<ItemEntity> nearbyItems = level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(pullRange), item -> !item.hasPickUpDelay());
-            for (ItemEntity item : nearbyItems) {
-                pullItemTowardPlayer(player, item);
-            }
-        }*/
     }
 
     @SubscribeEvent
@@ -248,21 +251,18 @@ public class ForgeEvents {
         Vec3 itemPos = item.position();
         Vec3 direction = playerPos.subtract(itemPos);
 
-        double distance = direction.length();
-        if (distance < 0.5) {
-            return; // Already close enough
+
+        // Don't do anything if very close already
+        if (direction.lengthSqr() < 0.5) {
+            return;
         }
 
-        // Lerp (move) toward player manually
-        double speed = 0.2; // adjust as needed (lower = smoother)
+        direction = direction.normalize().scale(0.05); // SMALL pull per tick
 
-        Vec3 move = direction.normalize().scale(Math.min(speed, distance));
+        Vec3 currentVelocity = item.getDeltaMovement();
 
-        double newX = item.getX() + move.x;
-        double newY = item.getY() + move.y;
-        double newZ = item.getZ() + move.z;
+        // Slightly steer the velocity toward the player
+        Vec3 newVelocity = currentVelocity.add(direction).scale(0.95); // Dampen a bit
 
-        item.setPos(newX, newY, newZ);
-        item.setDeltaMovement(Vec3.ZERO); // disable natural physics push
-    }
+        item.setDeltaMovement(newVelocity);    }
 }

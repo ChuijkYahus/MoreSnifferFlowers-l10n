@@ -3,8 +3,8 @@ package net.abraxator.moresnifferflowers.effects;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 
-public class StickyEffect extends MobEffect {
-    protected StickyEffect(MobEffectCategory category, int color) {
+public class SimpleEffect extends MobEffect {
+    public SimpleEffect(MobEffectCategory category, int color) {
         super(category, color);
     }
 }
