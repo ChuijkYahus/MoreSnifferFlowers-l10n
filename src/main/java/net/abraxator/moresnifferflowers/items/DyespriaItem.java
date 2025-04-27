@@ -85,7 +85,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
                 }
             });
 
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
 
         return handlePlacement(blockPos, level, player, pContext.getHand(), stack);

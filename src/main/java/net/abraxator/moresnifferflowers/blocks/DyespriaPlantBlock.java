@@ -15,7 +15,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -76,15 +76,15 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
+    protected InteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
         if(pStack.is(Items.BONE_MEAL)) {
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         } else if(isMaxAge(pState) && pLevel.getBlockEntity(pPos) instanceof DyespriaPlantBlockEntity entity) {
             if(pStack.getItem() instanceof DyeItem) {
                 return addDye(pStack, pPlayer, pLevel, entity);
             } else if(pStack.is(Items.SHEARS)) {
                 shear(pPlayer, pLevel, pPos, pState, pHand);
-                return ItemInteractionResult.sidedSuccess(pLevel.isClientSide());
+                return InteractionResult.sidedSuccess(pLevel.isClientSide());
             }
         }
         
@@ -102,7 +102,7 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
         return super.useWithoutItem(pState, pLevel, pPos, pPlayer, pHitResult);
     }
 
-    private ItemInteractionResult addDye(ItemStack dye, Player player, Level level, DyespriaPlantBlockEntity entity) {
+    private InteractionResult addDye(ItemStack dye, Player player, Level level, DyespriaPlantBlockEntity entity) {
         if(!level.isClientSide) {
             var stack = dye.copy();
             dye.setCount(-1);
@@ -110,7 +110,7 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
         }
         
         level.playSound(null, entity.getBlockPos(), SoundEvents.DYE_USE, SoundSource.BLOCKS, 1.0F, (float) (1.0F + level.random.nextFloat() * 0.2));
-        return ItemInteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override

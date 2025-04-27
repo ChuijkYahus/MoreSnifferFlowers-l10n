@@ -6,7 +6,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +32,7 @@ public class ModCauldronInteractions {
             CauldronInteraction.fillBucket(pState, pLevel, pPos, pPlayer, pHand, pStack, ModItems.JAR_OF_ACID.toStack(), blockState -> blockState.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BOTTLE_FILL);
 
 
-    static ItemInteractionResult emptyBottle(Level level, BlockPos pos, Player player, InteractionHand hand, ItemStack filledStack, BlockState state) {
+    static InteractionResult emptyBottle(Level level, BlockPos pos, Player player, InteractionHand hand, ItemStack filledStack, BlockState state) {
         if (level.getBlockState(pos).getValue(LayeredCauldronBlock.LEVEL) < 3) {
             if (!level.isClientSide) {
                 Item item = filledStack.getItem();
@@ -44,9 +44,9 @@ public class ModCauldronInteractions {
                 level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
             }
 
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.FAIL;
+        return InteractionResult.FAIL;
     }
 
 

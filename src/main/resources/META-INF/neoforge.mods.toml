@@ -15,12 +15,12 @@ description="Minecraft mod expanding upon the sniffer, adding entire new mechani
 [[dependencies.moresnifferflowers]]
     modId="neoforge"
     type="required"
-    versionRange="[20.6.60-beta,)"
+    versionRange="[21.4.121,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.moresnifferflowers]]
     modId="minecraft"
     type="required"
-    versionRange="[1.21, 1.21.1]"
+    versionRange="[1.21.4]"
     ordering="NONE"
     side="BOTH"

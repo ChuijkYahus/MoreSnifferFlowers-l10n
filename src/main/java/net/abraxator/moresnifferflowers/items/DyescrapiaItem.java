@@ -58,7 +58,7 @@ public class DyescrapiaItem extends BlockItem {
                 }
 
                 stack.set(ModDataComponents.DYESPRIA_USES, uses);
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.SUCCESS;
             }            
         } else if (state.is(ModTags.ModBlockTags.DYED)){
 
@@ -104,7 +104,7 @@ public class DyescrapiaItem extends BlockItem {
                 }
 
                 stack.set(ModDataComponents.DYESPRIA_USES, uses);
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.SUCCESS;
 
             } else return InteractionResult.FAIL;
 

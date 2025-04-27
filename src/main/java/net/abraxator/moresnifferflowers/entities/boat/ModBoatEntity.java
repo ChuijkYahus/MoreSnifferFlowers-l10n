@@ -2,7 +2,6 @@ package net.abraxator.moresnifferflowers.entities.boat;
 
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModEntityTypes;
-import net.abraxator.moresnifferflowers.init.ModItems;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -16,29 +15,23 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 public class ModBoatEntity extends Boat {
     private static final EntityDataAccessor<Integer> DATA_ID_TYPE = SynchedEntityData.defineId(ModBoatEntity.class, EntityDataSerializers.INT);
 
-    public ModBoatEntity(EntityType<? extends Boat> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
+    public ModBoatEntity(EntityType<? extends Boat> pEntityType, Level pLevel, Supplier<Item> itemSupplier) {
+        super(pEntityType, pLevel, itemSupplier);
     }
 
-    public ModBoatEntity(Level level, double pX, double pY, double pZ) {
-        this(ModEntityTypes.MOD_CORRUPTED_BOAT.get(), level);
+    public ModBoatEntity(Level level, double pX, double pY, double pZ, Supplier<Item> itemSupplier) {
+        this(ModEntityTypes.MOD_CORRUPTED_BOAT.get(), level, itemSupplier);
         this.setPos(pX, pY, pZ);
         this.xo = pX;
         this.yo = pY;
         this.zo = pZ;
     }
 
-    @Override
-    public Item getDropItem() { 
-        return switch (getModVariant()) {
-            case CORRUPTED -> ModItems.CORRUPTED_BOAT.get();
-            case VIVICUS -> ModItems.VIVICUS_BOAT.get();
-        };
-    }
 
 
     public void setVariant(Type pVariant) {

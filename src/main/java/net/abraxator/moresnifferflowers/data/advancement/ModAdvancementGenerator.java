@@ -1,25 +1,34 @@
 package net.abraxator.moresnifferflowers.data.advancement;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.init.*;
+import net.abraxator.moresnifferflowers.init.ModBlocks;
+import net.abraxator.moresnifferflowers.init.ModItems;
+import net.abraxator.moresnifferflowers.init.ModTags;
+import net.abraxator.moresnifferflowers.init.SimpleAdvancementTrigger;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.data.AdvancementProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public class ModAdvancementGenerator implements AdvancementProvider.AdvancementGenerator {
+public class ModAdvancementGenerator implements AdvancementSubProvider {
 
     @Override
-    public void generate(HolderLookup.@NotNull Provider registries, @NotNull Consumer<AdvancementHolder> saver, @NotNull ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver) {
+        HolderGetter<Item> holdergetterItem = registries.lookupOrThrow(Registries.ITEM);
+        HolderGetter<Block> holdergetterBlock = registries.lookupOrThrow(Registries.BLOCK);
+
         var root = Advancement.Builder.advancement()
                 .display(
                         Items.SNIFFER_EGG.getDefaultInstance(),
@@ -30,7 +39,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false,
                         false)
-                .addCriterion("has_advancement", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(Blocks.SNIFFER_EGG).build()))
+                .addCriterion("has_advancement", InventoryChangeTrigger.TriggerInstance.hasItems(Blocks.SNIFFER_EGG))
                 .save(saver, MoreSnifferFlowers.loc("root").toString());
 
         var dyespria_plant = Advancement.Builder.advancement()
@@ -88,7 +97,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false
                 )
-                .addCriterion("has_cropressed_crop", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(ModTags.ModItemTags.CROPRESSED_CROPS).build()))
+                .addCriterion("has_cropressed_crop", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(holdergetterItem, ModTags.ModItemTags.CROPRESSED_CROPS).build()))
                 .save(saver, MoreSnifferFlowers.loc("cropressor").toString());
 
         Advancement.Builder.advancement()
@@ -103,7 +112,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false
                 )
-                .addCriterion("has_rebrewed_potion", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(ModTags.ModItemTags.REBREWED_POTIONS).build()))
+                .addCriterion("has_rebrewed_potion", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(holdergetterItem, ModTags.ModItemTags.REBREWED_POTIONS)))
                 .save(saver, MoreSnifferFlowers.loc("rebrew").toString());
 
         var bobling = Advancement.Builder.advancement()
@@ -200,4 +209,5 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
     private String id(String name) {
         return "%s:%s".formatted(MoreSnifferFlowers.MOD_ID, name);
     }
+
 }

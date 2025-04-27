@@ -8,7 +8,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -23,7 +22,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.ScheduledTick;
@@ -75,11 +73,11 @@ public class BonmeeliaBlock extends BushBlock implements ModCropBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
+    protected InteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
         if(pStack.is(Items.GLASS_BOTTLE) && canInsertBottle(pState)) {
             return addBottle(pLevel, pPos, pState, pStack, pPlayer);
         } else if(pStack.is(Items.BONE_MEAL) && pState.getValue(AGE) < 3)  {
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         } 
             
         return super.useItemOn(pStack, pState, pLevel, pPos, pPlayer, pHand, pHitResult);
@@ -101,25 +99,25 @@ public class BonmeeliaBlock extends BushBlock implements ModCropBlock {
         pLevel.setBlock(pPos, pState.setValue(SHOW_HINT, false), 3);
     }
     
-    private ItemInteractionResult addBottle(Level level, BlockPos blockPos, BlockState blockState, ItemStack stack, Player player) {
+    private InteractionResult addBottle(Level level, BlockPos blockPos, BlockState blockState, ItemStack stack, Player player) {
         if(!level.isClientSide) {
             level.setBlock(blockPos, blockState.setValue(HAS_BOTTLE, true), 3);
             if (!player.isCreative()) stack.shrink(1);
         }
 
-        return ItemInteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
     }
 
     private InteractionResult takeJarOfBonmeel(Level level, BlockPos blockPos, BlockState blockState) {
         level.setBlock(blockPos, blockState.setValue(AGE, 3).setValue(HAS_BOTTLE, false), 3);
         popResource(level, blockPos, wilted ? ModItems.JAR_OF_ACID.toStack() : ModItems.JAR_OF_BONMEEL.toStack());
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     private InteractionResult hint(Level level, BlockPos blockPos, BlockState blockState) {
         level.setBlock(blockPos, blockState.setValue(SHOW_HINT, true), 3);
         level.getBlockTicks().schedule(new ScheduledTick<>(this, blockPos, level.getGameTime() + 40, level.nextSubTickCount()));
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS.withoutItem();
     }
     
     @Override
@@ -137,7 +135,7 @@ public class BonmeeliaBlock extends BushBlock implements ModCropBlock {
             pLevel.setBlockAndUpdate(pPos, pState
                     .setValue(AGE, getAge(pState) + 1)
                     .setValue(HAS_JAR, (getAge(pState) + 1) == MAX_AGE && pState.getValue(HAS_BOTTLE)));
-            var particle = new DustParticleOptions(wilted ? Vec3.fromRGB24(0xaeff5c).toVector3f() : Vec3.fromRGB24(11162034).toVector3f(), 1F);
+            var particle = new DustParticleOptions(wilted ? 0xaeff5c : 11162034, 1F);
             if (getAge(pState) >= 3) {
                 for (int i = 0; i <= pRandom.nextIntBetweenInclusive(5, 10); i++) {
                     pLevel.sendParticles(

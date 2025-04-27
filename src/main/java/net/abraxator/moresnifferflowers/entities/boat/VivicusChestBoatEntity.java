@@ -17,17 +17,20 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+
+import java.util.function.Supplier;
 
 public class VivicusChestBoatEntity extends ModChestBoatEntity implements ColorableVivicusBlock {
     private static final EntityDataAccessor<Integer> COLOR_DATA = SynchedEntityData.defineId(VivicusChestBoatEntity.class, EntityDataSerializers.INT);
     
-    public VivicusChestBoatEntity(EntityType<? extends ModChestBoatEntity> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
+    public VivicusChestBoatEntity(EntityType<? extends ModChestBoatEntity> pEntityType, Level pLevel, Supplier<Item> itemSupplier) {
+        super(pEntityType, pLevel, itemSupplier);
     }
 
-    public VivicusChestBoatEntity(Level pLevel, double pX, double pY, double pZ) {
-        this(ModEntityTypes.MOD_VIVICUS_CHEST_BOAT.get(), pLevel);
+    public VivicusChestBoatEntity(Level pLevel, double pX, double pY, double pZ, Supplier<Item> itemSupplier) {
+        this(ModEntityTypes.MOD_VIVICUS_CHEST_BOAT.get(), pLevel, itemSupplier);
         this.setPos(pX, pY, pZ);
         this.xo = pX;
         this.yo = pY;
@@ -76,7 +79,7 @@ public class VivicusChestBoatEntity extends ModChestBoatEntity implements Colora
                 particles(this.random, this.level(), dye, BlockPos.containing(this.position()));
             }
             
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
+            return InteractionResult.SUCCESS;
         }
         
         return super.interact(pPlayer, pHand);

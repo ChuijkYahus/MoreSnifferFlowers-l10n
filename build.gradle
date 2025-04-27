@@ -56,7 +56,7 @@ neoForge {
                 gameDirectory = layout.projectDir.dir("runs/client")
             }
             data {
-                data()
+                clientData()
                 programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
             }
             server {
@@ -75,10 +75,11 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
     //implementation "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
-    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+/*    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
-    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
-    compileOnly("curse.maven:rightclickharvest-452834:6134804")
+    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")*/
+
+    compileOnly("curse.maven:rightclickharvest-452834:6326812")
     //implementation "curse.maven:architectury-api-419699:5786327"
     //implementation "curse.maven:jamlib-623764:5988164"
     //implementation("me.shedaniel.cloth:cloth-config-neoforge:${cloth_version}")

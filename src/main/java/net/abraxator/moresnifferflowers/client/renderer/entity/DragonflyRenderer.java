@@ -5,16 +5,15 @@ import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
 import net.abraxator.moresnifferflowers.client.model.entity.DragonflyModel;
+import net.abraxator.moresnifferflowers.client.renderstate.ProjectileRenderState;
 import net.abraxator.moresnifferflowers.entities.DragonflyProjectile;
-import net.abraxator.moresnifferflowers.init.ModMenuTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 
-public class DragonflyRenderer extends EntityRenderer<DragonflyProjectile> {
+public class DragonflyRenderer extends EntityRenderer<DragonflyProjectile, ProjectileRenderState> {
     public static final ResourceLocation TEXTURE = MoreSnifferFlowers.loc("textures/entity/dragonfly.png");
     private final DragonflyModel model;
 
@@ -24,23 +23,27 @@ public class DragonflyRenderer extends EntityRenderer<DragonflyProjectile> {
     }
 
     @Override
-    public void render(DragonflyProjectile pEntity, float pEntityYaw, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight) {
-        pPoseStack.pushPose();
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(pPartialTick, pEntity.yRotO, pEntity.getYRot()) - 180F));
-        pPoseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(pPartialTick, pEntity.xRotO, pEntity.getXRot())));
-        pPoseStack.translate(0, -1, 0.5);
-        this.model.renderToBuffer(
-                pPoseStack,
-                pBufferSource.getBuffer(this.model.renderType(this.getTextureLocation(pEntity))),
-                pPackedLight,
-                OverlayTexture.NO_OVERLAY);
-        model.animate(pPartialTick);
-        pPoseStack.popPose();
-        super.render(pEntity, pEntityYaw, pPartialTick, pPoseStack, pBufferSource, pPackedLight);
+    public ProjectileRenderState createRenderState() {
+        return null;
     }
 
     @Override
-    public ResourceLocation getTextureLocation(DragonflyProjectile dragonflyProjectile) {
+    public void render(ProjectileRenderState renderState, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        poseStack.pushPose();
+        poseStack.mulPose(Axis.YP.rotationDegrees(renderState.yRot - 90.0F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(renderState.xRot));
+        poseStack.translate(0, -1, 0.5);
+        this.model.renderToBuffer(
+                poseStack,
+                bufferSource.getBuffer(this.model.renderType(this.getTextureLocation())),
+                packedLight,
+                OverlayTexture.NO_OVERLAY);
+        model.animate(renderState.partialTick);
+        poseStack.popPose();
+        super.render(renderState, poseStack, bufferSource, packedLight);
+    }
+
+    public ResourceLocation getTextureLocation() {
         return TEXTURE;
     }
 }

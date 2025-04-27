@@ -16,7 +16,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
@@ -56,7 +56,7 @@ public class ForgeEvents {
         if (event.isCanceled()) return;
         if(item.getItem() instanceof JarOfBonmeelItem item2 && block.is(ModTags.ModBlockTags.BONMEELABLE)) {
             event.setCanceled(true);
-            if (item2.useOn(event.getUseOnContext()).equals(InteractionResult.SUCCESS))event.setCancellationResult(ItemInteractionResult.SUCCESS);
+            if (item2.useOn(event.getUseOnContext()).equals(InteractionResult.SUCCESS))event.setCancellationResult(InteractionResult.SUCCESS);
 
         } else
             if((item.is(ModItems.REBREWED_POTION.get()) || item.is(ModItems.EXTRACTED_BOTTLE.get())) && block.is(Blocks.DIRT)) {
@@ -80,7 +80,7 @@ public class ForgeEvents {
             event.getItemStack().hurtAndBreak(1, event.getPlayer(), LivingEntity.getSlotForHand(event.getHand()));
 
 
-            event.setCancellationResult(ItemInteractionResult.SUCCESS);
+            event.setCancellationResult(InteractionResult.SUCCESS);
             event.setCanceled(true);
 
             } else
@@ -91,7 +91,7 @@ public class ForgeEvents {
                 event.getLevel().playSound(null, event.getPos(), SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
                 event.getLevel().gameEvent(null, GameEvent.FLUID_PLACE, event.getPos());
                 if (!event.getPlayer().isCreative()) event.getPlayer().setItemInHand(event.getHand(), ItemUtils.createFilledResult(event.getItemStack(), event.getPlayer(), new ItemStack(Items.GLASS_BOTTLE)));
-                event.setCancellationResult(ItemInteractionResult.SUCCESS);
+                event.setCancellationResult(InteractionResult.SUCCESS);
                 event.setCanceled(true);
             }
     }

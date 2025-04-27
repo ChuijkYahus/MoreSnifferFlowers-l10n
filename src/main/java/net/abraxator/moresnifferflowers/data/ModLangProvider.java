@@ -2,7 +2,6 @@ package net.abraxator.moresnifferflowers.data;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.init.ModSoundEvents;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.common.data.LanguageProvider;
@@ -18,6 +17,6 @@ public class ModLangProvider extends LanguageProvider {
     }
     
     private void addSound(SoundEvent event, String translation) {
-        add("sound.moresnifferflowers." + event.getLocation().getPath(), translation);
+        add("sound.moresnifferflowers." + event.location().getPath(), translation);
     }
 }

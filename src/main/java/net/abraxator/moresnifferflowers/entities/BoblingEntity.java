@@ -1,32 +1,37 @@
 package net.abraxator.moresnifferflowers.entities;
 
-import io.netty.buffer.ByteBuf;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.entities.goals.BoblingAttackPlayerGoal;
 import net.abraxator.moresnifferflowers.entities.goals.BoblingAvoidPlayerGoal;
-import net.abraxator.moresnifferflowers.init.*;
+import net.abraxator.moresnifferflowers.init.ModAdvancementCritters;
+import net.abraxator.moresnifferflowers.init.ModBlocks;
+import net.abraxator.moresnifferflowers.init.ModEntityTypes;
+import net.abraxator.moresnifferflowers.init.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -38,14 +43,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.IntFunction;
 
 public class BoblingEntity extends PathfinderMob {
     private static final EntityDataAccessor<Boolean> DATA_CURED = SynchedEntityData.defineId(BoblingEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_RUNNING = SynchedEntityData.defineId(BoblingEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Optional<BlockPos>> DATA_WANTED_POS = SynchedEntityData.defineId(BoblingEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     private static final EntityDataAccessor<Boolean> DATA_PLANTING = SynchedEntityData.defineId(BoblingEntity.class, EntityDataSerializers.BOOLEAN);
-    
+
     private int idleAnimationTimeout = 0;
     public AnimationState idleAnimationState = new AnimationState();
     public AnimationState plantingAnimationState = new AnimationState();
@@ -145,14 +149,14 @@ public class BoblingEntity extends PathfinderMob {
     }
 
     @Override
-    protected void actuallyHurt(DamageSource pDamageSource, float pDamageAmount) {
-        super.actuallyHurt(pDamageSource, pDamageAmount);
-        if (this.isRunning() && pDamageSource.is(DamageTypes.PLAYER_ATTACK) && !isCured()) {
+    protected void actuallyHurt(ServerLevel level, DamageSource damageSource, float amount) {
+        super.actuallyHurt(level, damageSource, amount);
+        if (this.isRunning() && damageSource.is(DamageTypes.PLAYER_ATTACK) && !isCured()) {
             var r = 2.5;
             var checkR = 1.5;
             Set<Vec3> set = new HashSet<>();
 
-            if (pDamageSource.getEntity() instanceof ServerPlayer serverPlayer) {
+            if (damageSource.getEntity() instanceof ServerPlayer serverPlayer) {
                 ModAdvancementCritters.BOBLING_ATTACK.get().trigger(serverPlayer);
             }
 
@@ -161,7 +165,7 @@ public class BoblingEntity extends PathfinderMob {
             }
         }
 
-        if (!this.isRunning() && pDamageSource.is(DamageTypes.PLAYER_ATTACK)) {
+        if (!this.isRunning() && damageSource.is(DamageTypes.PLAYER_ATTACK)) {
             this.setRunning(true);
         }
     }
@@ -252,10 +256,10 @@ public class BoblingEntity extends PathfinderMob {
         if (itemStack.is(ModItems.VIVICUS_ANTIDOTE) && !isCured()) {
             this.setCured(true);
             
-            particles(new DustParticleOptions(Vec3.fromRGB24(7118872).toVector3f(), 1));
+            particles(new DustParticleOptions(7118872, 1));
             itemStack.shrink(1);
 
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return InteractionResult.SUCCESS;
         }
 
         return super.mobInteract(pPlayer, pHand);

@@ -7,7 +7,6 @@ import net.abraxator.moresnifferflowers.init.ModEntityTypes;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.items.DyespriaItem;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.QuartPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -18,17 +17,20 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+
+import java.util.function.Supplier;
 
 public class VivicusBoatEntity extends ModBoatEntity implements ColorableVivicusBlock {
     private static final EntityDataAccessor<Integer> COLOR_DATA = SynchedEntityData.defineId(VivicusBoatEntity.class, EntityDataSerializers.INT);
     
-    public VivicusBoatEntity(EntityType<? extends ModBoatEntity> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
+    public VivicusBoatEntity(EntityType<? extends ModBoatEntity> pEntityType, Level pLevel, Supplier<Item> itemSupplier) {
+        super(pEntityType, pLevel, itemSupplier);
     }
 
-    public VivicusBoatEntity(Level pLevel, double pX, double pY, double pZ) {
-        this(ModEntityTypes.MOD_VIVICUS_BOAT.get(), pLevel);
+    public VivicusBoatEntity(Level pLevel, double pX, double pY, double pZ, Supplier<Item> itemSupplier) {
+        this(ModEntityTypes.MOD_VIVICUS_BOAT.get(), pLevel, itemSupplier);
         this.setPos(pX, pY, pZ);
         this.xo = pX;
         this.yo = pY;
@@ -77,7 +79,7 @@ public class VivicusBoatEntity extends ModBoatEntity implements ColorableVivicus
                 particles(this.random, this.level(), dye, BlockPos.containing(this.position()));
             }
 
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.interact(pPlayer, pHand);

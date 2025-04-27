@@ -5,16 +5,15 @@ import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
 import net.abraxator.moresnifferflowers.client.model.entity.CorruptedProjectileModel;
-import net.abraxator.moresnifferflowers.client.model.entity.DragonflyModel;
+import net.abraxator.moresnifferflowers.client.renderstate.ProjectileRenderState;
 import net.abraxator.moresnifferflowers.entities.CorruptedProjectile;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 
-public class CorruptedProjectileRenderer extends EntityRenderer<CorruptedProjectile> {
+public class CorruptedProjectileRenderer extends EntityRenderer<CorruptedProjectile, ProjectileRenderState> {
     public static final ResourceLocation TEXTURE = MoreSnifferFlowers.loc("textures/entity/corrupted_projectile.png");
     private final CorruptedProjectileModel model;
     
@@ -24,25 +23,27 @@ public class CorruptedProjectileRenderer extends EntityRenderer<CorruptedProject
     }
 
     @Override
-    public void render(CorruptedProjectile pEntity, float pEntityYaw, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight) {
-        if(pEntity.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(pEntity) < 12.25)) {
-            pPoseStack.pushPose();
-            pPoseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(pPartialTick, pEntity.yRotO, pEntity.getYRot()) - 180F));
-            pPoseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(pPartialTick, pEntity.xRotO, pEntity.getXRot())));
-            pPoseStack.translate(0, -0.5, 0);
-            pPoseStack.scale(0.6F, 0.6F, 0.6F);
-            this.model.renderToBuffer(
-                    pPoseStack,
-                    pBufferSource.getBuffer(this.model.renderType(this.getTextureLocation(pEntity))),
-                    pPackedLight,
-                    OverlayTexture.NO_OVERLAY);
-            pPoseStack.popPose();
-            super.render(pEntity, pEntityYaw, pPartialTick, pPoseStack, pBufferSource, pPackedLight);
-        }
+    public ProjectileRenderState createRenderState() {
+        return new ProjectileRenderState();
     }
 
     @Override
-    public ResourceLocation getTextureLocation(CorruptedProjectile pEntity) {
+    public void render(ProjectileRenderState renderState, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        poseStack.pushPose();
+        poseStack.mulPose(Axis.YP.rotationDegrees(renderState.yRot - 90.0F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(renderState.xRot));
+        poseStack.translate(0, -0.5, 0);
+        poseStack.scale(0.6F, 0.6F, 0.6F);
+        this.model.renderToBuffer(
+                poseStack,
+                bufferSource.getBuffer(this.model.renderType(this.getTextureLocation(renderState))),
+                packedLight,
+                OverlayTexture.NO_OVERLAY);
+        poseStack.popPose();
+        super.render(renderState, poseStack, bufferSource, packedLight);
+    }
+
+    public ResourceLocation getTextureLocation(ProjectileRenderState state) {
         return TEXTURE;
     }
 }
