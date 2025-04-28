@@ -5,87 +5,88 @@ import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModTags;
 import net.abraxator.moresnifferflowers.recipes.RebrewedTippedArrowRecipe;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-import net.minecraft.tags.TagKey;
+import net.minecraft.data.recipes.packs.VanillaRecipeProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 public class ModRecipesProvider extends RecipeProvider {
-    public ModRecipesProvider(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> future) {
-        super(pOutput, future);
+    private final HolderGetter<Item> items;
+    protected ModRecipesProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
+        this.items = registries.lookupOrThrow(Registries.ITEM);
     }
 
     @Override
-    protected void buildRecipes(RecipeOutput pRecipeOutput) {
-        trimSmithing(pRecipeOutput, ModItems.AROMA_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MoreSnifferFlowers.loc(getItemName(ModItems.AROMA_ARMOR_TRIM_SMITHING_TEMPLATE.get())));
-        trimSmithing(pRecipeOutput, ModItems.CARNAGE_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MoreSnifferFlowers.loc(getItemName(ModItems.CARNAGE_ARMOR_TRIM_SMITHING_TEMPLATE.get())));
-        trimSmithing(pRecipeOutput, ModItems.NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MoreSnifferFlowers.loc(getItemName(ModItems.NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE.get())));
-        trimSmithing(pRecipeOutput, ModItems.TATER_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MoreSnifferFlowers.loc(getItemName(ModItems.TATER_ARMOR_TRIM_SMITHING_TEMPLATE.get())));
-        trimSmithing(pRecipeOutput, ModItems.CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MoreSnifferFlowers.loc(getItemName(ModItems.CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE.get())));
-        trimSmithing(pRecipeOutput, ModItems.GRAIN_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MoreSnifferFlowers.loc(getItemName(ModItems.GRAIN_ARMOR_TRIM_SMITHING_TEMPLATE.get())));
-        trimSmithing(pRecipeOutput, ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get(), MoreSnifferFlowers.loc(getItemName(ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get())));
+    protected void buildRecipes() {
+        MSFSmithingTrims().forEach(p_378952_ -> this.trimSmithing(p_378952_.template(), p_378952_.id()));
 
-        trimCrafting(pRecipeOutput, ModItems.AROMA_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.AMBER_SHARD.get());
-        trimCrafting(pRecipeOutput, ModItems.CARNAGE_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.GARNET_SHARD.get());
-        trimCrafting(pRecipeOutput, ModItems.NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.CROPRESSED_NETHERWART.get());
-        trimCrafting(pRecipeOutput, ModItems.CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.CROPRESSED_CARROT.get());
-        trimCrafting(pRecipeOutput, ModItems.TATER_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.CROPRESSED_POTATO.get());
-        trimCrafting(pRecipeOutput, ModItems.GRAIN_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.CROPRESSED_WHEAT.get());
-        trimCrafting(pRecipeOutput, ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.CROPRESSED_BEETROOT.get());
+        trimCrafting(ModItems.AROMA_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.AMBER_SHARD.get());
+        trimCrafting(ModItems.CARNAGE_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.GARNET_SHARD.get());
+        trimCrafting(ModItems.NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.CROPRESSED_NETHERWART.get());
+        trimCrafting(ModItems.CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.CROPRESSED_CARROT.get());
+        trimCrafting(ModItems.TATER_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.CROPRESSED_POTATO.get());
+        trimCrafting(ModItems.GRAIN_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.CROPRESSED_WHEAT.get());
+        trimCrafting(ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.CROPRESSED_BEETROOT.get());
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.EXTRACTION_BOTTLE.get())
+        shaped(RecipeCategory.MISC, ModItems.EXTRACTION_BOTTLE.get())
                 .pattern(" A ")
                 .pattern("BAB")
                 .pattern(" B ")
                 .define('A', Items.AMETHYST_SHARD)
                 .define('B', Items.GLASS)
                 .unlockedBy("has_amethyst", has(Items.AMETHYST_SHARD))
-                .save(pRecipeOutput);
+                .save(this.output);
 
-        //threeByThreePacker(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMBER_BLOCK.get(), ModItems.AMBER_SHARD.get());
-        twoByTwoPacker(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMBER_MOSAIC.get(), ModItems.AMBER_SHARD.get());
-        slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMBER_MOSAIC_SLAB.get(), ModBlocks.AMBER_MOSAIC.get());
+        //threeByThreePacker(RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMBER_BLOCK.get(), ModItems.AMBER_SHARD.get());
+        twoByTwoPacker(RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMBER_MOSAIC.get(), ModItems.AMBER_SHARD.get());
+        slab(RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMBER_MOSAIC_SLAB.get(), ModBlocks.AMBER_MOSAIC.get());
         stairBuilder(ModBlocks.AMBER_MOSAIC_STAIRS, Ingredient.of(ModBlocks.AMBER_MOSAIC))
                 .unlockedBy("has_amber_mosaic", has(ModBlocks.AMBER_MOSAIC))
-                .save(pRecipeOutput);
-        wall(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMBER_MOSAIC_WALL.get(), ModBlocks.AMBER_MOSAIC.get());
-        chiseled(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CHISELED_AMBER.get(), ModBlocks.AMBER_MOSAIC_SLAB.get());
-        slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CHISELED_AMBER_SLAB.get(), ModBlocks.CHISELED_AMBER.get());
+                .save(this.output);
+        wall(RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMBER_MOSAIC_WALL.get(), ModBlocks.AMBER_MOSAIC.get());
+        chiseled(RecipeCategory.BUILDING_BLOCKS, ModBlocks.CHISELED_AMBER.get(), ModBlocks.AMBER_MOSAIC_SLAB.get());
+        slab(RecipeCategory.BUILDING_BLOCKS, ModBlocks.CHISELED_AMBER_SLAB.get(), ModBlocks.CHISELED_AMBER.get());
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(ModBlocks.AMBER_MOSAIC.get()), RecipeCategory.BUILDING_BLOCKS, ModBlocks.CRACKED_AMBER.get().asItem(), 0.1F, 200)
                 .unlockedBy("has_amber_mosaic", has(ModBlocks.AMBER_MOSAIC))
-                .save(pRecipeOutput);
+                .save(this.output);
 
-        //threeByThreePacker(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.GARNET_BLOCK.get(), ModItems.GARNET_SHARD.get());
-        twoByTwoPacker(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.GARNET_MOSAIC.get(), ModItems.GARNET_SHARD.get());
-        slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.GARNET_MOSAIC_SLAB.get(), ModBlocks.GARNET_MOSAIC.get());
+        //threeByThreePacker(RecipeCategory.BUILDING_BLOCKS, ModBlocks.GARNET_BLOCK.get(), ModItems.GARNET_SHARD.get());
+        twoByTwoPacker(RecipeCategory.BUILDING_BLOCKS, ModBlocks.GARNET_MOSAIC.get(), ModItems.GARNET_SHARD.get());
+        slab(RecipeCategory.BUILDING_BLOCKS, ModBlocks.GARNET_MOSAIC_SLAB.get(), ModBlocks.GARNET_MOSAIC.get());
         stairBuilder(ModBlocks.GARNET_MOSAIC_STAIRS, Ingredient.of(ModBlocks.GARNET_MOSAIC))
                 .unlockedBy("has_garnet_mosaic", has(ModBlocks.GARNET_MOSAIC))
-                .save(pRecipeOutput);
-        wall(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.GARNET_MOSAIC_WALL.get(), ModBlocks.GARNET_MOSAIC.get());
-        chiseled(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CHISELED_GARNET.get(), ModBlocks.GARNET_MOSAIC_SLAB.get());
-        slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CHISELED_GARNET_SLAB.get(), ModBlocks.CHISELED_GARNET.get());
+                .save(this.output);
+        wall(RecipeCategory.BUILDING_BLOCKS, ModBlocks.GARNET_MOSAIC_WALL.get(), ModBlocks.GARNET_MOSAIC.get());
+        chiseled(RecipeCategory.BUILDING_BLOCKS, ModBlocks.CHISELED_GARNET.get(), ModBlocks.GARNET_MOSAIC_SLAB.get());
+        slab(RecipeCategory.BUILDING_BLOCKS, ModBlocks.CHISELED_GARNET_SLAB.get(), ModBlocks.CHISELED_GARNET.get());
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(ModBlocks.GARNET_MOSAIC.get()), RecipeCategory.BUILDING_BLOCKS, ModBlocks.CRACKED_GARNET.get().asItem(), 0.1F, 200)
                 .unlockedBy("has_garnet_mosaic", has(ModBlocks.GARNET_MOSAIC))
-                .save(pRecipeOutput);
+                .save(this.output);
 
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.CROPRESSOR.get())
+        shapeless(RecipeCategory.MISC, ModItems.CROPRESSOR.get())
                 .requires(ModItems.TUBE_PIECE.get())
                 .requires(ModItems.SCRAP_PIECE.get())
                 .requires(ModItems.ENGINE_PIECE.get())
                 .requires(ModItems.PRESS_PIECE.get())
                 .requires(ModItems.BELT_PIECE.get())
                 .unlockedBy("has_cropressor_piece", has(ModTags.ModItemTags.CROPRESSOR_PIECES))
-                .save(pRecipeOutput);
+                .save(this.output);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.REBREWING_STAND.get())
+        shaped(RecipeCategory.MISC, ModItems.REBREWING_STAND.get())
                 .pattern(" A ")
                 .pattern(" A ")
                 .pattern("BCB")
@@ -93,84 +94,84 @@ public class ModRecipesProvider extends RecipeProvider {
                 .define('B', ModItems.BROKEN_REBREWING_STAND.get())
                 .define('C', ModItems.TUBE_PIECE.get())
                 .unlockedBy("has_broken_rebrewing_stand", has(ModItems.BROKEN_REBREWING_STAND.get()))
-                .save(pRecipeOutput);
+                .save(this.output);
 
-        partsRecycling(pRecipeOutput, ModItems.BELT_PIECE.get(), Items.LEATHER, 8);
-        partsRecycling(pRecipeOutput, ModItems.SCRAP_PIECE.get(), Items.COPPER_INGOT, 8);
-        partsRecycling(pRecipeOutput, ModItems.ENGINE_PIECE.get(), Items.GOLD_INGOT, 8);
-        partsRecycling(pRecipeOutput, ModItems.TUBE_PIECE.get(), Items.IRON_INGOT, 8);
-        partsRecycling(pRecipeOutput, ModItems.PRESS_PIECE.get(), Items.NETHERITE_SCRAP, 1);
-        partsRecycling(pRecipeOutput, ModItems.BROKEN_REBREWING_STAND.get(), ModItems.CROPRESSED_NETHERWART.get(), 4);
+        partsRecycling(ModItems.BELT_PIECE.get(), Items.LEATHER, 8);
+        partsRecycling(ModItems.SCRAP_PIECE.get(), Items.COPPER_INGOT, 8);
+        partsRecycling(ModItems.ENGINE_PIECE.get(), Items.GOLD_INGOT, 8);
+        partsRecycling(ModItems.TUBE_PIECE.get(), Items.IRON_INGOT, 8);
+        partsRecycling(ModItems.PRESS_PIECE.get(), Items.NETHERITE_SCRAP, 1);
+        partsRecycling(ModItems.BROKEN_REBREWING_STAND.get(), ModItems.CROPRESSED_NETHERWART.get(), 4);
 
-        partsRecycling(pRecipeOutput, ModItems.CROPRESSED_BEETROOT.get(), Items.BEETROOT, 16);
-        partsRecycling(pRecipeOutput, ModItems.CROPRESSED_CARROT.get(), Items.CARROT, 16);
-        partsRecycling(pRecipeOutput, ModItems.CROPRESSED_POTATO.get(), Items.POTATO, 16);
-        partsRecycling(pRecipeOutput, ModItems.CROPRESSED_WHEAT.get(), Items.WHEAT, 16);
-        partsRecycling(pRecipeOutput, ModItems.CROPRESSED_NETHERWART.get(), Items.NETHER_WART, 16);
+        partsRecycling(ModItems.CROPRESSED_BEETROOT.get(), Items.BEETROOT, 16);
+        partsRecycling(ModItems.CROPRESSED_CARROT.get(), Items.CARROT, 16);
+        partsRecycling(ModItems.CROPRESSED_POTATO.get(), Items.POTATO, 16);
+        partsRecycling(ModItems.CROPRESSED_WHEAT.get(), Items.WHEAT, 16);
+        partsRecycling(ModItems.CROPRESSED_NETHERWART.get(), Items.NETHER_WART, 16);
 
 
 
-        planksFromLogs(pRecipeOutput, ModBlocks.CORRUPTED_PLANKS, ModTags.ModItemTags.CORRUPTED_LOGS, 4);
-        woodFromLogs(pRecipeOutput, ModBlocks.CORRUPTED_WOOD, ModBlocks.CORRUPTED_LOG);
-        woodFromLogs(pRecipeOutput, ModBlocks.STRIPPED_CORRUPTED_WOOD, ModBlocks.STRIPPED_CORRUPTED_LOG);
+        planksFromLogs(ModBlocks.CORRUPTED_PLANKS, ModTags.ModItemTags.CORRUPTED_LOGS, 4);
+        woodFromLogs(ModBlocks.CORRUPTED_WOOD, ModBlocks.CORRUPTED_LOG);
+        woodFromLogs(ModBlocks.STRIPPED_CORRUPTED_WOOD, ModBlocks.STRIPPED_CORRUPTED_LOG);
         stairBuilder(ModBlocks.CORRUPTED_STAIRS, Ingredient.of(ModBlocks.CORRUPTED_PLANKS))
                 .unlockedBy("has_corrupted_planks", has(ModBlocks.CORRUPTED_PLANKS))
-                .save(pRecipeOutput);
-        slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CORRUPTED_SLAB, ModBlocks.CORRUPTED_PLANKS);
+                .save(this.output);
+        slab(RecipeCategory.BUILDING_BLOCKS, ModBlocks.CORRUPTED_SLAB, ModBlocks.CORRUPTED_PLANKS);
         fenceBuilder(ModBlocks.CORRUPTED_FENCE, Ingredient.of(ModBlocks.CORRUPTED_PLANKS))
                 .unlockedBy("has_corrupted_planks", has(ModBlocks.CORRUPTED_PLANKS))
-                .save(pRecipeOutput);
+                .save(this.output);
         fenceGateBuilder(ModBlocks.CORRUPTED_FENCE_GATE, Ingredient.of(ModBlocks.CORRUPTED_PLANKS))
                 .unlockedBy("has_corrupted_planks", has(ModBlocks.CORRUPTED_PLANKS))
-                .save(pRecipeOutput);
+                .save(this.output);
         doorBuilder(ModBlocks.CORRUPTED_DOOR, Ingredient.of(ModBlocks.CORRUPTED_PLANKS))
                 .unlockedBy("has_corrupted_planks", has(ModBlocks.CORRUPTED_PLANKS))
-                .save(pRecipeOutput);
+                .save(this.output);
         trapdoorBuilder(ModBlocks.CORRUPTED_TRAPDOOR, Ingredient.of(ModBlocks.CORRUPTED_PLANKS))
                 .unlockedBy("has_corrupted_planks", has(ModBlocks.CORRUPTED_PLANKS))
-                .save(pRecipeOutput);
-        pressurePlate(pRecipeOutput, ModBlocks.CORRUPTED_PRESSURE_PLATE, ModBlocks.CORRUPTED_PLANKS);
+                .save(this.output);
+        pressurePlate(ModBlocks.CORRUPTED_PRESSURE_PLATE, ModBlocks.CORRUPTED_PLANKS);
         buttonBuilder(ModBlocks.CORRUPTED_BUTTON, Ingredient.of(ModBlocks.CORRUPTED_PLANKS))
                 .unlockedBy("has_corrupted_planks", has(ModBlocks.CORRUPTED_PLANKS))
-                .save(pRecipeOutput);
-        woodenBoat(pRecipeOutput, ModItems.CORRUPTED_BOAT.get(), ModBlocks.CORRUPTED_PLANKS.get());
-        chestBoat(pRecipeOutput, ModItems.CORRUPTED_CHEST_BOAT.get(), ModItems.CORRUPTED_BOAT.get());
+                .save(this.output);
+        woodenBoat(ModItems.CORRUPTED_BOAT.get(), ModBlocks.CORRUPTED_PLANKS.get());
+        chestBoat(ModItems.CORRUPTED_CHEST_BOAT.get(), ModItems.CORRUPTED_BOAT.get());
         signBuilder(ModBlocks.CORRUPTED_SIGN, Ingredient.of(ModBlocks.CORRUPTED_PLANKS))
                 .unlockedBy("has_corrupted_planks", has(ModBlocks.CORRUPTED_PLANKS))
-                .save(pRecipeOutput);
-        hangingSign(pRecipeOutput, ModItems.CORRUPTED_HANGING_SIGN.get(), ModBlocks.CORRUPTED_PLANKS.get());
+                .save(this.output);
+        hangingSign(ModItems.CORRUPTED_HANGING_SIGN.get(), ModBlocks.CORRUPTED_PLANKS.get());
 
-        planksFromLogs(pRecipeOutput, ModBlocks.VIVICUS_PLANKS, ModTags.ModItemTags.VIVICUS_LOGS, 4);
-        woodFromLogs(pRecipeOutput, ModBlocks.VIVICUS_WOOD, ModBlocks.VIVICUS_LOG);
-        woodFromLogs(pRecipeOutput, ModBlocks.STRIPPED_VIVICUS_WOOD, ModBlocks.STRIPPED_VIVICUS_LOG);
+        planksFromLogs(ModBlocks.VIVICUS_PLANKS, ModTags.ModItemTags.VIVICUS_LOGS, 4);
+        woodFromLogs(ModBlocks.VIVICUS_WOOD, ModBlocks.VIVICUS_LOG);
+        woodFromLogs(ModBlocks.STRIPPED_VIVICUS_WOOD, ModBlocks.STRIPPED_VIVICUS_LOG);
         stairBuilder(ModBlocks.VIVICUS_STAIRS, Ingredient.of(ModBlocks.VIVICUS_PLANKS))
                 .unlockedBy("has_VIVICUS_planks", has(ModBlocks.VIVICUS_PLANKS))
-                .save(pRecipeOutput);
-        slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, ModBlocks.VIVICUS_SLAB, ModBlocks.VIVICUS_PLANKS);
+                .save(this.output);
+        slab(RecipeCategory.BUILDING_BLOCKS, ModBlocks.VIVICUS_SLAB, ModBlocks.VIVICUS_PLANKS);
         fenceBuilder(ModBlocks.VIVICUS_FENCE, Ingredient.of(ModBlocks.VIVICUS_PLANKS))
                 .unlockedBy("has_VIVICUS_planks", has(ModBlocks.VIVICUS_PLANKS))
-                .save(pRecipeOutput);
+                .save(this.output);
         fenceGateBuilder(ModBlocks.VIVICUS_FENCE_GATE, Ingredient.of(ModBlocks.VIVICUS_PLANKS))
                 .unlockedBy("has_VIVICUS_planks", has(ModBlocks.VIVICUS_PLANKS))
-                .save(pRecipeOutput);
+                .save(this.output);
         doorBuilder(ModBlocks.VIVICUS_DOOR, Ingredient.of(ModBlocks.VIVICUS_PLANKS))
                 .unlockedBy("has_VIVICUS_planks", has(ModBlocks.VIVICUS_PLANKS))
-                .save(pRecipeOutput);
+                .save(this.output);
         trapdoorBuilder(ModBlocks.VIVICUS_TRAPDOOR, Ingredient.of(ModBlocks.VIVICUS_PLANKS))
                 .unlockedBy("has_VIVICUS_planks", has(ModBlocks.VIVICUS_PLANKS))
-                .save(pRecipeOutput);
-        pressurePlate(pRecipeOutput, ModBlocks.VIVICUS_PRESSURE_PLATE, ModBlocks.VIVICUS_PLANKS);
+                .save(this.output);
+        pressurePlate(ModBlocks.VIVICUS_PRESSURE_PLATE, ModBlocks.VIVICUS_PLANKS);
         buttonBuilder(ModBlocks.VIVICUS_BUTTON, Ingredient.of(ModBlocks.VIVICUS_PLANKS))
                 .unlockedBy("has_VIVICUS_planks", has(ModBlocks.VIVICUS_PLANKS))
-                .save(pRecipeOutput);
-        woodenBoat(pRecipeOutput, ModItems.VIVICUS_BOAT.get(), ModBlocks.VIVICUS_PLANKS.get());
-        chestBoat(pRecipeOutput, ModItems.VIVICUS_CHEST_BOAT.get(), ModItems.VIVICUS_BOAT.get());
+                .save(this.output);
+        woodenBoat(ModItems.VIVICUS_BOAT.get(), ModBlocks.VIVICUS_PLANKS.get());
+        chestBoat(ModItems.VIVICUS_CHEST_BOAT.get(), ModItems.VIVICUS_BOAT.get());
         signBuilder(ModBlocks.VIVICUS_SIGN, Ingredient.of(ModBlocks.VIVICUS_PLANKS))
                 .unlockedBy("has_vivicus_planks", has(ModBlocks.VIVICUS_PLANKS))
-                .save(pRecipeOutput);
-        hangingSign(pRecipeOutput, ModItems.VIVICUS_HANGING_SIGN.get(), ModBlocks.VIVICUS_PLANKS.get());
+                .save(this.output);
+        hangingSign(ModItems.VIVICUS_HANGING_SIGN.get(), ModBlocks.VIVICUS_PLANKS.get());
         
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.VIVICUS_ANTIDOTE, 1)
+        shaped(RecipeCategory.MISC, ModItems.VIVICUS_ANTIDOTE, 1)
                         .pattern(" AB")
                         .pattern("ACA")
                         .pattern("DA ")
@@ -179,23 +180,15 @@ public class ModRecipesProvider extends RecipeProvider {
                         .define('C', ModItems.CORRUPTED_BOBLING_CORE)
                         .define('D', Tags.Items.INGOTS_IRON)
                         .unlockedBy("has_jar_of_acid", has(ModItems.JAR_OF_ACID))
-                        .save(pRecipeOutput);
+                        .save(this.output);
 
-        SpecialRecipeBuilder.special(RebrewedTippedArrowRecipe::new).save(pRecipeOutput, "rebrewed_tipped_arrow");
+        SpecialRecipeBuilder.special(RebrewedTippedArrowRecipe::new).save(this.output,"rebrewed_tipped_arrow");
         
-        ModCustomRecipeProvider.createRecipes(pRecipeOutput);
+        ModCustomRecipeProvider.createRecipes(this.output);
     }
 
-    private void trimCrafting(RecipeOutput pRecipeOutput, ItemLike trim, TagKey<Item> ingredient) {
-        trimCrafting(pRecipeOutput, trim, Ingredient.of(ingredient));
-    }
-
-    private void trimCrafting(RecipeOutput pRecipeOutput, ItemLike trim, ItemLike ingredient) {
-        trimCrafting(pRecipeOutput, trim, Ingredient.of(ingredient));
-    }
-
-    private void trimCrafting(RecipeOutput pRecipeOutput, ItemLike trim, Ingredient ingredient) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, trim, 2)
+    private void trimCrafting(ItemLike trim, Item ingredient) {
+        shaped(RecipeCategory.MISC, trim, 2)
                 .pattern("ABA")
                 .pattern("ACA")
                 .pattern("AAA")
@@ -203,13 +196,54 @@ public class ModRecipesProvider extends RecipeProvider {
                 .define('B', trim)
                 .define('C', ingredient)
                 .unlockedBy("has_" + getItemName(trim) + "_trim_template", has(ModItems.AROMA_ARMOR_TRIM_SMITHING_TEMPLATE.get()))
-                .save(pRecipeOutput, MoreSnifferFlowers.loc(getItemName(trim) + "_from_trim_crafting"));
+                .save(this.output);
     }
 
-    private void partsRecycling(RecipeOutput pRecipeOutput, Item part, Item result, int count) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, result, count)
+    private void partsRecycling(Item part, Item result, int count) {
+        shapeless(RecipeCategory.MISC, result, count)
                 .requires(part)
                 .unlockedBy("has_" + getItemName(part), has(part))
-                .save(pRecipeOutput, MoreSnifferFlowers.loc(getItemName(result) + "_from_part_recycling"));
+                .save(this.output);
+    }
+
+    protected ShapedRecipeBuilder shaped(RecipeCategory category, ItemLike result, int count) {
+        return ShapedRecipeBuilder.shaped(this.items, category, result, count);
+    }
+
+    public ShapelessRecipeBuilder shapeless(RecipeCategory category, ItemStack result) {
+        return ShapelessRecipeBuilder.shapeless(this.items, category, result);
+    }
+
+    public static Stream<VanillaRecipeProvider.TrimTemplate> MSFSmithingTrims() {
+        return Stream.of(
+                        ModItems.AROMA_ARMOR_TRIM_SMITHING_TEMPLATE.get(),
+                        ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get(),
+                        ModItems.CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE.get(),
+                        ModItems.TATER_ARMOR_TRIM_SMITHING_TEMPLATE.get(),
+                        ModItems.GRAIN_ARMOR_TRIM_SMITHING_TEMPLATE.get(),
+                        ModItems.NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE.get(),
+                        ModItems.CARNAGE_ARMOR_TRIM_SMITHING_TEMPLATE.get()
+                )
+                .map(p_378953_ -> new VanillaRecipeProvider.TrimTemplate(
+                                p_378953_, ResourceKey.create(Registries.RECIPE, MoreSnifferFlowers.loc(getItemName(p_378953_) + "_smithing_trim")))
+                );
+    }
+
+    // The runner to add to the data generator
+    public static class Runner extends RecipeProvider.Runner {
+        // Get the parameters from the `GatherDataEvent`s.
+        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+            super(output, lookupProvider);
+        }
+
+        @Override
+        protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput output) {
+            return new ModRecipesProvider(provider, output);
+        }
+
+        @Override
+        public String getName() {
+            return MoreSnifferFlowers.MOD_ID;
+        }
     }
 }

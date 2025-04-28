@@ -1,63 +1,60 @@
 package net.abraxator.moresnifferflowers.data;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.data.advancement.ModAdvancementGenerator;
+import net.abraxator.moresnifferflowers.data.advancement.ModAdvancementProvider;
 import net.abraxator.moresnifferflowers.data.datamaps.ModDataMapsProvider;
 import net.abraxator.moresnifferflowers.data.loot.ModLootModifierProvider;
 import net.abraxator.moresnifferflowers.data.loot.ModLoottableProvider;
 import net.abraxator.moresnifferflowers.data.recipe.ModRecipesProvider;
-import net.abraxator.moresnifferflowers.data.tag.*;
+import net.abraxator.moresnifferflowers.data.tag.ModBannerPatternTagsProvider;
+import net.abraxator.moresnifferflowers.data.tag.ModBlockTagsProvider;
+import net.abraxator.moresnifferflowers.data.tag.ModItemTagsProvider;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-
-import java.util.List;
 
 @EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class ModDatagen {
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event){
+    public static void gatherData(GatherDataEvent.Client event){
         var generator = event.getGenerator();
-        var existingFileHelper = event.getExistingFileHelper();
         var registries = event.getLookupProvider();
         var packOutput = generator.getPackOutput();
         var future = event.getLookupProvider();
         var datapackProvider = new RegistryDataGenerator(packOutput, event.getLookupProvider());
-        var lookupProvider = datapackProvider.getRegistryProvider();
-        
+
         //BLOCKMODELS
-        generator.addProvider(event.includeClient(), new ModBlockStateGenerator(packOutput, existingFileHelper));
-        generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
+      //  event.createProvider(ModBlockStateGenerator::new);
+        event.createProvider(ModItemModelProvider::new);
         
         //SOUNDS
-        generator.addProvider(event.includeClient(), new ModSoundProvider(packOutput, existingFileHelper));
+        event.createProvider(ModSoundProvider::new);
         
         //DATAPACK REGISTRIES
-        generator.addProvider(event.includeServer(), new RegistryDataGenerator(packOutput, future));
+        event.createProvider(RegistryDataGenerator::new);
         
         //DATA MAPS
-        generator.addProvider(event.includeServer(), new ModDataMapsProvider(packOutput, future));
+        event.createProvider(ModDataMapsProvider::new);
         
         //LOOT
-        generator.addProvider(event.includeClient(), new ModLootModifierProvider(packOutput, future));
-        generator.addProvider(event.includeClient(), ModLoottableProvider.create(packOutput, registries));
+        event.createProvider(ModLootModifierProvider::new);
+
+        event.createProvider((output, lookupProvider) -> ModLoottableProvider.create(packOutput, registries));
 
         //TAGS
-        ModBlockTagsProvider blockTagsProvider = generator.addProvider(event.includeServer(), new ModBlockTagsProvider(packOutput, registries, existingFileHelper));
-        generator.addProvider(event.includeServer(), new ModItemTagsProvider(packOutput, future, blockTagsProvider.contentsGetter(), existingFileHelper));
-        generator.addProvider(event.includeServer(), new ModPaintingTagsProvider(packOutput, future, existingFileHelper));
-        //generator.addProvider(event.includeServer(), new ModBannerPatternTagsProvider(packOutput, future, existingFileHelper));
-        generator.addProvider(event.includeServer(), new ModBiomeTagProvider(packOutput, future, existingFileHelper));
-        generator.addProvider(event.includeServer(), new ModBannerPatternTagsProvider(packOutput, lookupProvider, existingFileHelper));
+        event.createBlockAndItemTags(ModBlockTagsProvider::new, ModItemTagsProvider::new);
+
+        // event.createProvider(ModPaintingTagsProvider::new);
+        // event.createProvider(ModBannerPatternTagsProvider::new);
+        // event.createProvider(ModBiomeTagProvider::new);
+        event.createProvider(ModBannerPatternTagsProvider::new);
         
         //ADVANCEMENTS
-        generator.addProvider(event.includeServer(), new AdvancementProvider(packOutput, registries, existingFileHelper, List.of(new ModAdvancementGenerator())));
+        event.createProvider((output, lookupProvider) -> new  ModAdvancementProvider(packOutput, registries));
 
-        //RECIPES
-        generator.addProvider(event.includeServer(), new ModRecipesProvider(packOutput, future));
+        event.createProvider(ModRecipesProvider.Runner::new);
         
         //LANG
-        //generator.addProvider(event.includeClient(), new ModLangProvider(packOutput));
+        //event.createProvider(ModLangProvider::new);
     }
 }

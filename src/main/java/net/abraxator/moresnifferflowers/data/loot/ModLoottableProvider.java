@@ -9,7 +9,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class ModLoottableProvider {
+public class ModLoottableProvider{
+
     public static LootTableProvider create(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pRegistries) {
         return new LootTableProvider(
                 pOutput,

@@ -5,22 +5,20 @@ import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
-    public ModBlockTagsProvider(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider, ExistingFileHelper existingFileHelper) {
-        super(pOutput, Registries.BLOCK, pLookupProvider, block -> block.builtInRegistryHolder().key(), MoreSnifferFlowers.MOD_ID, existingFileHelper);
+public class ModBlockTagsProvider extends BlockTagsProvider {
+    public ModBlockTagsProvider(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider) {
+        super(pOutput, pLookupProvider, MoreSnifferFlowers.MOD_ID);
     }
 
     @Override
@@ -91,7 +89,7 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         for (DyeColor color  : DyeColor.values()) {
             for(String s : pattern) {
                 ResourceLocation key = ResourceLocation.fromNamespaceAndPath("minecraft", s.replace("{c}",  color.getName()));
-                Block item = BuiltInRegistries.BLOCK.get(key);
+                Block item = BuiltInRegistries.BLOCK.get(key).get().value();
                 if (item == Blocks.AIR)
                     throw new IllegalStateException("Unknown vanilla item: " + key);
                 tag(group).add(item);

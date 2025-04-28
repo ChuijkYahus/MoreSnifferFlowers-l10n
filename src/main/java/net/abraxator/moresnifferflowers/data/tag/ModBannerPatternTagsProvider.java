@@ -8,13 +8,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.level.block.entity.BannerPattern;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.concurrent.CompletableFuture;
 
 public class ModBannerPatternTagsProvider extends TagsProvider<BannerPattern> {
-    public ModBannerPatternTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper helper) {
-        super(output, Registries.BANNER_PATTERN, provider, MoreSnifferFlowers.MOD_ID, helper);
+    public ModBannerPatternTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, Registries.BANNER_PATTERN, provider, MoreSnifferFlowers.MOD_ID);
     }
 
     @Override

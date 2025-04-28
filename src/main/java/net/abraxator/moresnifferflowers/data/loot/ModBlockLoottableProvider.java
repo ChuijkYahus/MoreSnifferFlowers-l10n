@@ -263,7 +263,7 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.VIVICUS_BUTTON.get());
         add(ModBlocks.VIVICUS_LEAVES.get(), block -> createLeavesDrops(block, Blocks.DEAD_BUSH, 0.05F, 0.0625F, 0.083333336F, 0.1F));
         dropSelf(ModBlocks.VIVICUS_SAPLING.get());
-        add(ModBlocks.VIVICUS_LEAVES_SPROUT.get(), BlockLootSubProvider::createShearsOnlyDrop);
+        add(ModBlocks.VIVICUS_LEAVES_SPROUT.get(), block -> this.createShearsOnlyDrop(ModBlocks.VIVICUS_LEAVES_SPROUT.asItem()));
 
         add(ModBlocks.BOBLING_SACK.get(), noDrop());
         add(ModBlocks.CORRUPTED_SLIME_LAYER.get(),

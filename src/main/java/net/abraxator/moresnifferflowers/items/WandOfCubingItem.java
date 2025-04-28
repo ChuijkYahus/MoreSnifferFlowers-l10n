@@ -53,7 +53,7 @@ public class WandOfCubingItem extends Item {
             }
         }
 
-        return InteractionResult.sidedSuccess(pContext.getLevel().isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     private boolean isOnEdge(int x, int y, int z, int r) {

@@ -1,6 +1,5 @@
 package net.abraxator.moresnifferflowers.data.datamaps;
 
-import com.mojang.datafixers.util.Pair;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.minecraft.core.HolderLookup;
@@ -11,7 +10,6 @@ import net.neoforged.neoforge.common.data.DataMapProvider;
 import net.neoforged.neoforge.registries.datamaps.builtin.Compostable;
 import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ModDataMapsProvider extends DataMapProvider {
@@ -21,7 +19,7 @@ public class ModDataMapsProvider extends DataMapProvider {
 
     @Override
     @SuppressWarnings("deprecation")
-    protected void gather() {
+    protected void gather(HolderLookup.Provider provider) {
         var compostables = this.builder(NeoForgeDataMaps.COMPOSTABLES);
         compostables.add(ModItems.DAWNBERRY_VINE_SEEDS, new Compostable(0.3F), false);
         compostables.add(ModItems.DAWNBERRY, new Compostable(0.3F), false);
