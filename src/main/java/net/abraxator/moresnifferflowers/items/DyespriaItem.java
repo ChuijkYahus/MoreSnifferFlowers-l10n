@@ -227,7 +227,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
 
         String validColorName = "white|light_gray|gray|black|brown|red|orange|yellow|lime|green|cyan|light_blue|blue|purple|magenta|pink";
         String finalBlockName = blockId.replaceFirst(validColorName, newColor.getName());
-        Block finalBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(modId, finalBlockName));
+        Block finalBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(modId, finalBlockName)).orElseGet(() -> blockState.getBlock().builtInRegistryHolder()).value();
         BlockState finalBlockState = finalBlock.defaultBlockState();
 
         BlockEntity originalShulker = level.getBlockEntity(blockPos);

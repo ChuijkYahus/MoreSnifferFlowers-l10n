@@ -13,19 +13,19 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.*;
-
-import java.util.Comparator;
-import java.util.List;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 
 public class DragonflyProjectile extends ThrowableItemProjectile {
     public DragonflyProjectile(EntityType<? extends DragonflyProjectile> entityType, Level pLevel) {
         super(entityType, pLevel);
     }
 
-    public DragonflyProjectile(Level pLevel, Player player) {
-        super(ModEntityTypes.DRAGONFLY.get(), player, pLevel);
+    public DragonflyProjectile(Level pLevel, Player player, ItemStack stack) {
+        super(ModEntityTypes.DRAGONFLY.get(), player, pLevel, stack);
         this.setOwner(player);
     }
     

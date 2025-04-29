@@ -62,23 +62,26 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
         BlockPos blockpos = p_221272_.above();
         BlockState blockstate = Blocks.SHORT_GRASS.defaultBlockState();
         Optional<Holder.Reference<PlacedFeature>> optional = p_221270_.registryAccess()
-                .registryOrThrow(Registries.PLACED_FEATURE)
-                .getHolder(VegetationPlacements.GRASS_BONEMEAL);
+                .lookupOrThrow(Registries.PLACED_FEATURE)
+                .get(VegetationPlacements.GRASS_BONEMEAL);
 
-        label49:
+        label51:
         for (int i = 0; i < 128; i++) {
             BlockPos blockpos1 = blockpos;
 
             for (int j = 0; j < i / 16; j++) {
                 blockpos1 = blockpos1.offset(p_221271_.nextInt(3) - 1, (p_221271_.nextInt(3) - 1) * p_221271_.nextInt(3) / 2, p_221271_.nextInt(3) - 1);
                 if (!p_221270_.getBlockState(blockpos1.below()).is(this) || p_221270_.getBlockState(blockpos1).isCollisionShapeFullBlock(p_221270_, blockpos1)) {
-                    continue label49;
+                    continue label51;
                 }
             }
 
             BlockState blockstate1 = p_221270_.getBlockState(blockpos1);
             if (blockstate1.is(blockstate.getBlock()) && p_221271_.nextInt(10) == 0) {
-                ((BonemealableBlock)blockstate.getBlock()).performBonemeal(p_221270_, p_221271_, blockpos1, blockstate1);
+                BonemealableBlock bonemealableblock = (BonemealableBlock)blockstate.getBlock();
+                if (bonemealableblock.isValidBonemealTarget(p_221270_, blockpos1, blockstate1)) {
+                    bonemealableblock.performBonemeal(p_221270_, p_221271_, blockpos1, blockstate1);
+                }
             }
 
             if (blockstate1.isAir()) {
@@ -88,6 +91,7 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
                     if (list.isEmpty()) {
                         continue;
                     }
+
                     holder = ((RandomPatchConfiguration)list.get(0).config()).feature();
                 } else {
                     if (!optional.isPresent()) {
@@ -101,7 +105,6 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
             }
         }
     }
-
     @Override
     public BonemealableBlock.Type getType() {
         return BonemealableBlock.Type.NEIGHBOR_SPREADER;
@@ -115,10 +118,8 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
         } else if (blockstate.getFluidState().getAmount() == 8) {
             return false;
         } else {
-            int i = LightEngine.getLightBlockInto(
-                    levelReader, state, pos, blockstate, blockpos, Direction.UP, blockstate.getLightBlock(levelReader, blockpos)
-            );
-            return i < levelReader.getMaxLightLevel();
+            int i = LightEngine.getLightBlockInto(state, blockstate, Direction.UP, blockstate.getLightBlock());
+            return i < 15;
         }
     }
 

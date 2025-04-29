@@ -16,6 +16,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
@@ -25,16 +26,12 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
 public class JarOfAcidProjectile extends ThrowableItemProjectile {
-    private static final Logger log = LoggerFactory.getLogger(JarOfAcidProjectile.class);
-    public JarOfAcidProjectile(LivingEntity pShooter, Level pLevel) {
-        super(ModEntityTypes.JAR_OF_ACID.get(), pShooter, pLevel);
+    public JarOfAcidProjectile(LivingEntity pShooter, Level pLevel, ItemStack stack) {
+        super(ModEntityTypes.JAR_OF_ACID.get(), pShooter, pLevel, stack);
     }
     
     public JarOfAcidProjectile(Level pLevel) {
@@ -97,7 +94,7 @@ public class JarOfAcidProjectile extends ThrowableItemProjectile {
 
         areaeffectcloud.setRadius(3.0F);
         areaeffectcloud.setRadiusOnUse(-0.5F);
-        areaeffectcloud.setParticle(new DustParticleOptions(Vec3.fromRGB24(0xaeff5c).toVector3f(), 1));
+        areaeffectcloud.setParticle(new DustParticleOptions(0xaeff5c, 1));
         areaeffectcloud.setWaitTime(10);
         areaeffectcloud.setRadiusPerTick(-areaeffectcloud.getRadius() / (float)areaeffectcloud.getDuration());
         areaeffectcloud.setPotionContents(pPotionContents);

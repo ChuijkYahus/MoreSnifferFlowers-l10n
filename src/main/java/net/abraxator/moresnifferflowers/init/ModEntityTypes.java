@@ -44,13 +44,13 @@ public class ModEntityTypes {
 
     private static <E extends Entity> DeferredHolder<EntityType<?>, EntityType<E>> buildNoEgg(ResourceLocation id, EntityType.Builder<E> builder, boolean fireproof) {
         if (fireproof) builder.fireImmune();
-        return ENTITIES.register(id.getPath(), () -> builder.build(MSFEntityId(id.toString())));
+        return ENTITIES.register(id.getPath(), () -> builder.build(MSFEntityId(id)));
     }
 
     @SuppressWarnings("unchecked")
     private static <E extends Entity> DeferredHolder<EntityType<?>, EntityType<E>> build(ResourceLocation id, EntityType.Builder<E> builder, boolean fireproof, int primary, int secondary) {
         if (fireproof) builder.fireImmune();
-        DeferredHolder<EntityType<?>, EntityType<E>> ret = ENTITIES.register(id.getPath(), () -> builder.build(MSFEntityId(id.toString())));
+        DeferredHolder<EntityType<?>, EntityType<E>> ret = ENTITIES.register(id.getPath(), () -> builder.build(MSFEntityId(id)));
         if (primary != 0 && secondary != 0) {
           //  ModItems.ITEMS.register(id.getPath() + "_spawn_egg", () -> new SpawnEggItem((EntityType<? extends Mob>) ret.get(), primary, secondary, new Item.Properties()));
         }
@@ -78,8 +78,8 @@ public class ModEntityTypes {
         return (p_375555_, p_375556_) -> new VivicusChestBoatEntity(p_375555_, p_375556_, boatItemGetter);
     }
 
-    private static ResourceKey<EntityType<?>> MSFEntityId(String name) {
-        return ResourceKey.create(Registries.ENTITY_TYPE, MoreSnifferFlowers.loc(name));
+    private static ResourceKey<EntityType<?>> MSFEntityId(ResourceLocation resourceLocation) {
+        return ResourceKey.create(Registries.ENTITY_TYPE, resourceLocation);
     }
 
     private static <E extends Entity> EntityType.Builder<E> makeBuilder(EntityType.EntityFactory<E> factory, MobCategory classification, float width, float height, int range, int interval) {

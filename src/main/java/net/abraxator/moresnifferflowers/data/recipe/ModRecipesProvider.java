@@ -184,7 +184,6 @@ public class ModRecipesProvider extends RecipeProvider {
 
         SpecialRecipeBuilder.special(RebrewedTippedArrowRecipe::new).save(this.output,"rebrewed_tipped_arrow");
         
-        ModCustomRecipeProvider.createRecipes(this.output);
     }
 
     private void trimCrafting(ItemLike trim, Item ingredient) {

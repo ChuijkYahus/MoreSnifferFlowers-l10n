@@ -19,6 +19,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -26,8 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 import java.util.Optional;
 
@@ -36,8 +35,8 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
         super(pEntityType, pLevel);
     }
 
-    public CorruptedProjectile(Level pLevel, LivingEntity pShooter) {
-        super(ModEntityTypes.CORRUPTED_SLIME_BALL.get(), pShooter, pLevel);
+    public CorruptedProjectile(Level pLevel, LivingEntity pShooter, ItemStack stack) {
+        super(ModEntityTypes.CORRUPTED_SLIME_BALL.get(), pShooter, pLevel, stack);
     }
 
     public CorruptedProjectile(Level level) {
@@ -65,7 +64,7 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
     public void handleEntityEvent(byte id) {
         super.handleEntityEvent(id);
         if (id == 3) {
-            this.level().addParticle(new DustParticleOptions(Vec3.fromRGB24(0x36283D).toVector3f(), 1.0F), this.getX(), this.getY(), this.getZ(), 0.0, 0.0, 0.0);
+            this.level().addParticle(new DustParticleOptions(0x36283D, 1.0F), this.getX(), this.getY(), this.getZ(), 0.0, 0.0, 0.0);
         }
     }
 
@@ -148,7 +147,7 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
                 }
 
                 level.addParticle(
-                        new DustParticleOptions(Vec3.fromRGB24(0x0443248).toVector3f(), 1.0F),
+                        new DustParticleOptions(0x0443248, 1.0F),
                         blockPos.getX() + level.random.nextDouble(), blockPos.getY() + level.random.nextDouble(), blockPos.getZ() + level.random.nextDouble(),
                         0.0D, 0.0D, 0.0D);
             });

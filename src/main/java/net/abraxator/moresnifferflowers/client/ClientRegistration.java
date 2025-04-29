@@ -46,7 +46,6 @@ public class ClientRegistration {
     public static void clientSetup(final FMLClientSetupEvent event) {
         Sheets.addWoodType(ModWoodTypes.CORRUPTED);
         Sheets.addWoodType(ModWoodTypes.VIVICUS);
-        ModItemProperties.register();
     }
     
     @SubscribeEvent

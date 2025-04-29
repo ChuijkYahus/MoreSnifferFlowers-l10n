@@ -5,13 +5,11 @@ import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.HitResult;
 
 public class GarbushBlockLower extends AbstractXBushBlockBase {
     public GarbushBlockLower(Properties pProperties) {
@@ -19,7 +17,7 @@ public class GarbushBlockLower extends AbstractXBushBlockBase {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean isShiftDown) {
         return ModItems.GARBUSH_SEEDS.get().getDefaultInstance();
     }
 

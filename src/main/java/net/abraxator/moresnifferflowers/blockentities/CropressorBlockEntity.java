@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -25,7 +26,6 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
-import org.apache.logging.log4j.core.pattern.ThreadIdPatternConverter;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -47,7 +47,7 @@ public class CropressorBlockEntity extends ModBlockEntity {
     @Override
     public void tick(Level level) {
         var recipeInput = new SingleRecipeInput(currentCrop);
-        var cropressingRecipeOptional = quickCheck.getRecipeFor(recipeInput, level);
+        var cropressingRecipeOptional = quickCheck.getRecipeFor(recipeInput, (ServerLevel) level);
         
         if(currentCrop.getCount() >= INV_SIZE && cropressingRecipeOptional.isPresent()) {
             result = cropressingRecipeOptional.get().value().result();

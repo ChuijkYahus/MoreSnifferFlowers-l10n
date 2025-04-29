@@ -19,7 +19,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.registries.RegisterEvent;
 import org.slf4j.Logger;
 
 @Mod(MoreSnifferFlowers.MOD_ID)
@@ -38,7 +37,7 @@ public class MoreSnifferFlowers {
         ModCreativeTabs.TABS.register(modEventBus);
         ModMobEffects.EFFECTS.register(modEventBus);
         ModSoundEvents.SOUNDS.register(modEventBus);
-        ModPaintings.PAINTINGS.register(modEventBus);
+      //ModPaintings.PAINTINGS.register(modEventBus);
         ModParticles.PARTICLES.register(modEventBus);
         ModMenuTypes.MENU_TYPES.register(modEventBus);
         ModEntityTypes.ENTITIES.register(modEventBus);

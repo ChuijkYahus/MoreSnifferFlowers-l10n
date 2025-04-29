@@ -16,7 +16,7 @@ public class ModLayeredCauldronBlock extends LayeredCauldronBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean isShiftDown) {
         return Blocks.CAULDRON.asItem().getDefaultInstance();
     }
 }

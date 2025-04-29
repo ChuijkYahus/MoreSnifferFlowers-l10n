@@ -21,7 +21,7 @@ public record BoblingTypeCondition(boolean cured) implements LootItemCondition {
 
     @Override
     public boolean test(LootContext lootContext) {
-        return lootContext.getParam(LootContextParams.THIS_ENTITY) instanceof BoblingEntity bobling && bobling.isCured() == cured;
+        return lootContext.getParameter(LootContextParams.THIS_ENTITY) instanceof BoblingEntity bobling && bobling.isCured() == cured;
     }
 
 

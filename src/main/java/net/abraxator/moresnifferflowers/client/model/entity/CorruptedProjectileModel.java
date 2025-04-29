@@ -1,7 +1,5 @@
 package net.abraxator.moresnifferflowers.client.model.entity;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -12,7 +10,7 @@ public class CorruptedProjectileModel extends Model {
 	private final ModelPart root;
 
 	public CorruptedProjectileModel(ModelPart root) {
-		super(RenderType::entityCutout);
+		super(root,RenderType::entityCutout);
         this.root = root.getChild("root");
     }
 
@@ -35,8 +33,4 @@ public class CorruptedProjectileModel extends Model {
 		return LayerDefinition.create(meshdefinition, 32, 32);
 	}
 
-	@Override
-	public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, int pColor) {
-		root.render(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pColor);
-	}
 }

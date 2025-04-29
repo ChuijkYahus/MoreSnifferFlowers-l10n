@@ -2,14 +2,15 @@ package net.abraxator.moresnifferflowers.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -61,9 +62,10 @@ public abstract class ModEntityDoubleTallBlock extends Block implements IModEnti
     }
     
     @Override
-    public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        if (pFacing.getAxis() != Direction.Axis.Y || isLower(pState) != (pFacing == Direction.UP) || isStateThis(pFacingState) && !areTwoHalfSame(pState, pFacingState)) {
-            return isLower(pState) && pFacing == Direction.DOWN && !canSurvive(pState, pLevel, pCurrentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
+    public BlockState updateShape(BlockState state , LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        if (direction.getAxis() != Direction.Axis.Y || isLower(state) != (direction == Direction.UP) || isStateThis(state) && !areTwoHalfSame(state, neighborState)) {
+            return isLower(state) && direction == Direction.DOWN && !canSurvive(state, level, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
+
         } else {
             return Blocks.AIR.defaultBlockState();
         }
@@ -87,7 +89,7 @@ public abstract class ModEntityDoubleTallBlock extends Block implements IModEnti
         BlockPos blockPos = pContext.getClickedPos();
         Level level = pContext.getLevel();
 
-        return blockPos.getY() < level.getMaxBuildHeight() - 1 && level.getBlockState(blockPos.above()).canBeReplaced(pContext) ? super.getStateForPlacement(pContext) : null;
+        return blockPos.getY() < level.getMaxY() - 1 && level.getBlockState(blockPos.above()).canBeReplaced(pContext) ? super.getStateForPlacement(pContext) : null;
     }
     
     @Override

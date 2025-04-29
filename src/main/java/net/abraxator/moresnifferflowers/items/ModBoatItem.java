@@ -4,13 +4,14 @@ import net.abraxator.moresnifferflowers.entities.boat.ModBoatEntity;
 import net.abraxator.moresnifferflowers.entities.boat.ModChestBoatEntity;
 import net.abraxator.moresnifferflowers.entities.boat.VivicusBoatEntity;
 import net.abraxator.moresnifferflowers.entities.boat.VivicusChestBoatEntity;
+import net.abraxator.moresnifferflowers.init.ModItems;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.AbstractBoat;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -34,11 +35,11 @@ public class ModBoatItem extends Item {
         this.type = pType;
     }
     @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
+    public InteractionResult use(Level pLevel, Player pPlayer, InteractionHand pHand) {
         ItemStack itemstack = pPlayer.getItemInHand(pHand);
         HitResult hitresult = getPlayerPOVHitResult(pLevel, pPlayer, ClipContext.Fluid.ANY);
         if (hitresult.getType() == HitResult.Type.MISS) {
-            return InteractionResultHolder.pass(itemstack);
+            return InteractionResult.PASS;
         } else {
             Vec3 vec3 = pPlayer.getViewVector(1.0F);
             List<Entity> list = pLevel.getEntities(pPlayer, pPlayer.getBoundingBox().expandTowards(vec3.scale(5.0D)).inflate(1.0D), ENTITY_PREDICATE);
@@ -48,13 +49,13 @@ public class ModBoatItem extends Item {
                 for(Entity entity : list) {
                     AABB aabb = entity.getBoundingBox().inflate(entity.getPickRadius());
                     if (aabb.contains(vec31)) {
-                        return InteractionResultHolder.pass(itemstack);
+                        return InteractionResult.PASS;
                     }
                 }
             }
 
             if (hitresult.getType() == HitResult.Type.BLOCK) {
-                Boat boat = this.getBoat(pLevel, hitresult);
+                AbstractBoat boat = this.getBoat(pLevel, hitresult);
                 if(boat instanceof ModChestBoatEntity chestBoat) {
                     chestBoat.setVariant(this.type);
                 } else if(boat instanceof ModBoatEntity) {
@@ -62,7 +63,7 @@ public class ModBoatItem extends Item {
                 }
                 boat.setYRot(pPlayer.getYRot());
                 if (!pLevel.noCollision(boat, boat.getBoundingBox())) {
-                    return InteractionResultHolder.fail(itemstack);
+                    return InteractionResult.FAIL;
                 } else {
                     if (!pLevel.isClientSide) {
                         pLevel.addFreshEntity(boat);
@@ -73,21 +74,21 @@ public class ModBoatItem extends Item {
                     }
 
                     pPlayer.awardStat(Stats.ITEM_USED.get(this));
-                    return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
+                    return InteractionResult.SUCCESS;
                 }
             } else {
-                return InteractionResultHolder.pass(itemstack);
+                return InteractionResult.PASS;
             }
         }
     }
 
-    private Boat getBoat(Level p_220017_, HitResult p_220018_) {
+    private AbstractBoat getBoat(Level level, HitResult hitResult) {
         if(this.type.equals(ModBoatEntity.Type.VIVICUS)) {
-            return this.hasChest ? new VivicusChestBoatEntity(p_220017_, p_220018_.getLocation().x, p_220018_.getLocation().y, p_220018_.getLocation().z) :
-                    new VivicusBoatEntity(p_220017_, p_220018_.getLocation().x, p_220018_.getLocation().y, p_220018_.getLocation().z);    
+            return this.hasChest ? new VivicusChestBoatEntity(level, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z, ModItems.VIVICUS_CHEST_BOAT) :
+                    new VivicusBoatEntity(level, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z, ModItems.VIVICUS_BOAT);
         }
         
-        return this.hasChest ? new ModChestBoatEntity(p_220017_, p_220018_.getLocation().x, p_220018_.getLocation().y, p_220018_.getLocation().z) :
-                new ModBoatEntity(p_220017_, p_220018_.getLocation().x, p_220018_.getLocation().y, p_220018_.getLocation().z);
+        return this.hasChest ? new ModChestBoatEntity(level, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z, ModItems.CORRUPTED_CHEST_BOAT) :
+                new ModBoatEntity(level, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z, ModItems.CORRUPTED_BOAT);
     }
 }

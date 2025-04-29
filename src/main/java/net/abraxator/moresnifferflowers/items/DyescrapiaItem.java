@@ -81,7 +81,7 @@ public class DyescrapiaItem extends BlockItem {
             }
 
             if ((!blockId.contains("white_") || colorless) && !finalBlockId.equals(blockId)){
-                Block finalBlock = colorless ? BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(modId, finalBlockId)) : BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(modId,"white" + finalBlockId));
+                Block finalBlock = colorless ? BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(modId, finalBlockId)).orElseGet(()-> state.getBlock().builtInRegistryHolder()).value() : BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(modId,"white" + finalBlockId)).orElseGet(()-> state.getBlock().builtInRegistryHolder()).value();
                 BlockState finalBlockState = finalBlock.defaultBlockState();
 
                 BlockEntity originalShulker = level.getBlockEntity(pos);
@@ -99,7 +99,7 @@ public class DyescrapiaItem extends BlockItem {
 
                 if(uses >= 4) {
                     String dyeName = blockId.replace(blockId.replaceFirst(validColorName, ""), "") + "_dye";
-                    player.addItem(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("minecraft", dyeName)).getDefaultInstance());
+                    player.addItem(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("minecraft", dyeName)).get().value().getDefaultInstance());
                     uses = 0;
                 }
 

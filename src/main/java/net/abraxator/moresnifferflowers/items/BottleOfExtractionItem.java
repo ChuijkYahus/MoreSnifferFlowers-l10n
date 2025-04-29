@@ -9,13 +9,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 
@@ -47,19 +47,19 @@ public class BottleOfExtractionItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+    public InteractionResult use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         if (!canExtract(pLevel, pPlayer)) {
-            return InteractionResultHolder.pass(pPlayer.getItemInHand(pUsedHand));
+            return InteractionResult.PASS;
         } else {
             pPlayer.startUsingItem(pUsedHand);
-            return InteractionResultHolder.consume(pPlayer.getItemInHand(pUsedHand));
+            return InteractionResult.CONSUME;
         }
     }
 
     private ItemStack initPotion(Player player) {
         var stack = ModItems.EXTRACTED_BOTTLE.get().getDefaultInstance();
         var effects = player.getActiveEffects();
-        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(PotionContents.getColor(effects)), new ArrayList<>(effects)));
+        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(PotionContents.getColorOptional(effects).orElse(14058905)), new ArrayList<>(effects), Optional.of("extracted_potion")));
         return stack;
     }
     
@@ -69,8 +69,8 @@ public class BottleOfExtractionItem extends Item {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack pStack) {
-        return UseAnim.DRINK;
+    public ItemUseAnimation getUseAnimation(ItemStack pStack) {
+        return ItemUseAnimation.DRINK;
     }
 
     private boolean canExtract(Level level, Player player) {

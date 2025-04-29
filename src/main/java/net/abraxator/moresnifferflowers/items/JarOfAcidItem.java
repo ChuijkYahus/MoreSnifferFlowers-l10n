@@ -7,7 +7,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
@@ -21,7 +21,7 @@ public class JarOfAcidItem extends Item implements ProjectileItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
+    public InteractionResult use(Level pLevel, Player pPlayer, InteractionHand pHand) {
         ItemStack itemstack = pPlayer.getItemInHand(pHand);
         pLevel.playSound(
                 null,
@@ -34,14 +34,14 @@ public class JarOfAcidItem extends Item implements ProjectileItem {
                 0.4F / (pLevel.getRandom().nextFloat() * 0.4F + 0.8F)
         );
         if (!pLevel.isClientSide) {
-            JarOfAcidProjectile projectile = new JarOfAcidProjectile(pPlayer, pLevel);
+            JarOfAcidProjectile projectile = new JarOfAcidProjectile(pPlayer, pLevel, itemstack);
             projectile.shootFromRotation(pPlayer, pPlayer.getXRot(), pPlayer.getYRot(), 0.0F, 1.5F, 1.0F);
             pLevel.addFreshEntity(projectile);
         }
 
         pPlayer.awardStat(Stats.ITEM_USED.get(this));
         itemstack.consume(1, pPlayer);
-        return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     @Override

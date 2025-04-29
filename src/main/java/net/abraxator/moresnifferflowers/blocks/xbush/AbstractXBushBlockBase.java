@@ -13,7 +13,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Ravager;
@@ -21,7 +20,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.*;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -84,7 +86,7 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
 
     @Override
     public void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity) {
-        if(pEntity instanceof Ravager && pLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+        if(pEntity instanceof Ravager && pLevel instanceof ServerLevel serverLevel && serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
             pLevel.destroyBlock(pPos, true, pEntity);
         }
 
@@ -142,7 +144,7 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
     ) {
         int k = Math.min(getAge(pState) + 1, getMaxAge());
         return pStack.is(Items.BONE_MEAL) && this.canGrow(pLevel, pPos, pState, k)
-                ? InteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION
+                ? InteractionResult.SUCCESS_SERVER
                 : super.useItemOn(pStack, pState, pLevel, pPos, pPlayer, pHand, pHitResult);
     }
 
@@ -167,7 +169,7 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
             }
 
             entity.reset();
-            return InteractionResult.sidedSuccess(pLevel.isClientSide());
+            return InteractionResult.SUCCESS;
         } else {
             return InteractionResult.PASS;
         }
@@ -228,7 +230,7 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
         this.getLowerHalf(pLevel, pPos, pState).ifPresent(posAndState -> {
             if(pState.getValue(ModStateProperties.AGE_8) < 8) {
                 this.grow(pLevel, posAndState.state(), posAndState.blockPos(), 1);
-            } 
+            }
         });
     }
 

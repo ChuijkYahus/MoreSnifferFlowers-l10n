@@ -125,7 +125,7 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
                         pLevel.setBlockAndUpdate(BlockPos.containing(pPos), block.withPropertiesOf(pContext.affectedState()));
                     }
                     pLevel.sendParticles(
-                            new DustParticleOptions(Vec3.fromRGB24(0x0443248).toVector3f(), 1.0F),
+                            new DustParticleOptions(0x0443248, 1.0F),
                             blockPos.getX() + pLevel.random.nextDouble(), blockPos.getY() + pLevel.random.nextDouble(), blockPos.getZ() + pLevel.random.nextDouble(),
                             10,
                             0.0D, 0.0D, 0.0D,

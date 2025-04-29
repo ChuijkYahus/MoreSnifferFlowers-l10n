@@ -3,20 +3,19 @@ package net.abraxator.moresnifferflowers.client.model.entity;// Made with Blockb
 // Paste this class into your mod and generate all required imports
 
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.client.renderer.RenderType;
 
-public class bondripia<T extends Entity> extends EntityModel<T> {
+public class BondripiaModel extends Model {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	private final ModelPart root;
 
-	public bondripia(ModelPart root) {
-		this.root = root.getChild("root");
+	public BondripiaModel(ModelPart root) {
+        super(root, RenderType::entityCutout);
+        this.root = root.getChild("root");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -49,15 +48,5 @@ public class bondripia<T extends Entity> extends EntityModel<T> {
 		.texOffs(-44, 99).addBox(-22.0F, 3.7F, -23.0F, 44.0F, 0.0F, 44.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -6.3F, -15.0F, 0.0F, 0.0F, -3.1416F));
 
 		return LayerDefinition.create(meshdefinition, 256, 256);
-	}
-
-	@Override
-	public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, int pColor) {
-		
 	}
 }

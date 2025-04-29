@@ -1,7 +1,5 @@
 package net.abraxator.moresnifferflowers.client.model.entity;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -15,7 +13,7 @@ public class DragonflyModel extends Model {
 	private final ModelPart wing2;
 
 	public DragonflyModel(ModelPart root) {
-		super(RenderType::entityCutout);
+		super(root,RenderType::entityCutout);
 		this.root = root.getChild("root");
 		this.wing1 = this.root.getChild("wing1");
 		this.wing2 = this.root.getChild("wing2");
@@ -46,8 +44,4 @@ public class DragonflyModel extends Model {
 		this.wing2.zRot = (float) -(Mth.cos(pPartialTick * 100F * Mth.PI / 180.0F) * Mth.PI * 0.25);
 	}
 
-	@Override
-	public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, int pColor) {
-		root.render(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pColor);
-	}
 }

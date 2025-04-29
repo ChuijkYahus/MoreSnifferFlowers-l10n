@@ -10,8 +10,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.*;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 
@@ -92,7 +92,7 @@ public interface Colorable {
     default void particles(RandomSource randomSource, Level level, Dye dye, BlockPos blockPos) {
         for(int i = 0; i <= randomSource.nextIntBetweenInclusive(5, 10); i++) {
             level.addParticle(
-                    new DustParticleOptions(dye.isEmpty() ? Vec3.fromRGB24(14013909).toVector3f() : Vec3.fromRGB24(Dye.colorForDye(this, dye.color())).toVector3f(), 1.0F),
+                    new DustParticleOptions(dye.isEmpty() ? 14013909 : Dye.colorForDye(this, dye.color()), 1.0F),
                     blockPos.getX() + randomSource.nextDouble(),
                     blockPos.getY() + randomSource.nextDouble(),
                     blockPos.getZ() + randomSource.nextDouble(),

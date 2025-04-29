@@ -12,9 +12,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -31,7 +28,7 @@ public class VivicusAntidoteItem extends Item {
         var blockState = level.getBlockState(blockPos);
         var random = level.getRandom();
         var player = pContext.getPlayer();
-        var particle = new DustParticleOptions(Vec3.fromRGB24(7118872).toVector3f(), 1);
+        var particle = new DustParticleOptions(7118872, 1);
 
         if(blockState.is(ModBlocks.VIVICUS_SAPLING.get()) && !blockState.getValue(ModStateProperties.VIVICUS_CURED)) {
             level.setBlockAndUpdate(blockPos, blockState.setValue(ModStateProperties.VIVICUS_CURED, true));

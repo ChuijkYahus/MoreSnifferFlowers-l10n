@@ -1,19 +1,49 @@
 package net.abraxator.moresnifferflowers.init;
 
-import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.components.CropressorAnimation;
+import com.mojang.serialization.MapCodec;
 import net.abraxator.moresnifferflowers.components.Dye;
-import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperty;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class ModItemProperties {
-    public static final int FRAME_TIME = 20;
-    public static final int FRAME_AMOUNT = 3;
-    public static final int COPRESSOR_ANIMATION_FRAMES = FRAME_TIME * FRAME_AMOUNT;
-    
-    public static void register() {
+
+    public record DyespriaConditionalProperty() implements ConditionalItemModelProperty{
+        public static final MapCodec<DyespriaConditionalProperty> MAP_CODEC = MapCodec.unit(new DyespriaConditionalProperty());
+
+        @Override
+        public boolean get(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed, ItemDisplayContext displayContext) {
+            return !Dye.getDyeFromDyespria(stack).isEmpty();
+        }
+
+        @Override
+        public MapCodec<? extends ConditionalItemModelProperty> type() {
+            return MAP_CODEC;
+        }
+    }
+
+    public record OGConditionalProperty() implements ConditionalItemModelProperty{
+        public static final MapCodec<OGConditionalProperty> MAP_CODEC = MapCodec.unit(new OGConditionalProperty());
+
+        @Override
+        public boolean get(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed, ItemDisplayContext displayContext) {
+            Component component = stack.get(DataComponents.CUSTOM_NAME);
+
+            return component != null && component.getString().equals("og");
+        }
+
+        @Override
+        public MapCodec<? extends ConditionalItemModelProperty> type() {
+            return MAP_CODEC;
+        }
+    }
+
+/*    public static void register() {
         ItemProperties.register(ModItems.DYESPRIA.get(), MoreSnifferFlowers.loc("color"), (pStack, pLevel, pEntity, pSeed) -> {
             if(!Dye.getDyeFromDyespria(pStack).isEmpty()) {
                 return 1.0F;
@@ -30,25 +60,5 @@ public class ModItemProperties {
                 return 0.0F;
             }
         });
-
-        ItemProperties.register(ModItems.CROPRESSOR.get(), MoreSnifferFlowers.loc("animate"), (pStack, pLevel, pEntity, pSeed) -> {
-            var animation = getAnimation(pStack);
-            System.out.println(animation.progress());
-            if (animation.playing()) {
-                pStack.set(ModDataComponents.CROPRESSOR_ANIMATE, new CropressorAnimation(true, animation.progress() + (double) 1 / COPRESSOR_ANIMATION_FRAMES));
-                
-                if(animation.progress() >= 0.99D) {
-                    pStack.set(ModDataComponents.CROPRESSOR_ANIMATE, new CropressorAnimation(false, animation.progress()));
-                }
-                
-                return 1.0F;
-            }
-            
-            return 0.0F;
-        });
-    }
-    
-    private static CropressorAnimation getAnimation(ItemStack itemStack) {
-        return itemStack.getOrDefault(ModDataComponents.CROPRESSOR_ANIMATE, new CropressorAnimation(false, 0));
-    }
+    }*/
 }

@@ -10,9 +10,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.armortrim.TrimMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterials;
+import net.minecraft.world.item.equipment.trim.TrimMaterial;
 
 import java.util.Map;
 
@@ -37,8 +37,8 @@ public class ModTrimMaterials {
         register(context, CARROT, BuiltInRegistries.ITEM.wrapAsHolder(ModItems.CROPRESSED_CARROT.get()), Style.EMPTY.withColor(TextColor.parseColor("#e67022").getOrThrow()), 0.5F, Map.of());
     }
 
-    private static void register(BootstrapContext<TrimMaterial> p_268244_, ResourceKey<TrimMaterial> p_268139_, Holder<Item> p_268311_, Style p_268232_, float p_268197_, Map<ArmorMaterials, String> p_268352_) {
-        TrimMaterial trimmaterial = new TrimMaterial(p_268139_.location().getPath(), p_268311_, p_268197_, Map.of(), Component.translatable(Util.makeDescriptionId("trim_material", p_268139_.location())).withStyle(p_268232_));
-        p_268244_.register(p_268139_, trimmaterial);
+    private static void register(BootstrapContext<TrimMaterial> trimMaterialBootstrapContext, ResourceKey<TrimMaterial> resourceKey, Holder<Item> itemHolder, Style style, float p_268197_, Map<ArmorMaterials, String> armorMaterialsStringMap) {
+        TrimMaterial trimmaterial = new TrimMaterial(resourceKey.location().getPath(), itemHolder, Map.of(), Component.translatable(Util.makeDescriptionId("trim_material", resourceKey.location())).withStyle(style));
+        trimMaterialBootstrapContext.register(resourceKey, trimmaterial);
     }
 }

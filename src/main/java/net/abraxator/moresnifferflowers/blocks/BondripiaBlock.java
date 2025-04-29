@@ -15,10 +15,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -224,21 +221,11 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
     }
 
     @Override
-    public BlockState updateShape(BlockState stateOriginal, Direction dir, BlockState stateNew, LevelAccessor level, BlockPos pCurrentPos, BlockPos pNewPos) {
-        if(level.getBlockEntity(pCurrentPos) instanceof BondripiaBlockEntity entity) {
-
-            if (!this.canSurvive(stateOriginal, level, pCurrentPos)){
-                Direction.Plane.HORIZONTAL.forEach(direction2 -> {
-                    BlockPos blockPos2 = entity.center.relative(direction2);
-
-                    level.destroyBlock(blockPos2, true);
-                });
-                level.destroyBlock(entity.center, true);
-
-            }
-
+    public BlockState updateShape(BlockState state ,LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        if (!this.canSurvive(level.getBlockState(pos), level, pos)){
+            return Blocks.AIR.defaultBlockState();
         }
-        return super.updateShape(stateOriginal, dir, stateNew, level, pCurrentPos, pNewPos);
+        return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
     }
     
     @Nullable
