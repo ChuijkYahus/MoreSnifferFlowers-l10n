@@ -31,6 +31,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCon
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -202,8 +203,9 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
                                         .setProperties((StatePropertiesPredicate.Builder.properties()
                                                 .hasProperty(BonmeeliaBlock.HAS_BOTTLE, true)))))));
 
-        dropSelf(ModBlocks.CROPRESSOR_OUT.get());
-        dropSelf(ModBlocks.CROPRESSOR_CENTER.get());
+
+        add(ModBlocks.CROPRESSOR_OUT.get(), noDrop());
+        dropOther(ModBlocks.CROPRESSOR_CENTER.get(), ModItems.CROPRESSOR.get());
         dropSelf(ModBlocks.REBREWING_STAND_BOTTOM.get());
         add(ModBlocks.REBREWING_STAND_TOP.get(), noDrop());
         add(ModBlocks.DYESPRIA_PLANT.get(), LootTable.lootTable()
@@ -345,9 +347,10 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
 
     @Override
     protected Iterable<Block> getKnownBlocks() {
-        return BuiltInRegistries.BLOCK
-                .stream()
-                .filter(block -> BuiltInRegistries.BLOCK.getKey(block).getNamespace().equals(MoreSnifferFlowers.MOD_ID))
+        return BuiltInRegistries.BLOCK.stream()
+                .filter(block -> Optional.of(BuiltInRegistries.BLOCK.getKey(block))
+                        .filter(key -> key.getNamespace().equals(MoreSnifferFlowers.MOD_ID))
+                        .isPresent())
                 .collect(Collectors.toSet());
     }
 }

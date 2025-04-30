@@ -1,5 +1,8 @@
 {
   "values": [
-    "moresnifferflowers:ambush"
+    {
+      "id": "moresnifferflowers:ambush",
+      "required": false
+    }
   ]
 }

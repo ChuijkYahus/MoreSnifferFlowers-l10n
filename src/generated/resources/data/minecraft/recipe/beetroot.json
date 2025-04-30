@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "moresnifferflowers:cropressed_beetroot"
+  ],
+  "result": {
+    "count": 16,
+    "id": "minecraft:beetroot"
+  }
+}

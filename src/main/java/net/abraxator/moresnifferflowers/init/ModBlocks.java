@@ -156,7 +156,7 @@ public class ModBlocks {
 
     private static <T extends Block> DeferredItem<Item> registerBlockItem(String name, DeferredBlock<T> block) {
         return ModItems.ITEMS.register(name, (registryName) -> new BlockItem(block.get(),
-                new Item.Properties().setId(ModItems.getItemResourceKey(registryName))));
+                new Item.Properties().useBlockDescriptionPrefix().setId(ModItems.getItemResourceKey(registryName))));
     }
 
     private static <T extends Block> DeferredBlock<T> registerGiantCrop(String name, Function<ResourceLocation, ? extends T> block) {
@@ -167,7 +167,7 @@ public class ModBlocks {
 
     private static <T extends Block> DeferredItem<Item> registerGiantCropItem(String name, DeferredBlock<T> block) {
         return ModItems.ITEMS.register(name, (registryName) -> new GiantCropItem(block.get(),
-                new Item.Properties().setId(ModItems.getItemResourceKey(registryName))));
+                new Item.Properties().useBlockDescriptionPrefix().setId(ModItems.getItemResourceKey(registryName))));
     }
 
     public static Block stair(Block pBaseBlock) {

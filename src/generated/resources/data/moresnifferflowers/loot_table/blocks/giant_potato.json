@@ -19,7 +19,7 @@
       "bonus_rolls": 0.0,
       "conditions": [
         {
-          "chance": 0.05,
+          "chance": 0.04,
           "condition": "minecraft:random_chance"
         }
       ],
@@ -38,11 +38,6 @@
           "type": "minecraft:item",
           "name": "moresnifferflowers:cropressed_potato",
           "weight": 100
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:air",
-          "weight": 50
         }
       ],
       "rolls": 1.0

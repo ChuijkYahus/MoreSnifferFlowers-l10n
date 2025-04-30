@@ -24,7 +24,7 @@ public class DragonflyRenderer extends EntityRenderer<DragonflyProjectile, Proje
 
     @Override
     public ProjectileRenderState createRenderState() {
-        return null;
+        return new ProjectileRenderState();
     }
 
     @Override
@@ -45,5 +45,14 @@ public class DragonflyRenderer extends EntityRenderer<DragonflyProjectile, Proje
 
     public ResourceLocation getTextureLocation() {
         return TEXTURE;
+    }
+
+    @Override
+    public void extractRenderState(DragonflyProjectile entity, ProjectileRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.xRot = entity.xRotO;
+        state.yRot = entity.yRotO;
+        state.shake = entity.flyDist;
+
     }
 }

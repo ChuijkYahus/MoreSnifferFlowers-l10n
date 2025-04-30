@@ -1,4 +1,4 @@
-// 1.21.1	2025-02-18T20:03:37.7455181	Tags for minecraft:item mod id moresnifferflowers
+// 1.21.4	2025-04-30T21:14:19.8698276	Tags for minecraft:item mod id moresnifferflowers
 840aac17023f4b3090f7a16bdac7a2917619a7ee data/c/tags/item/seeds.json
 6d8903ab7204569206b2f7cb5c89b74235cf79d6 data/minecraft/tags/item/fence_gates.json
 333c0cd687a06b67b797ce6b6e4c0790ccab28a4 data/minecraft/tags/item/logs_that_burn.json
@@ -6,7 +6,6 @@ cc87198368386d83a3e3bab1c343988afb547f61 data/minecraft/tags/item/planks.json
 4624239ad2a34409633762b810c001740df32e54 data/minecraft/tags/item/saplings.json
 0154551d24498e9ebaf136bcc2000b01c48e627a data/minecraft/tags/item/sniffer_food.json
 3bb53488c6b04bf4e8d90fc294813f68abfcee28 data/minecraft/tags/item/trim_materials.json
-48e11e53eb509b883d675242a00adcd098d7be98 data/minecraft/tags/item/trim_templates.json
 9399dddd5bb3da096218baaec08ef2a99c696ae0 data/minecraft/tags/item/wooden_buttons.json
 eb1e1245a4db13e3e24f578c4e3fc6af5bfe8176 data/minecraft/tags/item/wooden_doors.json
 46d0ede2478483f5cd734fee4eda2f9c41f2e4ae data/minecraft/tags/item/wooden_fences.json

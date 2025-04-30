@@ -1,5 +1,8 @@
 {
   "values": [
-    "moresnifferflowers:evil"
+    {
+      "id": "moresnifferflowers:evil",
+      "required": false
+    }
   ]
 }

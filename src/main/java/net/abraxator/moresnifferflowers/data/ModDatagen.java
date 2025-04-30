@@ -7,6 +7,7 @@ import net.abraxator.moresnifferflowers.data.loot.ModLootModifierProvider;
 import net.abraxator.moresnifferflowers.data.loot.ModLoottableProvider;
 import net.abraxator.moresnifferflowers.data.recipe.ModRecipesProvider;
 import net.abraxator.moresnifferflowers.data.tag.ModBannerPatternTagsProvider;
+import net.abraxator.moresnifferflowers.data.tag.ModBiomeTagProvider;
 import net.abraxator.moresnifferflowers.data.tag.ModBlockTagsProvider;
 import net.abraxator.moresnifferflowers.data.tag.ModItemTagsProvider;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -46,7 +47,7 @@ public class ModDatagen {
 
         // event.createProvider(ModPaintingTagsProvider::new);
         // event.createProvider(ModBannerPatternTagsProvider::new);
-        // event.createProvider(ModBiomeTagProvider::new);
+        event.createProvider(ModBiomeTagProvider::new);
         event.createProvider(ModBannerPatternTagsProvider::new);
         
         //ADVANCEMENTS

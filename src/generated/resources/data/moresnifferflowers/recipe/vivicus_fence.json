@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "W": {
-      "item": "moresnifferflowers:vivicus_planks"
-    }
+    "#": "minecraft:stick",
+    "W": "moresnifferflowers:vivicus_planks"
   },
   "pattern": [
     "W#W",

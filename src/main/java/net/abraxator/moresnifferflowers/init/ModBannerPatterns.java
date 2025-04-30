@@ -15,7 +15,7 @@ public class ModBannerPatterns {
     }
     
     public static void bootstrap(BootstrapContext<BannerPattern> context) {
-        context.register(AMBUSH, new BannerPattern(MoreSnifferFlowers.loc("ambush"), "block.minecraft.banner.moresnifferflowers.ambush"));
-        context.register(EVIL, new BannerPattern(MoreSnifferFlowers.loc("evil"), "block.minecraft.banner.moresnifferflowers.evil"));
+        context.register(AMBUSH, new BannerPattern(AMBUSH.location(), "block.minecraft.banner.moresnifferflowers.ambush"));
+        context.register(EVIL, new BannerPattern(EVIL.location(), "block.minecraft.banner.moresnifferflowers.evil"));
     }
 }
