@@ -42,6 +42,7 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
 
     public AbstractXBushBlockBase(Properties pProperties) {
         super(pProperties);
+        registerDefaultState(stateDefinition.any().setValue(ModStateProperties.AGE_8, 0));
     }
     
     @Override
