@@ -5,7 +5,6 @@ import net.abraxator.moresnifferflowers.data.advancement.ModAdvancementProvider;
 import net.abraxator.moresnifferflowers.data.datamaps.ModDataMapsProvider;
 import net.abraxator.moresnifferflowers.data.loot.ModLootModifierProvider;
 import net.abraxator.moresnifferflowers.data.loot.ModLoottableProvider;
-import net.abraxator.moresnifferflowers.data.recipe.ModCustomRecipeProvider;
 import net.abraxator.moresnifferflowers.data.recipe.ModRecipesProvider;
 import net.abraxator.moresnifferflowers.data.tag.ModBannerPatternTagsProvider;
 import net.abraxator.moresnifferflowers.data.tag.ModBlockTagsProvider;
@@ -27,7 +26,7 @@ public class ModDatagen {
         //BLOCKMODELS
       //  event.createProvider(ModBlockStateGenerator::new);
         event.createProvider(ModItemModelProvider::new);
-        
+
         //SOUNDS
         event.createProvider(ModSoundProvider::new);
         
@@ -55,8 +54,7 @@ public class ModDatagen {
 
         //RECIPES
         event.createProvider(ModRecipesProvider.Runner::new);
-        event.createProvider(ModCustomRecipeProvider.Runner::new);
-        
+
         //LANG
         //event.createProvider(ModLangProvider::new);
     }

@@ -31,6 +31,7 @@ public class ModRecipesProvider extends RecipeProvider {
 
     @Override
     protected void buildRecipes() {
+        new ModCustomRecipeProvider(registries, output);
         MSFSmithingTrims().forEach(p_378952_ -> this.trimSmithing(p_378952_.template(), p_378952_.id()));
 
         trimCrafting(ModItems.AROMA_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.AMBER_SHARD.get());
