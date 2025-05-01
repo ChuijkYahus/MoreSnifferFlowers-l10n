@@ -218,7 +218,7 @@ public class RebrewingStandBlockEntity extends BaseContainerBlockEntity {
         int maxInt = Collections.max(durList);
         ret.add(new MobEffectInstance(ModMobEffects.EXTRACTED, maxInt));
 
-        return new Pair<>(new PotionContents(Optional.of(Potions.WATER), Optional.of(PotionContents.getColorOptional(ret).orElse(14058905)), ret, Optional.of("rebrewed_potion")), ret);
+        return new Pair<>(new PotionContents(Optional.of(Potions.WATER), Optional.of(PotionContents.getColorOptional(ret).orElse(14058905)), ret, Optional.of("mixed")), ret);
     }
     
     @Override
@@ -291,6 +291,6 @@ public class RebrewingStandBlockEntity extends BaseContainerBlockEntity {
     }
     
     public static void addPotionListToStack(List<MobEffectInstance> list, ItemStack itemStack) {
-        itemStack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.WATER), Optional.of(PotionContents.getColorOptional(list).orElse(14058905)), list, Optional.of("rebrewed_potion")));
+        itemStack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.WATER), Optional.of(PotionContents.getColorOptional(list).orElse(14058905)), list, Optional.of("mixed")));
     }
 }

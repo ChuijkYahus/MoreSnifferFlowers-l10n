@@ -34,7 +34,7 @@ public class ModEvents {
     }
 
     @SubscribeEvent
-    public static void registerSelectProperties(RegisterConditionalItemModelPropertyEvent event) {
+    public static void registerConditionalProperties(RegisterConditionalItemModelPropertyEvent event) {
         event.register(MoreSnifferFlowers.loc("dyespria"), ModItemProperties.DyespriaConditionalProperty.MAP_CODEC);
         event.register(MoreSnifferFlowers.loc("og"), ModItemProperties.OGConditionalProperty.MAP_CODEC);
 

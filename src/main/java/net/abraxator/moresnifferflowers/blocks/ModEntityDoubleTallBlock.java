@@ -42,6 +42,12 @@ public abstract class ModEntityDoubleTallBlock extends Block implements IModEnti
                 dropResources(pState, pLevel, pPos, blockEntity, pPlayer, pPlayer.getMainHandItem());
             }
         }
+/*
+        if (isLower(pState) && pLevel.getBlockState(pPos.above()).is(getUpperBlock()))
+            pLevel.destroyBlock(pPos.above(), true);
+        if (isUpper(pState) && pLevel.getBlockState(pPos.below()).is(getLowerBlock()))
+            pLevel.destroyBlock(pPos.below(), true);
+*/
 
         super.playerWillDestroy(pLevel, pPos, pState, pPlayer);
         return pState;
@@ -63,20 +69,19 @@ public abstract class ModEntityDoubleTallBlock extends Block implements IModEnti
     
     @Override
     public BlockState updateShape(BlockState state , LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
-        if (direction.getAxis() != Direction.Axis.Y || isLower(state) != (direction == Direction.UP) || isStateThis(state) && !areTwoHalfSame(state, neighborState)) {
-            return isLower(state) && direction == Direction.DOWN && !canSurvive(state, level, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
-
-        } else {
-            return Blocks.AIR.defaultBlockState();
+        if (!canSurvive(state, level, pos)) return Blocks.AIR.defaultBlockState();
+        if (isLower(state) && direction == Direction.UP) {
+           if (!neighborState.is(getUpperBlock())) return Blocks.AIR.defaultBlockState();
         }
+        return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
     }
     
     @Override
     public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
         if (isLower(pState)) {
+
             return super.canSurvive(pState, pLevel, pPos);
         } else {
-
             BlockState blockstate = pLevel.getBlockState(pPos.below());
             if (!isStateThis(pState)) return super.canSurvive(pState, pLevel, pPos); //Forge: This function is called during world gen and placement, before this block is set, so if we are not 'here' then assume it's the pre-check.
             return isStateThis(blockstate) && isLower(blockstate);

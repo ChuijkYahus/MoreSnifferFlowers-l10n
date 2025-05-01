@@ -1,4 +1,4 @@
-package net.abraxator.moresnifferflowers.client.renderstate;
+package net.abraxator.moresnifferflowers.client.renderer.renderstate;
 
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 

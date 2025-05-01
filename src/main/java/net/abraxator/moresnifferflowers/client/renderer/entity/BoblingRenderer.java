@@ -3,7 +3,7 @@ package net.abraxator.moresnifferflowers.client.renderer.entity;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
 import net.abraxator.moresnifferflowers.client.model.entity.BoblingModel;
-import net.abraxator.moresnifferflowers.client.renderstate.BoblingRenderState;
+import net.abraxator.moresnifferflowers.client.renderer.renderstate.BoblingRenderState;
 import net.abraxator.moresnifferflowers.entities.BoblingEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;

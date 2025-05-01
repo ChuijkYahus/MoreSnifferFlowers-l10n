@@ -119,6 +119,7 @@ public class ClientRegistration {
     @SubscribeEvent
     static void registerItemTintSources(RegisterColorHandlersEvent.ItemTintSources event) {
         event.register(MoreSnifferFlowers.loc("dyespria_tint"), DyespriaTint.MAP_CODEC);
+        event.register(MoreSnifferFlowers.loc("dyespria_tint"), DyespriaTint.MAP_CODEC);
     }
 
 /*

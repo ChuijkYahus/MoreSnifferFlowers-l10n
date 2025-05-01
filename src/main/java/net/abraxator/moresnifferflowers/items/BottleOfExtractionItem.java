@@ -59,7 +59,7 @@ public class BottleOfExtractionItem extends Item {
     private ItemStack initPotion(Player player) {
         var stack = ModItems.EXTRACTED_BOTTLE.get().getDefaultInstance();
         var effects = player.getActiveEffects();
-        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(PotionContents.getColorOptional(effects).orElse(14058905)), new ArrayList<>(effects), Optional.of("extracted_potion")));
+        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(PotionContents.getColorOptional(effects).orElse(14058905)), new ArrayList<>(effects), Optional.of("mixed")));
         return stack;
     }
     

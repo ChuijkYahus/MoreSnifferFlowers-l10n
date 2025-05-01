@@ -63,7 +63,7 @@ public class VivicusHangingSignRenderer extends HangingSignRenderer {
             color = colorableVivicusBlock.colorValues().get(dyeColor);
             vertexconsumer.setColor(color);
         }
-        model.renderToBuffer(poseStack, vertexconsumer, packedLight, packedOverlay);
+        model.renderToBuffer(poseStack, vertexconsumer, packedLight, packedOverlay, color);
         poseStack.popPose();
     }
 

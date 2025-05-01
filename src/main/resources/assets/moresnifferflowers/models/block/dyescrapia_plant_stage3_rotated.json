@@ -29,8 +29,7 @@
 	"model": "moresnifferflowers:models/block/obj/dyescrapia_plant_r.obj",
 	"textures": {
 		"texture0": "moresnifferflowers:block/obj/dyescrapia_plant_0",
-		"particle": "moresnifferflowers:block/obj/dyescrapia_plant_0",
-		"texture1": "moresnifferflowers:block/obj/dyescrapia_plant_1"
+		"particle": "moresnifferflowers:block/obj/dyescrapia_plant_0"
 
 	}
 }

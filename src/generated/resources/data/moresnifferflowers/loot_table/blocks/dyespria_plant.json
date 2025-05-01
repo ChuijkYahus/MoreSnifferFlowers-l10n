@@ -10,7 +10,7 @@
             "block": "moresnifferflowers:dyespria_plant",
             "condition": "minecraft:block_state_property",
             "properties": {
-              "agehhhhhhhhhhh": "3"
+              "age": "3"
             }
           }
         }

@@ -55,7 +55,7 @@ public class VivicusSignRenderer extends SignRenderer {
         poseStack.pushPose();
         float f = this.getSignModelRenderScale();
         poseStack.scale(f, -f, -f);
-        Material material = Sheets.getHangingSignMaterial(woodType);
+        Material material = Sheets.getSignMaterial(woodType);
         VertexConsumer vertexconsumer = material.buffer(bufferSource, model::renderType);
         var color = -1;
         if(state.getBlock() instanceof ColorableVivicusBlock colorableVivicusBlock) {
@@ -63,7 +63,7 @@ public class VivicusSignRenderer extends SignRenderer {
             color = colorableVivicusBlock.colorValues().get(dyeColor);
             vertexconsumer.setColor(color);
         }
-        model.renderToBuffer(poseStack, vertexconsumer, packedLight, packedOverlay);
+        model.renderToBuffer(poseStack, vertexconsumer, packedLight, packedOverlay, color);
         poseStack.popPose();
     }
 }

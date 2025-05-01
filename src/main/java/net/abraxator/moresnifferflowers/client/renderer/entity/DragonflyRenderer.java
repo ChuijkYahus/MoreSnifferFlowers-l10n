@@ -5,7 +5,7 @@ import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
 import net.abraxator.moresnifferflowers.client.model.entity.DragonflyModel;
-import net.abraxator.moresnifferflowers.client.renderstate.ProjectileRenderState;
+import net.abraxator.moresnifferflowers.client.renderer.renderstate.ProjectileRenderState;
 import net.abraxator.moresnifferflowers.entities.DragonflyProjectile;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;

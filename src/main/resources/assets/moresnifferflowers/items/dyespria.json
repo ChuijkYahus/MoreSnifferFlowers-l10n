@@ -1,0 +1,26 @@
+{
+    "model": {
+        "type": "minecraft:condition",
+
+        "property": "moresnifferflowers:dyespria",
+
+        "on_true": {
+            "type": "minecraft:model",
+            "model": "moresnifferflowers:item/dyespria_active",
+        	 "tints": [
+           	{
+           	   "type": "moresnifferflowers:dyespria_tint",
+               	   "default": 16777215
+            	},
+         		{
+          		   "type": "minecraft:constant",
+          		   "value": 16777215
+         	 	}
+       	 ]
+        },
+        "on_false": {
+            "type": "minecraft:model",
+            "model": "moresnifferflowers:item/dyespria_inactive"
+        }
+    }
+}

@@ -72,7 +72,8 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
 
     @Override
     public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
-        return this.mayPlaceOn(pLevel.getBlockState(pPos.below())) && sufficientLight(pLevel, pPos) && super.canSurvive(pState, pLevel, pPos);
+        BlockState state = pLevel.getBlockState(pPos.below());
+        return (this.mayPlaceOn(state) ||( isUpper(pState) && state.is(getLowerBlock()))) && sufficientLight(pLevel, pPos) && super.canSurvive(pState, pLevel, pPos);
     }
     
     @Override

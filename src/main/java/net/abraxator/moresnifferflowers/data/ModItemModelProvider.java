@@ -46,6 +46,7 @@ public class ModItemModelProvider extends ModelProvider {
     protected Stream<? extends Holder<Item>> getKnownItems() {
         return Stream.concat(flatItemStream(), Stream.of(
                 ModItems.BOBLING_SPAWN_EGG
+
         ));
     }
 

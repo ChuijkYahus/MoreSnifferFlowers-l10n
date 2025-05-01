@@ -1,6 +1,6 @@
 package net.abraxator.moresnifferflowers.client.model.entity;
 
-import net.abraxator.moresnifferflowers.client.renderstate.BoblingRenderState;
+import net.abraxator.moresnifferflowers.client.renderer.renderstate.BoblingRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
