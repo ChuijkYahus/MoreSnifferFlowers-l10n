@@ -4,11 +4,14 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.entities.boat.ModBoatEntity;
 import net.abraxator.moresnifferflowers.items.*;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.Consumables;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
@@ -76,14 +79,14 @@ public class ModItems {
     public static final DeferredItem<Item> REBREWING_STAND = ITEMS.register("rebrewing_stand", (registryName) ->new BlockItem(ModBlocks.REBREWING_STAND_BOTTOM.get(), new Item.Properties().setId(getItemResourceKey(registryName)).useItemDescriptionPrefix()));
     public static final DeferredItem<Item> BROKEN_REBREWING_STAND = ITEMS.register("broken_rebrewing_stand", (registryName) ->new Item(new Item.Properties().setId(getItemResourceKey(registryName))));
     public static final DeferredItem<Item> EXTRACTION_BOTTLE = ITEMS.register("extraction_bottle", (registryName) ->new BottleOfExtractionItem(new Item.Properties().setId(getItemResourceKey(registryName)).stacksTo(1)));
-    public static final DeferredItem<Item> EXTRACTED_BOTTLE = ITEMS.register("extracted_bottle", (registryName) ->new PotionItem(new Item.Properties().setId(getItemResourceKey(registryName)).stacksTo(1)) {
+    public static final DeferredItem<Item> EXTRACTED_BOTTLE = ITEMS.register("extracted_bottle", (registryName) ->new PotionItem(new Item.Properties().setId(getItemResourceKey(registryName)).stacksTo(1).component(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).component(DataComponents.CONSUMABLE, Consumables.DEFAULT_DRINK).usingConvertsTo(Items.GLASS_BOTTLE)) {
         @Override
         public void appendHoverText(ItemStack pStack, TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
             super.appendHoverText(pStack, pContext, pTooltipComponents, pTooltipFlag);
             pTooltipComponents.add(Component.translatableWithFallback("tooltip.extracted_bottle.obtain", "Obtainable using Bottle o' Extraction").withStyle(ChatFormatting.GOLD));
         }
     });
-    public static final DeferredItem<Item> REBREWED_POTION = ITEMS.register("rebrewed_potion", (registryName) ->new PotionItem(new Item.Properties().setId(getItemResourceKey(registryName)).stacksTo(1)));
+    public static final DeferredItem<Item> REBREWED_POTION = ITEMS.register("rebrewed_potion", (registryName) ->new PotionItem(new Item.Properties().setId(getItemResourceKey(registryName)).stacksTo(1).component(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).component(DataComponents.CONSUMABLE, Consumables.DEFAULT_DRINK).usingConvertsTo(Items.GLASS_BOTTLE)));
     public static final DeferredItem<Item> REBREWED_SPLASH_POTION = ITEMS.register("rebrewed_splash_potion", (registryName) ->new SplashPotionItem(new Item.Properties().setId(getItemResourceKey(registryName)).stacksTo(1)));
     public static final DeferredItem<Item> REBREWED_LINGERING_POTION = ITEMS.register("rebrewed_lingering_potion", (registryName) ->new LingeringPotionItem(new Item.Properties().setId(getItemResourceKey(registryName)).stacksTo(1)));
     
