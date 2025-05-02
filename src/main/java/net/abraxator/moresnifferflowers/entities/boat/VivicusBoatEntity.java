@@ -30,7 +30,7 @@ public class VivicusBoatEntity extends ModBoatEntity implements ColorableVivicus
     }
 
     public VivicusBoatEntity(Level pLevel, double pX, double pY, double pZ, Supplier<Item> itemSupplier) {
-        this(ModEntityTypes.MOD_VIVICUS_BOAT.get(), pLevel, itemSupplier);
+        this(ModEntityTypes.VIVICUS_BOAT.get(), pLevel, itemSupplier);
         this.setPos(pX, pY, pZ);
         this.xo = pX;
         this.yo = pY;

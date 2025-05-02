@@ -83,12 +83,13 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
     protected void onHitBlock(BlockHitResult pResult) {
         super.onHitBlock(pResult);
         var pos = pResult.getBlockPos();
-        var posRelative = pResult.getBlockPos().relative(pResult.getDirection());
-        var posRelativeBelow = pResult.getBlockPos().relative(pResult.getDirection()).below();
+        Direction direction = pResult.getDirection();
+        var posRelative = pResult.getBlockPos().relative(direction);
+        var posRelativeBelow = pResult.getBlockPos().relative(direction).below();
 
         var state = this.level().getBlockState(pos);
         var stateRelative = this.level().getBlockState(posRelative);
-        var stateRelativeBelow = this.level().getBlockState(pResult.getBlockPos().relative(pResult.getDirection()).below());
+        var stateRelativeBelow = this.level().getBlockState(pResult.getBlockPos().relative(direction).below());
 
         if(checkState(this.level().getBlockState(pResult.getBlockPos()))) {
             var layer = state.getValue(ModStateProperties.LAYER);
@@ -99,7 +100,7 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
         } else {
             transformBlock(this.level(), pos);
 
-            if (checkState(this.level().getBlockState(pResult.getBlockPos().relative(pResult.getDirection())))) {
+            if (checkState(this.level().getBlockState(pResult.getBlockPos().relative(direction)))) {
                 var layerRelative = stateRelative.getValue(ModStateProperties.LAYER);
                 this.level().setBlockAndUpdate(
                         posRelative,
@@ -108,14 +109,17 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
 
             if (stateRelative.is(Blocks.AIR) || stateRelative.is(BlockTags.FIRE) || (stateRelative.canBeReplaced() && !stateRelative.liquid())) {
 
-                    if(pResult.getDirection() == Direction.UP && !state.is(Blocks.AIR)) {
+                    if(direction == Direction.UP && !state.is(Blocks.AIR)) {
                         this.level().setBlockAndUpdate(
-                                pResult.getBlockPos().relative(pResult.getDirection()),
+                                pResult.getBlockPos().relative(direction),
                                 ModBlocks.CORRUPTED_SLIME_LAYER.get().defaultBlockState().setValue(ModStateProperties.LAYER, 1));
                         this.discard();
                     } else {
+                        var vec = direction.getUnitVec3();
+                        double factor = 0.1D;
+                        vec = vec.multiply(factor, factor, factor);
                         CorruptedProjectile projectile = new CorruptedProjectile(this.level());
-                        projectile.setPos(this.getX(),this.getY(), this.getZ());
+                        projectile.setPos(this.getX() + vec.x,this.getY() + vec.y, this.getZ() + vec.z);
                         projectile.setRot(this.getYRot(), Mth.PI / 90.0F);
                         this.level().addFreshEntity(projectile);
                     }

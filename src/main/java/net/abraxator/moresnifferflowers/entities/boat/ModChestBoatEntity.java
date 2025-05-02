@@ -20,7 +20,7 @@ public class ModChestBoatEntity extends ChestBoat {
     }
 
     public ModChestBoatEntity(Level pLevel, double pX, double pY, double pZ, Supplier<Item> itemSupplier) {
-        this(ModEntityTypes.MOD_CORRUPTED_CHEST_BOAT.get(), pLevel, itemSupplier);
+        this(ModEntityTypes.CORRUPTED_CHEST_BOAT.get(), pLevel, itemSupplier);
         this.setPos(pX, pY, pZ);
         this.xo = pX;
         this.yo = pY;

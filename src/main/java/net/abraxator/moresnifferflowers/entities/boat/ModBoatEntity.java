@@ -25,7 +25,7 @@ public class ModBoatEntity extends Boat {
     }
 
     public ModBoatEntity(Level level, double pX, double pY, double pZ, Supplier<Item> itemSupplier) {
-        this(ModEntityTypes.MOD_CORRUPTED_BOAT.get(), level, itemSupplier);
+        this(ModEntityTypes.CORRUPTED_BOAT.get(), level, itemSupplier);
         this.setPos(pX, pY, pZ);
         this.xo = pX;
         this.yo = pY;

@@ -30,8 +30,8 @@ public class CorruptedProjectileRenderer extends EntityRenderer<CorruptedProject
     @Override
     public void render(ProjectileRenderState renderState, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(renderState.yRot - 90.0F));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(renderState.xRot));
+        poseStack.mulPose(Axis.YP.rotationDegrees(renderState.yRot - 180F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(renderState.xRot));
         poseStack.translate(0, -0.5, 0);
         poseStack.scale(0.6F, 0.6F, 0.6F);
         this.model.renderToBuffer(
@@ -45,5 +45,12 @@ public class CorruptedProjectileRenderer extends EntityRenderer<CorruptedProject
 
     public ResourceLocation getTextureLocation(ProjectileRenderState state) {
         return TEXTURE;
+    }
+
+    @Override
+    public void extractRenderState(CorruptedProjectile entity, ProjectileRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.xRot = entity.getXRot(partialTick);
+        state.yRot = entity.getYRot(partialTick);
     }
 }

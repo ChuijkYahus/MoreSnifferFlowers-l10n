@@ -30,8 +30,8 @@ public class DragonflyRenderer extends EntityRenderer<DragonflyProjectile, Proje
     @Override
     public void render(ProjectileRenderState renderState, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(renderState.yRot - 90.0F));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(renderState.xRot));
+        poseStack.mulPose(Axis.YP.rotationDegrees(renderState.yRot - 180F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(renderState.xRot));
         poseStack.translate(0, -1, 0.5);
         this.model.renderToBuffer(
                 poseStack,
@@ -50,9 +50,9 @@ public class DragonflyRenderer extends EntityRenderer<DragonflyProjectile, Proje
     @Override
     public void extractRenderState(DragonflyProjectile entity, ProjectileRenderState state, float partialTick) {
         super.extractRenderState(entity, state, partialTick);
-        state.xRot = entity.xRotO;
-        state.yRot = entity.yRotO;
-        state.shake = entity.flyDist;
+        state.xRot = entity.getXRot(partialTick);
+        state.yRot = entity.getYRot(partialTick);
+       // state.shake = entity.flyDist;
 
     }
 }

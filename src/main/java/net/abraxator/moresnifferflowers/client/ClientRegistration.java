@@ -79,10 +79,10 @@ public class ClientRegistration {
         event.registerEntityRenderer(ModEntityTypes.BOBLING.get(), BoblingRenderer::new);
         event.registerEntityRenderer(ModEntityTypes.DRAGONFLY.get(), DragonflyRenderer::new);
         event.registerEntityRenderer(ModEntityTypes.CORRUPTED_SLIME_BALL.get(), CorruptedProjectileRenderer::new);
-        event.registerEntityRenderer(ModEntityTypes.MOD_CORRUPTED_BOAT.get(), pContext -> new ModBoatRenderer(pContext, ModModelLayerLocations.CORRUPTED_BOAT_LAYER, false));
-        event.registerEntityRenderer(ModEntityTypes.MOD_CORRUPTED_CHEST_BOAT.get(), pContext -> new ModBoatRenderer(pContext,  ModModelLayerLocations.CORRUPTED_CHEST_BOAT_LAYER,true));
-        event.registerEntityRenderer(ModEntityTypes.MOD_VIVICUS_BOAT.get(), pContext -> new ModBoatRenderer(pContext,  ModModelLayerLocations.VIVICUS_BOAT_LAYER,false));
-        event.registerEntityRenderer(ModEntityTypes.MOD_VIVICUS_CHEST_BOAT.get(), pContext -> new ModBoatRenderer(pContext,  ModModelLayerLocations.VIVICUS_CHEST_BOAT_LAYER,true));
+        event.registerEntityRenderer(ModEntityTypes.CORRUPTED_BOAT.get(), pContext -> new ModBoatRenderer(pContext, ModModelLayerLocations.CORRUPTED_BOAT_LAYER, false));
+        event.registerEntityRenderer(ModEntityTypes.CORRUPTED_CHEST_BOAT.get(), pContext -> new ModBoatRenderer(pContext,  ModModelLayerLocations.CORRUPTED_CHEST_BOAT_LAYER,true));
+        event.registerEntityRenderer(ModEntityTypes.VIVICUS_BOAT.get(), pContext -> new ModBoatRenderer(pContext,  ModModelLayerLocations.VIVICUS_BOAT_LAYER,false));
+        event.registerEntityRenderer(ModEntityTypes.VIVICUS_CHEST_BOAT.get(), pContext -> new ModBoatRenderer(pContext,  ModModelLayerLocations.VIVICUS_CHEST_BOAT_LAYER,true));
         event.registerEntityRenderer(ModEntityTypes.JAR_OF_ACID.get(), ThrownItemRenderer::new);
     }
 

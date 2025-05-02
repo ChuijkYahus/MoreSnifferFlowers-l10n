@@ -40,11 +40,11 @@ public class ModEntityLoot extends EntityLootSubProvider {
 /*
         emptyLootTable(ModEntityTypes.DRAGONFLY.get());
         emptyLootTable(ModEntityTypes.CORRUPTED_SLIME_BALL.get());
-        emptyLootTable(ModEntityTypes.MOD_CORRUPTED_BOAT.get());
+        emptyLootTable(ModEntityTypes.CORRUPTED_BOAT.get());
         emptyLootTable(ModEntityTypes.JAR_OF_ACID.get());
-        emptyLootTable(ModEntityTypes.MOD_CORRUPTED_CHEST_BOAT.get());
-        emptyLootTable(ModEntityTypes.MOD_VIVICUS_CHEST_BOAT.get());
-        emptyLootTable(ModEntityTypes.MOD_VIVICUS_BOAT.get());
+        emptyLootTable(ModEntityTypes.CORRUPTED_CHEST_BOAT.get());
+        emptyLootTable(ModEntityTypes.VIVICUS_CHEST_BOAT.get());
+        emptyLootTable(ModEntityTypes.VIVICUS_BOAT.get());
 */
 
     }
