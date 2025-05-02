@@ -42,6 +42,7 @@ import java.util.Optional;
 
 @EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientRegistration {
+
     @SubscribeEvent
     public static void clientSetup(final FMLClientSetupEvent event) {
         Sheets.addWoodType(ModWoodTypes.CORRUPTED);

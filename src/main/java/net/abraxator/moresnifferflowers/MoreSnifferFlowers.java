@@ -17,8 +17,12 @@ import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.FlowerPotBlock;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import org.slf4j.Logger;
 
 @Mod(MoreSnifferFlowers.MOD_ID)
@@ -26,9 +30,14 @@ public class MoreSnifferFlowers {
     public static final String MOD_ID = "moresnifferflowers";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public MoreSnifferFlowers(IEventBus modEventBus, Dist dist) {
-        if(dist.isClient()) modEventBus.addListener(ClientRegistration::clientSetup);
+    public MoreSnifferFlowers(IEventBus modEventBus, Dist dist, ModContainer container) {
+        if(dist.isClient()) {
+            modEventBus.addListener(ClientRegistration::clientSetup);
+            clientConfig(container);
+        }
         modEventBus.addListener(this::commonSetup);
+        container.registerConfig(ModConfig.Type.SERVER, ModServerConfig.SERVER_CONFIG);
+
 
         ModItems.ITEMS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
@@ -104,6 +113,10 @@ public class MoreSnifferFlowers {
     
     public static ResourceLocation loc(String path) {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    }
+
+    public void clientConfig(ModContainer container){
+        container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 
     public static String sLoc(String path) {
