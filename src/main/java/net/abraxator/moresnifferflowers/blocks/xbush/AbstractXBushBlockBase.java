@@ -146,7 +146,7 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
     ) {
         int k = Math.min(getAge(pState) + 1, getMaxAge());
         return pStack.is(Items.BONE_MEAL) && this.canGrow(pLevel, pPos, pState, k)
-                ? InteractionResult.SUCCESS_SERVER
+                ? InteractionResult.PASS
                 : super.useItemOn(pStack, pState, pLevel, pPos, pPlayer, pHand, pHitResult);
     }
 
@@ -198,10 +198,10 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
     public void onCorrupt(Level level, BlockPos pos, BlockState oldState, Block corruptedBlock) {
         var lowerHalf = getLowerHalf(level, pos, oldState);
         lowerHalf.ifPresent(posAndState -> {
-            level.setBlockAndUpdate(posAndState.blockPos(), corruptedBlock.withPropertiesOf(oldState));
+            level.setBlock(posAndState.blockPos(), corruptedBlock.withPropertiesOf(oldState), 18);
             if(getAge(lowerHalf.get().state()) > 3) {
                 getCorruptedBlock(getUpperBlock(), level.getRandom()).ifPresent(block ->
-                        level.setBlockAndUpdate(posAndState.blockPos().above(), block.withPropertiesOf(level.getBlockState(posAndState.blockPos().above()))));
+                        level.setBlock(posAndState.blockPos().above(), block.withPropertiesOf(level.getBlockState(posAndState.blockPos().above())), 18));
             }
         });
     }

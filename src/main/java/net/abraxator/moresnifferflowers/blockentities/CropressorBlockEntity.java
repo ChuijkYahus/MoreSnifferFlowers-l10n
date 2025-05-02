@@ -51,10 +51,8 @@ public class CropressorBlockEntity extends ModBlockEntity {
 
     @Override
     public void tick(Level level) {
+        if (cropCount.length < 5) cropCount = new int[5];
         suckInItems(level);
-
-        if (cropCount.length < 5)
-            cropCount = new int[5];
 
         for (Crop crop : Crop.values()) {
             if (cropCount[crop.ordinal()] >= 16) {
@@ -103,6 +101,7 @@ public class CropressorBlockEntity extends ModBlockEntity {
 
     public ItemStack addItem(ItemStack pStack) {
         Crop crop = Crop.fromItem(pStack.getItem());
+        if (cropCount.length < 5) cropCount = new int[5];
         if (Crop.canAddCrop(cropCount, crop)) {
             int index = crop.ordinal();
             
@@ -163,6 +162,7 @@ public class CropressorBlockEntity extends ModBlockEntity {
 
     private boolean canTakeItemFromContainer(Container destination, ItemStack itemStack, int slot, Direction direction) {
         Crop crop = Crop.fromItem(itemStack.getItem());
+        if (cropCount.length < 5) cropCount = new int[5];
         if (!Crop.canAddCrop(cropCount ,crop)) {
             return false;
         } else {

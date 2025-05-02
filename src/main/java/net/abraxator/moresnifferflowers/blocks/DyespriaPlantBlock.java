@@ -76,7 +76,7 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
     @Override
     protected InteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
         if(pStack.is(Items.BONE_MEAL)) {
-            return InteractionResult.SUCCESS_SERVER;
+            return InteractionResult.PASS;
         } else if(isMaxAge(pState) && pLevel.getBlockEntity(pPos) instanceof DyespriaPlantBlockEntity entity) {
             if(pStack.getItem() instanceof DyeItem) {
                 return addDye(pStack, pPlayer, pLevel, entity);

@@ -138,7 +138,7 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCr
     @Override
     protected InteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
         return harvestable(pState) && pStack.is(Items.BONE_MEAL)
-                ? InteractionResult.SUCCESS_SERVER
+                ? InteractionResult.PASS
                 : super.useItemOn(pStack, pState, pLevel, pPos, pPlayer, pHand, pHitResult);
     }
 

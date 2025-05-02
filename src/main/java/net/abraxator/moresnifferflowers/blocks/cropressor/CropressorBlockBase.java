@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.blocks.cropressor;
 import com.mojang.serialization.MapCodec;
 import net.abraxator.moresnifferflowers.blockentities.CropressorBlockEntity;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
+import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.ModTags;
 import net.minecraft.core.BlockPos;
@@ -129,7 +130,7 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
             if (!pLevel.isClientSide && entity.canInteract() && pPlayer.getMainHandItem().is(ModTags.ModItemTags.CROPRESSABLE_CROPS)) {
                 entity.addItem(pPlayer.getMainHandItem());
 
-                return InteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS.heldItemTransformedTo(pStack);
             }
         }
         
@@ -152,6 +153,11 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
 
     public static Part getPartFromState(BlockState blockState) {
         return blockState.getBlock() instanceof CropressorBlockBase baseCropressorBlock ? baseCropressorBlock.PART : null;
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean isShiftDown) {
+        return ModItems.CROPRESSOR.get().getDefaultInstance();
     }
 
     public static enum Part implements StringRepresentable {
