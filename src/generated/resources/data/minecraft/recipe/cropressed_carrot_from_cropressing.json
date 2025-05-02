@@ -1,0 +1,9 @@
+{
+  "type": "moresnifferflowers:cropressing",
+  "count": 16,
+  "ingredient": "minecraft:carrot",
+  "result": {
+    "count": 1,
+    "id": "moresnifferflowers:cropressed_carrot"
+  }
+}

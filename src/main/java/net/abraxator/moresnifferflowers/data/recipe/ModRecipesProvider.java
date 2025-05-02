@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.data.recipe;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.data.recipe.builder.CropressingRecipeBuilder;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModTags;
@@ -31,7 +32,12 @@ public class ModRecipesProvider extends RecipeProvider {
 
     @Override
     protected void buildRecipes() {
-        new ModCustomRecipeProvider(registries, output);
+        createCropressing(output, ModItems.CROPRESSED_CARROT.get(), Items.CARROT);
+        createCropressing(output, ModItems.CROPRESSED_POTATO.get(), Items.POTATO);
+        createCropressing(output, ModItems.CROPRESSED_NETHERWART.get(), Items.NETHER_WART);
+        createCropressing(output, ModItems.CROPRESSED_BEETROOT.get(), Items.BEETROOT);
+        createCropressing(output, ModItems.CROPRESSED_WHEAT.get(), Items.WHEAT);
+
         MSFSmithingTrims().forEach(p_378952_ -> this.trimSmithing(p_378952_.template(), p_378952_.id()));
 
         trimCrafting(ModItems.AROMA_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.AMBER_SHARD.get());
@@ -227,6 +233,13 @@ public class ModRecipesProvider extends RecipeProvider {
                 .map(p_378953_ -> new VanillaRecipeProvider.TrimTemplate(
                                 p_378953_, ResourceKey.create(Registries.RECIPE, MoreSnifferFlowers.loc(getItemName(p_378953_) + "_smithing_trim")))
                 );
+    }
+
+    public void createCropressing(RecipeOutput recipeOutput, ItemLike result, ItemLike crop) {
+        new CropressingRecipeBuilder(result)
+                .requiresCrop(crop.asItem())
+                .unlockedBy("has_cropressor", has(ModBlocks.CROPRESSOR_OUT.get()))
+                .save(recipeOutput, getItemName(result) + "_from_cropressing");
     }
 
     // The runner to add to the data generator

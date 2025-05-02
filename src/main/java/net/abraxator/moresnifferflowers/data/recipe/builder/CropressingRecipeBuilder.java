@@ -23,6 +23,7 @@ public class CropressingRecipeBuilder implements RecipeBuilder {
     private final Item result;
     private Ingredient ingredient;
     private int count;
+    protected String group;
     private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
 
     public CropressingRecipeBuilder(ItemLike result) {
@@ -42,7 +43,8 @@ public class CropressingRecipeBuilder implements RecipeBuilder {
     }
 
     @Override
-    public RecipeBuilder group(@Nullable String pGroupName) {
+    public RecipeBuilder group(@Nullable String group) {
+        this.group = group;
         return this;
     }
 
@@ -50,8 +52,6 @@ public class CropressingRecipeBuilder implements RecipeBuilder {
     public Item getResult() {
         return this.result;
     }
-
-
 
     @Override
     public void save(RecipeOutput output, ResourceKey<Recipe<?>> resourceKey) {
