@@ -5,18 +5,14 @@
   "refmap": "more_sniffer_flowers.mixins.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AgeableMobMixin",
     "FarmBlockMixin",
-    "RightClickHarvestModInitMixin",
+    "SpriteResourceLoaderMixin",
+    "AgeableMobMixin",
     "SnifferEggMixin",
-    "ThrownPotionMixin"
+    "ThrownPotionMixin",
+    "RightClickHarvestModInitMixin"
   ],
   "client": [
-    "SpriteResourceLoaderMixin",
-    "accessor.PalettedPermutationsAccessor",
-    "accessor.SpriteResourceLoaderAccessor"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+    "SpriteResourceLoaderMixin$PalettedPermutationsAccessor"
+  ]
 }
