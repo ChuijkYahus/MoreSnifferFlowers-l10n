@@ -49,10 +49,10 @@ public class CropressorBlockEntity extends ModBlockEntity {
 
     @Override
     public void tick(Level level) {
+        if (cropCount.length < 5) cropCount = new int[5];
         suckInItems(level);
 
         for (Crop crop : Crop.values()) {
-            if (cropCount.length < Crop.values().length) this.cropCount = new int[5];
             if (cropCount[crop.ordinal()] >= 16) {
                 if (result.isEmpty()) {
                     currentCrop = new ItemStack(crop.item);
@@ -62,7 +62,8 @@ public class CropressorBlockEntity extends ModBlockEntity {
                 var cropressingRecipeOptional = quickCheck.getRecipeFor(recipeInput, level);
 
                 if (result.isEmpty()) cropressingRecipeOptional.ifPresent(cropressingRecipe -> result = cropressingRecipe.result());
-                if (crop.item.equals(Objects.requireNonNull(Crop.fromCropressed(result.getItem())).item)) progress++;
+                if (Crop.fromCropressed(result.getItem()) == null) return;
+                if (crop.item.equals((Objects.requireNonNull(Crop.fromCropressed(result.getItem()))).item)) progress++;
 
                 if (sound) {
                     level.playSound(null, worldPosition, ModSoundEvents.CROPRESSOR_BELT.get(), SoundSource.BLOCKS, 1.0F, (float) (1.0F + (level.getRandom().nextFloat() * 0.2)));
@@ -98,6 +99,7 @@ public class CropressorBlockEntity extends ModBlockEntity {
 
     public ItemStack addItem(ItemStack pStack) {
         Crop crop = Crop.fromItem(pStack.getItem());
+        if (cropCount.length < 5) cropCount = new int[5];
         if (Crop.canAddCrop(cropCount, crop)) {
             int index = crop.ordinal();
             
@@ -158,6 +160,7 @@ public class CropressorBlockEntity extends ModBlockEntity {
 
     private boolean canTakeItemFromContainer(Container destination, ItemStack itemStack, int slot, Direction direction) {
         Crop crop = Crop.fromItem(itemStack.getItem());
+        if (cropCount.length < 5) cropCount = new int[5];
         if (!Crop.canAddCrop(cropCount ,crop)) {
             return false;
         } else {
@@ -175,7 +178,7 @@ public class CropressorBlockEntity extends ModBlockEntity {
         level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(ModStateProperties.FULLNESS, fullness));
         level.setBlockAndUpdate(pos, level.getBlockState(pos).setValue(ModStateProperties.FULLNESS, fullness).setValue(CropressorBlockBase.CROP, crop));
     }
-    
+
     @Override
     protected void saveAdditional(CompoundTag pTag) {
         super.saveAdditional(pTag);
@@ -243,7 +246,7 @@ public class CropressorBlockEntity extends ModBlockEntity {
         }
 
 
-            @Nullable
+        @Nullable
         public static Crop fromItem(Item item) {
             return Arrays.stream(values())
                     .filter(crops -> crops.item == item)
