@@ -123,12 +123,16 @@ public class ModItems {
 
     public static final RegistryObject<Item> ROOTED_SOUP = ITEMS.register("rooted_soup", () -> new RootedSoupItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> BEROOT_COOK_BOOK = ITEMS.register("beroot_cook_book", () -> new BerootCookbookItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> FLAVORFUL_ROOTS = ITEMS.register("flavorful_roots", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> SALTEMONE_SEEDS = ITEMS.register("saltemone_seeds", () -> new SaltemoneSeedsItem(ModBlocks.SALTEMONE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> SOURLEMON_SEEDS = ITEMS.register("sourlemon_seeds", () -> new SaltemoneSeedsItem(ModBlocks.SOURLEMONE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> SOURLEMONE_SEEDS = ITEMS.register("sourlemone_seeds", () -> new SaltemoneSeedsItem(ModBlocks.SOURLEMONE.get(), new Item.Properties()));
     public static final RegistryObject<Item> SALTY_SPICE = ITEMS.register("salty_spice", () -> new ItemNameBlockItem(ModBlocks.SALTY_CLUMP.get(), new Item.Properties()));
-    public static final RegistryObject<Item> DRIPSALT = ITEMS.register("dripsalt", () -> new BlockItem(ModBlocks.DRIPSALT.get(), new Item.Properties()));
+    public static final RegistryObject<Item> SOUR_SPICE = ITEMS.register("sour_spice", () -> new ItemNameBlockItem(ModBlocks.SOUR_CLUMP.get(), new Item.Properties()));
+    public static final RegistryObject<Item> FIERY_SPICE = ITEMS.register("fiery_spice", () -> new ItemNameBlockItem(ModBlocks.SALTY_CLUMP.get(), new Item.Properties()));
+    public static final RegistryObject<Item> SWEET_SPICE = ITEMS.register("sweet_spice", () -> new ItemNameBlockItem(ModBlocks.SALTY_CLUMP.get(), new Item.Properties()));
 
+    public static final RegistryObject<Item> DRIPSALT = ITEMS.register("dripsalt", () -> new BlockItem(ModBlocks.DRIPSALT.get(), new Item.Properties()));
     public static final RegistryObject<Item> BURNED_SLOT = ITEMS.register("burned_slot", () -> new BurnedSlotItem(new Item.Properties().stacksTo(1)));
 
 

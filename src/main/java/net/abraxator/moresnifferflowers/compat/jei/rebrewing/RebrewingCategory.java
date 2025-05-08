@@ -16,12 +16,10 @@ import net.minecraft.network.chat.Component;
 
 public class RebrewingCategory implements IRecipeCategory<JeiRebrewingRecipe> {
     public static final RecipeType<JeiRebrewingRecipe> REBREWING = RecipeType.create(MoreSnifferFlowers.MOD_ID, "rebrewing", JeiRebrewingRecipe.class);
-    private final IDrawable background;
     private final IDrawable icon;
     private final Component localizedName;
 
     public RebrewingCategory(IGuiHelper guiHelper) {
-        this.background = guiHelper.createDrawable(MoreSnifferFlowers.loc("textures/gui/container/rebrewing_jei.png"), 0, 0, 176, 84);
         this.icon = guiHelper.createDrawableItemStack(ModItems.REBREWING_STAND.get().getDefaultInstance());
         this.localizedName = Component.translatableWithFallback("gui.moresnifferflowers.rebrewing_category", "Rebrewing");
     }
@@ -37,9 +35,15 @@ public class RebrewingCategory implements IRecipeCategory<JeiRebrewingRecipe> {
     }
 
     @Override
-    public IDrawable getBackground() {
-        return this.background;
+    public int getWidth() {
+        return 176;
     }
+
+    @Override
+    public int getHeight() {
+        return 72;
+    }
+
 
     @Override
     public IDrawable getIcon() {
@@ -56,6 +60,7 @@ public class RebrewingCategory implements IRecipeCategory<JeiRebrewingRecipe> {
 
     @Override
     public void draw(JeiRebrewingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        guiGraphics.blit(MoreSnifferFlowers.loc("textures/gui/container/rebrewing_jei.png"), 0,0, 0 ,0 ,getWidth() ,getHeight());
         Minecraft minecraft = Minecraft.getInstance();
         String text = "4";
         int width = minecraft.font.width(text);

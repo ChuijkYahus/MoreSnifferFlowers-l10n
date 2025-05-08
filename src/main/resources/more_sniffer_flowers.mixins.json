@@ -18,6 +18,7 @@
   ],
   "client": [
     "InventoryScreenMixin",
+    "LevelRendererMixin",
     "LocalPlayerMixin",
     "SpriteResourceLoaderMixin",
     "SpriteResourceLoaderMixin$PalettedPermutationsAccessor"

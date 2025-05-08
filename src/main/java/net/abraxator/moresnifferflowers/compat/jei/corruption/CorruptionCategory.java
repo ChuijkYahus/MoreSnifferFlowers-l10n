@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.compat.jei.corruption;
 import com.google.common.collect.Maps;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -13,6 +14,7 @@ import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModTags;
 import net.abraxator.moresnifferflowers.recipes.CorruptionRecipe;
 import net.minecraft.Util;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -31,12 +33,10 @@ import java.util.stream.StreamSupport;
 
 public class CorruptionCategory implements IRecipeCategory<CorruptionRecipe> {
     public static final RecipeType<CorruptionRecipe> CORRUPTION = RecipeType.create(MoreSnifferFlowers.MOD_ID, "corruption", CorruptionRecipe.class);
-    private final IDrawable background;
     private final IDrawable icon;
     private final Component localizedName;
     
     public CorruptionCategory(IGuiHelper helper) {
-        this.background = helper.createDrawable(MoreSnifferFlowers.loc("textures/gui/container/corrupting_jei.png"), 0, 0, 120, 40);
         this.icon = helper.createDrawableItemStack(ModItems.CORRUPTED_SLIME_BALL.get().getDefaultInstance());
         this.localizedName = Component.translatableWithFallback("gui.moresnifferflowers.corrupting_category", "Corrupting");
     }
@@ -67,8 +67,9 @@ public class CorruptionCategory implements IRecipeCategory<CorruptionRecipe> {
     }
 
     @Override
-    public @Nullable IDrawable getBackground() {
-        return background;
+    public void draw(CorruptionRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        guiGraphics.blit(MoreSnifferFlowers.loc("textures/gui/container/corrupting_jei.png"), 0,0, 0 ,0 ,getWidth() ,getHeight());
+        IRecipeCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
     }
 
     @Override

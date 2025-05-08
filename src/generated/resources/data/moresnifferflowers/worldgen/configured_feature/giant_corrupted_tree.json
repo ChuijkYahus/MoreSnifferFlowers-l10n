@@ -46,6 +46,8 @@
             "Name": "moresnifferflowers:corrupted_leaves",
             "Properties": {
               "distance": "7",
+              "not_corrupted": "true",
+              "not_cured": "true",
               "persistent": "false",
               "waterlogged": "false"
             }
@@ -57,6 +59,8 @@
             "Name": "moresnifferflowers:corrupted_leaves_bush",
             "Properties": {
               "distance": "7",
+              "not_corrupted": "true",
+              "not_cured": "true",
               "persistent": "false",
               "waterlogged": "false"
             }

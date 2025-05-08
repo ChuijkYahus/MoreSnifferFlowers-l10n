@@ -155,7 +155,7 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         add(ModBlocks.GIANT_CARROT.get(), giantCropLoot(Items.CARROT, ModItems.CROPRESSED_CARROT.get(), Items.AIR, ModItems.BELT_PIECE.get(), ModItems.CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
         add(ModBlocks.GIANT_POTATO.get(), giantCropLoot(Items.POTATO, ModItems.CROPRESSED_POTATO.get(), Items.AIR, ModItems.TUBE_PIECE.get(), ModItems.TATER_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
         add(ModBlocks.GIANT_NETHERWART.get(), giantCropLoot(Items.NETHER_WART, ModItems.CROPRESSED_NETHERWART.get(), ModItems.BROKEN_REBREWING_STAND.get(), ModItems.PRESS_PIECE.get(), ModItems.NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
-        add(ModBlocks.GIANT_BEETROOT.get(), giantCropLoot(Items.BEETROOT, ModItems.CROPRESSED_BEETROOT.get(), Items.AIR, ModItems.ENGINE_PIECE.get(), ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
+        add(ModBlocks.GIANT_BEETROOT.get(), giantCropLoot(Items.BEETROOT, ModItems.CROPRESSED_BEETROOT.get(), ModItems.FLAVORFUL_ROOTS.get(), ModItems.ENGINE_PIECE.get(), ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
         add(ModBlocks.GIANT_WHEAT.get(), giantCropLoot(Items.WHEAT, ModItems.CROPRESSED_WHEAT.get(), Items.AIR, ModItems.SCRAP_PIECE.get(), ModItems.GRAIN_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
 
         add(ModBlocks.BONMEELIA.get(), LootTable.lootTable()
@@ -303,16 +303,18 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         add(ModBlocks.ACIDRIPIA.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.ACIDRIPIA.get(), ModItems.ACIDRIPIA_SEEDS.get()));
         add(ModBlocks.BEROOT_CAULDRON.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.BEROOT_CAULDRON.get(), ModItems.BEROOT_CAULDRON.get()));
         add(ModBlocks.SALTEMONE.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.SALTEMONE.get(), ModItems.SALTEMONE_SEEDS.get()));
-        add(ModBlocks.SOURLEMONE.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.SOURLEMONE.get(), ModItems.SOURLEMON_SEEDS.get()));
+        add(ModBlocks.SOURLEMONE.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.SOURLEMONE.get(), ModItems.SOURLEMONE_SEEDS.get()));
 
-        add(ModBlocks.SALTY_CLUMP.get(), simpleIntegerConditional(ModStateProperties.AMOUNT_4, ModBlocks.SALTY_CLUMP.get(), ModItems.SALTY_SPICE.get()));
+        add(ModBlocks.SALTY_CLUMP.get(), simpleIncreasingConditional(ModStateProperties.AMOUNT_4, ModBlocks.SALTY_CLUMP.get(), ModItems.SALTY_SPICE.get()));
+        add(ModBlocks.SOUR_CLUMP.get(), simpleIncreasingConditional(ModStateProperties.AMOUNT_4, ModBlocks.SOUR_CLUMP.get(), ModItems.SOUR_SPICE.get()));
+        add(ModBlocks.SOUR_PUDDLE.get(), noDrop());
 
         add(ModBlocks.DRIPSALT.get(), createSingleItemTable(ModBlocks.DRIPSALT.get().asItem()));
 
 
     }
 
-    private LootTable.Builder simpleIntegerConditional(Property<Integer> property, Block block, Item item){
+    private LootTable.Builder simpleIncreasingConditional(Property<Integer> property, Block block, Item item){
         return LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))

@@ -66,7 +66,7 @@ public class ModCreativeTabs {
                 output.accept(ModItems.SALTEMONE_SEEDS.get());
                 output.accept(ModItems.SALTY_SPICE.get());
                 output.accept(ModItems.DRIPSALT.get());
-                output.accept(ModItems.SOURLEMON_SEEDS.get());
+                output.accept(ModItems.SOURLEMONE_SEEDS.get());
                 output.accept(ModBlocks.SOUR_CLUMP.get());
                 output.accept(ModBlocks.SOUR_PUDDLE.get());
 
@@ -93,6 +93,7 @@ public class ModCreativeTabs {
                 output.accept(ModItems.CROPRESSED_BEETROOT.get());
                 output.accept(ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get());
                 output.accept(ModBlocks.GIANT_BEETROOT.get());
+                output.accept(ModItems.FLAVORFUL_ROOTS.get());
                 output.accept(ModItems.BEROOT_CAULDRON.get());
                 output.accept(ModItems.BEROOT_COOK_BOOK.get());
 

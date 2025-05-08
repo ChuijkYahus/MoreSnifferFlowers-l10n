@@ -41,7 +41,7 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:air",
+          "name": "moresnifferflowers:flavorful_roots",
           "weight": 50
         }
       ],

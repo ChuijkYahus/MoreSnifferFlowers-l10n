@@ -8,18 +8,18 @@
           "type": "minecraft:item",
           "conditions": [
             {
-              "block": "moresnifferflowers:sourlemon",
+              "block": "moresnifferflowers:sourlemone",
               "condition": "minecraft:block_state_property",
               "properties": {
                 "entity": "true"
               }
             }
           ],
-          "name": "moresnifferflowers:sourlemon_seeds"
+          "name": "moresnifferflowers:sourlemone_seeds"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "moresnifferflowers:blocks/sourlemon"
+  "random_sequence": "moresnifferflowers:blocks/sourlemone"
 }

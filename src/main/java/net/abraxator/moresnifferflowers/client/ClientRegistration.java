@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.client;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.capability.PatternDyeStorage;
 import net.abraxator.moresnifferflowers.client.gui.screen.RebrewingStandScreen;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
 import net.abraxator.moresnifferflowers.client.model.block.*;
@@ -43,6 +44,13 @@ public class ClientRegistration {
         Sheets.addWoodType(ModWoodTypes.VIVICUS);
         ModItemProperties.register();
         MenuScreens.register(ModMenuTypes.REBREWING_STAND.get(), RebrewingStandScreen::new);
+    }
+
+    private static final PatternDyeStorage CLIENT_PATTERN_STORAGE = new PatternDyeStorage();
+
+    public static PatternDyeStorage getClientPatternStorage() {
+        CLIENT_PATTERN_STORAGE.addTestPatterns();
+        return CLIENT_PATTERN_STORAGE;
     }
     
     @SubscribeEvent

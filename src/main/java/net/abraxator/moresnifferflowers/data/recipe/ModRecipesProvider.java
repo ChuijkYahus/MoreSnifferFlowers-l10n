@@ -188,7 +188,19 @@ public class ModRecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput);
 
         partsRecycling(pRecipeOutput, ModBlocks.DRIPSALT.get().asItem(), ModItems.SALTY_SPICE.get(), 5);
-        
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BEROOT_CAULDRON.get().asItem(), 1)
+                .pattern("A A")
+                .pattern("ABA")
+                .pattern("CDC")
+                .define('A', Tags.Items.INGOTS_IRON)
+                .define('B', ModItems.CROPRESSED_BEETROOT.get())
+                .define('C', ModItems.FLAVORFUL_ROOTS.get())
+                .define('D', ModItems.SCRAP_PIECE.get())
+                .unlockedBy("has_flavorful_roots", has(ModItems.FLAVORFUL_ROOTS.get()))
+                .save(pRecipeOutput);
+
+
         ModCustomRecipeProvider.createRecipes(pRecipeOutput);
     }
 
