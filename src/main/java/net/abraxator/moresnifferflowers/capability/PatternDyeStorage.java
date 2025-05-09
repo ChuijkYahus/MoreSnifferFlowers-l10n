@@ -9,13 +9,23 @@ import net.minecraft.world.item.DyeColor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class PatternDyeStorage {
     private final Map<BlockPos, PatternData> patterns = new HashMap<>();
 
     public void addTestPatterns(){
-        patterns.put(new BlockPos(0, -55, 0), new PatternData(1, DyeColor.RED));
-        patterns.put(new BlockPos(1, -55, 0), new PatternData(1, DyeColor.GREEN));
+        setPattern(new BlockPos(0, -55, 0), new PatternData(2, DyeColor.RED));
+        setPattern(new BlockPos(1, -55, 0), new PatternData(1, DyeColor.GREEN));
+        setPattern(new BlockPos(2, -55, 0), new PatternData(2, DyeColor.BROWN));
+
+        int i = 80;
+        BlockPos.betweenClosedStream(new BlockPos(-i, -61, -i -50), new BlockPos(i, -60, i -50)).forEach(pos -> {
+
+       //    if (pos.getX() + pos.getZ() % 10 == 0)
+               setPattern(pos, new PatternData(pos.getX() % 2 == 0 ? 1 : 2, DyeColor.byId(Math.abs(pos.getX() + pos.getZ()) % 16)));
+        });
+
     }
 
     public void setPattern(BlockPos pos, PatternData pattern) {
@@ -32,6 +42,14 @@ public class PatternDyeStorage {
 
     public void removePattern(BlockPos pos) {
         patterns.remove(pos);
+    }
+
+    public Stream<BlockPos> getPatternPositions() {
+      return patterns.keySet().stream();
+    }
+
+    public boolean isEmpty() {
+        return patterns.isEmpty();
     }
 
     public void save(CompoundTag tag) {

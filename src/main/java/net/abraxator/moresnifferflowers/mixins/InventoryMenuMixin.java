@@ -4,7 +4,7 @@ import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.capability.HardenedMouthCapability;
 import net.abraxator.moresnifferflowers.client.gui.menu.InventoryMenuExtension;
 import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
-import net.abraxator.moresnifferflowers.init.ModClientConfig;
+import net.abraxator.moresnifferflowers.init.cofig.ModClientConfig;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Inventory;
@@ -33,8 +33,8 @@ public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingContaine
         int moreSnifferFlowers$mouthSlotY = 80;
 
         if (owner instanceof LocalPlayer) {
-            moreSnifferFlowers$mouthSlotX = ModClientConfig.CLIENT.HARDENED_MOUTH_X.get();
-            moreSnifferFlowers$mouthSlotY = ModClientConfig.CLIENT.HARDENED_MOUTH_Y.get();
+            moreSnifferFlowers$mouthSlotX = ModClientConfig.HARDENED_MOUTH_X.get();
+            moreSnifferFlowers$mouthSlotY = ModClientConfig.HARDENED_MOUTH_Y.get();
 
         }
 

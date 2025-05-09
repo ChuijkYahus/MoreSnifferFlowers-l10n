@@ -5,6 +5,8 @@ import com.mojang.logging.LogUtils;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.compat.quark.OtherModEvents;
 import net.abraxator.moresnifferflowers.init.*;
+import net.abraxator.moresnifferflowers.init.cofig.ModClientConfig;
+import net.abraxator.moresnifferflowers.init.cofig.ModServerConfig;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.worldgen.configurations.ModTreeDecoratorTypes;
 import net.abraxator.moresnifferflowers.worldgen.configurations.ModTrunkPlacerTypes;

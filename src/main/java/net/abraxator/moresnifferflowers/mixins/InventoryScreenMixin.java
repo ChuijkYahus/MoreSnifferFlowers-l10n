@@ -2,7 +2,7 @@ package net.abraxator.moresnifferflowers.mixins;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
-import net.abraxator.moresnifferflowers.init.ModClientConfig;
+import net.abraxator.moresnifferflowers.init.cofig.ModClientConfig;
 import net.abraxator.moresnifferflowers.init.ModMobEffects;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
@@ -36,8 +36,8 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
 
     @Inject(method = "init", at = @At("TAIL"))
     public void init(CallbackInfo ci){
-        this.moreSnifferFlowers$mouthSlotX = ModClientConfig.CLIENT.HARDENED_MOUTH_X.get();
-        this.moreSnifferFlowers$mouthSlotY = ModClientConfig.CLIENT.HARDENED_MOUTH_Y.get();
+        this.moreSnifferFlowers$mouthSlotX = ModClientConfig.HARDENED_MOUTH_X.get();
+        this.moreSnifferFlowers$mouthSlotY = ModClientConfig.HARDENED_MOUTH_Y.get();
 
     }
 

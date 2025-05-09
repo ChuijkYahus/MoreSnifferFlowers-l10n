@@ -49,9 +49,10 @@ public class ClientRegistration {
     private static final PatternDyeStorage CLIENT_PATTERN_STORAGE = new PatternDyeStorage();
 
     public static PatternDyeStorage getClientPatternStorage() {
-        CLIENT_PATTERN_STORAGE.addTestPatterns();
-        return CLIENT_PATTERN_STORAGE;
+       if (CLIENT_PATTERN_STORAGE.isEmpty()) CLIENT_PATTERN_STORAGE.addTestPatterns();
+       return CLIENT_PATTERN_STORAGE;
     }
+
     
     @SubscribeEvent
     public static void onEntityRenderersRegisterLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
