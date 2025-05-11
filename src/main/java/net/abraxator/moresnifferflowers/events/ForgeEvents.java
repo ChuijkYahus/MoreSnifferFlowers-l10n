@@ -1,6 +1,5 @@
 package net.abraxator.moresnifferflowers.events;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
@@ -9,14 +8,12 @@ import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
 import net.abraxator.moresnifferflowers.blocks.SaltemoneBlock;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.client.ClientRegistration;
-import net.abraxator.moresnifferflowers.client.PatternDyeRenderHandler;
 import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
 import net.abraxator.moresnifferflowers.events.custom.SlotTakeEvent;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
 import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,10 +37,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemEvent;
@@ -54,7 +51,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.joml.Matrix4f;
 
 import java.util.List;
 
@@ -70,33 +66,6 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onSlotTake(SlotTakeEvent event){
     }
-
-    @SubscribeEvent
-    public static void renderLevelStage(RenderLevelStageEvent event){
-        if (event.getStage().equals(RenderLevelStageEvent.Stage.AFTER_CUTOUT_MIPPED_BLOCKS_BLOCKS)) {
-            PoseStack poseStack = event.getPoseStack();
-            double camX = event.getCamera().getPosition().x;
-            double camY = event.getCamera().getPosition().y;
-            double camZ = event.getCamera().getPosition().z;
-            Matrix4f projectionMatrix = event.getProjectionMatrix();
-
-            PatternDyeRenderHandler BUFFER_MANAGER = new PatternDyeRenderHandler();
-            Minecraft minecraft = Minecraft.getInstance();
-            Level level = minecraft.level;
-            if (level == null || minecraft.player == null) return;
-
-            poseStack.pushPose();
-            poseStack.translate(-camX, -camY, -camZ);
-
-            Matrix4f view = poseStack.last().pose();
-
-            BUFFER_MANAGER.renderPatternOverlay(level, camX, camY, camZ, view, projectionMatrix, ClientRegistration.getClientPatternStorage());
-            BUFFER_MANAGER.render(view, projectionMatrix);
-
-            poseStack.popPose();
-        }
-    }
-
 
     @SubscribeEvent
     public static void onEffectExpiration(MobEffectEvent event){
@@ -245,21 +214,22 @@ public class ForgeEvents {
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         BlockPos pos = event.getPos();
         LevelAccessor level = event.getLevel();
+        BlockEntity blockEntity = level.getBlockEntity(pos);
 
-        if(level.getBlockEntity(pos) instanceof GiantCropBlockEntity entity) {
+        if(blockEntity instanceof GiantCropBlockEntity entity) {
             BlockPos.withinManhattanStream(entity.center, 1, 1, 1).forEach(blockPos -> {
                if (level.getBlockState(blockPos).is(ModTags.ModBlockTags.GIANT_CROPS)) level.destroyBlock(blockPos, true);
             });
         }
 
-        if(level.getBlockEntity(pos) instanceof SaltemoneBlockEntity entity) {
+        if(blockEntity instanceof SaltemoneBlockEntity entity) {
             SaltemoneBlock.blockPosStream(entity.center, level.getBlockState(entity.center)).forEach(pos1 -> {
                 if (level.getBlockState(pos1).is(ModBlocks.SALTEMONE.get()) || level.getBlockState(pos1).is(ModBlocks.SOURLEMONE.get())) level.destroyBlock(pos1, true);
             });
         }
 
 
-        if(level.getBlockEntity(pos) instanceof BerootCauldronBlockEntity entity && level.getBlockState(entity.center).getBlock().equals(ModBlocks.BEROOT_CAULDRON.get())) {
+        if(blockEntity instanceof BerootCauldronBlockEntity entity && level.getBlockState(entity.center).getBlock().equals(ModBlocks.BEROOT_CAULDRON.get())) {
             var entityState = level.getBlockState(entity.center);
             var entityPos = entity.center;
             Direction direction = entityState.getValue(HorizontalDirectionalBlock.FACING);
@@ -269,7 +239,7 @@ public class ForgeEvents {
             });
         }
         
-        if (level.getBlockEntity(pos) instanceof BondripiaBlockEntity entity) {
+        if (blockEntity instanceof BondripiaBlockEntity entity) {
             Direction.Plane.HORIZONTAL.forEach(direction -> {
                 BlockPos blockPos = entity.center.relative(direction);
 
@@ -277,6 +247,12 @@ public class ForgeEvents {
             });
             level.destroyBlock(entity.center, true);
         }
+
+        if (level.isClientSide() && ClientRegistration.getClientPatternStorage().hasPattern(pos)) {
+            ClientRegistration.getClientPatternStorage().removePattern(pos);
+            ClientRegistration.getPatternDyeRenderHandler().markDirty();
+        }
+
     }
 
     private static void pullItemTowardPlayer(Player player, ItemEntity item) {

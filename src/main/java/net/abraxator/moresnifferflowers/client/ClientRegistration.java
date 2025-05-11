@@ -47,10 +47,15 @@ public class ClientRegistration {
     }
 
     private static final PatternDyeStorage CLIENT_PATTERN_STORAGE = new PatternDyeStorage();
+    private static final PatternDyeRenderHandler BUFFER_MANAGER = new PatternDyeRenderHandler();
 
     public static PatternDyeStorage getClientPatternStorage() {
        if (CLIENT_PATTERN_STORAGE.isEmpty()) CLIENT_PATTERN_STORAGE.addTestPatterns();
        return CLIENT_PATTERN_STORAGE;
+    }
+
+    public static PatternDyeRenderHandler getPatternDyeRenderHandler() {
+        return BUFFER_MANAGER;
     }
 
     

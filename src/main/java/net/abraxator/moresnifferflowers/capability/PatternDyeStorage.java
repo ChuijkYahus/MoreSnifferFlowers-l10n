@@ -19,7 +19,7 @@ public class PatternDyeStorage {
         setPattern(new BlockPos(1, -55, 0), new PatternData(1, DyeColor.GREEN));
         setPattern(new BlockPos(2, -55, 0), new PatternData(2, DyeColor.BROWN));
 
-        int i = 80;
+        int i = 200;
         BlockPos.betweenClosedStream(new BlockPos(-i, -61, -i -50), new BlockPos(i, -60, i -50)).forEach(pos -> {
 
        //    if (pos.getX() + pos.getZ() % 10 == 0)
