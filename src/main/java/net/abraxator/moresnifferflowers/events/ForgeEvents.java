@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.events;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
@@ -7,12 +8,15 @@ import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
 import net.abraxator.moresnifferflowers.blocks.SaltemoneBlock;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.abraxator.moresnifferflowers.client.ClientRegistration;
+import net.abraxator.moresnifferflowers.client.PatternDyeRenderHandler;
 import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
 import net.abraxator.moresnifferflowers.events.custom.SlotTakeEvent;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
 import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -39,6 +43,7 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemEvent;
@@ -49,6 +54,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.joml.Matrix4f;
 
 import java.util.List;
 
@@ -64,6 +70,33 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onSlotTake(SlotTakeEvent event){
     }
+
+    @SubscribeEvent
+    public static void renderLevelStage(RenderLevelStageEvent event){
+        if (event.getStage().equals(RenderLevelStageEvent.Stage.AFTER_CUTOUT_MIPPED_BLOCKS_BLOCKS)) {
+            PoseStack poseStack = event.getPoseStack();
+            double camX = event.getCamera().getPosition().x;
+            double camY = event.getCamera().getPosition().y;
+            double camZ = event.getCamera().getPosition().z;
+            Matrix4f projectionMatrix = event.getProjectionMatrix();
+
+            PatternDyeRenderHandler BUFFER_MANAGER = new PatternDyeRenderHandler();
+            Minecraft minecraft = Minecraft.getInstance();
+            Level level = minecraft.level;
+            if (level == null || minecraft.player == null) return;
+
+            poseStack.pushPose();
+            poseStack.translate(-camX, -camY, -camZ);
+
+            Matrix4f view = poseStack.last().pose();
+
+            BUFFER_MANAGER.renderPatternOverlay(level, camX, camY, camZ, view, projectionMatrix, ClientRegistration.getClientPatternStorage());
+            BUFFER_MANAGER.render(view, projectionMatrix);
+
+            poseStack.popPose();
+        }
+    }
+
 
     @SubscribeEvent
     public static void onEffectExpiration(MobEffectEvent event){

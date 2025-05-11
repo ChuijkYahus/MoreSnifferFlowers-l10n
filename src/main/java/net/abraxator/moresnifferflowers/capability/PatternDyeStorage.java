@@ -48,6 +48,10 @@ public class PatternDyeStorage {
       return patterns.keySet().stream();
     }
 
+    public Stream<BlockPos> getPatternPositionsNear(BlockPos pos, int renderDistance) {
+        return patterns.keySet().stream().filter(p -> p.closerThan(pos, renderDistance)) ;
+    }
+
     public boolean isEmpty() {
         return patterns.isEmpty();
     }
