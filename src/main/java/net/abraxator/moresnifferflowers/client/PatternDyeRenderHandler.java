@@ -1,18 +1,18 @@
 package net.abraxator.moresnifferflowers.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexBuffer;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.PatternDyeStorage;
 import net.abraxator.moresnifferflowers.init.cofig.ModClientConfig;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -28,27 +28,25 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PatternDyeRenderHandler {
 
-    private final BufferBuilder bufferBuilder = new BufferBuilder(1024 * 16);
     private VertexBuffer vertexBuffer;
     private boolean dirty = true;
-    private long lastRebuild = 0;
+    private final List<RenderQuad> cachedQuads = new ArrayList<>();
 
     public void markDirty() {
         this.dirty = true;
     }
 
     public void renderPatternOverlay(Level level, double camX, double camY, double camZ, Matrix4f viewMatrix, Matrix4f projectionMatrix, PatternDyeStorage storage, Frustum frustum) {
-/*       if (System.currentTimeMillis() - lastRebuild < 100) return; // 100ms throttle
-        lastRebuild = System.currentTimeMillis();*/
         if (!dirty) return;
         dirty = false;
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
-        BlockPos camPos = BlockPos.containing(camX, camY, camZ);
+        cachedQuads.clear();
 
+        BlockPos camPos = BlockPos.containing(camX, camY, camZ);
         frustum.prepare(camX, camY, camZ);
 
         Minecraft minecraft = Minecraft.getInstance();
@@ -56,26 +54,18 @@ public class PatternDyeRenderHandler {
         int configuredRenderDistance = ModClientConfig.DYE_PATTERN_RENDER_DISTANCE.get();
         int renderDistance = configuredRenderDistance < 0 ? renderDistancePlayer*16 / Math.abs(configuredRenderDistance) : configuredRenderDistance;
 
-        PoseStack poseStack = new PoseStack();
-        storage.getPatternPositionsNear(camPos, renderDistance).forEach(pos -> {
 
+        storage.getPatternPositionsNear(camPos, renderDistance).forEach(pos -> {
             PatternDyeStorage.PatternData data = storage.getPattern(pos);
-            if (data != null
-                    && frustum.isVisible(new AABB(pos))
-            ) {
+
+            if (data != null && frustum.isVisible(new AABB(pos))) {
 
                 ResourceLocation resourceLocation = MoreSnifferFlowers.loc("block/dye_pattern/" + data.patternId());
                 TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(resourceLocation);
-
                 BlockState state = level.getBlockState(pos);
-                int overlay = OverlayTexture.NO_OVERLAY;
 
                 for (Direction dir : Direction.values()) {
                     if (state.isFaceSturdy(level, pos, dir) && !level.getBlockState(pos.relative(dir)).isFaceSturdy(level, pos.relative(dir), dir.getOpposite())) {
-                        poseStack.pushPose();
-                        poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-                        Matrix4f pose = poseStack.last().pose();
-                        Matrix3f normal = poseStack.last().normal();
                         int packedLight = level.getBrightness(LightLayer.BLOCK, pos.relative(dir));
                         int skyLight = level.getBrightness(LightLayer.SKY, pos.relative(dir));
 
@@ -84,64 +74,63 @@ public class PatternDyeRenderHandler {
 
                         int packed = LightTexture.pack(packedLight, skyLight);
 
-                        translateToFace(poseStack, dir, pos);
-                        drawPatternQuad(poseStack, bufferBuilder, data.color(), packed, overlay, dir, sprite);
-
-                        poseStack.popPose();
+                        cachedQuads.add(RenderQuad.create(pos, dir, data.color(), sprite, packed));
                     }
                 }
             }
         });
-
-
-        BufferBuilder.RenderedBuffer result = bufferBuilder.end();
-
-        close();
-        vertexBuffer = new VertexBuffer(VertexBuffer.Usage.DYNAMIC);
-        vertexBuffer.bind();
-        vertexBuffer.upload(result);
-        VertexBuffer.unbind();
     }
 
-    private static void drawPatternQuad(PoseStack poseStack, VertexConsumer buffer, DyeColor color, int packedLight, int overlay, Direction direction, TextureAtlasSprite sprite) {
-        Matrix4f pose = poseStack.last().pose();
-        Matrix3f normal = poseStack.last().normal();
 
-        int rgb = color.getTextColor();
-        float r = ((rgb >> 16) & 0xFF) / 255f;
-        float g = ((rgb >> 8) & 0xFF) / 255f;
-        float b = (rgb & 0xFF) / 255f;
+    public record RenderQuad(BlockPos pos, Direction direction, DyeColor color, TextureAtlasSprite sprite, int packedLight) {
 
-        Vec3i n = direction.getNormal();
+        public static RenderQuad create(BlockPos pos, Direction face, DyeColor color, TextureAtlasSprite sprite, int light) {
+            return new RenderQuad(pos.immutable(), face, color, sprite, light);
+        }
+
+        private void render(PoseStack poseStack, VertexConsumer buffer) {
+            poseStack.pushPose();
+            poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+            translateToFace(poseStack, direction, pos);
+
+            int rgb = color.getTextColor();
+            float r = ((rgb >> 16) & 0xFF) / 255f;
+            float g = ((rgb >> 8) & 0xFF) / 255f;
+            float b = (rgb & 0xFF) / 255f;
+
+            Matrix4f pose = poseStack.last().pose();
+            Matrix3f normal = poseStack.last().normal();
+            Vec3i n = direction.getNormal();
+            float nx = n.getX(), ny = n.getY(), nz = n.getZ();
 
 
-       // System.out.println(n + direction.toString() + direction.getRotation().getEulerAnglesXYZ(new Vector3f()));
-
-        float nx = n.getX(), ny = n.getY(), nz = n.getZ();
-
-
-/*        if (direction == Direction.UP) {
-            r = 1F;
-            g = 1F;
-            b = 1F;
-        }*/
-
-            packedLight = 0;
+            /*  if (direction == Direction.UP) {
+                   r = 1F;
+                   g = 1F;
+                   b = 1F;
+               }*/
 
             if (direction == Direction.UP || direction == Direction.DOWN) {
-                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV0()).uv2(packedLight).endVertex();
-                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV0()).uv2(packedLight).endVertex();
-                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV1()).uv2(packedLight).endVertex();
-                buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV1()).uv2(packedLight).endVertex();
-
+                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
             } else {
-                buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV0()).uv2(packedLight).endVertex();
-                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV0()).uv2(packedLight).endVertex();
-                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV1()).uv2(packedLight).endVertex();
-                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV1()).uv2(packedLight).endVertex();
+                buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
             }
+            poseStack.popPose();
+        }
+    }
 
+    public void render(PoseStack stack, MultiBufferSource bufferSource) {
+        VertexConsumer buffer = bufferSource.getBuffer(RenderType.cutoutMipped());
 
+        for (RenderQuad quad : cachedQuads) {
+            quad.render(stack, buffer);
+        }
     }
 
     private static void translateToFace(PoseStack stack, Direction face, BlockPos pos) {
@@ -191,28 +180,6 @@ public class PatternDyeRenderHandler {
                 stack.translate(-distance,0, -distance);
 
             }
-        }
-    }
-
-
-    public void render(Matrix4f poseMatrix, Matrix4f projectionMatrix, LightTexture lightmapTexture) {
-        if (vertexBuffer == null) return;
-
-        RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-        ShaderInstance shader = RenderSystem.getShader();
-        lightmapTexture.turnOnLightLayer();
-
-        vertexBuffer.bind();
-        vertexBuffer.drawWithShader(poseMatrix, projectionMatrix, Objects.requireNonNull(shader));
-        VertexBuffer.unbind();
-
-    }
-
-    public void close() {
-        if (vertexBuffer != null) {
-            vertexBuffer.close();
-            vertexBuffer = null;
         }
     }
 

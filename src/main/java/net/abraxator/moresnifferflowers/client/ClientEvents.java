@@ -60,7 +60,7 @@ public class ClientEvents {
             Matrix4f view = poseStack.last().pose();
 
             BUFFER_MANAGER.renderPatternOverlay(level, camX, camY, camZ, view, projectionMatrix, ClientRegistration.getClientPatternStorage(), event.getFrustum());
-            BUFFER_MANAGER.render(view, projectionMatrix, minecraft.gameRenderer.lightTexture());
+            BUFFER_MANAGER.render(poseStack, Minecraft.getInstance().renderBuffers().bufferSource());
 
             poseStack.popPose();
         }
