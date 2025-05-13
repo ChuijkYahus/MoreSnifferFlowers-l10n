@@ -248,9 +248,9 @@ public class ForgeEvents {
             level.destroyBlock(entity.center, true);
         }
 
-        if (level.isClientSide() && ClientRegistration.getClientPatternStorage().hasPattern(pos)) {
-            ClientRegistration.getClientPatternStorage().removePattern(pos);
-            ClientRegistration.getPatternDyeRenderHandler().markDirty();
+        if (CapabilityList.getBlockPatternCapability().hasPattern(pos)) {
+            CapabilityList.getBlockPatternCapability().removePattern(pos);
+            ClientRegistration.getBlockPatternRenderer().markDirty();
         }
 
     }

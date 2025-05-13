@@ -55,7 +55,9 @@ public class ModCreativeTabs {
                 output.accept(ModItems.DYESCRAPIA.get());
 
                 output.accept(ModBlocks.CAULORFLOWER.get());
-                
+                output.accept(ModBlocks.PATTERNFLOWER.get());
+                output.accept(ModItems.PATTERNSPRIA.get());
+
                 output.accept(ModItems.BONMEELIA_SEEDS.get());
                 output.accept(ModItems.JAR_OF_BONMEEL.get());
                 output.accept(ModItems.BONDRIPIA_SEEDS.get());
@@ -162,7 +164,25 @@ public class ModCreativeTabs {
                 output.accept(ModItems.CORRUPTED_BOAT.get());
                 output.accept(ModItems.CORRUPTED_CHEST_BOAT.get());
 
-                
+                output.accept(ModItems.BLOCK_PATTERN_1.get());
+                output.accept(ModItems.BLOCK_PATTERN_2.get());
+                output.accept(ModItems.BLOCK_PATTERN_3.get());
+                output.accept(ModItems.BLOCK_PATTERN_4.get());
+                output.accept(ModItems.BLOCK_PATTERN_5.get());
+                output.accept(ModItems.BLOCK_PATTERN_6.get());
+                output.accept(ModItems.BLOCK_PATTERN_7.get());
+                output.accept(ModItems.BLOCK_PATTERN_8.get());
+                output.accept(ModItems.BLOCK_PATTERN_9.get());
+                output.accept(ModItems.BLOCK_PATTERN_10.get());
+                output.accept(ModItems.BLOCK_PATTERN_11.get());
+                output.accept(ModItems.BLOCK_PATTERN_12.get());
+                output.accept(ModItems.BLOCK_PATTERN_13.get());
+                output.accept(ModItems.BLOCK_PATTERN_14.get());
+                output.accept(ModItems.BLOCK_PATTERN_15.get());
+                output.accept(ModItems.BLOCK_PATTERN_16.get());
+
+
+
             })
             .withBackgroundLocation(MoreSnifferFlowers.loc("textures/gui/container/tab_items.png"))
             .withTabsImage(MoreSnifferFlowers.loc("textures/gui/container/tabs.png"))

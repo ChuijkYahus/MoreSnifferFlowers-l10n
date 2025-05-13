@@ -2,7 +2,9 @@ package net.abraxator.moresnifferflowers.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.capability.PatternDyeStorage;
+import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
+import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.abraxator.moresnifferflowers.client.renderer.custom.BlockPatternRenderer;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.networking.DyespriaModePacket;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
@@ -37,7 +39,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void renderLevelStage(RenderLevelStageEvent event){
-        if (event.getStage().equals(RenderLevelStageEvent.Stage.AFTER_WEATHER)) {
+        if (event.getStage().equals(RenderLevelStageEvent.Stage.AFTER_SKY)) {
             PoseStack poseStack = event.getPoseStack();
             Camera camera = event.getCamera();
             double camX = camera.getPosition().x;
@@ -45,11 +47,11 @@ public class ClientEvents {
             double camZ = camera.getPosition().z;
             Matrix4f projectionMatrix = event.getProjectionMatrix();
 
-            PatternDyeRenderHandler BUFFER_MANAGER = ClientRegistration.getPatternDyeRenderHandler();
+            BlockPatternRenderer BUFFER_MANAGER = ClientRegistration.getBlockPatternRenderer();
             Minecraft minecraft = Minecraft.getInstance();
             Level level = minecraft.level;
             if (level == null || minecraft.player == null) return;
-            PatternDyeRenderHandler.CameraTracker cameraTracker = new PatternDyeRenderHandler.CameraTracker();
+            BlockPatternRenderer.CameraTracker cameraTracker = new BlockPatternRenderer.CameraTracker();
             if (cameraTracker.hasMoved(camera)) {
                 BUFFER_MANAGER.markDirty();
             }
@@ -59,7 +61,7 @@ public class ClientEvents {
 
             Matrix4f view = poseStack.last().pose();
 
-            BUFFER_MANAGER.renderPatternOverlay(level, camX, camY, camZ, view, projectionMatrix, ClientRegistration.getClientPatternStorage(), event.getFrustum());
+            BUFFER_MANAGER.renderPatternOverlay(level, camX, camY, camZ, view, projectionMatrix, CapabilityList.getBlockPatternCapability(), event.getFrustum());
             BUFFER_MANAGER.render(poseStack, Minecraft.getInstance().renderBuffers().bufferSource());
 
             poseStack.popPose();
@@ -70,7 +72,7 @@ public class ClientEvents {
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         if (player.getDeltaMovement() != Vec3.ZERO && player.level().getGameTime() % 10 == 0){
-            ClientRegistration.getPatternDyeRenderHandler().markDirty();
+            ClientRegistration.getBlockPatternRenderer().markDirty();
         }
     }
 
@@ -78,9 +80,9 @@ public class ClientEvents {
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         BlockPos pos = event.getPos();
         LevelAccessor level = event.getLevel();
-        PatternDyeStorage storage = ClientRegistration.getClientPatternStorage();
+        BlockPatternCapability storage = CapabilityList.getBlockPatternCapability();
 
-        ClientRegistration.getPatternDyeRenderHandler().markDirty();
+        ClientRegistration.getBlockPatternRenderer().markDirty();
 
     }
 
@@ -88,9 +90,9 @@ public class ClientEvents {
     public static void onBlockPlaced(BlockEvent.EntityPlaceEvent event) {
         BlockPos pos = event.getPos();
         LevelAccessor level = event.getLevel();
-        PatternDyeStorage storage = ClientRegistration.getClientPatternStorage();
+        BlockPatternCapability storage = CapabilityList.getBlockPatternCapability();
 
-        ClientRegistration.getPatternDyeRenderHandler().markDirty();
+        ClientRegistration.getBlockPatternRenderer().markDirty();
 
     }
 

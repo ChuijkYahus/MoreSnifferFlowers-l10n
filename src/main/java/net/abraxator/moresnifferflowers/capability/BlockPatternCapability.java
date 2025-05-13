@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class PatternDyeStorage {
+public class BlockPatternCapability {
     private final Map<BlockPos, PatternData> patterns = new HashMap<>();
 
     public void addTestPatterns(){

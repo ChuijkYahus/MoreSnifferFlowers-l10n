@@ -1,4 +1,4 @@
-package net.abraxator.moresnifferflowers.init.cofig;
+package net.abraxator.moresnifferflowers.init.config;
 
 
 import net.minecraftforge.common.ForgeConfigSpec;

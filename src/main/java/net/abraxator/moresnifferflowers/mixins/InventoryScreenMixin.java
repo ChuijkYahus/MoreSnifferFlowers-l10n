@@ -2,7 +2,7 @@ package net.abraxator.moresnifferflowers.mixins;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
-import net.abraxator.moresnifferflowers.init.cofig.ModClientConfig;
+import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
 import net.abraxator.moresnifferflowers.init.ModMobEffects;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;

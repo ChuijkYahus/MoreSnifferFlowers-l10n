@@ -1,7 +1,6 @@
 package net.abraxator.moresnifferflowers.client;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.capability.PatternDyeStorage;
 import net.abraxator.moresnifferflowers.client.gui.screen.RebrewingStandScreen;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
 import net.abraxator.moresnifferflowers.client.model.block.*;
@@ -11,6 +10,7 @@ import net.abraxator.moresnifferflowers.client.model.entity.DragonflyModel;
 import net.abraxator.moresnifferflowers.client.model.entity.SaltBubbleModel;
 import net.abraxator.moresnifferflowers.client.particle.*;
 import net.abraxator.moresnifferflowers.client.renderer.block.*;
+import net.abraxator.moresnifferflowers.client.renderer.custom.BlockPatternRenderer;
 import net.abraxator.moresnifferflowers.client.renderer.entity.*;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -46,15 +46,9 @@ public class ClientRegistration {
         MenuScreens.register(ModMenuTypes.REBREWING_STAND.get(), RebrewingStandScreen::new);
     }
 
-    private static final PatternDyeStorage CLIENT_PATTERN_STORAGE = new PatternDyeStorage();
-    private static final PatternDyeRenderHandler BUFFER_MANAGER = new PatternDyeRenderHandler();
+    private static final BlockPatternRenderer BUFFER_MANAGER = new BlockPatternRenderer();
 
-    public static PatternDyeStorage getClientPatternStorage() {
-       if (CLIENT_PATTERN_STORAGE.isEmpty()) CLIENT_PATTERN_STORAGE.addTestPatterns();
-       return CLIENT_PATTERN_STORAGE;
-    }
-
-    public static PatternDyeRenderHandler getPatternDyeRenderHandler() {
+    public static BlockPatternRenderer getBlockPatternRenderer() {
         return BUFFER_MANAGER;
     }
 

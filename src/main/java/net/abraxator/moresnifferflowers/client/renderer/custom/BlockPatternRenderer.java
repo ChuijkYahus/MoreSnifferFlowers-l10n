@@ -1,12 +1,12 @@
-package net.abraxator.moresnifferflowers.client;
+package net.abraxator.moresnifferflowers.client.renderer.custom;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.capability.PatternDyeStorage;
-import net.abraxator.moresnifferflowers.init.cofig.ModClientConfig;
+import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
+import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -31,7 +31,7 @@ import org.joml.Matrix4f;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatternDyeRenderHandler {
+public class BlockPatternRenderer {
 
     private VertexBuffer vertexBuffer;
     private boolean dirty = true;
@@ -41,7 +41,7 @@ public class PatternDyeRenderHandler {
         this.dirty = true;
     }
 
-    public void renderPatternOverlay(Level level, double camX, double camY, double camZ, Matrix4f viewMatrix, Matrix4f projectionMatrix, PatternDyeStorage storage, Frustum frustum) {
+    public void renderPatternOverlay(Level level, double camX, double camY, double camZ, Matrix4f viewMatrix, Matrix4f projectionMatrix, BlockPatternCapability storage, Frustum frustum) {
         if (!dirty) return;
         dirty = false;
         cachedQuads.clear();
@@ -56,7 +56,7 @@ public class PatternDyeRenderHandler {
 
 
         storage.getPatternPositionsNear(camPos, renderDistance).forEach(pos -> {
-            PatternDyeStorage.PatternData data = storage.getPattern(pos);
+            BlockPatternCapability.PatternData data = storage.getPattern(pos);
 
             if (data != null && frustum.isVisible(new AABB(pos))) {
 
@@ -134,7 +134,8 @@ public class PatternDyeRenderHandler {
     }
 
     private static void translateToFace(PoseStack stack, Direction face, BlockPos pos) {
-        float distance = 0.002f * (Math.abs((pos.getX() + pos.getY() + pos.getZ()) % 4) + 1);
+        double configOffset = ModClientConfig.DYE_PATTERN_OFFSET.get();
+        float distance = (float) (configOffset * (Math.abs((pos.getX() + pos.getY() + pos.getZ()) % 4) + 1));
         float scale = distance*2;
         switch (face) {
             case UP -> {

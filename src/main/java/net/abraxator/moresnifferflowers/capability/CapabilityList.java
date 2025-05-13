@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.capability;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -9,15 +10,18 @@ import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@Mod.EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CapabilityList {
     public static final Capability<NutritionCapability> UNLOCKED_NUTRITIONS = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<HardenedMouthCapability> MOUTH_SLOTS = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.register(NutritionCapability.class);
+        event.register(HardenedMouthCapability.class);
     }
 
     @SubscribeEvent
@@ -62,5 +66,12 @@ public class CapabilityList {
                 });
             }
         }
-    } 
+    }
+    private static final BlockPatternCapability CLIENT_PATTERN_STORAGE = new BlockPatternCapability();
+
+    public static BlockPatternCapability getBlockPatternCapability() {
+        if (CLIENT_PATTERN_STORAGE.isEmpty()) CLIENT_PATTERN_STORAGE.addTestPatterns();
+        return CLIENT_PATTERN_STORAGE;
+    }
+
 }

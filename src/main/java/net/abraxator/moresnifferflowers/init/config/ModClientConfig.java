@@ -1,4 +1,4 @@
-package net.abraxator.moresnifferflowers.init.cofig;
+package net.abraxator.moresnifferflowers.init.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
@@ -7,6 +7,7 @@ public class ModClientConfig {
     public static final ForgeConfigSpec.IntValue HARDENED_MOUTH_X;
     public static final ForgeConfigSpec.IntValue HARDENED_MOUTH_Y;
     public static final ForgeConfigSpec.IntValue DYE_PATTERN_RENDER_DISTANCE;
+    public static final ForgeConfigSpec.DoubleValue DYE_PATTERN_OFFSET;
 
 
     static {
@@ -30,6 +31,10 @@ public class ModClientConfig {
         DYE_PATTERN_RENDER_DISTANCE = builder
                 .comment("sdff")
                 .defineInRange("Dye Pattern Render Distance", 100, -5, 1000);
+
+        DYE_PATTERN_OFFSET = builder
+                .comment("sdff")
+                .defineInRange("Dye Pattern Block Offset", 0.001, 0, 1);
 
         builder.pop();
 

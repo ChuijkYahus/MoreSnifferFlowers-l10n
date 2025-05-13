@@ -4,7 +4,7 @@ import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.capability.HardenedMouthCapability;
 import net.abraxator.moresnifferflowers.client.gui.menu.InventoryMenuExtension;
 import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
-import net.abraxator.moresnifferflowers.init.cofig.ModClientConfig;
+import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Inventory;

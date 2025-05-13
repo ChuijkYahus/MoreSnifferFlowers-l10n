@@ -1,6 +1,6 @@
 {
   "required": true,
-  "minVersion": "0.8.2",
+  "minVersion": "0.8.5",
   "package": "net.abraxator.moresnifferflowers.mixins",
   "refmap": "more_sniffer_flowers.mixins.refmap.json",
   "compatibilityLevel": "JAVA_17",
