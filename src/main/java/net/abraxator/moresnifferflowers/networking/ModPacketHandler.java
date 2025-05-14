@@ -33,5 +33,9 @@ public class ModPacketHandler {
 
         CHANNEL.messageBuilder(UpdateMouthSlotsPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(UpdateMouthSlotsPacket::encode).decoder(UpdateMouthSlotsPacket::decode).consumerMainThread(UpdateMouthSlotsPacket::handle).add();
+
+        CHANNEL.messageBuilder(UpdateBlockPatternsPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(UpdateBlockPatternsPacket::encode).decoder(UpdateBlockPatternsPacket::decode).consumerMainThread(UpdateBlockPatternsPacket::handle).add();
+
     }
 }

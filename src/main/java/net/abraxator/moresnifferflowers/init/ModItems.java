@@ -119,7 +119,7 @@ public class ModItems {
 
     public static final RegistryObject<Item> CAULORFLOWER_SEEDS = ITEMS.register("caulorflower_seeds", () -> new ItemNameBlockItem(ModBlocks.CAULORFLOWER.get(), new Item.Properties()));
     public static final RegistryObject<Item> PATTERNFLOWER_SEEDS = ITEMS.register("patternflower_seeds", () -> new ItemNameBlockItem(ModBlocks.PATTERNFLOWER.get(), new Item.Properties()));
-    public static final RegistryObject<Item> PATTERNSPRIA = ITEMS.register("patternspria", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> PATTERNSPRIA = ITEMS.register("patternspria", () -> new PatternspriaItem(new Item.Properties()));
 
     public static final RegistryObject<Item> BLOCK_PATTERN_1 = ITEMS.register("block_pattern_1", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BLOCK_PATTERN_2 = ITEMS.register("block_pattern_2", () -> new Item(new Item.Properties()));

@@ -61,7 +61,7 @@ public class ClientEvents {
 
             Matrix4f view = poseStack.last().pose();
 
-            BUFFER_MANAGER.renderPatternOverlay(level, camX, camY, camZ, view, projectionMatrix, CapabilityList.getBlockPatternCapability(), event.getFrustum());
+            BUFFER_MANAGER.renderPatternOverlay(level, camX, camY, camZ, view, projectionMatrix, CapabilityList.getBlockPatterns(), event.getFrustum());
             BUFFER_MANAGER.render(poseStack, Minecraft.getInstance().renderBuffers().bufferSource());
 
             poseStack.popPose();
@@ -80,7 +80,7 @@ public class ClientEvents {
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         BlockPos pos = event.getPos();
         LevelAccessor level = event.getLevel();
-        BlockPatternCapability storage = CapabilityList.getBlockPatternCapability();
+        BlockPatternCapability storage = CapabilityList.getBlockPatterns();
 
         ClientRegistration.getBlockPatternRenderer().markDirty();
 
@@ -90,7 +90,7 @@ public class ClientEvents {
     public static void onBlockPlaced(BlockEvent.EntityPlaceEvent event) {
         BlockPos pos = event.getPos();
         LevelAccessor level = event.getLevel();
-        BlockPatternCapability storage = CapabilityList.getBlockPatternCapability();
+        BlockPatternCapability storage = CapabilityList.getBlockPatterns();
 
         ClientRegistration.getBlockPatternRenderer().markDirty();
 

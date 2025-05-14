@@ -74,8 +74,10 @@ dependencies {
     modRuntimeOnly("curse.maven:jei-238222:6075247")
 
     // Shaders for compatibility tests
+/*
     modRuntimeOnly("curse.maven:embeddium-908741:5681725")
     modRuntimeOnly("curse.maven:oculus-581495:6020952")
+*/
 
     //mixin
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'

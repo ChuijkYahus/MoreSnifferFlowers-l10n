@@ -78,6 +78,8 @@ public class CapabilityEvents {
         player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
             cap.sync(player);
         });
+        if (CapabilityList.getBlockPatterns().isEmpty()) CapabilityList.getBlockPatterns().addTestPatterns(player.level());
+
     }
 
 }

@@ -7,7 +7,6 @@ import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
 import net.abraxator.moresnifferflowers.blocks.SaltemoneBlock;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
-import net.abraxator.moresnifferflowers.client.ClientRegistration;
 import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
 import net.abraxator.moresnifferflowers.events.custom.SlotTakeEvent;
 import net.abraxator.moresnifferflowers.init.*;
@@ -213,29 +212,30 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         BlockPos pos = event.getPos();
-        LevelAccessor level = event.getLevel();
-        BlockEntity blockEntity = level.getBlockEntity(pos);
+        LevelAccessor levelAccessor = event.getLevel();
+        BlockEntity blockEntity = levelAccessor.getBlockEntity(pos);
+        Level level = event.getPlayer().level();
 
         if(blockEntity instanceof GiantCropBlockEntity entity) {
             BlockPos.withinManhattanStream(entity.center, 1, 1, 1).forEach(blockPos -> {
-               if (level.getBlockState(blockPos).is(ModTags.ModBlockTags.GIANT_CROPS)) level.destroyBlock(blockPos, true);
+               if (levelAccessor.getBlockState(blockPos).is(ModTags.ModBlockTags.GIANT_CROPS)) levelAccessor.destroyBlock(blockPos, true);
             });
         }
 
         if(blockEntity instanceof SaltemoneBlockEntity entity) {
-            SaltemoneBlock.blockPosStream(entity.center, level.getBlockState(entity.center)).forEach(pos1 -> {
-                if (level.getBlockState(pos1).is(ModBlocks.SALTEMONE.get()) || level.getBlockState(pos1).is(ModBlocks.SOURLEMONE.get())) level.destroyBlock(pos1, true);
+            SaltemoneBlock.blockPosStream(entity.center, levelAccessor.getBlockState(entity.center)).forEach(pos1 -> {
+                if (levelAccessor.getBlockState(pos1).is(ModBlocks.SALTEMONE.get()) || levelAccessor.getBlockState(pos1).is(ModBlocks.SOURLEMONE.get())) levelAccessor.destroyBlock(pos1, true);
             });
         }
 
 
-        if(blockEntity instanceof BerootCauldronBlockEntity entity && level.getBlockState(entity.center).getBlock().equals(ModBlocks.BEROOT_CAULDRON.get())) {
-            var entityState = level.getBlockState(entity.center);
+        if(blockEntity instanceof BerootCauldronBlockEntity entity && levelAccessor.getBlockState(entity.center).getBlock().equals(ModBlocks.BEROOT_CAULDRON.get())) {
+            var entityState = levelAccessor.getBlockState(entity.center);
             var entityPos = entity.center;
             Direction direction = entityState.getValue(HorizontalDirectionalBlock.FACING);
             BlockPos relative = entityPos.relative(direction).relative(direction.getClockWise()).above();
             BlockPos.betweenClosedStream(new AABB(entityPos, relative)).forEach(blockPos -> {
-                if (level.getBlockState(blockPos).is(ModBlocks.BEROOT_CAULDRON.get())) level.destroyBlock(blockPos, true);
+                if (levelAccessor.getBlockState(blockPos).is(ModBlocks.BEROOT_CAULDRON.get())) levelAccessor.destroyBlock(blockPos, true);
             });
         }
         
@@ -243,16 +243,14 @@ public class ForgeEvents {
             Direction.Plane.HORIZONTAL.forEach(direction -> {
                 BlockPos blockPos = entity.center.relative(direction);
 
-                level.destroyBlock(blockPos, true);
+                levelAccessor.destroyBlock(blockPos, true);
             });
-            level.destroyBlock(entity.center, true);
+            levelAccessor.destroyBlock(entity.center, true);
         }
 
-        if (CapabilityList.getBlockPatternCapability().hasPattern(pos)) {
-            CapabilityList.getBlockPatternCapability().removePattern(pos);
-            ClientRegistration.getBlockPatternRenderer().markDirty();
+        if (CapabilityList.getBlockPatterns().hasPattern(pos, level)) {
+            CapabilityList.getBlockPatterns().removePattern(pos, level);
         }
-
     }
 
     private static void pullItemTowardPlayer(Player player, ItemEntity item) {

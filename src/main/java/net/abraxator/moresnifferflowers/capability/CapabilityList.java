@@ -67,11 +67,10 @@ public class CapabilityList {
             }
         }
     }
-    private static final BlockPatternCapability CLIENT_PATTERN_STORAGE = new BlockPatternCapability();
+    private static final BlockPatternCapability BLOCK_PATTERN_CAPABILITY = new BlockPatternCapability();
 
-    public static BlockPatternCapability getBlockPatternCapability() {
-        if (CLIENT_PATTERN_STORAGE.isEmpty()) CLIENT_PATTERN_STORAGE.addTestPatterns();
-        return CLIENT_PATTERN_STORAGE;
+    public static BlockPatternCapability getBlockPatterns() {
+        return BLOCK_PATTERN_CAPABILITY;
     }
 
 }

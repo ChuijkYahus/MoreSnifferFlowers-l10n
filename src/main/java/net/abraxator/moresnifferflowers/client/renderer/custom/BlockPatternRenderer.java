@@ -55,8 +55,8 @@ public class BlockPatternRenderer {
         int renderDistance = configuredRenderDistance < 0 ? renderDistancePlayer*16 / Math.abs(configuredRenderDistance) : configuredRenderDistance;
 
 
-        storage.getPatternPositionsNear(camPos, renderDistance).forEach(pos -> {
-            BlockPatternCapability.PatternData data = storage.getPattern(pos);
+        storage.getPatternPositionsNear(camPos, renderDistance, level).forEach(pos -> {
+            BlockPatternCapability.PatternData data = storage.getPattern(pos, level);
 
             if (data != null && frustum.isVisible(new AABB(pos))) {
 
