@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.capability;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.networking.UpdateBlockPatternsPacket;
 import net.minecraft.core.BlockPos;
@@ -20,18 +21,20 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class BlockPatternCapability {
-    private final Map<ResourceKey<Level>, Map<BlockPos, PatternData>> patterns = new HashMap<>();
+    private Map<ResourceKey<Level>, Map<BlockPos, PatternData>> patterns = new HashMap<>();
 
     public void addTestPatterns(Level level){
-        setPattern(new BlockPos(0, -55, 0), new PatternData(2, DyeColor.RED), level);
-        setPattern(new BlockPos(1, -55, 0), new PatternData(1, DyeColor.GREEN), level);
-        setPattern(new BlockPos(2, -55, 0), new PatternData(2, DyeColor.BROWN), level);
+        setPattern(new BlockPos(0, -55, 0), new PatternData(1, DyeColor.RED), level);
+        setPattern(new BlockPos(1, -55, 0), new PatternData(0, DyeColor.GREEN), level);
+        setPattern(new BlockPos(2, -55, 0), new PatternData(1, DyeColor.BROWN), level);
     }
 
     public void setPattern(BlockPos pos, PatternData pattern, Level level) {
-        patterns.computeIfAbsent(level.dimension(), levelResourceKey -> new HashMap<>()).put(pos, pattern);
-        sync();
-        if (level instanceof ServerLevel serverLevel) BlockPatternSavedData.get(serverLevel).setDirty();
+        patterns.computeIfAbsent(level.dimension(), levelResourceKey -> new HashMap<>()).put(pos.immutable(), pattern);
+        if (level instanceof ServerLevel serverLevel) {
+            sync();
+            BlockPatternSavedData.get(serverLevel).setDirty();
+        }
     }
 
     public PatternData getPattern(BlockPos pos, Level level) {
@@ -45,8 +48,10 @@ public class BlockPatternCapability {
 
     public void removePattern(BlockPos pos, Level level) {
         if (patterns.containsKey(level.dimension())) patterns.get(level.dimension()).remove(pos);
-        sync();
-        if (level instanceof ServerLevel serverLevel) BlockPatternSavedData.get(serverLevel).setDirty();
+        if (level instanceof ServerLevel serverLevel) {
+            sync();
+            BlockPatternSavedData.get(serverLevel).setDirty();
+        }
     }
 
     public Stream<BlockPos> getPatternPositionsNear(BlockPos pos, int renderDistance, Level level ) {
@@ -61,6 +66,22 @@ public class BlockPatternCapability {
     public void sync(){
         CompoundTag compoundtag = this.save(new CompoundTag());
         ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new UpdateBlockPatternsPacket(compoundtag));
+    }
+
+    public void setFromDisk(ServerLevel serverLevel) {
+        MoreSnifferFlowers.LOGGER.debug("oldData=" + this.patterns.toString());
+        BlockPatternCapability capability = BlockPatternSavedData.get(serverLevel).getStorage();
+        this.patterns = capability.getMap();
+        MoreSnifferFlowers.LOGGER.debug("newData=" + this.patterns.toString());
+        sync();
+    }
+
+    private Map<ResourceKey<Level>, Map<BlockPos, PatternData>> getMap(){
+        return patterns;
+    }
+
+    public void clear(){
+        this.patterns.clear();
     }
 
     public CompoundTag save(CompoundTag tag) {

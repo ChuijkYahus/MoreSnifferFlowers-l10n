@@ -1,10 +1,15 @@
 package net.abraxator.moresnifferflowers.events;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
+import net.abraxator.moresnifferflowers.capability.BlockPatternSavedData;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -78,8 +83,36 @@ public class CapabilityEvents {
         player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
             cap.sync(player);
         });
+        if (CapabilityList.getBlockPatterns().isEmpty() && player.level() instanceof ServerLevel serverLevel) CapabilityList.getBlockPatterns().setFromDisk(serverLevel);
         if (CapabilityList.getBlockPatterns().isEmpty()) CapabilityList.getBlockPatterns().addTestPatterns(player.level());
 
     }
+
+    @SubscribeEvent
+    public static void onLevelLoad(LevelEvent.Load event) {
+        LevelAccessor levelAccessor = event.getLevel();
+        BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
+
+        if (levelAccessor instanceof ServerLevel serverLevel) {
+            blockPatterns.setFromDisk(serverLevel);
+            blockPatterns.sync();
+        } else {
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLevelSave(LevelEvent.Save event) {
+        LevelAccessor levelAccessor = event.getLevel();
+        BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
+
+        if (levelAccessor instanceof ServerLevel serverLevel) {
+            BlockPatternSavedData.get(serverLevel).save(blockPatterns.save(new CompoundTag()));
+        } else {
+         //   blockPatterns.clear();
+        }
+
+
+    }
+
 
 }

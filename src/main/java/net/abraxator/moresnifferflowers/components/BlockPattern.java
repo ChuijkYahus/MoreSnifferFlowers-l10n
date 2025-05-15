@@ -38,7 +38,7 @@ public enum BlockPattern implements StringRepresentable {
 
     @Override
     public String getSerializedName() {
-        return "";
+        return name;
     }
 
 }

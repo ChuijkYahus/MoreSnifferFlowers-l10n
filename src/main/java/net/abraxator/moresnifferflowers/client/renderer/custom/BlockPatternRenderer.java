@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
+import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -60,7 +61,7 @@ public class BlockPatternRenderer {
 
             if (data != null && frustum.isVisible(new AABB(pos))) {
 
-                ResourceLocation resourceLocation = MoreSnifferFlowers.loc("block/dye_pattern/" + data.patternId());
+                ResourceLocation resourceLocation = MoreSnifferFlowers.loc("block/block_pattern/" + BlockPattern.byIndex(data.patternId()).getSerializedName());
                 TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(resourceLocation);
                 BlockState state = level.getBlockState(pos);
 
