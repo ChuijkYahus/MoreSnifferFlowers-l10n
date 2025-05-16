@@ -24,9 +24,10 @@ public class BlockPatternCapability {
     private Map<ResourceKey<Level>, Map<BlockPos, PatternData>> patterns = new HashMap<>();
 
     public void addTestPatterns(Level level){
-        setPattern(new BlockPos(0, -55, 0), new PatternData(1, DyeColor.RED), level);
-        setPattern(new BlockPos(1, -55, 0), new PatternData(0, DyeColor.GREEN), level);
-        setPattern(new BlockPos(2, -55, 0), new PatternData(1, DyeColor.BROWN), level);
+        MoreSnifferFlowers.LOGGER.warn("No saved Block Patterns found... Adding test patterns");
+        setPattern(new BlockPos(0, -55, 0), new PatternData(1, DyeColor.RED.getTextColor()), level);
+        setPattern(new BlockPos(1, -55, 0), new PatternData(0, DyeColor.GREEN.getTextColor()), level);
+        setPattern(new BlockPos(2, -55, 0), new PatternData(1, DyeColor.BROWN.getTextColor()), level);
     }
 
     public void setPattern(BlockPos pos, PatternData pattern, Level level) {
@@ -69,10 +70,8 @@ public class BlockPatternCapability {
     }
 
     public void setFromDisk(ServerLevel serverLevel) {
-        MoreSnifferFlowers.LOGGER.debug("oldData=" + this.patterns.toString());
         BlockPatternCapability capability = BlockPatternSavedData.get(serverLevel).getStorage();
         this.patterns = capability.getMap();
-        MoreSnifferFlowers.LOGGER.debug("newData=" + this.patterns.toString());
         sync();
     }
 
@@ -125,17 +124,17 @@ public class BlockPatternCapability {
         }
     }
 
-    public record PatternData(int patternId, DyeColor color) {
+    public record PatternData(int patternId, int color) {
         public CompoundTag save() {
             CompoundTag tag = new CompoundTag();
             tag.putInt("pattern", patternId);
-            tag.putInt("color", color.getId());
+            tag.putInt("color", color);
             return tag;
         }
 
         public static PatternData load(CompoundTag tag) {
             int patternId = tag.getInt("pattern");
-            DyeColor color = DyeColor.byId(tag.getInt("color"));
+            int color = tag.getInt("color");
             return new PatternData(patternId, color);
         }
     }

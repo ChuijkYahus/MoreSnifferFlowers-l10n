@@ -1,19 +1,15 @@
 package net.abraxator.moresnifferflowers.components;
 
 import com.mojang.serialization.Codec;
+import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
-import net.abraxator.moresnifferflowers.init.ModStateProperties;
-import net.abraxator.moresnifferflowers.items.DyespriaItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,30 +17,30 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
-public enum DyespriaMode implements StringRepresentable {
-    SINGLE("single", DyespriaSelector::single, ChatFormatting.WHITE),
-    COLUMN("column", DyespriaSelector::column, ChatFormatting.BLUE),
-    ROW("row", DyespriaSelector::row, ChatFormatting.GREEN),
-    SHAPE("shape", DyespriaSelector::shape, ChatFormatting.RED);
+public enum PatternspriaMode implements StringRepresentable {
+    SINGLE("single", PatternspriaMode.DyespriaSelector::single, ChatFormatting.WHITE),
+    COLUMN("column", PatternspriaMode.DyespriaSelector::column, ChatFormatting.BLUE),
+    ROW("row", PatternspriaMode.DyespriaSelector::row, ChatFormatting.GREEN),
+    SHAPE("shape", PatternspriaMode.DyespriaSelector::shape, ChatFormatting.RED);
 
-    public static final Codec<DyespriaMode> CODEC = StringRepresentable.fromEnum(DyespriaMode::values);
-    public static final IntFunction<DyespriaMode> BY_ID = ByIdMap.continuous(DyespriaMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    public static final Codec<PatternspriaMode> CODEC = StringRepresentable.fromEnum(PatternspriaMode::values);
+    public static final IntFunction<PatternspriaMode> BY_ID = ByIdMap.continuous(PatternspriaMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
 
     private final String name;
-    private final Function<DyespriaSelector, Set<BlockPos>> selector;
+    private final Function<PatternspriaMode.DyespriaSelector, Set<BlockPos>> selector;
     private final ChatFormatting textColor;
 
-    DyespriaMode(String name, Function<DyespriaSelector, Set<BlockPos>> selector, ChatFormatting textColor) {
+    PatternspriaMode(String name, Function<PatternspriaMode.DyespriaSelector, Set<BlockPos>> selector, ChatFormatting textColor) {
         this.name = name;
         this.selector = selector;
         this.textColor = textColor;
     }
-    
-    public static DyespriaMode byIndex(int index) {
+
+    public static PatternspriaMode byIndex(int index) {
         return BY_ID.apply(index);
     }
 
-    public static DyespriaMode shift(DyespriaMode current, int amount) {
+    public static PatternspriaMode shift(PatternspriaMode current, int amount) {
         int size = values().length;
         int currentIndex = current.ordinal();
         int newIndex = (currentIndex + amount) % size;
@@ -57,7 +53,7 @@ public enum DyespriaMode implements StringRepresentable {
         return name;
     }
 
-    public Function<DyespriaSelector, Set<BlockPos>> getSelector() {
+    public Function<PatternspriaMode.DyespriaSelector, Set<BlockPos>> getSelector() {
         return selector;
     }
 
@@ -65,11 +61,11 @@ public enum DyespriaMode implements StringRepresentable {
         return textColor;
     }
 
-    public static record DyespriaSelector(BlockPos originalPos, BlockState blockState, @Nullable TagKey<Block> tag, Level level, Direction clickedDir) {
+    public static record DyespriaSelector(BlockPos originalPos, Level level, Direction clickedDir) {
         public Set<BlockPos> single() {
             return Set.of(originalPos());
         }
-        
+
         public Set<BlockPos> column() {
             Set<BlockPos> ret = new HashSet<>();
             ret.add(originalPos);
@@ -79,23 +75,23 @@ public enum DyespriaMode implements StringRepresentable {
                 ret.add(posUp.immutable());
                 posUp.move(Direction.UP);
             }
-            
+
             while(matchBlock(posDown)) {
                 ret.add(posDown.immutable());
                 posDown.move(Direction.DOWN);
             }
-            
+
             return ret;
         }
 
         public Set<BlockPos> row() {
             Set<BlockPos> ret = new HashSet<>();
             ret.add(originalPos);
-            
+
             if (clickedDir == Direction.DOWN || clickedDir == Direction.UP) {
                 return ret;
             }
-            
+
             var rightDir = clickedDir.getCounterClockWise();
             var leftDir = clickedDir.getClockWise();
             var posRight = originalPos.relative(rightDir).mutable();
@@ -119,19 +115,26 @@ public enum DyespriaMode implements StringRepresentable {
                     .filter(this::matchBlock)
                     .collect(Collectors.toSet());
         }
-        
+
         private boolean matchBlock(BlockPos pos) {
-            var state = level.getBlockState(pos);
-            boolean isVanilla = DyespriaItem.checkDyedBlock(state);
-            boolean isColorableAndColored = state.is(blockState.getBlock()) 
-                    && state.hasProperty(ModStateProperties.COLOR) 
-                    && state.getValue(ModStateProperties.COLOR).equals(blockState.getValue(ModStateProperties.COLOR));
-            if (CapabilityList.getBlockPatterns().hasPattern(pos, level) && CapabilityList.getBlockPatterns().hasPattern(originalPos, level)){
-                int originalId = CapabilityList.getBlockPatterns().getPattern(originalPos, level).patternId();
-                int thisId = CapabilityList.getBlockPatterns().getPattern(pos, level).patternId();
+            BlockState state = level.getBlockState(pos);
+            BlockPatternCapability patterns = CapabilityList.getBlockPatterns();
+            if (state.canBeReplaced()) return false;
+            if (patterns.hasPattern(pos, level) && patterns.hasPattern(originalPos, level)) {
+                int originalId = patterns.getPattern(originalPos, level).patternId();
+                int thisId = patterns.getPattern(pos, level).patternId();
+
                 return originalId == thisId;
             }
-            return isVanilla || isColorableAndColored || (tag != null && level.getBlockState(pos).is(tag));
+
+            boolean ret = false;
+            for(Direction dir : Direction.values()) {
+                if (state.isFaceSturdy(level, pos, dir)) {
+                    ret = true;
+                    break;
+                }
+            }
+            return ret;
         }
     }
 }

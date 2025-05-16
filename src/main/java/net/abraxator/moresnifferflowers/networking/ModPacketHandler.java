@@ -37,5 +37,8 @@ public class ModPacketHandler {
         CHANNEL.messageBuilder(UpdateBlockPatternsPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(UpdateBlockPatternsPacket::encode).decoder(UpdateBlockPatternsPacket::decode).consumerMainThread(UpdateBlockPatternsPacket::handle).add();
 
+        CHANNEL.messageBuilder(PatternspriaModePacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(PatternspriaModePacket::encode).decoder(PatternspriaModePacket::new).consumerMainThread(PatternspriaModePacket::handle).add();
+
     }
 }

@@ -8,6 +8,7 @@ import net.abraxator.moresnifferflowers.client.renderer.custom.BlockPatternRende
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.networking.DyespriaModePacket;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
+import net.abraxator.moresnifferflowers.networking.PatternspriaModePacket;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -19,7 +20,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent.MouseScrollingEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,6 +34,10 @@ public class ClientEvents {
         if(player.isCrouching() && player.getMainHandItem().is(ModItems.DYESPRIA.get())) {
             event.setCanceled(true);
             ModPacketHandler.CHANNEL.sendToServer(new DyespriaModePacket((int) event.getScrollDelta()));
+        }
+        if(player.isCrouching() && player.getMainHandItem().is(ModItems.PATTERNSPRIA.get())) {
+            event.setCanceled(true);
+            ModPacketHandler.CHANNEL.sendToServer(new PatternspriaModePacket((int) event.getScrollDelta()));
         }
     }
 
@@ -93,11 +97,6 @@ public class ClientEvents {
         BlockPatternCapability storage = CapabilityList.getBlockPatterns();
 
         ClientRegistration.getBlockPatternRenderer().markDirty();
-
-    }
-
-    @SubscribeEvent
-    public static void onCameraMove(ViewportEvent event){
 
     }
 

@@ -20,7 +20,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
@@ -61,7 +60,7 @@ public class BlockPatternRenderer {
 
             if (data != null && frustum.isVisible(new AABB(pos))) {
 
-                ResourceLocation resourceLocation = MoreSnifferFlowers.loc("block/block_pattern/" + BlockPattern.byIndex(data.patternId()).getSerializedName());
+                ResourceLocation resourceLocation = MoreSnifferFlowers.loc("block/block_pattern/" + BlockPattern.fromId(data.patternId()).getSerializedName());
                 TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(resourceLocation);
                 BlockState state = level.getBlockState(pos);
 
@@ -83,9 +82,9 @@ public class BlockPatternRenderer {
     }
 
 
-    public record RenderQuad(BlockPos pos, Direction direction, DyeColor color, TextureAtlasSprite sprite, int packedLight) {
+    public record RenderQuad(BlockPos pos, Direction direction, int color, TextureAtlasSprite sprite, int packedLight) {
 
-        public static RenderQuad create(BlockPos pos, Direction face, DyeColor color, TextureAtlasSprite sprite, int light) {
+        public static RenderQuad create(BlockPos pos, Direction face, int color, TextureAtlasSprite sprite, int light) {
             return new RenderQuad(pos.immutable(), face, color, sprite, light);
         }
 
@@ -94,7 +93,7 @@ public class BlockPatternRenderer {
             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
             translateToFace(poseStack, direction, pos);
 
-            int rgb = color.getTextColor();
+            int rgb = color;
             float r = ((rgb >> 16) & 0xFF) / 255f;
             float g = ((rgb >> 8) & 0xFF) / 255f;
             float b = (rgb & 0xFF) / 255f;
@@ -112,16 +111,24 @@ public class BlockPatternRenderer {
                }*/
 
             if (direction == Direction.UP || direction == Direction.DOWN) {
-                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+
+            } else if (direction == Direction.SOUTH){
                 buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+
             } else {
                 buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
                 buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
                 buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
                 buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
             }
+
             poseStack.popPose();
         }
     }

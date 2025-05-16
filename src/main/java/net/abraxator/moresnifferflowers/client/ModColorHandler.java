@@ -101,7 +101,7 @@ public class ModColorHandler {
                 ModBlocks.VIVICUS_SAPLING.get());
     }
 
-    private static float @NotNull [] getColorHSB(int originalColor) {
+    public static float @NotNull [] getColorHSB(int originalColor) {
         int startRed = (originalColor >> 16) & 0xFF;
         int startGreen = (originalColor >> 8) & 0xFF;
         int startBlue = originalColor & 0xFF;
