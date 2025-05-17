@@ -35,6 +35,10 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         this.tag(ModTags.ModItemTags.CROPRESSED_CROPS).add(ModItems.CROPRESSED_CARROT.get(), ModItems.CROPRESSED_POTATO.get(), ModItems.CROPRESSED_WHEAT.get(), ModItems.CROPRESSED_BEETROOT.get(), ModItems.CROPRESSED_NETHERWART.get());
         this.tag(ModTags.ModItemTags.CROP_SMITHING_TEMPLATES).add(ModItems.NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.TATER_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.GRAIN_ARMOR_TRIM_SMITHING_TEMPLATE.get());
 
+        this.tag(ModTags.ModItemTags.BLOCK_PATTERNS).add(ModItems.BLOCK_PATTERN_LINES.get(), ModItems.BLOCK_PATTERN_BRICKS.get(), ModItems.BLOCK_PATTERN_FOCUS.get(), ModItems.BLOCK_PATTERN_4.get(), ModItems.BLOCK_PATTERN_5.get(), ModItems.BLOCK_PATTERN_6.get(),
+                ModItems.BLOCK_PATTERN_7.get(), ModItems.BLOCK_PATTERN_8.get(), ModItems.BLOCK_PATTERN_9.get(), ModItems.BLOCK_PATTERN_10.get(),ModItems.BLOCK_PATTERN_11.get(), ModItems.BLOCK_PATTERN_12.get(),
+                ModItems.BLOCK_PATTERN_13.get(), ModItems.BLOCK_PATTERN_14.get(), ModItems.BLOCK_PATTERN_15.get(), ModItems.BLOCK_PATTERN_16.get());
+
         this.tag(ModTags.ModItemTags.CROPRESSOR_PIECES).add(ModItems.SCRAP_PIECE.get(), ModItems.BELT_PIECE.get(), ModItems.ENGINE_PIECE.get(), ModItems.TUBE_PIECE.get(), ModItems.PRESS_PIECE.get());
 
         this.tag(ModTags.ModItemTags.REBREWING_STAND_INGREDIENTS).add(Items.REDSTONE, Items.GLOWSTONE_DUST, Items.GUNPOWDER, Items.DRAGON_BREATH);

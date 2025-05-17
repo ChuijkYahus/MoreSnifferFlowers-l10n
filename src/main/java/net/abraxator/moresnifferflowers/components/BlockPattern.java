@@ -15,9 +15,9 @@ import java.util.Objects;
 import java.util.function.IntFunction;
 
 public enum BlockPattern implements StringRepresentable {
-    LINES("lines", ModItems.BLOCK_PATTERN_1.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
-    BRICKS("bricks", ModItems.BLOCK_PATTERN_2.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
-    FOCUS("focus", ModItems.BLOCK_PATTERN_3.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
+    LINES("lines", ModItems.BLOCK_PATTERN_LINES.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
+    BRICKS("bricks", ModItems.BLOCK_PATTERN_BRICKS.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
+    FOCUS("focus", ModItems.BLOCK_PATTERN_FOCUS.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
 
     ;
 

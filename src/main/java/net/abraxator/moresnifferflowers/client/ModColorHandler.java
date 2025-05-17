@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.client;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blocks.ColorableVivicusBlock;
 import net.abraxator.moresnifferflowers.blocks.cropressor.CropressorBlockBase;
+import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
@@ -118,9 +119,18 @@ public class ModColorHandler {
                 return Dye.colorForDye(((DyespriaItem) pStack.getItem()), dye.color());
             }
         }, ModItems.DYESPRIA.get());
-        event.register((pStack, pTintIndex) -> {
-            return pTintIndex > 0 ? -1 : PotionUtils.getColor(pStack);
-        }, ModItems.EXTRACTED_BOTTLE.get(), ModItems.REBREWED_POTION.get(), ModItems.REBREWED_SPLASH_POTION.get(), ModItems.REBREWED_LINGERING_POTION.get());
+
+        event.register((pStack, pTintIndex) -> pTintIndex > 0 ? -1 : PotionUtils.getColor(pStack),
+                ModItems.EXTRACTED_BOTTLE.get(), ModItems.REBREWED_POTION.get(), ModItems.REBREWED_SPLASH_POTION.get(), ModItems.REBREWED_LINGERING_POTION.get());
+
+        event.register(((stack, tintIndex) ->{
+           BlockPattern pattern = BlockPattern.fromPatternspria(stack);
+           if(tintIndex != 0 || pattern == null) return -1;
+           if (stack.getOrCreateTag().contains("color")) {
+               return stack.getOrCreateTag().getInt("color");
+           }
+           return pattern.getColor();
+        }), ModItems.PATTERNSPRIA.get());
     }
 
     public static float[] hexToRGB(int hex) {

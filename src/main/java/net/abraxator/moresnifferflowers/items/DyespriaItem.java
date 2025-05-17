@@ -77,13 +77,13 @@ public class DyespriaItem extends BlockItem implements Colorable {
         if (checkDyedBlock(blockState) || blockState.getBlock() instanceof Colorable && !dye.isEmpty() || (CapabilityList.getBlockPatterns().hasPattern(blockPos, level) && !player.isCrouching())) {
             DyespriaMode dyespriaMode = getMode(stack);
             AtomicBoolean canContinueDyeing = new AtomicBoolean(true);
-            DyespriaMode.DyespriaSelector dyespriaSelector = new DyespriaMode.DyespriaSelector(blockPos, blockState, getMatchTag(blockState), level, pContext.getClickedFace());
+            DyespriaMode.DyespriaSelector dyespriaSelector = new DyespriaMode.DyespriaSelector(blockPos, blockState, getMatchTag(blockState), level, pContext.getClickedFace(), player.isCrouching());
             Set<BlockPos> set = dyespriaMode.getSelector().apply(dyespriaSelector);
             set.stream().sorted(new EntityDistanceComparator(blockPos)).takeWhile(t -> canContinueDyeing.get()).forEach(blockPos1 -> {
                 var state = level.getBlockState(blockPos1);
 
                 if(!Dye.getDyeFromDyespria(stack).isEmpty()) {
-                    colorOne(stack, level, blockPos1, state, pContext.getClickedFace(), player);
+                    colorOne(stack, level, blockPos1, state, pContext.getClickedFace(), player, CapabilityList.getBlockPatterns().hasPattern(blockPos, level));
                 } else canContinueDyeing.set(false);
             });
 
@@ -123,14 +123,14 @@ public class DyespriaItem extends BlockItem implements Colorable {
         return state == null ? null : state.setValue(ModStateProperties.AGE_3, 3);
     }
 
-    public void colorOne(ItemStack stack, Level level, BlockPos blockPos, BlockState blockState, Direction face, Player player) {
+    public void colorOne(ItemStack stack, Level level, BlockPos blockPos, BlockState blockState, Direction face, Player player, boolean clickedPattern) {
         Dye dye = Dye.getDyeFromDyespria(stack);
         
         if (!canDye(blockState, dye)) {
             return;
         }
 
-        if (CapabilityList.getBlockPatterns().hasPattern(blockPos, level) && !player.isCrouching()){
+        if (CapabilityList.getBlockPatterns().hasPattern(blockPos, level) && !player.isCrouching() && clickedPattern){
             colorPattern(dye, level, blockPos);
             finishColoring(dye, level, stack, blockPos, face);
             return;

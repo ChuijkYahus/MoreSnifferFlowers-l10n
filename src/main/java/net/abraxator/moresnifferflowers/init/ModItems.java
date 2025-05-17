@@ -121,9 +121,9 @@ public class ModItems {
     public static final RegistryObject<Item> PATTERNFLOWER_SEEDS = ITEMS.register("patternflower_seeds", () -> new ItemNameBlockItem(ModBlocks.PATTERNFLOWER.get(), new Item.Properties()));
     public static final RegistryObject<Item> PATTERNSPRIA = ITEMS.register("patternspria", () -> new PatternspriaItem(new Item.Properties()));
 
-    public static final RegistryObject<Item> BLOCK_PATTERN_1 = ITEMS.register("block_pattern_1", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_2 = ITEMS.register("block_pattern_2", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_3 = ITEMS.register("block_pattern_3", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> BLOCK_PATTERN_LINES = ITEMS.register("block_pattern_lines", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> BLOCK_PATTERN_BRICKS = ITEMS.register("block_pattern_bricks", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> BLOCK_PATTERN_FOCUS = ITEMS.register("block_pattern_focus", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BLOCK_PATTERN_4 = ITEMS.register("block_pattern_4", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BLOCK_PATTERN_5 = ITEMS.register("block_pattern_5", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BLOCK_PATTERN_6 = ITEMS.register("block_pattern_6", () -> new Item(new Item.Properties()));

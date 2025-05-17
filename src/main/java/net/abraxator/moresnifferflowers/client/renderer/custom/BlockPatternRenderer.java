@@ -25,6 +25,7 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.model.lighting.QuadLighter;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -93,15 +94,24 @@ public class BlockPatternRenderer {
             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
             translateToFace(poseStack, direction, pos);
 
+            Vec3i n = direction.getNormal();
+            float nx = n.getX(), ny = n.getY(), nz = n.getZ();
+
+            float ao = QuadLighter.calculateShade(nx, ny, nz, false);
+
             int rgb = color;
             float r = ((rgb >> 16) & 0xFF) / 255f;
             float g = ((rgb >> 8) & 0xFF) / 255f;
             float b = (rgb & 0xFF) / 255f;
 
+            r *= ao;
+            g *= ao;
+            b *= ao;
+
+
             Matrix4f pose = poseStack.last().pose();
             Matrix3f normal = poseStack.last().normal();
-            Vec3i n = direction.getNormal();
-            float nx = n.getX(), ny = n.getY(), nz = n.getZ();
+
 
 
             /*  if (direction == Direction.UP) {

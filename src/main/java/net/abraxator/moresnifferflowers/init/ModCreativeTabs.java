@@ -164,9 +164,9 @@ public class ModCreativeTabs {
                 output.accept(ModItems.CORRUPTED_BOAT.get());
                 output.accept(ModItems.CORRUPTED_CHEST_BOAT.get());
 
-                output.accept(ModItems.BLOCK_PATTERN_1.get());
-                output.accept(ModItems.BLOCK_PATTERN_2.get());
-                output.accept(ModItems.BLOCK_PATTERN_3.get());
+                output.accept(ModItems.BLOCK_PATTERN_LINES.get());
+                output.accept(ModItems.BLOCK_PATTERN_BRICKS.get());
+                output.accept(ModItems.BLOCK_PATTERN_FOCUS.get());
                 output.accept(ModItems.BLOCK_PATTERN_4.get());
                 output.accept(ModItems.BLOCK_PATTERN_5.get());
                 output.accept(ModItems.BLOCK_PATTERN_6.get());

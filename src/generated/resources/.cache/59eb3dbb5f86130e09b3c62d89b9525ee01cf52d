@@ -1,4 +1,4 @@
-// 1.20.1	2025-05-08T18:23:55.9516299	Loot Tables
+// 1.20.1	2025-05-17T17:02:23.2914674	Loot Tables
 421d4c078004a75f24902e1d857ee88a3c0688d2 data/moresnifferflowers/loot_tables/blocks/acidripia.json
 16882dced81963aacd1b4d32ed8e0ca33a618998 data/moresnifferflowers/loot_tables/blocks/acid_filled_cauldron.json
 e37d1e0a9608760103f1f41ea813a4050dadc2fc data/moresnifferflowers/loot_tables/blocks/amber_block.json
@@ -66,6 +66,7 @@ c341fb5a22d3b4b473723f57bd74566f6320a75b data/moresnifferflowers/loot_tables/blo
 0c55a4c23f10c4042b10a2f7c87545840f30f8f5 data/moresnifferflowers/loot_tables/blocks/giant_potato.json
 8d08e4ba666cce76ccce5ea047a834a992e33b5a data/moresnifferflowers/loot_tables/blocks/giant_wheat.json
 c0285bf2c3012443b9dfd40dac1f7755e57631c2 data/moresnifferflowers/loot_tables/blocks/gloomberry_vine.json
+5188ed9524e18f254cc7e102f0ca6426ed8a8996 data/moresnifferflowers/loot_tables/blocks/patternflower.json
 da92642078acdf6e1a56f9f083406fada7dd7e38 data/moresnifferflowers/loot_tables/blocks/potted_corrupted_sapling.json
 2c2c33d7d8d3705623529db47ce00dc9f019d2ab data/moresnifferflowers/loot_tables/blocks/potted_dyespria.json
 869ac87169cb031b68c352948b2195ae71d85f19 data/moresnifferflowers/loot_tables/blocks/potted_vivicus_sapling.json

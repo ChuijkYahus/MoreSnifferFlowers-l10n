@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.items;
 
 import net.abraxator.moresnifferflowers.blockentities.DyespriaPlantBlockEntity;
+import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
@@ -49,6 +50,12 @@ public class DyescrapiaItem extends BlockItem {
         var stack = pContext.getItemInHand();
         int uses = getDyescrapiaUses(stack) + 1;
 
+        if (CapabilityList.getBlockPatterns().hasPattern(pos, level) && !player.isCrouching()) {
+            if (!level.isClientSide){
+                CapabilityList.getBlockPatterns().removePattern(pos, level);
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
 
         if(state.getBlock() instanceof Colorable colorable) {
             var dye = new Dye(colorable.getDyeFromBlock(state).color(), 1);

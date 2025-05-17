@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.init;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.components.Dye;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
@@ -23,6 +24,14 @@ public class ModItemProperties {
             Component component = pStack.getDisplayName();
             String s = component.getString();
             if(s.equals("[og]")) {
+                return 1.0F;
+            } else {
+                return 0.0F;
+            }
+        });
+
+        ItemProperties.register(ModItems.PATTERNSPRIA.get(), MoreSnifferFlowers.loc("patternspria"), (pStack, pLevel, pEntity, pSeed) -> {
+            if(BlockPattern.fromPatternspria(pStack) != null) {
                 return 1.0F;
             } else {
                 return 0.0F;

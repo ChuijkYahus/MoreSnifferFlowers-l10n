@@ -187,6 +187,11 @@ public class ModRecipesProvider extends RecipeProvider {
                 .unlockedBy("has_salty_spice", has(ModItems.SALTY_SPICE.get()))
                 .save(pRecipeOutput);
 
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.PATTERNSPRIA.get())
+                .requires(Ingredient.of(ModTags.ModItemTags.BLOCK_PATTERNS), 1)
+                .unlockedBy("has_block_pattern", has(ModTags.ModItemTags.BLOCK_PATTERNS))
+                .save(pRecipeOutput);
+
         partsRecycling(pRecipeOutput, ModBlocks.DRIPSALT.get().asItem(), ModItems.SALTY_SPICE.get(), 5);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BEROOT_CAULDRON.get().asItem(), 1)
@@ -213,6 +218,10 @@ public class ModRecipesProvider extends RecipeProvider {
     }
 
     private void trimCrafting(Consumer<FinishedRecipe> pRecipeOutput, ItemLike trim, Ingredient ingredient) {
+        getSave(pRecipeOutput, trim, ingredient);
+    }
+
+    private static void getSave(Consumer<FinishedRecipe> pRecipeOutput, ItemLike trim, Ingredient ingredient) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, trim, 2)
                 .pattern("ABA")
                 .pattern("ACA")

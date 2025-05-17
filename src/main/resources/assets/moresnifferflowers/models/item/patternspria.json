@@ -6,7 +6,7 @@
   "overrides": [
     {
       "predicate": {
-        "moresnifferflowers:color": 1.0
+        "moresnifferflowers:patternspria": 1.0
       },
       "model": "moresnifferflowers:item/patternspria_active"
     }

@@ -22,6 +22,7 @@ public class ModTags {
         public static final TagKey<Item> REBREWED_POTIONS = create(Registries.ITEM ,"rebrewed_potions");
         public static final TagKey<Item> VIVICUS_LOGS = create(Registries.ITEM ,"vivicus_logs");
         public static final TagKey<Item> CORRUPTED_LOGS = create(Registries.ITEM ,"corrupted_logs");
+        public static final TagKey<Item> BLOCK_PATTERNS = create(Registries.ITEM ,"block_patterns");
 
     }
 

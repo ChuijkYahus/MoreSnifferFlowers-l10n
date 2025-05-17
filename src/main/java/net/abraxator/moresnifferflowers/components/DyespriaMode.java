@@ -65,7 +65,7 @@ public enum DyespriaMode implements StringRepresentable {
         return textColor;
     }
 
-    public static record DyespriaSelector(BlockPos originalPos, BlockState blockState, @Nullable TagKey<Block> tag, Level level, Direction clickedDir) {
+    public static record DyespriaSelector(BlockPos originalPos, BlockState blockState, @Nullable TagKey<Block> tag, Level level, Direction clickedDir, boolean isCrouching) {
         public Set<BlockPos> single() {
             return Set.of(originalPos());
         }
@@ -126,11 +126,14 @@ public enum DyespriaMode implements StringRepresentable {
             boolean isColorableAndColored = state.is(blockState.getBlock()) 
                     && state.hasProperty(ModStateProperties.COLOR) 
                     && state.getValue(ModStateProperties.COLOR).equals(blockState.getValue(ModStateProperties.COLOR));
-            if (CapabilityList.getBlockPatterns().hasPattern(pos, level) && CapabilityList.getBlockPatterns().hasPattern(originalPos, level)){
+
+            if (CapabilityList.getBlockPatterns().hasPattern(originalPos, level)){
+                if (!CapabilityList.getBlockPatterns().hasPattern(pos, level) || isCrouching) return false;
                 int originalId = CapabilityList.getBlockPatterns().getPattern(originalPos, level).patternId();
                 int thisId = CapabilityList.getBlockPatterns().getPattern(pos, level).patternId();
                 return originalId == thisId;
             }
+
             return isVanilla || isColorableAndColored || (tag != null && level.getBlockState(pos).is(tag));
         }
     }
