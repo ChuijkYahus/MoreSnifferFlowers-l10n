@@ -6,6 +6,7 @@ import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
 import net.abraxator.moresnifferflowers.blocks.SaltemoneBlock;
+import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
 import net.abraxator.moresnifferflowers.events.custom.SlotTakeEvent;
@@ -207,6 +208,15 @@ public class ForgeEvents {
                     event.setCanceled(true);
                 }
             }
+        if (CapabilityList.getBlockPatterns().hasPattern(pos, level) && itemStack.is(Items.GLOW_INK_SAC)){
+            BlockPatternCapability.PatternData data = CapabilityList.getBlockPatterns().getPattern(pos, level);
+            if (!data.isGlowing()){
+                CapabilityList.getBlockPatterns().enableGlowing(level, pos);
+                itemStack.shrink(1);
+                event.setCancellationResult(InteractionResult.SUCCESS);
+                event.setCanceled(true);
+            }
+        }
     }
 
     @SubscribeEvent

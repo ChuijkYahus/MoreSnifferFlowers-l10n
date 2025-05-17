@@ -74,8 +74,9 @@ public class BlockPatternRenderer {
                         skyLight = Math.min(skyLight, 15);
 
                         int packed = LightTexture.pack(packedLight, skyLight);
+                        if (data.isGlowing()) packed = LightTexture.FULL_BRIGHT;
 
-                        cachedQuads.add(RenderQuad.create(pos, dir, data.color(), sprite, packed));
+                        cachedQuads.add(RenderQuad.create(pos, dir, data.color(), sprite, packed, data.direction(), data.isGlowing()));
                     }
                 }
             }
@@ -83,10 +84,10 @@ public class BlockPatternRenderer {
     }
 
 
-    public record RenderQuad(BlockPos pos, Direction direction, int color, TextureAtlasSprite sprite, int packedLight) {
+    public record RenderQuad(BlockPos pos, Direction direction, int color, TextureAtlasSprite sprite, int packedLight, Direction rotation, boolean isGlowing) {
 
-        public static RenderQuad create(BlockPos pos, Direction face, int color, TextureAtlasSprite sprite, int light) {
-            return new RenderQuad(pos.immutable(), face, color, sprite, light);
+        public static RenderQuad create(BlockPos pos, Direction face, int color, TextureAtlasSprite sprite, int light, Direction rotation, boolean isGlowing) {
+            return new RenderQuad(pos.immutable(), face, color, sprite, light, rotation, isGlowing);
         }
 
         private void render(PoseStack poseStack, VertexConsumer buffer) {
@@ -104,15 +105,15 @@ public class BlockPatternRenderer {
             float g = ((rgb >> 8) & 0xFF) / 255f;
             float b = (rgb & 0xFF) / 255f;
 
-            r *= ao;
-            g *= ao;
-            b *= ao;
+            if (!isGlowing) {
+                r *= ao;
+                g *= ao;
+                b *= ao;
+            }
 
 
             Matrix4f pose = poseStack.last().pose();
             Matrix3f normal = poseStack.last().normal();
-
-
 
             /*  if (direction == Direction.UP) {
                    r = 1F;
@@ -120,23 +121,64 @@ public class BlockPatternRenderer {
                    b = 1F;
                }*/
 
+            float u0 = sprite.getU0();
+            float u1 = sprite.getU1();
+            float u2 = sprite.getU1();
+            float u3 = sprite.getU0();
+
+            float v0 = sprite.getV1();
+            float v1 = sprite.getV1();
+            float v2 = sprite.getV0();
+            float v3 = sprite.getV0();
+
+            if (rotation == Direction.EAST) {
+                u0 = sprite.getU0();
+                u1 = sprite.getU0();
+                u2 = sprite.getU1();
+                u3 = sprite.getU1();
+                v0 = sprite.getV1();
+                v1 = sprite.getV0();
+                v2 = sprite.getV0();
+                v3 = sprite.getV1();
+            }
+            if (rotation == Direction.SOUTH) {
+                u0 = sprite.getU1();
+                u1 = sprite.getU0();
+                u2 = sprite.getU0();
+                u3 = sprite.getU1();
+                v0 = sprite.getV0();
+                v1 = sprite.getV0();
+                v2 = sprite.getV1();
+                v3 = sprite.getV1();
+            }
+            if (rotation == Direction.WEST) {
+                u0 = sprite.getU1();
+                u1 = sprite.getU1();
+                u2 = sprite.getU0();
+                u3 = sprite.getU0();
+                v0 = sprite.getV0();
+                v1 = sprite.getV1();
+                v2 = sprite.getV1();
+                v3 = sprite.getV0();
+            }
+
             if (direction == Direction.UP || direction == Direction.DOWN) {
-                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(u0, v0).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(u1, v1).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(u2, v2).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(u3, v3).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
 
             } else if (direction == Direction.SOUTH){
-                buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(u0, v0).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(u1, v1).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(u2, v2).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(u3, v3).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
 
             } else {
-                buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV0()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(sprite.getU1(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(sprite.getU0(), sprite.getV1()).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(u0, v3).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(u1, v2).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(u2, v1).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(u3, v0).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
             }
 
             poseStack.popPose();

@@ -76,7 +76,7 @@ public class PatternspriaItem extends Item {
 
 
                 if(canUse(blockPos1, level, stack) && BlockPattern.fromPatternspria(stack) != null) {
-                    patternOne(stack, level, blockPos1, BlockPattern.fromPatternspria(stack), pContext.getClickedFace());
+                    patternOne(stack, level, blockPos1, BlockPattern.fromPatternspria(stack), pContext.getClickedFace(), pContext.getHorizontalDirection());
                     currentCount.getAndDecrement();
 
                 } else if (stack.getOrCreateTag().getInt("amount") <= 0 || BlockPattern.fromPatternspria(stack) == null){
@@ -99,7 +99,7 @@ public class PatternspriaItem extends Item {
         return PatternspriaMode.byIndex(stack.getOrCreateTag().getByte("mode"));
     }
 
-    public boolean patternOne(ItemStack stack, Level level, BlockPos blockPos, BlockPattern pattern, Direction face) {
+    public boolean patternOne(ItemStack stack, Level level, BlockPos blockPos, BlockPattern pattern, Direction face, Direction horizontalDirection) {
         BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
         if (!canUse(blockPos, level, stack) && pattern == null) {
             return false;
@@ -109,7 +109,7 @@ public class PatternspriaItem extends Item {
         int color = getColor(stack);
         if (blockPatterns.hasPattern(blockPos, level)) color = blockPatterns.getPattern(blockPos, level).color();
 
-        if (!level.isClientSide) blockPatterns.setPattern(blockPos, new BlockPatternCapability.PatternData(pattern.ordinal(), color), level);
+        if (!level.isClientSide) blockPatterns.setPattern(blockPos, new BlockPatternCapability.PatternData(pattern.ordinal(), color, horizontalDirection, false), level);
 
         finishColoring(pattern.getItemStack(stack), level, stack, blockPos, face);
 

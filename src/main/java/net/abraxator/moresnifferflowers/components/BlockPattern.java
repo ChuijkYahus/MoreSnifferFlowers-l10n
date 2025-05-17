@@ -18,6 +18,18 @@ public enum BlockPattern implements StringRepresentable {
     LINES("lines", ModItems.BLOCK_PATTERN_LINES.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
     BRICKS("bricks", ModItems.BLOCK_PATTERN_BRICKS.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
     FOCUS("focus", ModItems.BLOCK_PATTERN_FOCUS.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
+    BUBBLES("bubbles", ModItems.BLOCK_PATTERN_BUBBLES.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
+    CLOUDS("clouds", ModItems.BLOCK_PATTERN_CLOUDS.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
+    DEEPSLATE("deepslate", ModItems.BLOCK_PATTERN_DEEPSLATE.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
+    DIAMOND("diamond", ModItems.BLOCK_PATTERN_DIAMOND.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
+    EYE("eye", ModItems.BLOCK_PATTERN_EYE.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
+    HEARTS("hearts", ModItems.BLOCK_PATTERN_HEARTS.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
+    HONEYCOMB("honeycomb", ModItems.BLOCK_PATTERN_HONEYCOMB.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
+    PAWS("paws", ModItems.BLOCK_PATTERN_PAWS.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
+    PRISMARINE("prismarine", ModItems.BLOCK_PATTERN_PRISMARINE.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
+    SPROUTS("sprouts", ModItems.BLOCK_PATTERN_SPROUTS.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
+    STARS("stars", ModItems.BLOCK_PATTERN_STARS.get(), Color.HSBtoRGB(0.5f, 0.5f, 0.5f)),
+
 
     ;
 

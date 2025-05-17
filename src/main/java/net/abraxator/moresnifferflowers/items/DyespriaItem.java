@@ -165,7 +165,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
 
        int finalColor = ((r&0x0ff)<<16)|((g&0x0ff)<<8)|(b&0x0ff);
 
-       blockPatterns.setPattern(pos, new BlockPatternCapability.PatternData(patternId, finalColor), level);
+       blockPatterns.recolor(level, pos, finalColor);
     }
 
     @Override

@@ -35,9 +35,9 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         this.tag(ModTags.ModItemTags.CROPRESSED_CROPS).add(ModItems.CROPRESSED_CARROT.get(), ModItems.CROPRESSED_POTATO.get(), ModItems.CROPRESSED_WHEAT.get(), ModItems.CROPRESSED_BEETROOT.get(), ModItems.CROPRESSED_NETHERWART.get());
         this.tag(ModTags.ModItemTags.CROP_SMITHING_TEMPLATES).add(ModItems.NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.TATER_ARMOR_TRIM_SMITHING_TEMPLATE.get(), ModItems.GRAIN_ARMOR_TRIM_SMITHING_TEMPLATE.get());
 
-        this.tag(ModTags.ModItemTags.BLOCK_PATTERNS).add(ModItems.BLOCK_PATTERN_LINES.get(), ModItems.BLOCK_PATTERN_BRICKS.get(), ModItems.BLOCK_PATTERN_FOCUS.get(), ModItems.BLOCK_PATTERN_4.get(), ModItems.BLOCK_PATTERN_5.get(), ModItems.BLOCK_PATTERN_6.get(),
-                ModItems.BLOCK_PATTERN_7.get(), ModItems.BLOCK_PATTERN_8.get(), ModItems.BLOCK_PATTERN_9.get(), ModItems.BLOCK_PATTERN_10.get(),ModItems.BLOCK_PATTERN_11.get(), ModItems.BLOCK_PATTERN_12.get(),
-                ModItems.BLOCK_PATTERN_13.get(), ModItems.BLOCK_PATTERN_14.get(), ModItems.BLOCK_PATTERN_15.get(), ModItems.BLOCK_PATTERN_16.get());
+        this.tag(ModTags.ModItemTags.BLOCK_PATTERNS).add(ModItems.BLOCK_PATTERN_LINES.get(), ModItems.BLOCK_PATTERN_BRICKS.get(), ModItems.BLOCK_PATTERN_FOCUS.get(), ModItems.BLOCK_PATTERN_BUBBLES.get(), ModItems.BLOCK_PATTERN_CLOUDS.get(), ModItems.BLOCK_PATTERN_DEEPSLATE.get(),
+                ModItems.BLOCK_PATTERN_DIAMOND.get(), ModItems.BLOCK_PATTERN_EYE.get(), ModItems.BLOCK_PATTERN_HEARTS.get(), ModItems.BLOCK_PATTERN_HONEYCOMB.get(),ModItems.BLOCK_PATTERN_PAWS.get(), ModItems.BLOCK_PATTERN_PRISMARINE.get(),
+                ModItems.BLOCK_PATTERN_SPROUTS.get(), ModItems.BLOCK_PATTERN_STARS.get(), ModItems.BLOCK_PATTERN_15.get(), ModItems.BLOCK_PATTERN_16.get());
 
         this.tag(ModTags.ModItemTags.CROPRESSOR_PIECES).add(ModItems.SCRAP_PIECE.get(), ModItems.BELT_PIECE.get(), ModItems.ENGINE_PIECE.get(), ModItems.TUBE_PIECE.get(), ModItems.PRESS_PIECE.get());
 

@@ -167,17 +167,17 @@ public class ModCreativeTabs {
                 output.accept(ModItems.BLOCK_PATTERN_LINES.get());
                 output.accept(ModItems.BLOCK_PATTERN_BRICKS.get());
                 output.accept(ModItems.BLOCK_PATTERN_FOCUS.get());
-                output.accept(ModItems.BLOCK_PATTERN_4.get());
-                output.accept(ModItems.BLOCK_PATTERN_5.get());
-                output.accept(ModItems.BLOCK_PATTERN_6.get());
-                output.accept(ModItems.BLOCK_PATTERN_7.get());
-                output.accept(ModItems.BLOCK_PATTERN_8.get());
-                output.accept(ModItems.BLOCK_PATTERN_9.get());
-                output.accept(ModItems.BLOCK_PATTERN_10.get());
-                output.accept(ModItems.BLOCK_PATTERN_11.get());
-                output.accept(ModItems.BLOCK_PATTERN_12.get());
-                output.accept(ModItems.BLOCK_PATTERN_13.get());
-                output.accept(ModItems.BLOCK_PATTERN_14.get());
+                output.accept(ModItems.BLOCK_PATTERN_BUBBLES.get());
+                output.accept(ModItems.BLOCK_PATTERN_CLOUDS.get());
+                output.accept(ModItems.BLOCK_PATTERN_DEEPSLATE.get());
+                output.accept(ModItems.BLOCK_PATTERN_DIAMOND.get());
+                output.accept(ModItems.BLOCK_PATTERN_EYE.get());
+                output.accept(ModItems.BLOCK_PATTERN_HEARTS.get());
+                output.accept(ModItems.BLOCK_PATTERN_HONEYCOMB.get());
+                output.accept(ModItems.BLOCK_PATTERN_PAWS.get());
+                output.accept(ModItems.BLOCK_PATTERN_PRISMARINE.get());
+                output.accept(ModItems.BLOCK_PATTERN_SPROUTS.get());
+                output.accept(ModItems.BLOCK_PATTERN_STARS.get());
                 output.accept(ModItems.BLOCK_PATTERN_15.get());
                 output.accept(ModItems.BLOCK_PATTERN_16.get());
 

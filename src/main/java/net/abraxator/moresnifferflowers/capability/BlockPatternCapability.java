@@ -1,9 +1,11 @@
 package net.abraxator.moresnifferflowers.capability;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.components.DirectionStorageHelper;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.networking.UpdateBlockPatternsPacket;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -25,9 +27,9 @@ public class BlockPatternCapability {
 
     public void addTestPatterns(Level level){
         MoreSnifferFlowers.LOGGER.warn("No saved Block Patterns found... Adding test patterns");
-        setPattern(new BlockPos(0, -55, 0), new PatternData(1, DyeColor.RED.getTextColor()), level);
-        setPattern(new BlockPos(1, -55, 0), new PatternData(0, DyeColor.GREEN.getTextColor()), level);
-        setPattern(new BlockPos(2, -55, 0), new PatternData(1, DyeColor.BROWN.getTextColor()), level);
+        setPattern(new BlockPos(0, -55, 0), new PatternData(1, DyeColor.RED.getTextColor(), Direction.NORTH, false), level);
+        setPattern(new BlockPos(1, -55, 0), new PatternData(0, DyeColor.GREEN.getTextColor(), Direction.NORTH, false), level);
+        setPattern(new BlockPos(2, -55, 0), new PatternData(1, DyeColor.BROWN.getTextColor(), Direction.NORTH, false), level);
     }
 
     public void setPattern(BlockPos pos, PatternData pattern, Level level) {
@@ -83,6 +85,16 @@ public class BlockPatternCapability {
         this.patterns.clear();
     }
 
+    public void recolor(Level level, BlockPos pos, int color) {
+        PatternData data = getPattern(pos, level);
+        setPattern(pos, new PatternData(data.patternId, color, data.direction, data.isGlowing), level);
+    }
+
+    public void enableGlowing(Level level, BlockPos pos) {
+        PatternData data = getPattern(pos, level);
+        setPattern(pos, new PatternData(data.patternId, data.color, data.direction, true), level);
+    }
+
     public CompoundTag save(CompoundTag tag) {
         ListTag dimensionList = new ListTag();
         for (var dimEntry : patterns.entrySet()) {
@@ -124,18 +136,22 @@ public class BlockPatternCapability {
         }
     }
 
-    public record PatternData(int patternId, int color) {
+    public record PatternData(int patternId, int color, Direction direction, boolean isGlowing) {
         public CompoundTag save() {
             CompoundTag tag = new CompoundTag();
             tag.putInt("pattern", patternId);
             tag.putInt("color", color);
+            tag.putInt("direction", DirectionStorageHelper.directionToInt(direction));
+            tag.putBoolean("isGlowing", isGlowing);
             return tag;
         }
 
         public static PatternData load(CompoundTag tag) {
             int patternId = tag.getInt("pattern");
             int color = tag.getInt("color");
-            return new PatternData(patternId, color);
+            Direction direction1 = DirectionStorageHelper.intToDirection(tag.getInt("direction"));
+            boolean isGlowing = tag.getBoolean("isGlowing");
+            return new PatternData(patternId, color, direction1, isGlowing);
         }
     }
 }
