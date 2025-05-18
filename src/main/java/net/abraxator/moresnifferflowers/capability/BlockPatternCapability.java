@@ -14,7 +14,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -23,17 +22,21 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class BlockPatternCapability {
-    private Map<ResourceKey<Level>, Map<BlockPos, PatternData>> patterns = new HashMap<>();
-
-    public void addTestPatterns(Level level){
-        MoreSnifferFlowers.LOGGER.warn("No saved Block Patterns found... Adding test patterns");
-        setPattern(new BlockPos(0, -55, 0), new PatternData(1, DyeColor.RED.getTextColor(), Direction.NORTH, false), level);
-        setPattern(new BlockPos(1, -55, 0), new PatternData(0, DyeColor.GREEN.getTextColor(), Direction.NORTH, false), level);
-        setPattern(new BlockPos(2, -55, 0), new PatternData(1, DyeColor.BROWN.getTextColor(), Direction.NORTH, false), level);
-    }
+    private final Map<ResourceKey<Level>, Map<BlockPos, PatternData>> patterns = new HashMap<>();
 
     public void setPattern(BlockPos pos, PatternData pattern, Level level) {
         patterns.computeIfAbsent(level.dimension(), levelResourceKey -> new HashMap<>()).put(pos.immutable(), pattern);
+        if (level instanceof ServerLevel serverLevel) {
+            sync();
+            BlockPatternSavedData.get(serverLevel).setDirty();
+        }
+    }
+
+    public void setBulkPatterns(Map<BlockPos, PatternData> patternMap, Level level) {
+        patterns.computeIfAbsent(level.dimension(), levelResourceKey -> new HashMap<>());
+        patternMap.forEach((pos, patternData) -> {
+            patterns.get(level.dimension()).put(pos, patternData);
+        });
         if (level instanceof ServerLevel serverLevel) {
             sync();
             BlockPatternSavedData.get(serverLevel).setDirty();
@@ -66,16 +69,20 @@ public class BlockPatternCapability {
         return patterns.isEmpty();
     }
 
+    public boolean isNull(Level level) {
+        return patterns.get(level.dimension()) == null;
+    }
+
     public void sync(){
         CompoundTag compoundtag = this.save(new CompoundTag());
         ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new UpdateBlockPatternsPacket(compoundtag));
     }
 
-    public void setFromDisk(ServerLevel serverLevel) {
+/*    public void setFromDisk(ServerLevel serverLevel) {
         BlockPatternCapability capability = BlockPatternSavedData.get(serverLevel).getStorage();
         this.patterns = capability.getMap();
         sync();
-    }
+    }*/
 
     private Map<ResourceKey<Level>, Map<BlockPos, PatternData>> getMap(){
         return patterns;
@@ -84,6 +91,12 @@ public class BlockPatternCapability {
     public void clear(){
         this.patterns.clear();
     }
+
+    public int count(Level level, int flag) {
+        if (isNull(level)) MoreSnifferFlowers.LOGGER.error("BlockPatterns are null for flag: "+ flag + " patterns:" + patterns);
+        return patterns.get(level.dimension()).size();
+    }
+
 
     public void recolor(Level level, BlockPos pos, int color) {
         PatternData data = getPattern(pos, level);

@@ -3,7 +3,10 @@ package net.abraxator.moresnifferflowers.items;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
-import net.abraxator.moresnifferflowers.components.*;
+import net.abraxator.moresnifferflowers.components.BlockPattern;
+import net.abraxator.moresnifferflowers.components.DyespriaMode;
+import net.abraxator.moresnifferflowers.components.EntityDistanceComparator;
+import net.abraxator.moresnifferflowers.components.PatternspriaMode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,9 +36,8 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.awt.*;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -44,6 +46,7 @@ public class PatternspriaItem extends Item {
         super(properties);
     }
 
+    private final Map<BlockPos, BlockPatternCapability.PatternData> cached_patterns = new HashMap<>();
     public static final int DEFAULT_COLOR = 0xA9948D;
 
     @Override
@@ -69,11 +72,10 @@ public class PatternspriaItem extends Item {
             AtomicBoolean canContinueDyeing = new AtomicBoolean(true);
             PatternspriaMode dyespriaMode = getMode(stack);
             PatternspriaMode.DyespriaSelector dyespriaSelector = new PatternspriaMode.DyespriaSelector(blockPos, level, pContext.getClickedFace());
+
             Set<BlockPos> set = dyespriaMode.getSelector().apply(dyespriaSelector);
             set.stream().sorted(new EntityDistanceComparator(blockPos)).takeWhile(t -> canContinueDyeing.get()).forEach(blockPos1 -> {
                 var state = level.getBlockState(blockPos1);
-
-
 
                 if(canUse(blockPos1, level, stack) && BlockPattern.fromPatternspria(stack) != null) {
                     patternOne(stack, level, blockPos1, BlockPattern.fromPatternspria(stack), pContext.getClickedFace(), pContext.getHorizontalDirection());
@@ -83,11 +85,15 @@ public class PatternspriaItem extends Item {
                     canContinueDyeing.set(false);
                 }
 
-                if (oldCount - currentCount.get() >= 16) {
+                if (oldCount - currentCount.get() >= 64) {
                     canContinueDyeing.set(false);
                 }
             });
 
+            if (!level.isClientSide) {
+                CapabilityList.getBlockPatterns().setBulkPatterns(cached_patterns, level);
+                cached_patterns.clear();
+            }
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
 
@@ -105,11 +111,12 @@ public class PatternspriaItem extends Item {
             return false;
         }
 
-
         int color = getColor(stack);
         if (blockPatterns.hasPattern(blockPos, level)) color = blockPatterns.getPattern(blockPos, level).color();
 
-        if (!level.isClientSide) blockPatterns.setPattern(blockPos, new BlockPatternCapability.PatternData(pattern.ordinal(), color, horizontalDirection, false), level);
+        if (!level.isClientSide) {
+            cached_patterns.put(blockPos.immutable(), new BlockPatternCapability.PatternData(pattern.ordinal(), color, horizontalDirection, false));
+        }
 
         finishColoring(pattern.getItemStack(stack), level, stack, blockPos, face);
 

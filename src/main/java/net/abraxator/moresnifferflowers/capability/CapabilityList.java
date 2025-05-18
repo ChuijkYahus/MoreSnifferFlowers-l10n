@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.capability;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -67,10 +68,14 @@ public class CapabilityList {
             }
         }
     }
-    private static final BlockPatternCapability BLOCK_PATTERN_CAPABILITY = new BlockPatternCapability();
+    private static BlockPatternCapability BLOCK_PATTERN_CAPABILITY = new BlockPatternCapability();
 
     public static BlockPatternCapability getBlockPatterns() {
         return BLOCK_PATTERN_CAPABILITY;
+    }
+
+    public static void setFromDisk(ServerLevel level) {
+        BLOCK_PATTERN_CAPABILITY = BlockPatternSavedData.get(level).getStorage();
     }
 
 }

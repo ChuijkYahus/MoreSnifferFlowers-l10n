@@ -212,7 +212,7 @@ public class ForgeEvents {
             BlockPatternCapability.PatternData data = CapabilityList.getBlockPatterns().getPattern(pos, level);
             if (!data.isGlowing()){
                 CapabilityList.getBlockPatterns().enableGlowing(level, pos);
-                itemStack.shrink(1);
+                if (!player.isCreative()) itemStack.shrink(1);
                 event.setCancellationResult(InteractionResult.SUCCESS);
                 event.setCanceled(true);
             }

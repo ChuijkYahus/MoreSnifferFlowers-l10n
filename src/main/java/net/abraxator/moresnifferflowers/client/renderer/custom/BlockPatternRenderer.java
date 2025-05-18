@@ -31,6 +31,7 @@ import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class BlockPatternRenderer {
 
@@ -55,8 +56,11 @@ public class BlockPatternRenderer {
         int configuredRenderDistance = ModClientConfig.DYE_PATTERN_RENDER_DISTANCE.get();
         int renderDistance = configuredRenderDistance < 0 ? renderDistancePlayer*16 / Math.abs(configuredRenderDistance) : configuredRenderDistance;
 
+        Stream<BlockPos> patternPositionsNear = storage.getPatternPositionsNear(camPos, renderDistance, level);
+        if (patternPositionsNear == null) return;
+        List<BlockPos> positions = patternPositionsNear.toList();
 
-        storage.getPatternPositionsNear(camPos, renderDistance, level).forEach(pos -> {
+        for (BlockPos pos : positions) {
             BlockPatternCapability.PatternData data = storage.getPattern(pos, level);
 
             if (data != null && frustum.isVisible(new AABB(pos))) {
@@ -66,21 +70,16 @@ public class BlockPatternRenderer {
                 BlockState state = level.getBlockState(pos);
 
                 for (Direction dir : Direction.values()) {
-                    if (state.isFaceSturdy(level, pos, dir) && !level.getBlockState(pos.relative(dir)).isFaceSturdy(level, pos.relative(dir), dir.getOpposite())) {
-                        int packedLight = level.getBrightness(LightLayer.BLOCK, pos.relative(dir));
-                        int skyLight = level.getBrightness(LightLayer.SKY, pos.relative(dir));
+                    if (state.isFaceSturdy(level, pos, dir) && (!level.getBlockState(pos.relative(dir)).isFaceSturdy(level, pos.relative(dir), dir.getOpposite()) || !level.getBlockState(pos.relative(dir)).canOcclude() )) {
 
-                        packedLight = Math.min(packedLight, 15);
-                        skyLight = Math.min(skyLight, 15);
-
-                        int packed = LightTexture.pack(packedLight, skyLight);
+                        int packed = getPackedLight(level, pos.relative(dir));
                         if (data.isGlowing()) packed = LightTexture.FULL_BRIGHT;
 
                         cachedQuads.add(RenderQuad.create(pos, dir, data.color(), sprite, packed, data.direction(), data.isGlowing()));
                     }
                 }
             }
-        });
+        }
     }
 
 
@@ -242,6 +241,12 @@ public class BlockPatternRenderer {
 
             }
         }
+    }
+
+    private static int getPackedLight(Level level, BlockPos pos) {
+        int blockLight = level.getBrightness(LightLayer.BLOCK, pos);
+        int skyLight = level.getBrightness(LightLayer.SKY, pos);
+        return LightTexture.pack(blockLight, skyLight);
     }
 
     public static class CameraTracker {

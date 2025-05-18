@@ -83,9 +83,7 @@ public class CapabilityEvents {
         player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
             cap.sync(player);
         });
-        if (CapabilityList.getBlockPatterns().isEmpty() && player.level() instanceof ServerLevel serverLevel) CapabilityList.getBlockPatterns().setFromDisk(serverLevel);
-        if (CapabilityList.getBlockPatterns().isEmpty()) CapabilityList.getBlockPatterns().addTestPatterns(player.level());
-
+        if (CapabilityList.getBlockPatterns().isEmpty() && player.level() instanceof ServerLevel serverLevel) CapabilityList.setFromDisk(serverLevel);
     }
 
     @SubscribeEvent
@@ -94,7 +92,7 @@ public class CapabilityEvents {
         BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
 
         if (levelAccessor instanceof ServerLevel serverLevel) {
-            blockPatterns.setFromDisk(serverLevel);
+            CapabilityList.setFromDisk(serverLevel);
             blockPatterns.sync();
         } else {
         }
