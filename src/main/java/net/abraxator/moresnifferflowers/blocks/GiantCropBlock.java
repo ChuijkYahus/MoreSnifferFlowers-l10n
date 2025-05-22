@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.blocks;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.core.BlockPos;
@@ -10,7 +11,9 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -30,6 +33,7 @@ import oshi.util.tuples.Pair;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
+
 public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable {
     public GiantCropBlock(Properties pProperties) {
         super(pProperties);
@@ -48,6 +52,42 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         if(pLevel.getBlockEntity(pPos) instanceof GiantCropBlockEntity entity) {
             if(entity.state == 1) {
                 entity.canGrow = true;
+            }
+        }
+    }
+
+    @Override
+    public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion){
+        if (level.getBlockEntity(pos) instanceof GiantCropBlockEntity entity) {
+            destroy(level, entity.center);
+        } else {
+            MoreSnifferFlowers.LOGGER.warn("Giant crop exploded weird, wtf");
+            level.destroyBlock(pos, true);
+            this.wasExploded(level, pos, explosion);
+        }
+    }
+
+    // Can be used instead of the event, but may have worse compatibility
+/*    @Override
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        if (level.getBlockEntity(pos) instanceof GiantCropBlockEntity entity) {
+            for (BlockPos pos1 : blockPosList(entity.center.below())){
+                super.playerWillDestroy(level, pos1, state, player);
+                if (level.getBlockState(pos1).is(this)) {
+                    level.destroyBlock(pos1, true);
+                }
+            }
+        } else {
+            MoreSnifferFlowers.LOGGER.warn("Giant crop was destroyed weird, wtf");
+            super.playerWillDestroy(level, pos, state, player);
+            level.destroyBlock(pos, true);
+        }
+    }*/
+
+    public static void destroy(LevelAccessor level, BlockPos centre){
+        for (BlockPos pos1 : blockPosList(centre.below())){
+            if (level.getBlockState(pos1).getBlock() instanceof GiantCropBlock) {
+                level.destroyBlock(pos1, true);
             }
         }
     }
@@ -133,7 +173,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         );
     }
 
-    private Iterable<BlockPos> blockPosList(BlockPos blockPos) {
+    private static Iterable<BlockPos> blockPosList(BlockPos blockPos) {
         return BlockPos.betweenClosed(
                 blockPos.getX() - 1,
                 blockPos.getY() - 0,

@@ -11,6 +11,9 @@ repositories {
     maven { url 'https://cursemaven.com'}
     maven { url "https://maven.blamejared.com/" }
     maven { url "https://modmaven.dev" }
+    maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
+    maven { url = "https://maven.tterrag.com" } // Registrate
+    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
     mavenCentral()
 }
 
@@ -73,14 +76,26 @@ dependencies {
     // modRuntimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
     modRuntimeOnly("curse.maven:jei-238222:6075247")
 
-    // Shaders for compatibility tests
-/*
+    // MODS FOR COMPATIBILITY TESTS
+
+    // shaders
+    /*
     modRuntimeOnly("curse.maven:embeddium-908741:5681725")
     modRuntimeOnly("curse.maven:oculus-581495:6020952")
-*/
+    */
+
+    // create
+
+    modImplementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
+    modImplementation("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
+    modCompileOnly("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}")
+    modRuntimeOnly("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
+    modImplementation("com.tterrag.registrate:Registrate:${registrate_version}")
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
 
     //mixin
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
 
     implementation 'org.jetbrains:annotations:26.0.1'
 

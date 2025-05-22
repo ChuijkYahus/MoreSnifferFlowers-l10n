@@ -5,6 +5,7 @@ import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
+import net.abraxator.moresnifferflowers.blocks.GiantCropBlock;
 import net.abraxator.moresnifferflowers.blocks.SaltemoneBlock;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
@@ -38,6 +39,7 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -219,23 +221,33 @@ public class ForgeEvents {
         }
     }
 
+
+
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         BlockPos pos = event.getPos();
         LevelAccessor levelAccessor = event.getLevel();
         BlockEntity blockEntity = levelAccessor.getBlockEntity(pos);
         Level level = event.getPlayer().level();
+        BlockState state = event.getState();
+
+        blockBreakEventWithoutPlayer(pos, levelAccessor);
+    }
+
+    public static boolean blockBreakEventWithoutPlayer(BlockPos pos, LevelAccessor levelAccessor) {
+        BlockEntity blockEntity = levelAccessor.getBlockEntity(pos);
+        Level level = (Level) levelAccessor;
 
         if(blockEntity instanceof GiantCropBlockEntity entity) {
-            BlockPos.withinManhattanStream(entity.center, 1, 1, 1).forEach(blockPos -> {
-               if (levelAccessor.getBlockState(blockPos).is(ModTags.ModBlockTags.GIANT_CROPS)) levelAccessor.destroyBlock(blockPos, true);
-            });
+            GiantCropBlock.destroy(levelAccessor, entity.center);
+            return true;
         }
 
         if(blockEntity instanceof SaltemoneBlockEntity entity) {
             SaltemoneBlock.blockPosStream(entity.center, levelAccessor.getBlockState(entity.center)).forEach(pos1 -> {
                 if (levelAccessor.getBlockState(pos1).is(ModBlocks.SALTEMONE.get()) || levelAccessor.getBlockState(pos1).is(ModBlocks.SOURLEMONE.get())) levelAccessor.destroyBlock(pos1, true);
             });
+            return true;
         }
 
 
@@ -247,8 +259,9 @@ public class ForgeEvents {
             BlockPos.betweenClosedStream(new AABB(entityPos, relative)).forEach(blockPos -> {
                 if (levelAccessor.getBlockState(blockPos).is(ModBlocks.BEROOT_CAULDRON.get())) levelAccessor.destroyBlock(blockPos, true);
             });
+            return true;
         }
-        
+
         if (blockEntity instanceof BondripiaBlockEntity entity) {
             Direction.Plane.HORIZONTAL.forEach(direction -> {
                 BlockPos blockPos = entity.center.relative(direction);
@@ -256,11 +269,16 @@ public class ForgeEvents {
                 levelAccessor.destroyBlock(blockPos, true);
             });
             levelAccessor.destroyBlock(entity.center, true);
+            return true;
         }
+
 
         if (CapabilityList.getBlockPatterns().hasPattern(pos, level)) {
             CapabilityList.getBlockPatterns().removePattern(pos, level);
+            return true;
         }
+
+        return false;
     }
 
     private static void pullItemTowardPlayer(Player player, ItemEntity item) {
