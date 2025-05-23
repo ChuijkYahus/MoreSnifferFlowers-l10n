@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -30,6 +31,7 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -53,7 +55,7 @@ public class BlockPatternRenderer {
 
         Minecraft minecraft = Minecraft.getInstance();
         int renderDistancePlayer = minecraft.options.getEffectiveRenderDistance();
-        int configuredRenderDistance = ModClientConfig.DYE_PATTERN_RENDER_DISTANCE.get();
+        int configuredRenderDistance = ModClientConfig.BLOCK_PATTERN_RENDER_DISTANCE.get();
         int renderDistance = configuredRenderDistance < 0 ? renderDistancePlayer*16 / Math.abs(configuredRenderDistance) : configuredRenderDistance;
 
         Stream<BlockPos> patternPositionsNear = storage.getPatternPositionsNear(camPos, renderDistance, level);
@@ -71,11 +73,23 @@ public class BlockPatternRenderer {
 
                 for (Direction dir : Direction.values()) {
                     if (state.isFaceSturdy(level, pos, dir) && (!level.getBlockState(pos.relative(dir)).isFaceSturdy(level, pos.relative(dir), dir.getOpposite()) || !level.getBlockState(pos.relative(dir)).canOcclude() )) {
+                        float[] brightness = new float[]{1,1,1,1};
+                        int[] lightmap = new int[4];
+                        boolean smoothLighting = ModClientConfig.BLOCK_PATTERN_SMOOTH_LIGHTING.get();
 
-                        int packed = getPackedLight(level, pos.relative(dir));
-                        if (data.isGlowing()) packed = LightTexture.FULL_BRIGHT;
+                        if (smoothLighting) {
+                            ModelBlockRenderer.AmbientOcclusionFace aoFace = new ModelBlockRenderer.AmbientOcclusionFace();
+                            aoFace.calculate(level, state, pos.relative(dir), dir, new float[Direction.values().length * 2], new BitSet(3), true);
+                            AmbientOcclusionFaceAccessor faceAccessor = (AmbientOcclusionFaceAccessor) aoFace;
+                            brightness = new float[]{faceAccessor.moreSnifferFlowers$getBrightness()[0], faceAccessor.moreSnifferFlowers$getBrightness()[1], faceAccessor.moreSnifferFlowers$getBrightness()[2], faceAccessor.moreSnifferFlowers$getBrightness()[3]};
+                            lightmap = new int[]{faceAccessor.moreSnifferFlowers$getLightmap()[0], faceAccessor.moreSnifferFlowers$getLightmap()[1], faceAccessor.moreSnifferFlowers$getLightmap()[2], faceAccessor.moreSnifferFlowers$getLightmap()[3]};
+                        } else {
+                            int packed = getPackedLight(level, pos.relative(dir));
+                            if (data.isGlowing()) packed = LightTexture.FULL_BRIGHT;
+                            lightmap = new int[]{packed,packed,packed,packed};
+                        }
 
-                        cachedQuads.add(RenderQuad.create(pos, dir, data.color(), sprite, packed, data.direction(), data.isGlowing()));
+                        cachedQuads.add(RenderQuad.create(pos, dir, data.color(), sprite, smoothLighting, data.direction(), data.isGlowing(), brightness, lightmap));
                     }
                 }
             }
@@ -83,10 +97,10 @@ public class BlockPatternRenderer {
     }
 
 
-    public record RenderQuad(BlockPos pos, Direction direction, int color, TextureAtlasSprite sprite, int packedLight, Direction rotation, boolean isGlowing) {
+    public record RenderQuad(BlockPos pos, Direction direction, int color, TextureAtlasSprite sprite, boolean smoothLighting, Direction rotation, boolean isGlowing, float[] brightness, int[] lightmap) {
 
-        public static RenderQuad create(BlockPos pos, Direction face, int color, TextureAtlasSprite sprite, int light, Direction rotation, boolean isGlowing) {
-            return new RenderQuad(pos.immutable(), face, color, sprite, light, rotation, isGlowing);
+        public static RenderQuad create(BlockPos pos, Direction face, int color, TextureAtlasSprite sprite, boolean smoothLighting, Direction rotation, boolean isGlowing, float[] brightness, int[] lightmap) {
+            return new RenderQuad(pos.immutable(), face, color, sprite, smoothLighting, rotation, isGlowing, brightness, lightmap);
         }
 
         private void render(PoseStack poseStack, VertexConsumer buffer) {
@@ -97,19 +111,21 @@ public class BlockPatternRenderer {
             Vec3i n = direction.getNormal();
             float nx = n.getX(), ny = n.getY(), nz = n.getZ();
 
-            float ao = QuadLighter.calculateShade(nx, ny, nz, false);
-
             int rgb = color;
             float r = ((rgb >> 16) & 0xFF) / 255f;
             float g = ((rgb >> 8) & 0xFF) / 255f;
             float b = (rgb & 0xFF) / 255f;
 
-            if (!isGlowing) {
-                r *= ao;
-                g *= ao;
-                b *= ao;
-            }
+            if (!smoothLighting) {
+                float ao = QuadLighter.calculateShade(nx, ny, nz, false);
 
+                if (!isGlowing) {
+                    r *= ao;
+                    g *= ao;
+                    b *= ao;
+                }
+
+            }
 
             Matrix4f pose = poseStack.last().pose();
             Matrix3f normal = poseStack.last().normal();
@@ -120,10 +136,10 @@ public class BlockPatternRenderer {
                    b = 1F;
                }*/
 
-            float u0 = sprite.getU0();
-            float u1 = sprite.getU1();
-            float u2 = sprite.getU1();
-            float u3 = sprite.getU0();
+            float u0 = sprite.getU1();
+            float u1 = sprite.getU0();
+            float u2 = sprite.getU0();
+            float u3 = sprite.getU1();
 
             float v0 = sprite.getV1();
             float v1 = sprite.getV1();
@@ -135,16 +151,16 @@ public class BlockPatternRenderer {
                 u1 = sprite.getU0();
                 u2 = sprite.getU1();
                 u3 = sprite.getU1();
-                v0 = sprite.getV1();
-                v1 = sprite.getV0();
-                v2 = sprite.getV0();
-                v3 = sprite.getV1();
+                v0 = sprite.getV0();
+                v1 = sprite.getV1();
+                v2 = sprite.getV1();
+                v3 = sprite.getV0();
             }
             if (rotation == Direction.SOUTH) {
-                u0 = sprite.getU1();
-                u1 = sprite.getU0();
-                u2 = sprite.getU0();
-                u3 = sprite.getU1();
+                u0 = sprite.getU0();
+                u1 = sprite.getU1();
+                u2 = sprite.getU1();
+                u3 = sprite.getU0();
                 v0 = sprite.getV0();
                 v1 = sprite.getV0();
                 v2 = sprite.getV1();
@@ -155,30 +171,33 @@ public class BlockPatternRenderer {
                 u1 = sprite.getU1();
                 u2 = sprite.getU0();
                 u3 = sprite.getU0();
-                v0 = sprite.getV0();
-                v1 = sprite.getV1();
-                v2 = sprite.getV1();
-                v3 = sprite.getV0();
+                v0 = sprite.getV1();
+                v1 = sprite.getV0();
+                v2 = sprite.getV0();
+                v3 = sprite.getV1();
             }
 
-            if (direction == Direction.UP || direction == Direction.DOWN) {
-                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(u0, v0).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(u1, v1).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(u2, v2).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(u3, v3).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+            float brightness0 = brightness[0];
+            float brightness1 = brightness[1];
+            float brightness2 = brightness[2];
+            float brightness3 = brightness[3];
 
-            } else if (direction == Direction.SOUTH){
-                buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(u0, v0).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(u1, v1).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(u2, v2).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(u3, v3).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+            if (isGlowing) {
+                brightness0 = 1f;
+                brightness1 = 1f;
+                brightness2 = 1f;
+                brightness3 = 1f;
 
-            } else {
-                buffer.vertex(pose, 0, 0, 0).color(r, g, b, 1f).uv(u0, v3).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 1, 0, 0).color(r, g, b, 1f).uv(u1, v2).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 1, 0, 1).color(r, g, b, 1f).uv(u2, v1).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
-                buffer.vertex(pose, 0, 0, 1).color(r, g, b, 1f).uv(u3, v0).uv2(packedLight).normal(normal, nx, ny, nz).endVertex();
+                lightmap[0] = LightTexture.FULL_BRIGHT;
+                lightmap[1] = LightTexture.FULL_BRIGHT;
+                lightmap[2] = LightTexture.FULL_BRIGHT;
+                lightmap[3] = LightTexture.FULL_BRIGHT;
             }
+
+            buffer.vertex(pose, 1, 0, 0).color(r * brightness0, g * brightness0, b * brightness0, 1f).uv(u1, v2).uv2(lightmap[0]).normal(normal, nx, ny, nz).endVertex();
+            buffer.vertex(pose, 1, 0, 1).color(r * brightness1, g * brightness1, b * brightness1, 1f).uv(u2, v1).uv2(lightmap[1]).normal(normal, nx, ny, nz).endVertex();
+            buffer.vertex(pose, 0, 0, 1).color(r * brightness2, g * brightness2, b * brightness2, 1f).uv(u3, v0).uv2(lightmap[2]).normal(normal, nx, ny, nz).endVertex();
+            buffer.vertex(pose, 0, 0, 0).color(r * brightness3, g * brightness3, b * brightness3, 1f).uv(u0, v3).uv2(lightmap[3]).normal(normal, nx, ny, nz).endVertex();
 
             poseStack.popPose();
         }
@@ -193,20 +212,22 @@ public class BlockPatternRenderer {
     }
 
     private static void translateToFace(PoseStack stack, Direction face, BlockPos pos) {
-        double configOffset = ModClientConfig.DYE_PATTERN_OFFSET.get();
+        double configOffset = ModClientConfig.BLOCK_PATTERN_OFFSET.get();
         float distance = (float) (configOffset * (Math.abs((pos.getX() + pos.getY() + pos.getZ()) % 4) + 1));
         float scale = distance*2;
         switch (face) {
             case UP -> {
               //  stack.mulPose(Axis.XP.rotationDegrees(90));
               //  stack.translate(0, 0, -1 - distance);
-                stack.translate(0, 1 + distance, 0);
+                stack.translate(1, 1 + distance, 0);
+                stack.mulPose(Axis.YP.rotationDegrees(180));
+                stack.mulPose(Axis.XP.rotationDegrees(180));
                 stack.scale(1+scale, 1, 1+scale);
                 stack.translate(-distance, 0, -distance);
             }
             case DOWN -> {
-                stack.translate(0, 0 - distance, 1);
-                stack.mulPose(Axis.XP.rotationDegrees(180));
+                stack.translate(1, 0 - distance, 1);
+                stack.mulPose(Axis.YP.rotationDegrees(180));
                 stack.scale(1+scale, 1, 1+scale);
                 stack.translate(-distance, 0, -distance);
 
@@ -219,8 +240,9 @@ public class BlockPatternRenderer {
 
             }
             case SOUTH -> {
-                stack.translate(0, 0, 1 + distance);
+                stack.translate(1, 1, 1 + distance);
                 stack.mulPose(Axis.XN.rotationDegrees(90));
+                stack.mulPose(Axis.YP.rotationDegrees(180));
                 stack.scale(1+scale, 1, 1+scale);
                 stack.translate(-distance,0, -distance);
             }
@@ -282,4 +304,8 @@ public class BlockPatternRenderer {
         }
     }
 
+    public interface AmbientOcclusionFaceAccessor {
+        float[] moreSnifferFlowers$getBrightness();
+        int[] moreSnifferFlowers$getLightmap();
+    }
 }

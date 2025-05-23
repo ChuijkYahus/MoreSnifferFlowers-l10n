@@ -1,6 +1,6 @@
 {
   "values": [
-    "moresnifferflowers:block_pattern_lines",
+    "moresnifferflowers:block_pattern_pipes",
     "moresnifferflowers:block_pattern_bricks",
     "moresnifferflowers:block_pattern_focus",
     "moresnifferflowers:block_pattern_bubbles",
@@ -14,7 +14,7 @@
     "moresnifferflowers:block_pattern_prismarine",
     "moresnifferflowers:block_pattern_sprouts",
     "moresnifferflowers:block_pattern_stars",
-    "moresnifferflowers:block_pattern_15",
-    "moresnifferflowers:block_pattern_16"
+    "moresnifferflowers:block_pattern_cover",
+    "moresnifferflowers:block_pattern_flowers"
   ]
 }

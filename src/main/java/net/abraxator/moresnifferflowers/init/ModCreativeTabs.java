@@ -164,22 +164,22 @@ public class ModCreativeTabs {
                 output.accept(ModItems.CORRUPTED_BOAT.get());
                 output.accept(ModItems.CORRUPTED_CHEST_BOAT.get());
 
-                output.accept(ModItems.BLOCK_PATTERN_LINES.get());
-                output.accept(ModItems.BLOCK_PATTERN_BRICKS.get());
-                output.accept(ModItems.BLOCK_PATTERN_FOCUS.get());
-                output.accept(ModItems.BLOCK_PATTERN_BUBBLES.get());
                 output.accept(ModItems.BLOCK_PATTERN_CLOUDS.get());
-                output.accept(ModItems.BLOCK_PATTERN_DEEPSLATE.get());
-                output.accept(ModItems.BLOCK_PATTERN_DIAMOND.get());
                 output.accept(ModItems.BLOCK_PATTERN_EYE.get());
+                output.accept(ModItems.BLOCK_PATTERN_COVER.get());
+                output.accept(ModItems.BLOCK_PATTERN_DEEPSLATE.get());
+                output.accept(ModItems.BLOCK_PATTERN_PAWS.get());
                 output.accept(ModItems.BLOCK_PATTERN_HEARTS.get());
                 output.accept(ModItems.BLOCK_PATTERN_HONEYCOMB.get());
-                output.accept(ModItems.BLOCK_PATTERN_PAWS.get());
-                output.accept(ModItems.BLOCK_PATTERN_PRISMARINE.get());
-                output.accept(ModItems.BLOCK_PATTERN_SPROUTS.get());
                 output.accept(ModItems.BLOCK_PATTERN_STARS.get());
-                output.accept(ModItems.BLOCK_PATTERN_15.get());
-                output.accept(ModItems.BLOCK_PATTERN_16.get());
+                output.accept(ModItems.BLOCK_PATTERN_PIPES.get());
+                output.accept(ModItems.BLOCK_PATTERN_SPROUTS.get());
+                output.accept(ModItems.BLOCK_PATTERN_DIAMOND.get());
+                output.accept(ModItems.BLOCK_PATTERN_BUBBLES.get());
+                output.accept(ModItems.BLOCK_PATTERN_PRISMARINE.get());
+                output.accept(ModItems.BLOCK_PATTERN_FOCUS.get());
+                output.accept(ModItems.BLOCK_PATTERN_BRICKS.get());
+                output.accept(ModItems.BLOCK_PATTERN_FLOWERS.get());
 
 
 

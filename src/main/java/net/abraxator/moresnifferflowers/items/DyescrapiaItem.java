@@ -1,7 +1,9 @@
 package net.abraxator.moresnifferflowers.items;
 
 import net.abraxator.moresnifferflowers.blockentities.DyespriaPlantBlockEntity;
+import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
@@ -49,10 +51,21 @@ public class DyescrapiaItem extends BlockItem {
         var level = pContext.getLevel();
         var stack = pContext.getItemInHand();
         int uses = getDyescrapiaUses(stack) + 1;
+        BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
 
-        if (CapabilityList.getBlockPatterns().hasPattern(pos, level) && !player.isCrouching()) {
+
+        if (blockPatterns.hasPattern(pos, level) && !player.isCrouching()) {
             if (!level.isClientSide){
-                CapabilityList.getBlockPatterns().removePattern(pos, level);
+                if(uses >= 4) {
+                    player.addItem(BlockPattern.fromId(blockPatterns.getPattern(pos, level).patternId()).getItem().getDefaultInstance());
+                    uses = 0;
+                }
+                blockPatterns.removePattern(pos, level);
+
+                CompoundTag tag = stack.getOrCreateTag();
+                tag.putInt("uses", uses);
+                stack.setTag(tag);
+
             }
             return InteractionResult.sidedSuccess(level.isClientSide);
         }

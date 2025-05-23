@@ -56,14 +56,19 @@ public class PatternspriaItem extends Item {
         BlockPos blockPos = pContext.getClickedPos();
         BlockState blockState = level.getBlockState(blockPos);
         ItemStack stack = pContext.getItemInHand();
+        Direction horizontalDirection = pContext.getHorizontalDirection();
 
         if (pContext.getHand() != InteractionHand.MAIN_HAND) {
             return InteractionResult.PASS;
         }
 
-        if (player.isCrouching() && CapabilityList.getBlockPatterns().hasPattern(blockPos, level)) {
-            copyColor(stack, level, blockPos);
-            return InteractionResult.sidedSuccess(level.isClientSide);
+        BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
+
+        if (player.isCrouching() && blockPatterns.hasPattern(blockPos, level)) {
+            if (stack.getOrCreateTag().contains("color") && stack.getOrCreateTag().getInt("color") != blockPatterns.getPattern(blockPos, level).color() ) {
+                copyColor(stack, level, blockPos);
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            }
         }
 
         if (canUse(blockPos, level, stack)) {
@@ -78,7 +83,7 @@ public class PatternspriaItem extends Item {
                 var state = level.getBlockState(blockPos1);
 
                 if(canUse(blockPos1, level, stack) && BlockPattern.fromPatternspria(stack) != null) {
-                    patternOne(stack, level, blockPos1, BlockPattern.fromPatternspria(stack), pContext.getClickedFace(), pContext.getHorizontalDirection());
+                    patternOne(stack, level, blockPos1, BlockPattern.fromPatternspria(stack), pContext.getClickedFace(), horizontalDirection);
                     currentCount.getAndDecrement();
 
                 } else if (stack.getOrCreateTag().getInt("amount") <= 0 || BlockPattern.fromPatternspria(stack) == null){
@@ -91,10 +96,19 @@ public class PatternspriaItem extends Item {
             });
 
             if (!level.isClientSide) {
-                CapabilityList.getBlockPatterns().setBulkPatterns(cached_patterns, level);
+                blockPatterns.setBulkPatterns(cached_patterns, level);
                 cached_patterns.clear();
             }
             return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+
+        BlockPattern pattern = BlockPattern.fromPatternspria(stack);
+        if (blockPatterns.hasPattern(blockPos, level) && pattern != null ) {
+            BlockPatternCapability.PatternData patternData = blockPatterns.getPattern(blockPos, level);
+            if (!patternData.direction().equals(horizontalDirection) && pattern.ordinal() == patternData.patternId()){
+                blockPatterns.setPattern(blockPos,new BlockPatternCapability.PatternData(patternData.patternId(), patternData.color(), horizontalDirection, patternData.isGlowing() ) ,  level);
+                return InteractionResult.SUCCESS;
+            }
         }
 
         return super.useOn(pContext);

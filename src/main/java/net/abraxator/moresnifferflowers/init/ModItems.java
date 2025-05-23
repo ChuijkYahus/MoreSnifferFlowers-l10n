@@ -119,9 +119,9 @@ public class ModItems {
 
     public static final RegistryObject<Item> CAULORFLOWER_SEEDS = ITEMS.register("caulorflower_seeds", () -> new ItemNameBlockItem(ModBlocks.CAULORFLOWER.get(), new Item.Properties()));
     public static final RegistryObject<Item> PATTERNFLOWER_SEEDS = ITEMS.register("patternflower_seeds", () -> new ItemNameBlockItem(ModBlocks.PATTERNFLOWER.get(), new Item.Properties()));
-    public static final RegistryObject<Item> PATTERNSPRIA = ITEMS.register("patternspria", () -> new PatternspriaItem(new Item.Properties()));
+    public static final RegistryObject<Item> PATTERNSPRIA = ITEMS.register("patternspria", () -> new PatternspriaItem(new Item.Properties().stacksTo(1)));
 
-    public static final RegistryObject<Item> BLOCK_PATTERN_LINES = ITEMS.register("block_pattern_lines", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> BLOCK_PATTERN_PIPES = ITEMS.register("block_pattern_pipes", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BLOCK_PATTERN_BRICKS = ITEMS.register("block_pattern_bricks", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BLOCK_PATTERN_FOCUS = ITEMS.register("block_pattern_focus", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BLOCK_PATTERN_BUBBLES = ITEMS.register("block_pattern_bubbles", () -> new Item(new Item.Properties()));
@@ -135,8 +135,8 @@ public class ModItems {
     public static final RegistryObject<Item> BLOCK_PATTERN_PRISMARINE = ITEMS.register("block_pattern_prismarine", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BLOCK_PATTERN_SPROUTS = ITEMS.register("block_pattern_sprouts", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BLOCK_PATTERN_STARS = ITEMS.register("block_pattern_stars", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_15 = ITEMS.register("block_pattern_15", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_16 = ITEMS.register("block_pattern_16", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> BLOCK_PATTERN_COVER = ITEMS.register("block_pattern_cover", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> BLOCK_PATTERN_FLOWERS = ITEMS.register("block_pattern_flowers", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> BEROOT_CAULDRON = ITEMS.register("beroot_cauldron", () -> new BerootCauldronItem(ModBlocks.BEROOT_CAULDRON.get(), new Item.Properties()));
 

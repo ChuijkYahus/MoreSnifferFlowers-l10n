@@ -18,6 +18,7 @@
     "ThrownPotionMixin"
   ],
   "client": [
+    "AmbientOcclusionFaceMixin",
     "InventoryScreenMixin",
     "LevelRendererMixin",
     "LocalPlayerMixin",

@@ -189,6 +189,7 @@ public class ModRecipesProvider extends RecipeProvider {
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.PATTERNSPRIA.get())
                 .requires(Ingredient.of(ModTags.ModItemTags.BLOCK_PATTERNS), 1)
+                .requires(Ingredient.of(ModItems.DYESPRIA.get()), 1)
                 .unlockedBy("has_block_pattern", has(ModTags.ModItemTags.BLOCK_PATTERNS))
                 .save(pRecipeOutput);
 

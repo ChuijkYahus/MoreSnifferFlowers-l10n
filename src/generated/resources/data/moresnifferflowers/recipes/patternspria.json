@@ -4,6 +4,9 @@
   "ingredients": [
     {
       "tag": "moresnifferflowers:block_patterns"
+    },
+    {
+      "item": "moresnifferflowers:dyespria"
     }
   ],
   "result": {

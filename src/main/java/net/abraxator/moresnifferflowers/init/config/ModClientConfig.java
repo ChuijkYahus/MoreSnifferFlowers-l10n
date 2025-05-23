@@ -6,8 +6,10 @@ public class ModClientConfig {
     public static final ForgeConfigSpec CLIENT_CONFIG;
     public static final ForgeConfigSpec.IntValue HARDENED_MOUTH_X;
     public static final ForgeConfigSpec.IntValue HARDENED_MOUTH_Y;
-    public static final ForgeConfigSpec.IntValue DYE_PATTERN_RENDER_DISTANCE;
-    public static final ForgeConfigSpec.DoubleValue DYE_PATTERN_OFFSET;
+    public static final ForgeConfigSpec.IntValue BLOCK_PATTERN_RENDER_DISTANCE;
+    public static final ForgeConfigSpec.DoubleValue BLOCK_PATTERN_OFFSET;
+    public static final ForgeConfigSpec.BooleanValue BLOCK_PATTERN_SMOOTH_LIGHTING;
+
 
 
     static {
@@ -28,13 +30,17 @@ public class ModClientConfig {
         builder.pop();
 
         builder.push("dye_patterns");
-        DYE_PATTERN_RENDER_DISTANCE = builder
+        BLOCK_PATTERN_RENDER_DISTANCE = builder
                 .comment("sdff")
-                .defineInRange("Dye Pattern Render Distance", 100, -5, 1000);
+                .defineInRange("Block Pattern Render Distance", 100, -5, 1000);
 
-        DYE_PATTERN_OFFSET = builder
+        BLOCK_PATTERN_OFFSET = builder
                 .comment("sdff")
-                .defineInRange("Dye Pattern Block Offset", 0.001, 0, 1);
+                .defineInRange("Block Pattern Offset", 0.001, 0, 1);
+
+        BLOCK_PATTERN_SMOOTH_LIGHTING = builder
+                .comment("enables smooth lighting for block patterns")
+                .define("Block Pattern Smooth Lighting", true);
 
         builder.pop();
 
