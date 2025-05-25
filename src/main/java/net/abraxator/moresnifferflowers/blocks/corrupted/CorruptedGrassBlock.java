@@ -1,8 +1,8 @@
 package net.abraxator.moresnifferflowers.blocks.corrupted;
 
 import net.abraxator.moresnifferflowers.init.ModBlocks;
+import net.abraxator.moresnifferflowers.init.ModStatePropertiesUnsafe;
 import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
-import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -12,7 +12,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoublePlantBlock;
+import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraft.world.level.block.SpreadingSnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -77,8 +80,8 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
                     BlockPos blockPos1 = pos.above(random.nextInt(6));
                     BlockState state2 = level.getBlockState(blockPos1);
 
-                    if (state2.getOptionalValue(ModStateProperties.NOT_CORRUPTED).isPresent() && state2.getValue(ModStateProperties.NOT_CORRUPTED)){
-                        level.setBlock(blockPos1, state2.setValue(ModStateProperties.NOT_CORRUPTED, false), 3);
+                    if (state2.getOptionalValue(ModStatePropertiesUnsafe.NOT_CORRUPTED).isPresent() && state2.getValue(ModStatePropertiesUnsafe.NOT_CORRUPTED)){
+                        level.setBlock(blockPos1, state2.setValue(ModStatePropertiesUnsafe.NOT_CORRUPTED, false), 3);
                     }
 
                 }

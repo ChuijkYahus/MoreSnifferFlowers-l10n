@@ -7,6 +7,8 @@ import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.components.DyespriaMode;
 import net.abraxator.moresnifferflowers.components.EntityDistanceComparator;
 import net.abraxator.moresnifferflowers.components.PatternspriaMode;
+import net.abraxator.moresnifferflowers.init.ModBlocks;
+import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -57,12 +59,18 @@ public class PatternspriaItem extends Item {
         BlockState blockState = level.getBlockState(blockPos);
         ItemStack stack = pContext.getItemInHand();
         Direction horizontalDirection = pContext.getHorizontalDirection();
+        BlockPattern fromPatternspria = BlockPattern.fromPatternspria(stack);
+        BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
 
         if (pContext.getHand() != InteractionHand.MAIN_HAND) {
             return InteractionResult.PASS;
         }
 
-        BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
+        if (blockState.is(ModBlocks.PATTERNFLOWER.get()) && fromPatternspria != BlockPattern.EMPTY){
+            level.setBlock(blockPos, blockState.setValue(ModStateProperties.BLOCK_PATTERN, fromPatternspria), 3);
+            finishColoring(fromPatternspria.getItemStack(stack), level, stack, blockPos, pContext.getClickedFace());
+            return InteractionResult.SUCCESS;
+        }
 
         if (player.isCrouching() && blockPatterns.hasPattern(blockPos, level)) {
             if (stack.getOrCreateTag().contains("color") && stack.getOrCreateTag().getInt("color") != blockPatterns.getPattern(blockPos, level).color() ) {
@@ -82,11 +90,11 @@ public class PatternspriaItem extends Item {
             set.stream().sorted(new EntityDistanceComparator(blockPos)).takeWhile(t -> canContinueDyeing.get()).forEach(blockPos1 -> {
                 var state = level.getBlockState(blockPos1);
 
-                if(canUse(blockPos1, level, stack) && BlockPattern.fromPatternspria(stack) != null) {
-                    patternOne(stack, level, blockPos1, BlockPattern.fromPatternspria(stack), pContext.getClickedFace(), horizontalDirection);
+                if(canUse(blockPos1, level, stack) && fromPatternspria != BlockPattern.EMPTY) {
+                    patternOne(stack, level, blockPos1, fromPatternspria, pContext.getClickedFace(), horizontalDirection);
                     currentCount.getAndDecrement();
 
-                } else if (stack.getOrCreateTag().getInt("amount") <= 0 || BlockPattern.fromPatternspria(stack) == null){
+                } else if (stack.getOrCreateTag().getInt("amount") <= 0 || fromPatternspria == BlockPattern.EMPTY){
                     canContinueDyeing.set(false);
                 }
 
@@ -102,10 +110,10 @@ public class PatternspriaItem extends Item {
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
 
-        BlockPattern pattern = BlockPattern.fromPatternspria(stack);
-        if (blockPatterns.hasPattern(blockPos, level) && pattern != null ) {
+        BlockPattern pattern = fromPatternspria;
+        if (blockPatterns.hasPattern(blockPos, level) && pattern != BlockPattern.EMPTY ) {
             BlockPatternCapability.PatternData patternData = blockPatterns.getPattern(blockPos, level);
-            if (!patternData.direction().equals(horizontalDirection) && pattern.ordinal() == patternData.patternId()){
+            if (!patternData.direction().equals(horizontalDirection) && pattern.getId() == patternData.patternId()){
                 blockPatterns.setPattern(blockPos,new BlockPatternCapability.PatternData(patternData.patternId(), patternData.color(), horizontalDirection, patternData.isGlowing() ) ,  level);
                 return InteractionResult.SUCCESS;
             }
@@ -121,7 +129,7 @@ public class PatternspriaItem extends Item {
 
     public boolean patternOne(ItemStack stack, Level level, BlockPos blockPos, BlockPattern pattern, Direction face, Direction horizontalDirection) {
         BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
-        if (!canUse(blockPos, level, stack) && pattern == null) {
+        if (!canUse(blockPos, level, stack) && pattern == BlockPattern.EMPTY) {
             return false;
         }
 
@@ -129,7 +137,7 @@ public class PatternspriaItem extends Item {
         if (blockPatterns.hasPattern(blockPos, level)) color = blockPatterns.getPattern(blockPos, level).color();
 
         if (!level.isClientSide) {
-            cached_patterns.put(blockPos.immutable(), new BlockPatternCapability.PatternData(pattern.ordinal(), color, horizontalDirection, false));
+            cached_patterns.put(blockPos.immutable(), new BlockPatternCapability.PatternData(pattern.getId(), color, horizontalDirection, false));
         }
 
         finishColoring(pattern.getItemStack(stack), level, stack, blockPos, face);
@@ -139,12 +147,12 @@ public class PatternspriaItem extends Item {
 
     private boolean canUse(BlockPos pos, Level level, ItemStack patternspria) {
 
-        if (BlockPattern.fromPatternspria(patternspria) == null) return false;
+        if (BlockPattern.fromPatternspria(patternspria) == BlockPattern.EMPTY) return false;
         int groundId = -1;
         if (CapabilityList.getBlockPatterns().hasPattern(pos, level)){
             groundId = CapabilityList.getBlockPatterns().getPattern(pos, level).patternId();
         }
-        int inputId = BlockPattern.fromPatternspria(patternspria).ordinal();
+        int inputId = BlockPattern.fromPatternspria(patternspria).getId();
 
 
         boolean isSturdy = false;
@@ -176,7 +184,7 @@ public class PatternspriaItem extends Item {
 
 
         BlockPattern.setPatternToHolderStack(patternspria, blockPattern, blockPattern.getCount(), getPatternspriaUses(patternspria));
-        if (level.isClientSide && pattern != null) {
+        if (level.isClientSide && pattern != BlockPattern.EMPTY) {
             spawnParticles(level.getRandom(), level, pattern, blockPos, face, patternspria);
         }
     }
@@ -185,15 +193,15 @@ public class PatternspriaItem extends Item {
         BlockPattern pattern = BlockPattern.fromItem(itemToInsert.getItem());
         BlockPattern patternInside = BlockPattern.fromPatternspria(patternspria);
 
-        if (patternInside == null){
+        if (patternInside == BlockPattern.EMPTY){
             BlockPattern.removePatternFromStack(patternspria);
         }
 
-        if (pattern == null) {
+        if (pattern == BlockPattern.EMPTY) {
             return itemToInsert;
         }
 
-        if (patternInside == null || patternspria.getOrCreateTag().getInt("amount") <= 0) {
+        if (patternInside == BlockPattern.EMPTY || patternspria.getOrCreateTag().getInt("amount") <= 0) {
             onAddPattern(patternspria, itemToInsert, itemToInsert.getCount());
             return ItemStack.EMPTY;
         }
@@ -227,7 +235,7 @@ public class PatternspriaItem extends Item {
         var pattern = BlockPattern.fromPatternspria(pStack);
         int uses = getPatternspriaUses(pStack);
 
-        if(pattern != null) {
+        if(pattern != BlockPattern.EMPTY) {
             ItemStack returnStack = pattern.getItemStack(pStack);
             BlockPattern.removePatternFromStack(pStack);
             returnStack.shrink(uses == 4 ? 0 : 1);
@@ -302,7 +310,7 @@ public class PatternspriaItem extends Item {
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return BlockPattern.fromPatternspria(stack) != null;
+        return BlockPattern.fromPatternspria(stack) != BlockPattern.EMPTY;
     }
 
     @Override
@@ -339,7 +347,7 @@ public class PatternspriaItem extends Item {
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         BlockPattern pattern = BlockPattern.fromPatternspria(pStack);
-        Component usage = Component.translatableWithFallback("tooltip.dyespria.usage", "Right click with dye to insert \nRight click caulorflower to repaint \nSneak to apply to the whole column \n").withStyle(ChatFormatting.GOLD);
+        Component usage = Component.translatableWithFallback("tooltip.patternspria.usage", "Right click with dye to insert \nRight click caulorflower to repaint \nSneak to apply to the whole column \n").withStyle(ChatFormatting.GOLD);
         var usageComponents = Arrays.stream(usage.getString().split("\n", -1))
                 .filter(s -> !s.isEmpty())
                 .map(String::trim);
@@ -349,7 +357,7 @@ public class PatternspriaItem extends Item {
         pTooltipComponents.add(DyespriaItem.getCurrentModeComponent(DyespriaMode.byIndex(getMode(pStack).ordinal())));
         pTooltipComponents.add(Component.empty());
 
-        if(pattern != null) {
+        if(pattern != BlockPattern.EMPTY) {
             ItemStack patternStack = pattern.getItemStack(pStack);
             var name = Component
                     .literal(patternStack.getCount() + " - " + WordUtils.capitalizeFully(pattern.getSerializedName()

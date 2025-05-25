@@ -139,6 +139,10 @@ public class MoreSnifferFlowers {
         return new ResourceLocation(MOD_ID, path);
     }
 
+    public static ResourceLocation vanillaLoc(String path) {
+        return new ResourceLocation("minecraft", path);
+    }
+
     public static String sLoc(String path) {
         return loc(path).toString();
     }

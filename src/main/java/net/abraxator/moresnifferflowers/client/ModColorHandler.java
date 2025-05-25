@@ -9,6 +9,7 @@ import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.abraxator.moresnifferflowers.init.ModStatePropertiesUnsafe;
 import net.abraxator.moresnifferflowers.items.DyespriaItem;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.util.Mth;
@@ -35,7 +36,7 @@ public class ModColorHandler {
             if (state.is(Blocks.SPRUCE_LEAVES)) originalColor = FoliageColor.getEvergreenColor();
             if (state.is(Blocks.MANGROVE_LEAVES)) originalColor = FoliageColor.getMangroveColor();
 
-            if(tintIndex == 0 && ModStateProperties.hasCustomLeavesProperties(state) && !state.getValue(ModStateProperties.NOT_CORRUPTED)) {
+            if(tintIndex == 0 && ModStatePropertiesUnsafe.hasCustomLeavesProperties(state) && !state.getValue(ModStatePropertiesUnsafe.NOT_CORRUPTED)) {
                 float[] colorHSB = getColorHSB(originalColor);
 
                 return Color.HSBtoRGB( -colorHSB[0]/1.5F, colorHSB[1] - 0.25F, colorHSB[2] - 0.23F);
@@ -65,6 +66,19 @@ public class ModColorHandler {
             }
             return -1;
         }, ModBlocks.CAULORFLOWER.get());
+        event.register((pState, pLevel, pPos, pTintIndex) -> {
+            int color = pState.getValue(ModStateProperties.BLOCK_PATTERN).getColor();
+                if (pTintIndex == 0) {
+                    float[] colorHSB = getColorHSB(color);
+
+                    return Color.HSBtoRGB(colorHSB[0], Math.max(colorHSB[1] / 1.7F, 0), Math.max(colorHSB[2], 0));
+                }
+                if (pTintIndex == 1) {
+                    return color;
+                }
+
+            return -1;
+        }, ModBlocks.PATTERNFLOWER.get());
         event.register((pState, pLevel, pPos, pTintIndex) -> {
                     var colorable = ((ColorableVivicusBlock) pState.getBlock());
                     if(pTintIndex == 0) {

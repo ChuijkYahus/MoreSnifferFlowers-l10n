@@ -1,0 +1,1 @@
+Config translation seems to only work on neoforge, you don't have to bother with it if you dont want to

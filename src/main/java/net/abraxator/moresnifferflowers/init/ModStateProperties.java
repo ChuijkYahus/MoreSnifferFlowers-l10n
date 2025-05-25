@@ -1,7 +1,7 @@
 package net.abraxator.moresnifferflowers.init;
 
+import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.*;
 
 public class ModStateProperties {
@@ -22,15 +22,11 @@ public class ModStateProperties {
     public static final IntegerProperty USES_4 = IntegerProperty.create("uses", 0, 3);
     public static final BooleanProperty ENTITY = BooleanProperty.create("entity");
     public static final BooleanProperty CURED = BooleanProperty.create("cured");
-    public static final BooleanProperty NOT_CURED = BooleanProperty.create("not_cured");
-    public static final BooleanProperty NOT_CORRUPTED = BooleanProperty.create("not_corrupted");
     public static final IntegerProperty AMOUNT_4 = IntegerProperty.create("amount", 1, 4);
     public static final BooleanProperty FULL = BooleanProperty.create("full");
     public static final BooleanProperty NATURAL = BooleanProperty.create("natural");
     public static final BooleanProperty HYDRATED = BooleanProperty.create("hydrated");
+    public static final EnumProperty<BlockPattern> BLOCK_PATTERN = EnumProperty.create("block_pattern", BlockPattern.class);
 
-    public static boolean hasCustomLeavesProperties(BlockState state){
-        return state.getOptionalValue(ModStateProperties.NOT_CORRUPTED).isPresent() && state.getOptionalValue(ModStateProperties.NOT_CORRUPTED).isPresent();
-    }
 
 }

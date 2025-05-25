@@ -15,31 +15,36 @@ public class ModClientConfig {
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 
+        builder.comment("A lot of these require a game restart seemingly at random. Restart your game before reporting it as a bug!");
+        builder.translation("moresnifferflowers.configuration.restart_required");
+
         builder.push("hardened_mouth_effect");
 
-        builder.comment("Hardened mouth effect GUI location, REQUIRES GAME RESTART!");
         HARDENED_MOUTH_X = builder
                 .comment("Move extra slots from the Hardened mouth effect left to right")
-                .translation("config.moresnifferflowers.hardened_mouth_x")
+                .translation("moresnifferflowers.configuration.hardened_mouth_x")
                 .defineInRange("Hardened Mouth X", 176, -5000, 5000);
         HARDENED_MOUTH_Y = builder
                 .comment("Move extra slots from the Hardened mouth effect up and down")
-                .translation("config.moresnifferflowers.hardened_mouth_y")
+                .translation("moresnifferflowers.configuration.hardened_mouth_y")
                 .defineInRange("Hardened Mouth Y", 80, -5000, 5000);
 
         builder.pop();
 
-        builder.push("dye_patterns");
+        builder.push("block_patterns");
         BLOCK_PATTERN_RENDER_DISTANCE = builder
-                .comment("sdff")
-                .defineInRange("Block Pattern Render Distance", 100, -5, 1000);
+                .comment("Input in blocks. Negative values use a division of your current render distance instead")
+                .translation("moresnifferflowers.configuration.block_pattern_render_distance")
+                .defineInRange("Block Pattern Render Distance", -2, -5, 1000);
 
         BLOCK_PATTERN_OFFSET = builder
-                .comment("sdff")
-                .defineInRange("Block Pattern Offset", 0.001, 0, 1);
+                .comment("How far block patterns are from their block, low values Z-fight, high values look detached")
+                .translation("moresnifferflowers.configuration.block_pattern_offset")
+                .defineInRange("Block Pattern Offset", 0.001, 0, 0.2);
 
         BLOCK_PATTERN_SMOOTH_LIGHTING = builder
-                .comment("enables smooth lighting for block patterns")
+                .comment("Enables smooth lighting for block patterns")
+                .translation("moresnifferflowers.configuration.block_pattern_smooth_lighting")
                 .define("Block Pattern Smooth Lighting", true);
 
         builder.pop();
