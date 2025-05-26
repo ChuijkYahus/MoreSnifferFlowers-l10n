@@ -100,7 +100,8 @@ dependencies {
     implementation 'org.jetbrains:annotations:26.0.1'
 
     //quark
-    compileOnly("curse.maven:Quark-${quark_id}:${quark_version}")
+    compileOnly("curse.maven:quark-243121:6427817")
+    compileOnly("curse.maven:zeta-968868:6432578")
 
     //right click harvest
     compileOnly("curse.maven:RightClickHarvest-${RCH_id}:${RCH_version}")

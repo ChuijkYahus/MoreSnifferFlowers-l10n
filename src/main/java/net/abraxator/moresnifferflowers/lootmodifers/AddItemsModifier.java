@@ -4,6 +4,7 @@ import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.abraxator.moresnifferflowers.compat.quark.QuarkConfigSupplier;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
@@ -59,7 +60,8 @@ public class AddItemsModifier extends LootModifier {
         generatedLoot.add(Items.TORCHFLOWER_SEEDS.getDefaultInstance());
         modSupport(SNIFFERENT_ITEMS_LOC, generatedLoot);
         modSupport(HELLIONS_ITEMS_LOC, generatedLoot);
-        modSupport(QUARK_ITEMS_LOC, generatedLoot);
+        for (int i = 0; i < QuarkConfigSupplier.sniffingLootWeight(); i++)
+            modSupport(QUARK_ITEMS_LOC, generatedLoot);
         modSupport(ARTS_AND_CRAFTS_ITEMS_LOC, generatedLoot);
         modSupport(PEARFECTION_ITEMS_LOC, generatedLoot);
         modSupport(TRAIL_AND_TALES_DELIGHT_ITEMS_LOC, generatedLoot);
