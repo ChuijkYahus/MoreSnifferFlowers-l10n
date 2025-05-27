@@ -22,6 +22,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.CORRUPTED_CHEST_BOAT.get());
         basicItem(ModItems.VIVICUS_BOAT.get());
         basicItem(ModItems.VIVICUS_CHEST_BOAT.get());
+        basicItem(ModItems.PATTERNFLOWER_SEEDS.get());
 
         basicItem(ModItems.BLOCK_PATTERN_PIPES.get());
         basicItem(ModItems.BLOCK_PATTERN_BRICKS.get());

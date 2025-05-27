@@ -54,7 +54,7 @@ public class DyescrapiaItem extends BlockItem {
         BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
 
 
-        if (blockPatterns.hasPattern(pos, level) && !player.isCrouching()) {
+        if (blockPatterns.hasPattern(pos, level)) {
             if (!level.isClientSide){
                 if(uses >= 4) {
                     player.addItem(BlockPattern.fromId(blockPatterns.getPattern(pos, level).patternId()).getItem().getDefaultInstance());

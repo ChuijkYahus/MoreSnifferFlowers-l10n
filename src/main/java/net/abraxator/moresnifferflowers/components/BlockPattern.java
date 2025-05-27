@@ -34,11 +34,11 @@ public enum BlockPattern implements StringRepresentable {
     FLOWERS("flowers", MoreSnifferFlowers.loc("block_pattern_flowers"),15, 0xb45da6, DyeColor.PINK), //pink
 
     FLOWER_CHARGE("flower_charge", MoreSnifferFlowers.vanillaLoc("flower_banner_pattern"),16, 0xffebb6, null),
-    GLOBE("globe", MoreSnifferFlowers.vanillaLoc("creeper_banner_pattern"),17, 0xffebb6, null),
-    SNOUT("snout", MoreSnifferFlowers.vanillaLoc("skull_banner_pattern"),18, 0xffebb6, null),
-    CREEPER_CHARGE("creeper_charge", MoreSnifferFlowers.vanillaLoc("mojang_banner_pattern"),19, 0xffebb6, null),
-    SKULL_CHARGE("skull_charge", MoreSnifferFlowers.vanillaLoc("globe_banner_pattern"),20, 0xffebb6, null),
-    THING("thing", MoreSnifferFlowers.vanillaLoc("piglin_banner_pattern"),21, 0xffebb6, null),
+    GLOBE("globe", MoreSnifferFlowers.vanillaLoc("globe_banner_pattern"),17, 0xffebb6, null),
+    SNOUT("snout", MoreSnifferFlowers.vanillaLoc("piglin_banner_pattern"),18, 0xffebb6, null),
+    CREEPER_CHARGE("creeper_charge", MoreSnifferFlowers.vanillaLoc("creeper_banner_pattern"),19, 0xffebb6, null),
+    SKULL_CHARGE("skull_charge", MoreSnifferFlowers.vanillaLoc("skull_banner_pattern"),20, 0xffebb6, null),
+    THING("thing", MoreSnifferFlowers.vanillaLoc("mojang_banner_pattern"),21, 0xffebb6, null),
     AMBUSH("ambush", MoreSnifferFlowers.loc("ambush_banner_pattern"),22, 0xffebb6, null),
     EVIL("evil", MoreSnifferFlowers.loc("evil_banner_pattern"),23, 0xffebb6, null),
 

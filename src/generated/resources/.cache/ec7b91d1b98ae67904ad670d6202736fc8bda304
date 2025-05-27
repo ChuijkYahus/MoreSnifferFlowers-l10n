@@ -1,4 +1,4 @@
-// 1.20.1	2025-05-23T15:45:36.0435407	Item Models: moresnifferflowers
+// 1.20.1	2025-05-27T17:59:32.8062648	Item Models: moresnifferflowers
 5418fa48df84ad2470f45e39a59acb51f6e0ebc9 assets/moresnifferflowers/models/item/block_pattern_bricks.json
 0f2bc9ad5c22e3ccb52ed75b6ecc0486adda28c7 assets/moresnifferflowers/models/item/block_pattern_bubbles.json
 3653dd794ff8e37d02d363ec04bc102e74b84950 assets/moresnifferflowers/models/item/block_pattern_clouds.json
@@ -20,6 +20,7 @@ a19214028a56cefedc707596acd9d67ea311ecae assets/moresnifferflowers/models/item/c
 107345ce96d4aa87e1c5473a70d3e16376dbcf63 assets/moresnifferflowers/models/item/corrupted_chest_boat.json
 7307b245ec2c0322725e5b45a4a18b5a3aca6bcf assets/moresnifferflowers/models/item/corrupted_hanging_sign.json
 c9dc88fb63a14bbf03e67f479f42f829c03800f2 assets/moresnifferflowers/models/item/corrupted_sign.json
+fc69ae10a540b7cd4cc9b26af9f28fa20c25f7d9 assets/moresnifferflowers/models/item/patternflower_seeds.json
 eab02f4adf2397ace5fe992a50b9ae1063a2adb2 assets/moresnifferflowers/models/item/vivicus_boat.json
 a5eb291032a70169545bd0f9b683f00e0ca6e171 assets/moresnifferflowers/models/item/vivicus_chest_boat.json
 1e9770bc0a0774082f5be2ee9713b6daf39b02c1 assets/moresnifferflowers/models/item/vivicus_hanging_sign.json

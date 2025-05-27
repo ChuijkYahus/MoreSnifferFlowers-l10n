@@ -68,14 +68,15 @@ public class ModColorHandler {
         }, ModBlocks.CAULORFLOWER.get());
         event.register((pState, pLevel, pPos, pTintIndex) -> {
             int color = pState.getValue(ModStateProperties.BLOCK_PATTERN).getColor();
-                if (pTintIndex == 0) {
-                    float[] colorHSB = getColorHSB(color);
-
-                    return Color.HSBtoRGB(colorHSB[0], Math.max(colorHSB[1] / 1.7F, 0), Math.max(colorHSB[2], 0));
-                }
-                if (pTintIndex == 1) {
-                    return color;
-                }
+            if (pState.getValue(ModStateProperties.EMPTY)) color = 0xFFFFFF;
+            if (pTintIndex == 0) {
+                float[] colorHSB = getColorHSB(color);
+                return Color.HSBtoRGB(colorHSB[0], Math.max(colorHSB[1] / 1.7F, 0), Math.max(colorHSB[2], 0));
+            }
+            if (pTintIndex == 1) {
+                float[] colorHSB = getColorHSB(color);
+                return Color.HSBtoRGB(colorHSB[0], Math.min(colorHSB[1] * 1.1F, 1), Math.min(colorHSB[2] * 1.2F, 1));
+            }
 
             return -1;
         }, ModBlocks.PATTERNFLOWER.get());

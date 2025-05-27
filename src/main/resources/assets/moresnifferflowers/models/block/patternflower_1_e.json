@@ -1,0 +1,8 @@
+{
+    "parent": "moresnifferflowers:block/caulorflower_1_e",
+    "textures": {
+	  "0": "moresnifferflowers:block/patternflower_0",
+	  "1": "moresnifferflowers:block/decayed_log",
+	  "3": "moresnifferflowers:block/patternflower_1_color"
+    }
+}

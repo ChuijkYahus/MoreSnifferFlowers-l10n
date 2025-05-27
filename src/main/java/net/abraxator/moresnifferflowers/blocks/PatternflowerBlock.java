@@ -121,6 +121,7 @@ public class PatternflowerBlock extends Block implements BonemealableBlock, ModC
                     pLevel.setBlockAndUpdate(highestPos, this.defaultBlockState()
                             .setValue(FLIPPED, highestPos.getY() % 2 == 0)
                             .setValue(FACING, stateBelow.getValue(FACING))
+                            .setValue(EMPTY, stateBelow.getValue(EMPTY))
                             .setValue(BLOCK_PATTERN, stateBelow.getValue(BLOCK_PATTERN)));
                 } else {
                     makeGrowOnBonemeal(pLevel, posBelow, stateBelow);

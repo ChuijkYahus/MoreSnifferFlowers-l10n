@@ -159,9 +159,9 @@ public class DyespriaItem extends BlockItem implements Colorable {
        float[] originalHSB = ModColorHandler.hexToRGB(originalColor);
        float[] dyeHSB = ModColorHandler.hexToRGB(dyeColor);
 
-       int r =  Math.round((originalHSB[0]*2 + dyeHSB[0]) / 3);
-       int g =  Math.round((originalHSB[1]*2 + dyeHSB[1]) / 3);
-       int b =  Math.round((originalHSB[2]*2 + dyeHSB[2]) / 3);
+       int r =  Math.round((originalHSB[0]*5 + dyeHSB[0]) / 6);
+       int g =  Math.round((originalHSB[1]*5 + dyeHSB[1]) / 6);
+       int b =  Math.round((originalHSB[2]*5 + dyeHSB[2]) / 6);
 
        int finalColor = ((r&0x0ff)<<16)|((g&0x0ff)<<8)|(b&0x0ff);
 

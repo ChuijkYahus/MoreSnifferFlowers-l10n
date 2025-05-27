@@ -66,17 +66,21 @@ public class PatternspriaItem extends Item {
             return InteractionResult.PASS;
         }
 
-        if (blockState.is(ModBlocks.PATTERNFLOWER.get()) && fromPatternspria != BlockPattern.EMPTY){
-            level.setBlock(blockPos, blockState.setValue(ModStateProperties.BLOCK_PATTERN, fromPatternspria), 3);
-            finishColoring(fromPatternspria.getItemStack(stack), level, stack, blockPos, pContext.getClickedFace());
-            return InteractionResult.SUCCESS;
-        }
-
         if (player.isCrouching() && blockPatterns.hasPattern(blockPos, level)) {
-            if (stack.getOrCreateTag().contains("color") && stack.getOrCreateTag().getInt("color") != blockPatterns.getPattern(blockPos, level).color() ) {
+            if (!stack.getOrCreateTag().contains("color")){
+                stack.getOrCreateTag().putInt("color", -1);
+            }
+            if (stack.getOrCreateTag().getInt("color") != blockPatterns.getPattern(blockPos, level).color() ) {
                 copyColor(stack, level, blockPos);
                 return InteractionResult.sidedSuccess(level.isClientSide);
             }
+        }
+
+        if (blockState.is(ModBlocks.PATTERNFLOWER.get()) && fromPatternspria != BlockPattern.EMPTY){
+            if (BlockPattern.fromState(blockState).equals(fromPatternspria)) return InteractionResult.PASS;
+            level.setBlock(blockPos, blockState.setValue(ModStateProperties.BLOCK_PATTERN, fromPatternspria).setValue(ModStateProperties.EMPTY, false), 3);
+            finishColoring(fromPatternspria.getItemStack(stack), level, stack, blockPos, pContext.getClickedFace());
+            return InteractionResult.SUCCESS;
         }
 
         if (canUse(blockPos, level, stack)) {
