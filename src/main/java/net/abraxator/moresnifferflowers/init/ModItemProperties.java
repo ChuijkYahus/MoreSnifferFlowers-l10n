@@ -31,7 +31,7 @@ public class ModItemProperties {
         });
 
         ItemProperties.register(ModItems.PATTERNSPRIA.get(), MoreSnifferFlowers.loc("patternspria"), (pStack, pLevel, pEntity, pSeed) -> {
-            if(BlockPattern.fromPatternspria(pStack) != null) {
+            if(!BlockPattern.fromPatternspria(pStack).equals(BlockPattern.EMPTY)) {
                 return 1.0F;
             } else {
                 return 0.0F;

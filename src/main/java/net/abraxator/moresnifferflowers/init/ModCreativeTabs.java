@@ -72,6 +72,8 @@ public class ModCreativeTabs {
                 output.accept(ModBlocks.SOUR_CLUMP.get());
                 output.accept(ModBlocks.SOUR_PUDDLE.get());
 
+                output.accept(ModBlocks.TORCHFLOWER_AFLAME.get());
+                output.accept(ModBlocks.TORCHFLAME.get());
 
                 output.accept(ModItems.BELT_PIECE.get());
                 output.accept(ModItems.ENGINE_PIECE.get());

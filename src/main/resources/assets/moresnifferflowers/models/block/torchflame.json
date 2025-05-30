@@ -1,0 +1,85 @@
+{
+	"credit": "Made with Blockbench",
+	"ambientocclusion": false,
+	"render_type": "cutout_mipped",
+	"textures": {
+		"2": "moresnifferflowers:block/torchfire_pink",
+		"particle": "moresnifferflowers:block/torchfire_pink"
+	},
+	"elements": [
+		{
+			"from": [13, 0, 0],
+			"to": [13, 16, 16],
+			"shade": false,
+			"light_emission": 12,
+			"rotation": {"angle": 0, "axis": "y", "origin": [10.5, 8, 10.5]},
+			"faces": {
+				"east": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}}
+			}
+		},
+		{
+			"from": [0, 0, 13],
+			"to": [16, 16, 13],
+			"shade": false,
+			"light_emission": 12,
+			"rotation": {"angle": 0, "axis": "y", "origin": [10.5, 8, 10.5]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}},
+				"south": {"uv": [16, 0, 0, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}}
+			}
+		},
+		{
+			"from": [3, 0, 0],
+			"to": [3, 16, 16],
+			"shade": false,
+			"light_emission": 12,
+			"rotation": {"angle": 0, "axis": "y", "origin": [3, 8, 8]},
+			"faces": {
+				"east": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}}
+			}
+		},
+		{
+			"from": [0, 0, 3],
+			"to": [16, 16, 3],
+			"shade": false,
+			"light_emission": 12,
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 0, 3]},
+			"faces": {
+				"north": {"uv": [16, 0, 0, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}}
+			}
+		},
+		{
+			"from": [0, 0, 8],
+			"to": [16, 16, 8],
+			"shade": false,
+			"light_emission": 12,
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [16, 0, 0, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}}
+			}
+		},
+		{
+			"from": [0, 0, 8],
+			"to": [16, 16, 8],
+			"shade": false,
+			"light_emission": 12,
+			"rotation": {"angle": -45, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}},
+				"south": {"uv": [16, 0, 0, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "group",
+			"origin": [0, 0, 3],
+			"color": 0,
+			"children": [0, 1, 2, 3, 4, 5]
+		}
+	]
+}

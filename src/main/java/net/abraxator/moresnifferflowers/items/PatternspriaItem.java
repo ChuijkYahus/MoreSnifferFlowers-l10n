@@ -93,6 +93,7 @@ public class PatternspriaItem extends Item {
             Set<BlockPos> set = dyespriaMode.getSelector().apply(dyespriaSelector);
             set.stream().sorted(new EntityDistanceComparator(blockPos)).takeWhile(t -> canContinueDyeing.get()).forEach(blockPos1 -> {
                 var state = level.getBlockState(blockPos1);
+                MoreSnifferFlowers.LOGGER.info("Tag" + stack.getOrCreateTag());
 
                 if(canUse(blockPos1, level, stack) && fromPatternspria != BlockPattern.EMPTY) {
                     patternOne(stack, level, blockPos1, fromPatternspria, pContext.getClickedFace(), horizontalDirection);
@@ -108,6 +109,7 @@ public class PatternspriaItem extends Item {
             });
 
             if (!level.isClientSide) {
+                MoreSnifferFlowers.LOGGER.info("Finishing patterning...");
                 blockPatterns.setBulkPatterns(cached_patterns, level);
                 cached_patterns.clear();
             }

@@ -108,11 +108,13 @@ public class BlockPatternCapability {
         setPattern(pos, new PatternData(data.patternId, data.color, data.direction, true), level);
     }
 
+    // dimension=dim , pos=2, data=3, patterns=all
+
     public CompoundTag save(CompoundTag tag) {
         ListTag dimensionList = new ListTag();
         for (var dimEntry : patterns.entrySet()) {
             CompoundTag dimTag = new CompoundTag();
-            dimTag.putString("dimension", dimEntry.getKey().location().toString());
+            dimTag.putString("dim", dimEntry.getKey().location().toString());
 
             ListTag patternList = new ListTag();
             for (var entry : dimEntry.getValue().entrySet()) {
@@ -122,22 +124,23 @@ public class BlockPatternCapability {
                 patternList.add(entryTag);
             }
 
-            dimTag.put("patterns", patternList);
+            dimTag.put("all", patternList);
             dimensionList.add(dimTag);
         }
-        tag.put("dimensions", dimensionList);
+        tag.put("dim", dimensionList);
+        MoreSnifferFlowers.LOGGER.info("Tag=" + tag);
         return tag;
     }
 
     public void load(CompoundTag tag) {
         patterns.clear();
-        ListTag dimensionList = tag.getList("dimensions", Tag.TAG_COMPOUND);
+        ListTag dimensionList = tag.getList("dim", Tag.TAG_COMPOUND);
         for (Tag dimT : dimensionList) {
             CompoundTag dimTag = (CompoundTag) dimT;
-            ResourceLocation dimId = new ResourceLocation(dimTag.getString("dimension"));
+            ResourceLocation dimId = new ResourceLocation(dimTag.getString("dim"));
             ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, dimId);
 
-            ListTag patternList = dimTag.getList("patterns", Tag.TAG_COMPOUND);
+            ListTag patternList = dimTag.getList("all", Tag.TAG_COMPOUND);
             Map<BlockPos, PatternData> map = new HashMap<>();
             for (Tag pTag : patternList) {
                 CompoundTag entry = (CompoundTag) pTag;
@@ -149,21 +152,23 @@ public class BlockPatternCapability {
         }
     }
 
+    // pattern=pat color=6, direction=dir, glowing=glow
+
     public record PatternData(int patternId, int color, Direction direction, boolean isGlowing) {
         public CompoundTag save() {
             CompoundTag tag = new CompoundTag();
-            tag.putInt("pattern", patternId);
+            tag.putInt("pat", patternId);
             tag.putInt("color", color);
-            tag.putInt("direction", DirectionStorageHelper.directionToInt(direction));
-            tag.putBoolean("isGlowing", isGlowing);
+            tag.putInt("dir", DirectionStorageHelper.directionToInt(direction));
+            tag.putBoolean("glow", isGlowing);
             return tag;
         }
 
         public static PatternData load(CompoundTag tag) {
-            int patternId = tag.getInt("pattern");
+            int patternId = tag.getInt("pat");
             int color = tag.getInt("color");
-            Direction direction1 = DirectionStorageHelper.intToDirection(tag.getInt("direction"));
-            boolean isGlowing = tag.getBoolean("isGlowing");
+            Direction direction1 = DirectionStorageHelper.intToDirection(tag.getInt("dir"));
+            boolean isGlowing = tag.getBoolean("glow");
             return new PatternData(patternId, color, direction1, isGlowing);
         }
     }

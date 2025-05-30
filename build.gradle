@@ -26,11 +26,11 @@ println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty '
 
 
     legacyForge {
-        version = project.forge_version
+        version = project.minecraft_version+'-'+forge_version
 
         parchment {
             mappingsVersion = project.parchment_mappings_version
-            minecraftVersion = project.parchment_minecraft_version
+            minecraftVersion = project.minecraft_version
         }
 
         runs {
@@ -114,11 +114,11 @@ mixin {
 
 final manifestAttributes = [
         'Specification-Title'   : 'MoreSnifferFlowers',
-        'Specification-Vendor'  : 'AbraXator',
+        'Specification-Vendor'  : 'Nikdo53',
         'Specification-Version' : '1',
         'Implementation-Title'  : project.name,
         'Implementation-Version': project.version,
-        'Implementation-Vendor' : 'AbraXator',
+        'Implementation-Vendor' : 'Nikdo53',
         "MixinConfigs"          : "more_sniffer_flowers.mixins.json",
         'jei_version'           : project.jei_version_range,
 ]
