@@ -6,150 +6,187 @@ import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.networking.UpdateBlockPatternsPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class BlockPatternCapability {
-    private final Map<ResourceKey<Level>, Map<BlockPos, PatternData>> patterns = new HashMap<>();
+public class BlockPatternCapability implements ICapabilityProvider, INBTSerializable<CompoundTag> {
+    private final Map<BlockPos, PatternData> patterns = new HashMap<>();
+    private final LazyOptional<BlockPatternCapability> optional = LazyOptional.of(() -> this);
+    ResourceLocation ID = MoreSnifferFlowers.loc("block_patterns");
+    
+    public static BlockPatternCapability getBlockPatterns(BlockPos pos, Level level) {
+        LevelChunk levelChunk = (LevelChunk) level.getChunk(pos);
+        return levelChunk.getCapability(CapabilityList.BLOCK_PATTERNS).orElse(new BlockPatternCapability());
+    }
 
-    public void setPattern(BlockPos pos, PatternData pattern, Level level) {
-        patterns.computeIfAbsent(level.dimension(), levelResourceKey -> new HashMap<>()).put(pos.immutable(), pattern);
-        if (level instanceof ServerLevel serverLevel) {
-            sync();
-            BlockPatternSavedData.get(serverLevel).setDirty();
+    public static void setPattern(BlockPos pos, PatternData pattern, Level level) {
+        BlockPatternCapability capability = getBlockPatterns(pos, level);
+        ChunkPos chunkPos = new ChunkPos(pos);
+        level.getChunkAt(pos).setUnsaved(true);
+
+
+        capability.setPattern(pos, pattern);
+        if (!level.isClientSide) capability.sync(chunkPos);
+    }
+
+    public void setPattern(BlockPos pos, PatternData pattern) {
+        patterns.put(pos.immutable(), pattern);
+    }
+
+    public static void setBulkPatterns(Map<BlockPos, PatternData> patternMap, Level level) {
+        if (level.isClientSide) return;
+
+        for (var entry : patternMap.entrySet()) {
+            BlockPos pos = entry.getKey();
+            PatternData patternData = entry.getValue();
+
+            BlockPatternCapability capability = getBlockPatterns(pos, level);
+            capability.setPattern(pos, patternData);
+            level.getChunkAt(pos).setUnsaved(true);
+        }
+
+        Set<BlockPos> blockPosList = patternMap.keySet();
+        Set<ChunkPos> chunkPositions = blockPosList.stream()
+                .map(ChunkPos::new)
+                .collect(Collectors.toSet());
+
+        List<LevelChunk> levelChunks = chunkPositions.stream()
+                .map(pos -> level.getChunk(pos.x, pos.z))
+                .toList();
+
+        for (LevelChunk levelChunk : levelChunks) {
+            levelChunk.getCapability(CapabilityList.BLOCK_PATTERNS).ifPresent(blockPatternCapability -> blockPatternCapability.sync(levelChunk.getPos()));
         }
     }
 
-    public void setBulkPatterns(Map<BlockPos, PatternData> patternMap, Level level) {
-        patterns.computeIfAbsent(level.dimension(), levelResourceKey -> new HashMap<>());
-        patternMap.forEach((pos, patternData) -> {
-            patterns.get(level.dimension()).put(pos, patternData);
-        });
+
+    public static PatternData getPattern(BlockPos pos, Level level){
+        BlockPatternCapability capability = getBlockPatterns(pos, level);
+        return capability.getPattern(pos);
+    }
+
+    public PatternData getPattern(BlockPos pos) {
+        return patterns.get(pos);
+    }
+
+    public static boolean hasPattern(BlockPos pos, Level level){
+        BlockPatternCapability capability = getBlockPatterns(pos, level);
+        return capability.hasPattern(pos);
+    }
+
+    public boolean hasPattern(BlockPos pos) {
+        return patterns.containsKey(pos);
+    }
+
+    public static void removePattern(BlockPos pos, Level level) {
+        BlockPatternCapability capability = getBlockPatterns(pos, level);
+        capability.removePattern(pos);
+        level.getChunkAt(pos).setUnsaved(true);
+
         if (level instanceof ServerLevel serverLevel) {
-            sync();
-            BlockPatternSavedData.get(serverLevel).setDirty();
+           capability.sync(new ChunkPos(pos));
         }
     }
 
-    public PatternData getPattern(BlockPos pos, Level level) {
-        Map<BlockPos, PatternData> map = patterns.get(level.dimension());
-        return map != null ? map.get(pos) : null;
+    public void removePattern(BlockPos pos) {
+        patterns.remove(pos);
     }
 
-    public boolean hasPattern(BlockPos pos, Level level) {
-        return patterns.containsKey(level.dimension()) && patterns.get(level.dimension()).containsKey(pos);
-    }
-
-    public void removePattern(BlockPos pos, Level level) {
-        if (patterns.containsKey(level.dimension())) patterns.get(level.dimension()).remove(pos);
-        if (level instanceof ServerLevel serverLevel) {
-            sync();
-            BlockPatternSavedData.get(serverLevel).setDirty();
-        }
-    }
-
-    public Stream<BlockPos> getPatternPositionsNear(BlockPos pos, int renderDistance, Level level ) {
-        if(!patterns.containsKey(level.dimension())) return Stream.empty();
-        return patterns.get(level.dimension()).keySet().stream().filter(p -> p.closerThan(pos, renderDistance)) ;
+    public Stream<BlockPos> getPatternPositionsNear(BlockPos pos, int renderDistance) {
+        return patterns.keySet().stream().filter(p -> p.closerThan(pos, renderDistance)) ;
     }
 
     public boolean isEmpty() {
         return patterns.isEmpty();
     }
 
-    public boolean isNull(Level level) {
-        return patterns.get(level.dimension()) == null;
-    }
-
-    public void sync(){
+    public void sync(ChunkPos pos){
         CompoundTag compoundtag = this.save(new CompoundTag());
-        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new UpdateBlockPatternsPacket(compoundtag));
+        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new UpdateBlockPatternsPacket(compoundtag, pos));
     }
 
-/*    public void setFromDisk(ServerLevel serverLevel) {
-        BlockPatternCapability capability = BlockPatternSavedData.get(serverLevel).getStorage();
-        this.patterns = capability.getMap();
-        sync();
-    }*/
-
-    private Map<ResourceKey<Level>, Map<BlockPos, PatternData>> getMap(){
-        return patterns;
+    public int count() {
+        return patterns.size();
     }
 
-    public void clear(){
-        this.patterns.clear();
-    }
-
-    public int count(Level level, int flag) {
-        if (isNull(level)) MoreSnifferFlowers.LOGGER.error("BlockPatterns are null for flag: "+ flag + " patterns:" + patterns);
-        return patterns.get(level.dimension()).size();
-    }
-
-
-    public void recolor(Level level, BlockPos pos, int color) {
+    public static void recolor(Level level, BlockPos pos, int color) {
         PatternData data = getPattern(pos, level);
         setPattern(pos, new PatternData(data.patternId, color, data.direction, data.isGlowing), level);
+        level.getChunkAt(pos).setUnsaved(true);
     }
 
-    public void enableGlowing(Level level, BlockPos pos) {
+    public static void enableGlowing(Level level, BlockPos pos) {
         PatternData data = getPattern(pos, level);
         setPattern(pos, new PatternData(data.patternId, data.color, data.direction, true), level);
+        level.getChunkAt(pos).setUnsaved(true);
     }
 
     // dimension=dim , pos=2, data=3, patterns=all
+    public CompoundTag save() {
+       return save(new CompoundTag());
+    }
 
     public CompoundTag save(CompoundTag tag) {
-        ListTag dimensionList = new ListTag();
-        for (var dimEntry : patterns.entrySet()) {
-            CompoundTag dimTag = new CompoundTag();
-            dimTag.putString("dim", dimEntry.getKey().location().toString());
+        ListTag patternList = new ListTag();
 
-            ListTag patternList = new ListTag();
-            for (var entry : dimEntry.getValue().entrySet()) {
-                CompoundTag entryTag = new CompoundTag();
-                entryTag.put("pos", NbtUtils.writeBlockPos(entry.getKey()));
-                entryTag.put("data", entry.getValue().save());
-                patternList.add(entryTag);
-            }
-
-            dimTag.put("all", patternList);
-            dimensionList.add(dimTag);
+        for (var entry : patterns.entrySet()) {
+            CompoundTag entryTag = new CompoundTag();
+            entryTag.put("pos", NbtUtils.writeBlockPos(entry.getKey()));
+            entryTag.put("data", entry.getValue().save());
+            patternList.add(entryTag);
         }
-        tag.put("dim", dimensionList);
-        MoreSnifferFlowers.LOGGER.info("Tag=" + tag);
+
+        tag.put("all", patternList);
+     //   MoreSnifferFlowers.LOGGER.info("Tag=" + tag);
         return tag;
     }
 
     public void load(CompoundTag tag) {
         patterns.clear();
-        ListTag dimensionList = tag.getList("dim", Tag.TAG_COMPOUND);
-        for (Tag dimT : dimensionList) {
-            CompoundTag dimTag = (CompoundTag) dimT;
-            ResourceLocation dimId = new ResourceLocation(dimTag.getString("dim"));
-            ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, dimId);
-
-            ListTag patternList = dimTag.getList("all", Tag.TAG_COMPOUND);
-            Map<BlockPos, PatternData> map = new HashMap<>();
-            for (Tag pTag : patternList) {
+        ListTag patternList = tag.getList("all", Tag.TAG_COMPOUND);
+        for (Tag pTag : patternList) {
                 CompoundTag entry = (CompoundTag) pTag;
                 BlockPos pos = NbtUtils.readBlockPos(entry.getCompound("pos"));
                 PatternData data = PatternData.load(entry.getCompound("data"));
-                map.put(pos, data);
-            }
-            patterns.put(dimension, map);
+                patterns.put(pos, data);
         }
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        return cap == CapabilityList.BLOCK_PATTERNS ? optional.cast() : LazyOptional.empty() ;
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        return save();
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+        load(nbt);
+    }
+
+    public void invalidate() {
+        optional.invalidate();
     }
 
     // pattern=pat color=6, direction=dir, glowing=glow

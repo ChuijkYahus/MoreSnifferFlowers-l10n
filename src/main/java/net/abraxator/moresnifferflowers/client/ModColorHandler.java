@@ -140,7 +140,7 @@ public class ModColorHandler {
 
         event.register(((stack, tintIndex) ->{
            BlockPattern pattern = BlockPattern.fromPatternspria(stack);
-           if(tintIndex != 0 || pattern == null) return -1;
+           if(tintIndex != 0 || pattern == BlockPattern.EMPTY) return -1;
            if (stack.getOrCreateTag().contains("color")) {
                return stack.getOrCreateTag().getInt("color");
            }

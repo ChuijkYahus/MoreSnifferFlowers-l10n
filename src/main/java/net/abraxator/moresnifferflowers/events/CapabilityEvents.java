@@ -1,15 +1,10 @@
 package net.abraxator.moresnifferflowers.events;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
-import net.abraxator.moresnifferflowers.capability.BlockPatternSavedData;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -83,10 +78,10 @@ public class CapabilityEvents {
         player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
             cap.sync(player);
         });
-        if (CapabilityList.getBlockPatterns().isEmpty() && player.level() instanceof ServerLevel serverLevel) CapabilityList.setFromDisk(serverLevel);
+       // if (CapabilityList.getBlockPatterns().isEmpty() && player.level() instanceof ServerLevel serverLevel) CapabilityList.setFromDisk(serverLevel);
     }
 
-    @SubscribeEvent
+/*    @SubscribeEvent
     public static void onLevelLoad(LevelEvent.Load event) {
         LevelAccessor levelAccessor = event.getLevel();
         BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
@@ -110,7 +105,7 @@ public class CapabilityEvents {
         }
 
 
-    }
+    }*/
 
 
 }

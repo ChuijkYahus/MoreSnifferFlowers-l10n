@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
+import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
 import net.minecraft.client.Camera;
@@ -24,6 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.lighting.QuadLighter;
@@ -45,7 +47,7 @@ public class BlockPatternRenderer {
         this.dirty = true;
     }
 
-    public void renderPatternOverlay(Level level, double camX, double camY, double camZ, Matrix4f viewMatrix, Matrix4f projectionMatrix, BlockPatternCapability storage, Frustum frustum) {
+    public void renderPatternOverlay(Level level, double camX, double camY, double camZ, Matrix4f viewMatrix, Matrix4f projectionMatrix, List<LevelChunk> levelChunks, Frustum frustum) {
         if (!dirty) return;
         dirty = false;
         cachedQuads.clear();
@@ -53,46 +55,48 @@ public class BlockPatternRenderer {
         BlockPos camPos = BlockPos.containing(camX, camY, camZ);
         frustum.prepare(camX, camY, camZ);
 
-        Minecraft minecraft = Minecraft.getInstance();
-        int renderDistancePlayer = minecraft.options.getEffectiveRenderDistance();
-        int configuredRenderDistance = ModClientConfig.BLOCK_PATTERN_RENDER_DISTANCE.get();
-        int renderDistance = configuredRenderDistance < 0 ? renderDistancePlayer*16 / Math.abs(configuredRenderDistance) : configuredRenderDistance;
+        int renderDistance = ModClientConfig.getBlockPatternRenderDistance();
 
-        Stream<BlockPos> patternPositionsNear = storage.getPatternPositionsNear(camPos, renderDistance, level);
-        if (patternPositionsNear == null) return;
-        List<BlockPos> positions = patternPositionsNear.toList();
+        for (LevelChunk chunk : levelChunks) {
+            chunk.getCapability(CapabilityList.BLOCK_PATTERNS).ifPresent(storage -> {
 
-        for (BlockPos pos : positions) {
-            BlockPatternCapability.PatternData data = storage.getPattern(pos, level);
+                Stream<BlockPos> patternPositionsNear = storage.getPatternPositionsNear(camPos, renderDistance);
+                if (patternPositionsNear == null) return;
+                List<BlockPos> positions = patternPositionsNear.toList();
 
-            if (data != null && frustum.isVisible(new AABB(pos))) {
+                for (BlockPos pos : positions) {
+                    BlockPatternCapability.PatternData data = storage.getPattern(pos);
 
-                ResourceLocation resourceLocation = MoreSnifferFlowers.loc("block/block_pattern/" + BlockPattern.fromId(data.patternId()).getSerializedName());
-                TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(resourceLocation);
-                BlockState state = level.getBlockState(pos);
+                    if (data != null && frustum.isVisible(new AABB(pos))) {
 
-                for (Direction dir : Direction.values()) {
-                    if (state.isFaceSturdy(level, pos, dir) && (!level.getBlockState(pos.relative(dir)).isFaceSturdy(level, pos.relative(dir), dir.getOpposite()) || !level.getBlockState(pos.relative(dir)).canOcclude() )) {
-                        float[] brightness = new float[]{1,1,1,1};
-                        int[] lightmap = new int[4];
-                        boolean smoothLighting = ModClientConfig.BLOCK_PATTERN_SMOOTH_LIGHTING.get();
+                        ResourceLocation resourceLocation = MoreSnifferFlowers.loc("block/block_pattern/" + BlockPattern.fromId(data.patternId()).getSerializedName());
+                        TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(resourceLocation);
+                        BlockState state = level.getBlockState(pos);
 
-                        if (smoothLighting) {
-                            ModelBlockRenderer.AmbientOcclusionFace aoFace = new ModelBlockRenderer.AmbientOcclusionFace();
-                            aoFace.calculate(level, state, pos.relative(dir), dir, new float[Direction.values().length * 2], new BitSet(3), true);
-                            AmbientOcclusionFaceAccessor faceAccessor = (AmbientOcclusionFaceAccessor) aoFace;
-                            brightness = new float[]{faceAccessor.moreSnifferFlowers$getBrightness()[0], faceAccessor.moreSnifferFlowers$getBrightness()[1], faceAccessor.moreSnifferFlowers$getBrightness()[2], faceAccessor.moreSnifferFlowers$getBrightness()[3]};
-                            lightmap = new int[]{faceAccessor.moreSnifferFlowers$getLightmap()[0], faceAccessor.moreSnifferFlowers$getLightmap()[1], faceAccessor.moreSnifferFlowers$getLightmap()[2], faceAccessor.moreSnifferFlowers$getLightmap()[3]};
-                        } else {
-                            int packed = getPackedLight(level, pos.relative(dir));
-                            if (data.isGlowing()) packed = LightTexture.FULL_BRIGHT;
-                            lightmap = new int[]{packed,packed,packed,packed};
+                        for (Direction dir : Direction.values()) {
+                            if (state.isFaceSturdy(level, pos, dir) && (!level.getBlockState(pos.relative(dir)).isFaceSturdy(level, pos.relative(dir), dir.getOpposite()) || !level.getBlockState(pos.relative(dir)).canOcclude() )) {
+                                float[] brightness = new float[]{1,1,1,1};
+                                int[] lightmap = new int[4];
+                                boolean smoothLighting = ModClientConfig.BLOCK_PATTERN_SMOOTH_LIGHTING.get();
+
+                                if (smoothLighting) {
+                                    ModelBlockRenderer.AmbientOcclusionFace aoFace = new ModelBlockRenderer.AmbientOcclusionFace();
+                                    aoFace.calculate(level, state, pos.relative(dir), dir, new float[Direction.values().length * 2], new BitSet(3), true);
+                                    AmbientOcclusionFaceAccessor faceAccessor = (AmbientOcclusionFaceAccessor) aoFace;
+                                    brightness = new float[]{faceAccessor.moreSnifferFlowers$getBrightness()[0], faceAccessor.moreSnifferFlowers$getBrightness()[1], faceAccessor.moreSnifferFlowers$getBrightness()[2], faceAccessor.moreSnifferFlowers$getBrightness()[3]};
+                                    lightmap = new int[]{faceAccessor.moreSnifferFlowers$getLightmap()[0], faceAccessor.moreSnifferFlowers$getLightmap()[1], faceAccessor.moreSnifferFlowers$getLightmap()[2], faceAccessor.moreSnifferFlowers$getLightmap()[3]};
+                                } else {
+                                    int packed = getPackedLight(level, pos.relative(dir));
+                                    if (data.isGlowing()) packed = LightTexture.FULL_BRIGHT;
+                                    lightmap = new int[]{packed,packed,packed,packed};
+                                }
+
+                                cachedQuads.add(RenderQuad.create(pos, dir, data.color(), sprite, smoothLighting, data.direction(), data.isGlowing(), brightness, lightmap));
+                            }
                         }
-
-                        cachedQuads.add(RenderQuad.create(pos, dir, data.color(), sprite, smoothLighting, data.direction(), data.isGlowing(), brightness, lightmap));
                     }
                 }
-            }
+            });
         }
     }
 

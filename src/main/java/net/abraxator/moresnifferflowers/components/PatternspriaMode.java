@@ -2,7 +2,6 @@ package net.abraxator.moresnifferflowers.components;
 
 import com.mojang.serialization.Codec;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
-import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -118,11 +117,10 @@ public enum PatternspriaMode implements StringRepresentable {
 
         private boolean matchBlock(BlockPos pos) {
             BlockState state = level.getBlockState(pos);
-            BlockPatternCapability patterns = CapabilityList.getBlockPatterns();
             if (state.canBeReplaced()) return false;
-            if (patterns.hasPattern(pos, level) && patterns.hasPattern(originalPos, level)) {
-                int originalId = patterns.getPattern(originalPos, level).patternId();
-                int thisId = patterns.getPattern(pos, level).patternId();
+            if (BlockPatternCapability.hasPattern(pos, level) && BlockPatternCapability.hasPattern(originalPos, level)) {
+                int originalId = BlockPatternCapability.getPattern(originalPos, level).patternId();
+                int thisId = BlockPatternCapability.getPattern(pos, level).patternId();
 
                 return originalId == thisId;
             }

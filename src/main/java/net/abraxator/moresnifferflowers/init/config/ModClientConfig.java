@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.init.config;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ModClientConfig {
@@ -52,4 +53,12 @@ public class ModClientConfig {
         CLIENT_CONFIG = builder.build();
 
     }
+
+    public static int getBlockPatternRenderDistance() {
+        Minecraft minecraft = Minecraft.getInstance();
+        int renderDistancePlayer = minecraft.options.getEffectiveRenderDistance();
+        int configuredRenderDistance = ModClientConfig.BLOCK_PATTERN_RENDER_DISTANCE.get();
+        return configuredRenderDistance < 0 ? renderDistancePlayer*16 / Math.abs(configuredRenderDistance) : configuredRenderDistance;
+    }
+
 }

@@ -1,11 +1,7 @@
 package net.abraxator.moresnifferflowers.capability;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.saveddata.SavedData;
-
-public class BlockPatternSavedData extends SavedData {
-    private BlockPatternCapability storage = new BlockPatternCapability();
+public class BlockPatternSavedData {
+/*    private BlockPatternCapability storage = new BlockPatternCapability();
 
     public static final String DATA_NAME = "pattern_storage";
 
@@ -36,5 +32,5 @@ public class BlockPatternSavedData extends SavedData {
         super.setDirty();
         this.storage = CapabilityList.getBlockPatterns();
         save(new CompoundTag());
-    }
+    }*/
 }

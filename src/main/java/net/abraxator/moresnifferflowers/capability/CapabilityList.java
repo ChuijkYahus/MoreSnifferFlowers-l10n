@@ -3,10 +3,10 @@ package net.abraxator.moresnifferflowers.capability;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 public class CapabilityList {
     public static final Capability<NutritionCapability> UNLOCKED_NUTRITIONS = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<HardenedMouthCapability> MOUTH_SLOTS = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<BlockPatternCapability> BLOCK_PATTERNS = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.register(NutritionCapability.class);
@@ -68,14 +69,12 @@ public class CapabilityList {
             }
         }
     }
-    private static BlockPatternCapability BLOCK_PATTERN_CAPABILITY = new BlockPatternCapability();
 
-    public static BlockPatternCapability getBlockPatterns() {
-        return BLOCK_PATTERN_CAPABILITY;
-    }
-
-    public static void setFromDisk(ServerLevel level) {
-        BLOCK_PATTERN_CAPABILITY = BlockPatternSavedData.get(level).getStorage();
+    @SubscribeEvent
+    public static void attachChunkCapabilities(AttachCapabilitiesEvent<LevelChunk> event) {
+        BlockPatternCapability capability = new BlockPatternCapability();
+        event.addCapability(capability.ID, capability);
+        event.addListener(capability::invalidate);
     }
 
 }

@@ -1,7 +1,7 @@
 package net.abraxator.moresnifferflowers.components;
 
 import com.mojang.serialization.Codec;
-import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.items.DyespriaItem;
 import net.minecraft.ChatFormatting;
@@ -127,10 +127,10 @@ public enum DyespriaMode implements StringRepresentable {
                     && state.hasProperty(ModStateProperties.COLOR) 
                     && state.getValue(ModStateProperties.COLOR).equals(blockState.getValue(ModStateProperties.COLOR));
 
-            if (CapabilityList.getBlockPatterns().hasPattern(originalPos, level)){
-                if (!CapabilityList.getBlockPatterns().hasPattern(pos, level) || isCrouching) return false;
-                int originalId = CapabilityList.getBlockPatterns().getPattern(originalPos, level).patternId();
-                int thisId = CapabilityList.getBlockPatterns().getPattern(pos, level).patternId();
+            if (BlockPatternCapability.hasPattern(originalPos, level)){
+                if (!BlockPatternCapability.hasPattern(pos, level) || isCrouching) return false;
+                int originalId = BlockPatternCapability.getPattern(originalPos, level).patternId();
+                int thisId = BlockPatternCapability.getPattern(pos, level).patternId();
                 return originalId == thisId;
             }
 

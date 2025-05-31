@@ -3,7 +3,6 @@ package net.abraxator.moresnifferflowers.items;
 import com.google.common.collect.Maps;
 import net.abraxator.moresnifferflowers.blockentities.DyespriaPlantBlockEntity;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
-import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.client.ModColorHandler;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
@@ -74,7 +73,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
             return InteractionResult.PASS;
         }
 
-        if (checkDyedBlock(blockState) || blockState.getBlock() instanceof Colorable && !dye.isEmpty() || (CapabilityList.getBlockPatterns().hasPattern(blockPos, level) && !player.isCrouching())) {
+        if (checkDyedBlock(blockState) || blockState.getBlock() instanceof Colorable && !dye.isEmpty() || (BlockPatternCapability.hasPattern(blockPos, level) && !player.isCrouching())) {
             DyespriaMode dyespriaMode = getMode(stack);
             AtomicBoolean canContinueDyeing = new AtomicBoolean(true);
             DyespriaMode.DyespriaSelector dyespriaSelector = new DyespriaMode.DyespriaSelector(blockPos, blockState, getMatchTag(blockState), level, pContext.getClickedFace(), player.isCrouching());
@@ -83,7 +82,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
                 var state = level.getBlockState(blockPos1);
 
                 if(!Dye.getDyeFromDyespria(stack).isEmpty()) {
-                    colorOne(stack, level, blockPos1, state, pContext.getClickedFace(), player, CapabilityList.getBlockPatterns().hasPattern(blockPos, level));
+                    colorOne(stack, level, blockPos1, state, pContext.getClickedFace(), player, BlockPatternCapability.hasPattern(blockPos, level));
                 } else canContinueDyeing.set(false);
             });
 
@@ -130,7 +129,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
             return;
         }
 
-        if (CapabilityList.getBlockPatterns().hasPattern(blockPos, level) && !player.isCrouching() && clickedPattern){
+        if (BlockPatternCapability.hasPattern(blockPos, level) && !player.isCrouching() && clickedPattern){
             colorPattern(dye, level, blockPos);
             finishColoring(dye, level, stack, blockPos, face);
             return;
@@ -151,10 +150,9 @@ public class DyespriaItem extends BlockItem implements Colorable {
     }
 
     public void colorPattern(Dye dye, Level level, BlockPos pos){
-       BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
-       int patternId = blockPatterns.getPattern(pos, level).patternId();
+       int patternId = BlockPatternCapability.getPattern(pos, level).patternId();
 
-       int originalColor = blockPatterns.getPattern(pos, level).color();
+       int originalColor = BlockPatternCapability.getPattern(pos, level).color();
        int dyeColor = dye.color().getFireworkColor();
        float[] originalHSB = ModColorHandler.hexToRGB(originalColor);
        float[] dyeHSB = ModColorHandler.hexToRGB(dyeColor);
@@ -165,7 +163,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
 
        int finalColor = ((r&0x0ff)<<16)|((g&0x0ff)<<8)|(b&0x0ff);
 
-       blockPatterns.recolor(level, pos, finalColor);
+        BlockPatternCapability.recolor(level, pos, finalColor);
     }
 
     @Override

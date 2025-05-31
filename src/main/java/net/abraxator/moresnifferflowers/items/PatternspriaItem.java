@@ -2,7 +2,6 @@ package net.abraxator.moresnifferflowers.items;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
-import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.components.DyespriaMode;
 import net.abraxator.moresnifferflowers.components.EntityDistanceComparator;
@@ -60,17 +59,16 @@ public class PatternspriaItem extends Item {
         ItemStack stack = pContext.getItemInHand();
         Direction horizontalDirection = pContext.getHorizontalDirection();
         BlockPattern fromPatternspria = BlockPattern.fromPatternspria(stack);
-        BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
 
         if (pContext.getHand() != InteractionHand.MAIN_HAND) {
             return InteractionResult.PASS;
         }
 
-        if (player.isCrouching() && blockPatterns.hasPattern(blockPos, level)) {
+        if (player.isCrouching() && BlockPatternCapability.hasPattern(blockPos, level)) {
             if (!stack.getOrCreateTag().contains("color")){
                 stack.getOrCreateTag().putInt("color", -1);
             }
-            if (stack.getOrCreateTag().getInt("color") != blockPatterns.getPattern(blockPos, level).color() ) {
+            if (stack.getOrCreateTag().getInt("color") != BlockPatternCapability.getPattern(blockPos, level).color() ) {
                 copyColor(stack, level, blockPos);
                 return InteractionResult.sidedSuccess(level.isClientSide);
             }
@@ -93,7 +91,6 @@ public class PatternspriaItem extends Item {
             Set<BlockPos> set = dyespriaMode.getSelector().apply(dyespriaSelector);
             set.stream().sorted(new EntityDistanceComparator(blockPos)).takeWhile(t -> canContinueDyeing.get()).forEach(blockPos1 -> {
                 var state = level.getBlockState(blockPos1);
-                MoreSnifferFlowers.LOGGER.info("Tag" + stack.getOrCreateTag());
 
                 if(canUse(blockPos1, level, stack) && fromPatternspria != BlockPattern.EMPTY) {
                     patternOne(stack, level, blockPos1, fromPatternspria, pContext.getClickedFace(), horizontalDirection);
@@ -109,18 +106,17 @@ public class PatternspriaItem extends Item {
             });
 
             if (!level.isClientSide) {
-                MoreSnifferFlowers.LOGGER.info("Finishing patterning...");
-                blockPatterns.setBulkPatterns(cached_patterns, level);
+                BlockPatternCapability.setBulkPatterns(cached_patterns, level);
                 cached_patterns.clear();
             }
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
 
         BlockPattern pattern = fromPatternspria;
-        if (blockPatterns.hasPattern(blockPos, level) && pattern != BlockPattern.EMPTY ) {
-            BlockPatternCapability.PatternData patternData = blockPatterns.getPattern(blockPos, level);
+        if (BlockPatternCapability.hasPattern(blockPos, level) && pattern != BlockPattern.EMPTY ) {
+            BlockPatternCapability.PatternData patternData = BlockPatternCapability.getPattern(blockPos, level);
             if (!patternData.direction().equals(horizontalDirection) && pattern.getId() == patternData.patternId()){
-                blockPatterns.setPattern(blockPos,new BlockPatternCapability.PatternData(patternData.patternId(), patternData.color(), horizontalDirection, patternData.isGlowing() ) ,  level);
+                BlockPatternCapability.setPattern(blockPos,new BlockPatternCapability.PatternData(patternData.patternId(), patternData.color(), horizontalDirection, patternData.isGlowing() ) ,  level);
                 return InteractionResult.SUCCESS;
             }
         }
@@ -134,13 +130,12 @@ public class PatternspriaItem extends Item {
     }
 
     public boolean patternOne(ItemStack stack, Level level, BlockPos blockPos, BlockPattern pattern, Direction face, Direction horizontalDirection) {
-        BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
         if (!canUse(blockPos, level, stack) && pattern == BlockPattern.EMPTY) {
             return false;
         }
 
         int color = getColor(stack);
-        if (blockPatterns.hasPattern(blockPos, level)) color = blockPatterns.getPattern(blockPos, level).color();
+        if (BlockPatternCapability.hasPattern(blockPos, level)) color = BlockPatternCapability.getPattern(blockPos, level).color();
 
         if (!level.isClientSide) {
             cached_patterns.put(blockPos.immutable(), new BlockPatternCapability.PatternData(pattern.getId(), color, horizontalDirection, false));
@@ -155,8 +150,8 @@ public class PatternspriaItem extends Item {
 
         if (BlockPattern.fromPatternspria(patternspria) == BlockPattern.EMPTY) return false;
         int groundId = -1;
-        if (CapabilityList.getBlockPatterns().hasPattern(pos, level)){
-            groundId = CapabilityList.getBlockPatterns().getPattern(pos, level).patternId();
+        if (BlockPatternCapability.hasPattern(pos, level)){
+            groundId = BlockPatternCapability.getPattern(pos, level).patternId();
         }
         int inputId = BlockPattern.fromPatternspria(patternspria).getId();
 
@@ -169,7 +164,7 @@ public class PatternspriaItem extends Item {
             }
         }
 
-        return (!CapabilityList.getBlockPatterns().hasPattern(pos, level) || inputId != groundId)
+        return (!BlockPatternCapability.hasPattern(pos, level) || inputId != groundId)
                 && patternspria.getOrCreateTag().getInt("amount") > 0 && isSturdy;
     }
 
@@ -270,8 +265,8 @@ public class PatternspriaItem extends Item {
     }
 
     public void copyColor(ItemStack patternspria, Level level, BlockPos blockPos){
-        if (CapabilityList.getBlockPatterns().hasPattern(blockPos, level)) {
-            BlockPatternCapability.PatternData patternData = CapabilityList.getBlockPatterns().getPattern(blockPos, level);
+        if (BlockPatternCapability.hasPattern(blockPos, level)) {
+            BlockPatternCapability.PatternData patternData = BlockPatternCapability.getPattern(blockPos, level);
             patternspria.getOrCreateTag().putInt("color", patternData.color());
         }
     }

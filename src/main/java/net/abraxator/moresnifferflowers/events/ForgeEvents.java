@@ -17,6 +17,8 @@ import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -32,6 +34,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -40,6 +43,8 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -51,6 +56,8 @@ import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.ChunkDataEvent;
+import net.minecraftforge.event.level.ChunkWatchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -68,6 +75,51 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onSlotTake(SlotTakeEvent event){
     }
+
+    @SubscribeEvent
+    public static void onChunkLoad(ChunkDataEvent.Load event) {
+        ChunkPos pos = event.getChunk().getPos();
+        CompoundTag tag = event.getData().getCompound("patternStorage");
+        ChunkAccess chunkAccess = event.getChunk();
+        if (tag.isEmpty()) {
+            return;
+        }
+
+        if(chunkAccess instanceof LevelChunk chunk) {
+            chunk.getCapability(CapabilityList.BLOCK_PATTERNS).ifPresent(blockPatternCapability -> {
+                blockPatternCapability.load(tag);
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public static void onChunkSave(ChunkDataEvent.Save event) {
+        CompoundTag tag = event.getData().getCompound("PatternStorage");
+        ChunkPos pos = event.getChunk().getPos();
+        if (event.getLevel() instanceof ServerLevel level) {
+            LevelChunk chunk = level.getChunkSource().getChunk(pos.x, pos.z, false);
+
+            if (chunk == null) {
+                return;
+            }
+
+            chunk.getCapability(CapabilityList.BLOCK_PATTERNS).ifPresent(blockPatternCapability -> {
+                blockPatternCapability.save(tag);
+                event.getData().put("patternStorage", tag);
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public static void onChunkWatch(ChunkWatchEvent.Watch event) {
+        Player player = event.getPlayer();
+        if (!player.level().isClientSide){
+            LevelChunk chunk = event.getChunk();
+            chunk.getCapability(CapabilityList.BLOCK_PATTERNS).ifPresent(blockPatternCapability -> blockPatternCapability.sync(chunk.getPos()));
+        }
+
+    }
+
 
     @SubscribeEvent
     public static void onEffectExpiration(MobEffectEvent event){
@@ -210,10 +262,10 @@ public class ForgeEvents {
                     event.setCanceled(true);
                 }
             }
-        if (CapabilityList.getBlockPatterns().hasPattern(pos, level) && itemStack.is(Items.GLOW_INK_SAC)){
-            BlockPatternCapability.PatternData data = CapabilityList.getBlockPatterns().getPattern(pos, level);
+        if (BlockPatternCapability.hasPattern(pos, level) && itemStack.is(Items.GLOW_INK_SAC)){
+            BlockPatternCapability.PatternData data = BlockPatternCapability.getPattern(pos, level);
             if (!data.isGlowing()){
-                CapabilityList.getBlockPatterns().enableGlowing(level, pos);
+                BlockPatternCapability.enableGlowing(level, pos);
                 if (!player.isCreative()) itemStack.shrink(1);
                 event.setCancellationResult(InteractionResult.SUCCESS);
                 event.setCanceled(true);
@@ -273,8 +325,8 @@ public class ForgeEvents {
         }
 
 
-        if (CapabilityList.getBlockPatterns().hasPattern(pos, level)) {
-            CapabilityList.getBlockPatterns().removePattern(pos, level);
+        if (BlockPatternCapability.hasPattern(pos, level)) {
+            BlockPatternCapability.removePattern(pos, level);
             return true;
         }
 
