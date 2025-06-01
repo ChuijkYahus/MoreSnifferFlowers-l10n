@@ -113,7 +113,7 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onChunkWatch(ChunkWatchEvent.Watch event) {
         Player player = event.getPlayer();
-        if (!player.level().isClientSide){
+        if (!event.getLevel().isClientSide){
             LevelChunk chunk = event.getChunk();
             chunk.getCapability(CapabilityList.BLOCK_PATTERNS).ifPresent(blockPatternCapability -> blockPatternCapability.sync(chunk.getPos()));
         }

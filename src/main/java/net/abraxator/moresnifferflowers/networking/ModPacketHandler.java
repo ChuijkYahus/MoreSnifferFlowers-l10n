@@ -16,6 +16,10 @@ public class ModPacketHandler {
     
     public static void init() {
         int id = 0;
+
+        // REMEMBER:
+        // ctx.getSender for Servers
+        // Minecraft.getInstance.level for Client
         CHANNEL.messageBuilder(CorruptedSludgePacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(CorruptedSludgePacket::encode).decoder(CorruptedSludgePacket::new).consumerMainThread(CorruptedSludgePacket::handle).add();
 

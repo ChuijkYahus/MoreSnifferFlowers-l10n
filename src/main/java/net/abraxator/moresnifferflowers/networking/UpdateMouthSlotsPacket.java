@@ -1,10 +1,13 @@
 package net.abraxator.moresnifferflowers.networking;
 
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -26,15 +29,19 @@ public record UpdateMouthSlotsPacket(NonNullList<ItemStack> itemStacks, int cool
 
     public static void handle(UpdateMouthSlotsPacket msg, Supplier<NetworkEvent.Context> ctx) {
         NetworkEvent.Context context = ctx.get();
-        context.enqueueWork(() -> {
-            Player player = context.getSender();
-            if (player != null) {
-                player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
-                    cap.setAllItems(msg.itemStacks);
-                    cap.setCooldown(msg.cooldown);
-                });
-            }
-        });
+        context.enqueueWork(() -> handlePacket(msg));
         context.setPacketHandled(true);
     }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void handlePacket(UpdateMouthSlotsPacket msg) {
+        Player player = Minecraft.getInstance().player;
+        if (player != null) {
+            player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
+                cap.setAllItems(msg.itemStacks);
+                cap.setCooldown(msg.cooldown);
+            });
+        }
+    }
+
 }
