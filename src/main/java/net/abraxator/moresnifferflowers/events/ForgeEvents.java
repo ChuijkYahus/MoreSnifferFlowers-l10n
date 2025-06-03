@@ -29,10 +29,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -271,6 +268,12 @@ public class ForgeEvents {
                 event.setCanceled(true);
             }
         }
+
+        if (state.is(Blocks.TORCHFLOWER) && item.is(Items.FLINT_AND_STEEL)){
+            level.setBlock(pos, ModBlocks.TORCHFLOWER_AFLAME.get().defaultBlockState(), 3);
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCanceled(true);
+        }
     }
 
 
@@ -351,5 +354,6 @@ public class ForgeEvents {
         // Slightly steer the velocity toward the player
         Vec3 newVelocity = currentVelocity.add(direction).scale(0.95); // Dampen a bit
 
-        item.setDeltaMovement(newVelocity);    }
+        item.setDeltaMovement(newVelocity);
+    }
 }
