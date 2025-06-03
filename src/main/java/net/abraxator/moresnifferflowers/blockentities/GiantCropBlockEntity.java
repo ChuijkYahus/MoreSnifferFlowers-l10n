@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
-public class GiantCropBlockEntity extends ModBlockEntity {
+public class GiantCropBlockEntity extends ModBlockEntity implements MultiBlockEntity {
     public BlockPos center;
     public boolean canGrow = false;
     public double growProgress = 0;
@@ -76,5 +76,15 @@ public class GiantCropBlockEntity extends ModBlockEntity {
     @Override
     public AABB getRenderBoundingBox() {
         return AABB.ofSize(this.center.getCenter(), 3, 3, 3);
+    }
+
+    @Override
+    public BlockPos getCenter() {
+        return center;
+    }
+
+    @Override
+    public void setCenter(BlockPos pos) {
+        center = pos;
     }
 }

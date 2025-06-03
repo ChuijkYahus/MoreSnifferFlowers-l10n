@@ -299,12 +299,11 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         add(ModBlocks.BONMEEL_FILLED_CAULDRON.get(), createSingleItemTable(Blocks.CAULDRON));
         add(ModBlocks.ACID_FILLED_CAULDRON.get(), createSingleItemTable(Blocks.CAULDRON));
 
-
         add(ModBlocks.BONDRIPIA.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.BONDRIPIA.get(), ModItems.BONDRIPIA_SEEDS.get()));
         add(ModBlocks.ACIDRIPIA.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.ACIDRIPIA.get(), ModItems.ACIDRIPIA_SEEDS.get()));
-        add(ModBlocks.BEROOT_CAULDRON.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.BEROOT_CAULDRON.get(), ModItems.BEROOT_CAULDRON.get()));
-        add(ModBlocks.SALTEMONE.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.SALTEMONE.get(), ModItems.SALTEMONE_SEEDS.get()));
-        add(ModBlocks.SOURLEMONE.get(), simpleConditional(ModStateProperties.ENTITY, ModBlocks.SOURLEMONE.get(), ModItems.SOURLEMONE_SEEDS.get()));
+        add(ModBlocks.BEROOT_CAULDRON.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.BEROOT_CAULDRON.get(), ModItems.BEROOT_CAULDRON.get()));
+        add(ModBlocks.SALTEMONE.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.SALTEMONE.get(), ModItems.SALTEMONE_SEEDS.get()));
+        add(ModBlocks.SOURLEMONE.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.SOURLEMONE.get(), ModItems.SOURLEMONE_SEEDS.get()));
 
         add(ModBlocks.SALTY_CLUMP.get(), simpleIncreasingConditional(ModStateProperties.AMOUNT_4, ModBlocks.SALTY_CLUMP.get(), ModItems.SALTY_SPICE.get()));
         add(ModBlocks.SOUR_CLUMP.get(), simpleIncreasingConditional(ModStateProperties.AMOUNT_4, ModBlocks.SOUR_CLUMP.get(), ModItems.SOUR_SPICE.get()));
@@ -312,7 +311,8 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
 
         add(ModBlocks.DRIPSALT.get(), createSingleItemTable(ModBlocks.DRIPSALT.get().asItem()));
 
-
+        dropSelf(ModBlocks.TORCHFLOWER_AFLAME.get());
+        dropSelf(ModBlocks.TORCHFLAME.get());
     }
 
     private LootTable.Builder simpleIncreasingConditional(Property<Integer> property, Block block, Item item){

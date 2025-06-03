@@ -11,7 +11,7 @@
               "block": "moresnifferflowers:saltemone",
               "condition": "minecraft:block_state_property",
               "properties": {
-                "entity": "true"
+                "center": "true"
               }
             }
           ],

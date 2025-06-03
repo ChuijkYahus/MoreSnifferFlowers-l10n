@@ -87,10 +87,10 @@ dependencies {
     // create
 
     modCompileOnly("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
-   // modImplementation("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
-   // modCompileOnly("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}")
-   // modRuntimeOnly("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
-   // modImplementation("com.tterrag.registrate:Registrate:${registrate_version}")
+    // modImplementation("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
+    // modCompileOnly("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}")
+    // modRuntimeOnly("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
+    // modImplementation("com.tterrag.registrate:Registrate:${registrate_version}")
 
     //mixin
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'

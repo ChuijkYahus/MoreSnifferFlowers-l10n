@@ -20,7 +20,6 @@ public class ModStateProperties {
     public static final BooleanProperty EMPTY = BooleanProperty.create("empty");
     public static final IntegerProperty FULLNESS = IntegerProperty.create("fullness", 0, 8);
     public static final IntegerProperty USES_4 = IntegerProperty.create("uses", 0, 3);
-    public static final BooleanProperty ENTITY = BooleanProperty.create("entity");
     public static final BooleanProperty CURED = BooleanProperty.create("cured");
     public static final IntegerProperty AMOUNT_4 = IntegerProperty.create("amount", 1, 4);
     public static final BooleanProperty FULL = BooleanProperty.create("full");

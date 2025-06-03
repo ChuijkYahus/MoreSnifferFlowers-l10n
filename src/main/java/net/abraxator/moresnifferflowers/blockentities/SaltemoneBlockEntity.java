@@ -7,7 +7,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
-public class SaltemoneBlockEntity extends ModBlockEntity {
+public class SaltemoneBlockEntity extends ModBlockEntity implements MultiBlockEntity {
     public BlockPos center;
 
     public SaltemoneBlockEntity(BlockPos pPos, BlockState pBlockState) {
@@ -30,5 +30,15 @@ public class SaltemoneBlockEntity extends ModBlockEntity {
     @Override
     public AABB getRenderBoundingBox() {
         return AABB.ofSize(this.center.getCenter(), 3, 3, 3);
+    }
+
+    @Override
+    public BlockPos getCenter() {
+        return center;
+    }
+
+    @Override
+    public void setCenter(BlockPos pos) {
+        center = pos;
     }
 }

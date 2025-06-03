@@ -29,7 +29,7 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
 
     @Override
     public void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        if(blockEntity.getBlockState().getValue(ModStateProperties.ENTITY) && blockEntity.getBlockState().getValue(ModStateProperties.AGE_2) >= 2) {
+        if(blockEntity.getBlockState().getValue(ModStateProperties.CENTER) && blockEntity.getBlockState().getValue(ModStateProperties.AGE_2) >= 2) {
             Direction direction = blockEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
             poseStack.mulPose(direction.getCounterClockWise().getRotation());
             poseStack.mulPose(Axis.XN.rotationDegrees(-90));

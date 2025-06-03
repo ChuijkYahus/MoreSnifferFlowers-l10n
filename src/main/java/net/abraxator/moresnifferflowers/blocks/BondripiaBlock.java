@@ -1,15 +1,14 @@
 package net.abraxator.moresnifferflowers.blocks;
 
-import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
-import net.abraxator.moresnifferflowers.entities.CorruptedProjectile;
+import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModParticles;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.ModTags;
-import net.abraxator.moresnifferflowers.recipes.CorruptionRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ParticleUtils;
 import net.minecraft.util.RandomSource;
@@ -32,10 +31,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
-public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock, ModCropBlock, Corruptable {
+public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock, ModCropBlock, Corruptable, MultiBlock {
     public BondripiaBlock(Properties p_49795_) {
         super(p_49795_);
         this.defaultBlockState()
@@ -51,27 +49,22 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
     }
 
     @Override
-    public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity pPlacer, ItemStack pStack) {
-        getPositionsForPlant(pLevel, pPos).ifPresent(list -> {
-            list.forEach(blockPos -> {
-                pLevel.setBlock(blockPos, this.defaultBlockState().setValue(ModStateProperties.CENTER, pPos.equals(blockPos)), 3);
-                if(pLevel.getBlockEntity(blockPos) instanceof BondripiaBlockEntity entity) {
-                    entity.center = pPos;
-                }
-            });
-        });
+    public Stream<BlockPos> fullBlockShape(@Nullable Direction direction, BlockPos center) {
+        List<BlockPos> positions = new ArrayList<>();
+        positions.add(center.immutable());
+        positions.addAll(Direction.Plane.HORIZONTAL.stream().map(direction1 -> center.relative(direction1).immutable()).toList());
+
+        return positions.stream();
     }
 
-    private Optional<List<BlockPos>> getPositionsForPlant(BlockGetter pLevel, BlockPos pPos) {
-        List<BlockPos> positions = new ArrayList<>();
-        positions.add(pPos);
-        boolean b = Direction.Plane.HORIZONTAL.stream()
-                .allMatch(direction -> pLevel.getBlockState(pPos.relative(direction)).canBeReplaced());
-        if(b) {
-            positions.addAll(Direction.Plane.HORIZONTAL.stream().map(direction -> pPos.relative(direction).immutable()).toList());
-        }
-        
-        return positions.size() == 5 ? Optional.of(positions) : Optional.empty();
+    @Override
+    public boolean directional() {
+        return false;
+    }
+
+    @Override
+    public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity pPlacer, ItemStack pStack) {
+        placementHelper(pLevel, pPos, pState, pPlacer, pStack);
     }
     
     @Override
@@ -81,38 +74,46 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if(state.getValue(ModStateProperties.CENTER) && isMaxAge(state) && level.getBlockEntity(pos) instanceof BondripiaBlockEntity entity && random.nextFloat() < 0.4) {
-            BlockPos.withinManhattanStream(entity.center, 1, 0, 1).forEach(blockPos -> {
+        spawnBonmeeliaParticles(state, level, pos, random);
+    }
+
+    private void spawnBonmeeliaParticles(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        boolean isAcidripia = state.is(ModBlocks.ACIDRIPIA.get());
+        if(state.getValue(ModStateProperties.CENTER) && isMaxAge(state) && level.getBlockEntity(pos) instanceof MultiBlockEntity entity && random.nextFloat() < 0.4) {
+            BlockPos.withinManhattanStream(entity.getCenter(), 1, 0, 1).forEach(blockPos -> {
 
                 var vec3 = blockPos.getCenter();
-                var difference = blockPos.subtract(entity.center);
+                var difference = blockPos.subtract(entity.getCenter());
                 boolean isCorner = (Math.abs(difference.getX()) + Math.abs(difference.getZ())) == 2;
-                boolean isMid = blockPos.equals(entity.center);
+                boolean isMid = blockPos.equals(entity.getCenter());
                 BlockPos pos2 = blockPos.below(random.nextInt(8));
+
+                SimpleParticleType dripParticles = isAcidripia ? ModParticles.ACIDRIPIA_DRIP.get() : ModParticles.BONDRIPIA_DRIP.get();
+                SimpleParticleType fallParticles = isAcidripia ? ModParticles.ACIDRIPIA_FALL.get() :ModParticles.BONDRIPIA_FALL.get();
 
                 if (random.nextFloat() < 0.5) {
                     if (isMid) {
-                        level.addParticle(ModParticles.BONDRIPIA_DRIP.get(), vec3.x + random.nextIntBetweenInclusive(-1, 1) * 0.15, vec3.y - 0.25, vec3.z + random.nextIntBetweenInclusive(-1, 1) * 0.15, 0, 1, 0);
+                        level.addParticle(dripParticles, vec3.x + random.nextIntBetweenInclusive(-1, 1) * 0.15, vec3.y - 0.25, vec3.z + random.nextIntBetweenInclusive(-1, 1) * 0.15, 0, 1, 0);
 
                     } else if (isCorner) {
-                        level.addParticle(ModParticles.BONDRIPIA_FALL.get(), vec3.x - difference.getX() * 0.05, vec3.y, vec3.z - difference.getZ() * 0.05, 0, 1, 0);
+                        level.addParticle(fallParticles, vec3.x - difference.getX() * 0.05, vec3.y, vec3.z - difference.getZ() * 0.05, 0, 1, 0);
 
                     } else {
-                        level.addParticle(ModParticles.BONDRIPIA_DRIP.get(), vec3.x - difference.getX() * 0.1, vec3.y, vec3.z - difference.getZ() * 0.1, 0, 1, 0);
+                        level.addParticle(dripParticles, vec3.x - difference.getX() * 0.1, vec3.y, vec3.z - difference.getZ() * 0.1, 0, 1, 0);
                     }
                 }
                 if (level.getBlockState(pos2).isSolid() && level.getBlockState(pos2.below()).isAir()){
-                    ParticleUtils.spawnParticleBelow(level, pos2, random, ModParticles.BONDRIPIA_DRIP.get());
+                    ParticleUtils.spawnParticleBelow(level, pos2, random, dripParticles);
                 }
             });
         }
     }
-    
- 
+
+
     @Override
     public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
         if(!isMaxAge(pState)) {
-            grow(pLevel, pPos);
+            grow(pLevel, pPos, pState);
         } else if (pRandom.nextDouble() <= 0.33D && pLevel.getBlockEntity(pPos) instanceof BondripiaBlockEntity entity) {
             for (BlockPos blockPos : BlockPos.betweenClosed(entity.center.below().north().east(), entity.center.below().south().west())) {
                 BlockPos currentPos = blockPos;
@@ -158,40 +159,11 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entityinside) {
-            if(entityinside instanceof CorruptedProjectile corruptedProjectile && CorruptionRecipe.canBeCorrupted(state.getBlock(), level)) {
-                if(level.getBlockEntity(pos) instanceof BondripiaBlockEntity entity) {
-                    corruptedProjectile.discard();
-                    BlockPos centrePos = entity.center;
-                    BlockState centreState = level.getBlockState(centrePos);
-                    Direction.Plane.HORIZONTAL.forEach(direction -> {
-                        BlockPos blockPos = centrePos.relative(direction);
-                        AciddripiaBlock.afterCorruption(centrePos, level, blockPos);
-
-                    });
-                    AciddripiaBlock.afterCorruption(centrePos, level, centrePos);
-
-                }
-        }
+        corruptionHelper(state, level, pos, entityinside);
     }
 
-    public void grow(Level level, BlockPos blockPos) {
-        if(level.getBlockEntity(blockPos) instanceof BondripiaBlockEntity entity) {
-            if(level.getBlockState(entity.center).is(this))
-                makeGrowOnBonemeal(level, entity.center, level.getBlockState(entity.center));
-            else level.destroyBlock(blockPos, false);
-
-            Direction.Plane.HORIZONTAL.forEach(direction -> {
-                if(level.getBlockState(entity.center.relative(direction)).is(this)) {
-                    makeGrowOnBonemeal(level, entity.center.relative(direction), level.getBlockState(entity.center.relative(direction)));
-                }else {
-                    MoreSnifferFlowers.LOGGER.warn("Acidripia or Bondripia goofed up, centre = {}", entity.center.toString());
-                    MoreSnifferFlowers.LOGGER.warn("If this happens often, you might wanna report it to the More Sniffer Flowers devs");
-                    level.destroyBlock(entity.center.relative(direction), false);
-                    if (direction.equals(Direction.NORTH)) level.destroyBlock(entity.center, false);
-                }
-
-            });
-        }
+    public void grow(Level level, BlockPos blockPos, BlockState state) {
+        growHelper(level, blockPos, state);
     }
     
     private boolean isBondripable(Level level, BlockPos blockPos) {
@@ -200,46 +172,27 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
 
     @Override
     public boolean canSurvive(BlockState blockState, LevelReader level, BlockPos blockPos) {
-        if(level.getBlockEntity(blockPos) instanceof BondripiaBlockEntity entity) {
-            var list = Direction.Plane.HORIZONTAL.stream().filter(direction -> super.canSurvive(level.getBlockState(entity.center.relative(direction)), level, entity.center.relative(direction))).toList();
+        boolean boringChecks = boringChecks(level, blockPos);
 
-            // System.out.println("postcheck " + Block.canSupportCenter(level, blockPos.above(), Direction.DOWN) + !level.isWaterAt(blockPos) + (list.size() == 4) + " CC needed = "+ (corruptionCheck(entity, level) && !(list.size() == 4)));
-            return Block.canSupportCenter(level, blockPos.above(), Direction.DOWN) && !level.isWaterAt(blockPos) && (list.size() == 4 || corruptionCheck(entity, level));
+        if(level.getBlockEntity(blockPos) instanceof MultiBlockEntity entity) {
+            if (!isCenter(level, blockPos)) return boringChecks;
+
+            var list = Direction.Plane.HORIZONTAL.stream().filter(direction -> super.canSurvive(level.getBlockState(entity.getCenter().relative(direction)), level, entity.getCenter().relative(direction))).toList();
+            return boringChecks && (list.size() == 4 || corruptionCheck(entity.getCenter(), level, blockState, ModBlocks.ACIDRIPIA.get()));
 
         }
-        var list = Direction.Plane.HORIZONTAL.stream().filter(direction -> super.canSurvive(level.getBlockState(blockPos.relative(direction)), level, blockPos.relative(direction))).toList();
-        // System.out.println("precheck " + Block.canSupportCenter(level, blockPos.above(), Direction.DOWN) + !level.isWaterAt(blockPos) + (list.size() == 4) + getPositionsForPlant(level, blockPos).isPresent());
-        return Block.canSupportCenter(level, blockPos.above(), Direction.DOWN) && !level.isWaterAt(blockPos) && list.size() == 4 && getPositionsForPlant(level, blockPos).isPresent();
+        var list = Direction.Plane.HORIZONTAL.stream().filter(direction -> boringChecks(level, blockPos.relative(direction))).toList();
+        return boringChecks && list.size() == 4 & fullBlockShape(null, blockPos).allMatch(pos -> level.getBlockState(pos).canBeReplaced());
     }
 
-    private boolean corruptionCheck(BondripiaBlockEntity entity, LevelReader level){
-        AtomicInteger i = new AtomicInteger();
-        Direction.Plane.HORIZONTAL.forEach(direction2 -> {
-            BlockPos blockPos2 = entity.center.relative(direction2);
-            if (level.getBlockState(blockPos2).is(ModBlocks.ACIDRIPIA.get()))
-                i.getAndIncrement();
-
-        });
-        if (level.getBlockState(entity.center).is(ModBlocks.ACIDRIPIA.get())) i.getAndIncrement();
-        return !(i.get() == 0);
+    private static boolean boringChecks(LevelReader level, BlockPos blockPos) {
+        return Block.canSupportCenter(level, blockPos.above(), Direction.DOWN) && !level.isWaterAt(blockPos);
     }
+
 
     @Override
     public BlockState updateShape(BlockState stateOriginal, Direction dir, BlockState stateNew, LevelAccessor level, BlockPos pCurrentPos, BlockPos pNewPos) {
-        if(level.getBlockEntity(pCurrentPos) instanceof BondripiaBlockEntity entity) {
-
-            if (!this.canSurvive(stateOriginal, level, pCurrentPos)){
-                Direction.Plane.HORIZONTAL.forEach(direction2 -> {
-                    BlockPos blockPos2 = entity.center.relative(direction2);
-
-                    level.destroyBlock(blockPos2, true);
-                });
-                level.destroyBlock(entity.center, true);
-
-            }
-
-        }
-        return super.updateShape(stateOriginal, dir, stateNew, level, pCurrentPos, pNewPos);
+       return updateShapeHelper(stateOriginal, level, pCurrentPos);
     }
     
     @Nullable
@@ -265,18 +218,19 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
 
     @Override
     public void performBonemeal(ServerLevel pLevel, RandomSource pRandom, BlockPos pPos, BlockState pState) {
-        grow(pLevel, pPos);
+        grow(pLevel, pPos, pState);
     }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
-        if(getter.getBlockEntity(pos) instanceof BondripiaBlockEntity entity) {
+        if(getter.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
             if(state.getValue(ModStateProperties.CENTER)) return SHAPE_CENTER;
-            var offset = pos.subtract(entity.center);
+            var offset = pos.subtract(entity.getCenter());
             return Block.box(Math.min(2.0 - offset.getX()*2, 2), 13.0, Math.min(2.0 - offset.getZ()*2, 2), Math.max(14.0 - offset.getX()*2, 14), 16.0, Math.max(14.0 - offset.getZ()*2, 14));
         }
 
         return SHAPE;
 
     }
+
 }

@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BerootCauldronBlockEntity extends ModBlockEntity {
+public class BerootCauldronBlockEntity extends ModBlockEntity implements MultiBlockEntity {
     public int beetroots;
     public List<ItemStack> ingredients = new ArrayList<>();
     public int itemRot;
@@ -473,5 +473,15 @@ public class BerootCauldronBlockEntity extends ModBlockEntity {
     @Override
     public AABB getRenderBoundingBox() {
         return AABB.ofSize(this.center.getCenter(), 4, 4, 4);
+    }
+
+    @Override
+    public BlockPos getCenter() {
+        return center;
+    }
+
+    @Override
+    public void setCenter(BlockPos pos) {
+        center = pos;
     }
 }

@@ -27,10 +27,12 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class BerootCauldronBlock extends HorizontalDirectionalBlock implements ModEntityBlock {
+import java.util.stream.Stream;
+
+public class BerootCauldronBlock extends HorizontalDirectionalBlock implements ModEntityBlock, MultiBlock {
     public BerootCauldronBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(defaultBlockState().setValue(ModStateProperties.ENTITY, false).setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH));
+        this.registerDefaultState(defaultBlockState().setValue(ModStateProperties.CENTER, false).setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH));
     }
 
     @Override
@@ -42,8 +44,19 @@ public class BerootCauldronBlock extends HorizontalDirectionalBlock implements M
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(HorizontalDirectionalBlock.FACING, ModStateProperties.ENTITY);
+        builder.add(HorizontalDirectionalBlock.FACING, ModStateProperties.CENTER);
 
+    }
+
+    @Override
+    public boolean directional() {
+        return true;
+    }
+
+    @Override
+    public Stream<BlockPos> fullBlockShape(Direction direction, BlockPos center) {
+        BlockPos relative = center.relative(direction).relative(direction.getClockWise()).above();
+        return BlockPos.betweenClosedStream(new AABB(center, relative));
     }
 
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -52,13 +65,12 @@ public class BerootCauldronBlock extends HorizontalDirectionalBlock implements M
 
         @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-            var item = player.getItemInHand(InteractionHand.MAIN_HAND);
+        var item = player.getItemInHand(InteractionHand.MAIN_HAND);
         BlockPos entityPos = BlockPos.withinManhattanStream(level.getBlockState(pos.below()).is(this) ? pos.below() : pos, 2, 1, 2)
                 .filter(blockPos -> isEntityBlock(level, blockPos))
                 .findFirst().orElse(null);
 
         if(entityPos != null && level.getBlockEntity(entityPos) instanceof BerootCauldronBlockEntity blockEntity) {
-            
             return blockEntity.addItem(item, player);
         }
         
@@ -67,19 +79,11 @@ public class BerootCauldronBlock extends HorizontalDirectionalBlock implements M
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        Direction direction = state.getValue(HorizontalDirectionalBlock.FACING);
-        BlockPos relative = pos.relative(direction).relative(direction.getClockWise()).above();
-        BlockPos.betweenClosedStream(new AABB(pos, relative)).forEach(blockPos -> {
-            blockPos = blockPos.immutable();
-            level.setBlock(blockPos, state.setValue(ModStateProperties.ENTITY, pos.equals(blockPos)), 3);
-            if(level.getBlockEntity(blockPos) instanceof BerootCauldronBlockEntity entity) {
-                entity.center = pos;
-            }
-        });
+        placementHelper(level, pos, state, placer, stack);
     }
 
     private boolean isEntityBlock(Level level, BlockPos pos) {
-        return level.getBlockState(pos).hasProperty(ModStateProperties.ENTITY) && level.getBlockState(pos).getValue(ModStateProperties.ENTITY);
+        return level.getBlockState(pos).hasProperty(ModStateProperties.CENTER) && level.getBlockState(pos).getValue(ModStateProperties.CENTER);
     }
     
     @Override
@@ -178,5 +182,4 @@ public class BerootCauldronBlock extends HorizontalDirectionalBlock implements M
 
         return shape.optimize();
     }
-
 }

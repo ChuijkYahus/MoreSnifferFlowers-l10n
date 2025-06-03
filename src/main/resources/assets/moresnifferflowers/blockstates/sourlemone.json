@@ -4,7 +4,7 @@
       "when": {
         "age": "0",
         "facing": "north",
-        "entity": "true"
+        "center": "true"
       },
       "apply": {
         "model": "moresnifferflowers:block/sourlemon0"
@@ -14,7 +14,7 @@
       "when": {
         "age": "0",
         "facing": "east",
-        "entity": "true"
+        "center": "true"
       },
       "apply": {
         "model": "moresnifferflowers:block/sourlemon0",
@@ -25,7 +25,7 @@
       "when": {
         "age": "0",
         "facing": "south",
-        "entity": "true"
+        "center": "true"
       },
       "apply": {
         "model": "moresnifferflowers:block/sourlemon0",
@@ -36,7 +36,7 @@
       "when": {
         "age": "0",
         "facing": "west",
-        "entity": "true"
+        "center": "true"
       },
       "apply": {
         "model": "moresnifferflowers:block/sourlemon0",
@@ -47,7 +47,7 @@
       "when": {
         "age": "1",
         "facing": "north",
-        "entity": "true"
+        "center": "true"
       },
       "apply": {
         "model": "moresnifferflowers:block/sourlemon1"
@@ -57,7 +57,7 @@
       "when": {
         "age": "1",
         "facing": "east",
-        "entity": "true"
+        "center": "true"
       },
       "apply": {
         "model": "moresnifferflowers:block/sourlemon1",
@@ -68,7 +68,7 @@
       "when": {
         "age": "1",
         "facing": "south",
-        "entity": "true"
+        "center": "true"
       },
       "apply": {
         "model": "moresnifferflowers:block/sourlemon1",
@@ -79,7 +79,7 @@
       "when": {
         "age": "1",
         "facing": "west",
-        "entity": "true"
+        "center": "true"
       },
       "apply": {
         "model": "moresnifferflowers:block/sourlemon1",
@@ -88,7 +88,7 @@
     },
     {
       "when": {
-        "entity": "false"
+        "center": "false"
       },
       "apply": {
         "model": "moresnifferflowers:block/sourlemon2"

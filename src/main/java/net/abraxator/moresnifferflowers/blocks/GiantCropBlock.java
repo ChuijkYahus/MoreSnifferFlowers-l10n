@@ -2,18 +2,17 @@ package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
+import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -31,16 +30,32 @@ import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 
 import java.util.Map;
-import java.util.stream.StreamSupport;
+import java.util.stream.Stream;
 
 
-public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable {
+public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable, MultiBlock {
     public GiantCropBlock(Properties pProperties) {
         super(pProperties);
         registerDefaultState(defaultBlockState().setValue(ModStateProperties.CENTER, false));
     }
     private static final VoxelShape SHAPE = Block.box(0, 0,  0, 16, 16, 16);
 
+    @Override
+    public Stream<BlockPos> fullBlockShape(@Nullable Direction direction, BlockPos center) {
+        return BlockPos.betweenClosedStream(
+                center.getX() - 1,
+                center.getY() - 1,
+                center.getZ() - 1,
+                center.getX() + 1,
+                center.getY() + 1,
+                center.getZ() + 1
+        );
+    }
+
+    @Override
+    public boolean directional() {
+        return false;
+    }
 
     @Override
     public float getShadeBrightness(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
@@ -58,37 +73,12 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
     @Override
     public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion){
-        if (level.getBlockEntity(pos) instanceof GiantCropBlockEntity entity) {
-            destroy(level, entity.center);
+        if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+            destroyHelper(entity.getCenter(), level, state);
         } else {
             MoreSnifferFlowers.LOGGER.warn("Giant crop exploded weird, wtf");
             level.destroyBlock(pos, true);
             this.wasExploded(level, pos, explosion);
-        }
-    }
-
-    // Can be used instead of the event, but may have worse compatibility
-/*    @Override
-    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        if (level.getBlockEntity(pos) instanceof GiantCropBlockEntity entity) {
-            for (BlockPos pos1 : blockPosList(entity.center.below())){
-                super.playerWillDestroy(level, pos1, state, player);
-                if (level.getBlockState(pos1).is(this)) {
-                    level.destroyBlock(pos1, true);
-                }
-            }
-        } else {
-            MoreSnifferFlowers.LOGGER.warn("Giant crop was destroyed weird, wtf");
-            super.playerWillDestroy(level, pos, state, player);
-            level.destroyBlock(pos, true);
-        }
-    }*/
-
-    public static void destroy(LevelAccessor level, BlockPos centre){
-        for (BlockPos pos1 : blockPosList(centre.below())){
-            if (level.getBlockState(pos1).getBlock() instanceof GiantCropBlock) {
-                level.destroyBlock(pos1, true);
-            }
         }
     }
 
@@ -126,12 +116,12 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
     @Override
     public void performBonmeel(BlockPos blockPos, BlockState blockState, Level level, Player player) {
-        this.blockPosList(blockPos).forEach(pos -> {
+        this.fullBlockShape(null, blockPos).forEach(pos -> {
             pos = pos.immutable();
             level.destroyBlock(pos, false);
             level.setBlockAndUpdate(pos, this.cropMap().get(blockState.getBlock()).getA().defaultBlockState().setValue(ModStateProperties.CENTER, pos.equals(blockPos.above())));
-            if(level.getBlockEntity(pos) instanceof GiantCropBlockEntity entity) {
-                entity.center = blockPos.above();
+            if(level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+                entity.setCenter(blockPos.above());
             }
         });
 
@@ -149,7 +139,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     public boolean canBonmeel(BlockPos blockPos, BlockState blockState, Level level) {
         Block crop = blockState.getBlock();
 
-        return StreamSupport.stream(this.blockPosList(blockPos).spliterator(), false).allMatch(pos -> {
+        return fullBlockShape(null, blockPos.above()).allMatch(pos -> {
             BlockState state = level.getBlockState(pos);
             int cropY = blockPos.getY();
             var PROPERTY = this.cropMap().get(crop).getB().getA();
@@ -170,17 +160,6 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
                 Blocks.NETHER_WART, new Pair<>(ModBlocks.GIANT_NETHERWART.get(), new Pair<>(NetherWartBlock.AGE, NetherWartBlock.MAX_AGE)),
                 Blocks.BEETROOTS, new Pair<>(ModBlocks.GIANT_BEETROOT.get(), new Pair<>(BeetrootBlock.AGE, BeetrootBlock.MAX_AGE)),
                 Blocks.WHEAT, new Pair<>(ModBlocks.GIANT_WHEAT.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE))
-        );
-    }
-
-    private static Iterable<BlockPos> blockPosList(BlockPos blockPos) {
-        return BlockPos.betweenClosed(
-                blockPos.getX() - 1,
-                blockPos.getY() - 0,
-                blockPos.getZ() - 1,
-                blockPos.getX() + 1,
-                blockPos.getY() + 2,
-                blockPos.getZ() + 1
         );
     }
 
@@ -243,5 +222,4 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
         return shape;
     }
-
 }

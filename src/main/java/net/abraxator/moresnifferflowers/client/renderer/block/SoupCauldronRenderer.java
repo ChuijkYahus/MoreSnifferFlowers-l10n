@@ -46,7 +46,7 @@ public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implement
         final RandomSource randomSource = blockEntity.getLevel().getRandom();
         final Direction direction = blockEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
 
-        if(blockEntity.getBlockState().getValue(ModStateProperties.ENTITY)) {
+        if(blockEntity.getBlockState().getValue(ModStateProperties.CENTER)) {
             //CAULDRON
             poseStack.pushPose();
             poseStack.translate(1, 1.5, 0);

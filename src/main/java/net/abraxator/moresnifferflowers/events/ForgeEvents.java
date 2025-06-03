@@ -1,12 +1,7 @@
 package net.abraxator.moresnifferflowers.events;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
-import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
-import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
-import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.GiantCropBlock;
-import net.abraxator.moresnifferflowers.blocks.SaltemoneBlock;
+import net.abraxator.moresnifferflowers.blocks.MultiBlock;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
@@ -16,7 +11,6 @@ import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
 import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,13 +23,15 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -43,7 +39,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
@@ -292,41 +287,11 @@ public class ForgeEvents {
     public static boolean blockBreakEventWithoutPlayer(BlockPos pos, LevelAccessor levelAccessor) {
         BlockEntity blockEntity = levelAccessor.getBlockEntity(pos);
         Level level = (Level) levelAccessor;
+        BlockState blockState = level.getBlockState(pos);
 
-        if(blockEntity instanceof GiantCropBlockEntity entity) {
-            GiantCropBlock.destroy(levelAccessor, entity.center);
-            return true;
+        if (blockState.getBlock() instanceof MultiBlock multiBlock){
+            multiBlock.destroyHelper(multiBlock.getCenter(level, pos), level, blockState);
         }
-
-        if(blockEntity instanceof SaltemoneBlockEntity entity) {
-            SaltemoneBlock.blockPosStream(entity.center, levelAccessor.getBlockState(entity.center)).forEach(pos1 -> {
-                if (levelAccessor.getBlockState(pos1).is(ModBlocks.SALTEMONE.get()) || levelAccessor.getBlockState(pos1).is(ModBlocks.SOURLEMONE.get())) levelAccessor.destroyBlock(pos1, true);
-            });
-            return true;
-        }
-
-
-        if(blockEntity instanceof BerootCauldronBlockEntity entity && levelAccessor.getBlockState(entity.center).getBlock().equals(ModBlocks.BEROOT_CAULDRON.get())) {
-            var entityState = levelAccessor.getBlockState(entity.center);
-            var entityPos = entity.center;
-            Direction direction = entityState.getValue(HorizontalDirectionalBlock.FACING);
-            BlockPos relative = entityPos.relative(direction).relative(direction.getClockWise()).above();
-            BlockPos.betweenClosedStream(new AABB(entityPos, relative)).forEach(blockPos -> {
-                if (levelAccessor.getBlockState(blockPos).is(ModBlocks.BEROOT_CAULDRON.get())) levelAccessor.destroyBlock(blockPos, true);
-            });
-            return true;
-        }
-
-        if (blockEntity instanceof BondripiaBlockEntity entity) {
-            Direction.Plane.HORIZONTAL.forEach(direction -> {
-                BlockPos blockPos = entity.center.relative(direction);
-
-                levelAccessor.destroyBlock(blockPos, true);
-            });
-            levelAccessor.destroyBlock(entity.center, true);
-            return true;
-        }
-
 
         if (BlockPatternCapability.hasPattern(pos, level)) {
             BlockPatternCapability.removePattern(pos, level);

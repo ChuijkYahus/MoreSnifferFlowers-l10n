@@ -11,7 +11,7 @@
               "block": "moresnifferflowers:beroot_cauldron",
               "condition": "minecraft:block_state_property",
               "properties": {
-                "entity": "true"
+                "center": "true"
               }
             }
           ],
