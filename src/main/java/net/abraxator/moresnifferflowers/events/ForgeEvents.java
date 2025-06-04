@@ -281,7 +281,7 @@ public class ForgeEvents {
         Level level = event.getPlayer().level();
         BlockState state = event.getState();
 
-        blockBreakEventWithoutPlayer(pos, levelAccessor);
+     //   blockBreakEventWithoutPlayer(pos, levelAccessor);
     }
 
     public static boolean blockBreakEventWithoutPlayer(BlockPos pos, LevelAccessor levelAccessor) {
@@ -290,7 +290,7 @@ public class ForgeEvents {
         BlockState blockState = level.getBlockState(pos);
 
         if (blockState.getBlock() instanceof MultiBlock multiBlock){
-            multiBlock.destroyHelper(multiBlock.getCenter(level, pos), level, blockState);
+            multiBlock.destroy(multiBlock.getCenter(level, pos), level, blockState);
         }
 
         if (BlockPatternCapability.hasPattern(pos, level)) {

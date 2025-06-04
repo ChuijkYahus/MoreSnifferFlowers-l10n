@@ -1,6 +1,5 @@
 package net.abraxator.moresnifferflowers.blocks;
 
-import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
 import net.abraxator.moresnifferflowers.init.*;
@@ -12,7 +11,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.*;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -72,14 +74,18 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     }
 
     @Override
-    public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion){
-        if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
-            destroyHelper(entity.getCenter(), level, state);
-        } else {
-            MoreSnifferFlowers.LOGGER.warn("Giant crop exploded weird, wtf");
-            level.destroyBlock(pos, true);
-            this.wasExploded(level, pos, explosion);
-        }
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        return canSurviveHelper(state, level, pos, this, null);
+    }
+
+    @Override
+    public boolean canPlace(LevelReader level, BlockPos center, BlockState state) {
+        return true;
+    }
+
+    @Override
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        return updateShapeHelper(state, level, pos);
     }
 
     @Override
@@ -116,7 +122,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
     @Override
     public void performBonmeel(BlockPos blockPos, BlockState blockState, Level level, Player player) {
-        this.fullBlockShape(null, blockPos).forEach(pos -> {
+        this.fullBlockShape(null, blockPos.above()).forEach(pos -> {
             pos = pos.immutable();
             level.destroyBlock(pos, false);
             level.setBlockAndUpdate(pos, this.cropMap().get(blockState.getBlock()).getA().defaultBlockState().setValue(ModStateProperties.CENTER, pos.equals(blockPos.above())));

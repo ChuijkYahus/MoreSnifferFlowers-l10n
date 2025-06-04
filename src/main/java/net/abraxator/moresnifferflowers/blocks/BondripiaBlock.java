@@ -64,7 +64,7 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
 
     @Override
     public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity pPlacer, ItemStack pStack) {
-        placementHelper(pLevel, pPos, pState, pPlacer, pStack);
+        place(pLevel, pPos, pState, pPlacer, pStack);
     }
     
     @Override
@@ -172,23 +172,13 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
 
     @Override
     public boolean canSurvive(BlockState blockState, LevelReader level, BlockPos blockPos) {
-        boolean boringChecks = boringChecks(level, blockPos);
-
-        if(level.getBlockEntity(blockPos) instanceof MultiBlockEntity entity) {
-            if (!isCenter(level, blockPos)) return boringChecks;
-
-            var list = Direction.Plane.HORIZONTAL.stream().filter(direction -> super.canSurvive(level.getBlockState(entity.getCenter().relative(direction)), level, entity.getCenter().relative(direction))).toList();
-            return boringChecks && (list.size() == 4 || corruptionCheck(entity.getCenter(), level, blockState, ModBlocks.ACIDRIPIA.get()));
-
-        }
-        var list = Direction.Plane.HORIZONTAL.stream().filter(direction -> boringChecks(level, blockPos.relative(direction))).toList();
-        return boringChecks && list.size() == 4 & fullBlockShape(null, blockPos).allMatch(pos -> level.getBlockState(pos).canBeReplaced());
+       return canSurviveHelper(blockState, level, blockPos, ModBlocks.BONDRIPIA.get(), ModBlocks.ACIDRIPIA.get());
     }
 
-    private static boolean boringChecks(LevelReader level, BlockPos blockPos) {
-        return Block.canSupportCenter(level, blockPos.above(), Direction.DOWN) && !level.isWaterAt(blockPos);
+    @Override
+    public boolean extraSurviveRequirements(LevelReader level, BlockPos pos, BlockState state) {
+        return Block.canSupportCenter(level, pos.above(), Direction.DOWN) && !level.isWaterAt(pos);
     }
-
 
     @Override
     public BlockState updateShape(BlockState stateOriginal, Direction dir, BlockState stateNew, LevelAccessor level, BlockPos pCurrentPos, BlockPos pNewPos) {

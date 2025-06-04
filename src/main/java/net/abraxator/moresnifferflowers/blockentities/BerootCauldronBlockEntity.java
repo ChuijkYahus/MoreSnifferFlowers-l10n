@@ -15,7 +15,6 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -40,13 +39,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BerootCauldronBlockEntity extends ModBlockEntity implements MultiBlockEntity {
+public class BerootCauldronBlockEntity extends MultiBlockEntity {
     public int beetroots;
     public List<ItemStack> ingredients = new ArrayList<>();
     public int itemRot;
     public int soupAnimationFrame;
     public ItemStack soup = ItemStack.EMPTY;
-    public BlockPos center;
     public int soupCount = 0;
     public boolean isCrafted = false;
     public final int MAX_SOUP_COUNT = 6;
@@ -61,7 +59,6 @@ public class BerootCauldronBlockEntity extends ModBlockEntity implements MultiBl
 
     public BerootCauldronBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.BEROOT_CAULDRON.get(), pPos, pBlockState);
-        this.center = this.getBlockPos();
     }
 
     public InteractionResult addItem(ItemStack itemStack, Player player) {
@@ -336,7 +333,6 @@ public class BerootCauldronBlockEntity extends ModBlockEntity implements MultiBl
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         tag.putInt("beetroots", this.beetroots);
-        tag.put("center", NbtUtils.writeBlockPos(this.center));
         ListTag items = new ListTag();
         for (int i = 0; i < ingredients.size(); i++) {
             ItemStack stack = ingredients.get(i);
@@ -367,7 +363,6 @@ public class BerootCauldronBlockEntity extends ModBlockEntity implements MultiBl
         super.load(tag);
         this.ingredients = new ArrayList<>();
         this.beetroots = tag.getInt("beetroots");
-        this.center = NbtUtils.readBlockPos(tag.getCompound("center"));
         ListTag items = tag.getList("items", 10);
         for (int i = 0; i < items.size(); i++) {
             CompoundTag itemTag = items.getCompound(i);
@@ -475,13 +470,4 @@ public class BerootCauldronBlockEntity extends ModBlockEntity implements MultiBl
         return AABB.ofSize(this.center.getCenter(), 4, 4, 4);
     }
 
-    @Override
-    public BlockPos getCenter() {
-        return center;
-    }
-
-    @Override
-    public void setCenter(BlockPos pos) {
-        center = pos;
-    }
 }

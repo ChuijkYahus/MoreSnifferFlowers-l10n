@@ -10,6 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
@@ -23,6 +24,26 @@ import java.util.stream.Stream;
 
 public interface MultiBlock {
 
+    /*
+   How to use:
+   implement fullBlockShape and make it return the whole shape
+   directional = true if the fullBlockShape needs directions
+
+   For placement:
+   Override setPlacedBy - return place
+   Override getStateForPlacement - return getStateForPlacementHelper
+
+   For destroying:
+   Override updateShape - return updateShapeHelper
+   Override canSurvive - return canSurviveHelper
+   Optionally Override extraSurviveRequirements
+
+   growHelper - for bone meal and tick growth
+
+   for Corruption - Override entityInside - return corruptionHelper
+
+    */
+
     Stream<BlockPos> fullBlockShape(@Nullable Direction direction, BlockPos center);
     boolean directional(); // True if the BlockState doesn't have directions
 
@@ -31,7 +52,8 @@ public interface MultiBlock {
         return fullBlockShape(state.getValue(HorizontalDirectionalBlock.FACING), center);
     }
 
-    default void placementHelper(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity pPlacer, ItemStack stack){
+
+    default void place(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity pPlacer, ItemStack stack){
         fullBlockShape(pos, state).forEach(blockPos -> {
             blockPos = blockPos.immutable();
             level.setBlock(blockPos, state.setValue(ModStateProperties.CENTER, pos.equals(blockPos)), 3);
@@ -41,21 +63,19 @@ public interface MultiBlock {
         });
     }
 
-    default boolean canPlace(Level level, BlockPos pos, @Nullable Direction direction) {
-        return fullBlockShape(direction, pos).allMatch(blockPos -> level.getBlockState(blockPos).canBeReplaced());
+    default BlockState getStateForPlacementHelper(BlockPlaceContext context, Block ts) {
+        LevelReader level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        BlockState state = ts.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection());
+
+        return canPlace(level, pos, state) ? state : null;
     }
 
-    // Prevents the multiblock from destroying itself while being corrupted
-    // The corrupted block probably doesn't have to be hardcoded but who cares
-    default boolean corruptionCheck(BlockPos center, LevelReader level, BlockState state, Block corruptedBlock) {
-            boolean anyMatch =  fullBlockShape(center, state).anyMatch(pos -> level.getBlockState(pos).is(corruptedBlock));
-            boolean allMatch =  fullBlockShape(center, state).allMatch(pos -> level.getBlockState(pos).is(corruptedBlock));
-            boolean anyMissing = fullBlockShape(center, state).anyMatch(pos -> level.getBlockState(pos).isAir());
-
-            return (anyMatch && !allMatch) && !anyMissing;
+    default boolean canPlace(LevelReader level, BlockPos center, BlockState state) {
+        return fullBlockShape(center, state).allMatch(blockPos -> level.getBlockState(blockPos).canBeReplaced() && extraSurviveRequirements(level, blockPos, state));
     }
 
-    default void destroyHelper(BlockPos center, Level level, BlockState state){
+    default void destroy(BlockPos center, Level level, BlockState state){
         fullBlockShape(center, state).forEach(pos ->{
             if (level.getBlockState(pos).is(state.getBlock())) {
                 level.destroyBlock(pos, true);
@@ -63,19 +83,27 @@ public interface MultiBlock {
         });
     }
 
-    default boolean allBlocksPresent(Level level, BlockPos pos, BlockState state, @Nullable Block corruptedBlock){
+    default boolean allBlocksPresent(LevelReader level, BlockPos pos, BlockState state, Block originalBlock, @Nullable Block corruptedBlock){
        BlockPos center = getCenter(level, pos);
-       Block block = state.getBlock();
-       if (corruptedBlock != null) return fullBlockShape(center, state).allMatch(blockPos -> level.getBlockState(blockPos).is(block) || corruptionCheck(center, level, state, corruptedBlock));
+       boolean ret;
+       if (corruptedBlock != null) {
+           ret = fullBlockShape(center, state).allMatch(blockPos -> level.getBlockState(blockPos).is(originalBlock) || level.getBlockState(blockPos).is(corruptedBlock));
+       } else {
+           ret = fullBlockShape(center, state).allMatch(blockPos -> level.getBlockState(blockPos).is(originalBlock));
+       }
 
-       return fullBlockShape(center, state).allMatch(blockPos -> level.getBlockState(blockPos).is(block));
+       if (ret && level.getBlockEntity(pos) instanceof MultiBlockEntity entity && !entity.isPlaced) {
+           fullBlockShape(center, state).forEach(blockPos -> MultiBlockEntity.setPlaced(level, blockPos));
+       }
+
+       return ret;
     }
 
     default BlockState updateShapeHelper(BlockState state, LevelAccessor level, BlockPos pos){
         if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity){
             boolean canSurvive = state.getBlock().canSurvive(state, level, pos);
             if (!canSurvive){
-                destroyHelper(entity.getCenter(), (Level) level, state);
+                destroy(entity.getCenter(), (Level) level, state);
                 return Blocks.AIR.defaultBlockState();
             }
         }else {
@@ -86,7 +114,24 @@ public interface MultiBlock {
         return state;
     }
 
-    default BlockPos getCenter(Level level, BlockPos pos){
+    default boolean canSurviveHelper(BlockState state, LevelReader level, BlockPos pos, Block originalBlock, @Nullable Block corruptedBlock){
+        if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity){
+            //survive logic
+            boolean extraSurvive = fullBlockShape(entity.getCenter(), state).allMatch(blockPos -> extraSurviveRequirements(level, blockPos, state));
+            return (allBlocksPresent(level, pos, state, originalBlock, corruptedBlock) || !entity.isPlaced) && extraSurvive;
+        } else {
+            //placement logic
+            return canPlace(level, pos, state);
+        }
+    }
+
+    //Override this one to check for other blocks (like if bondripia can hang)
+    //Runs for every single block
+    default boolean extraSurviveRequirements(LevelReader level, BlockPos pos, BlockState state){
+        return true;
+    }
+
+    default BlockPos getCenter(LevelReader level, BlockPos pos){
         if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity){
             return entity.getCenter();
         }

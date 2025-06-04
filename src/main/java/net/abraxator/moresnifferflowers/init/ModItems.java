@@ -138,7 +138,7 @@ public class ModItems {
     public static final RegistryObject<Item> BLOCK_PATTERN_COVER = ITEMS.register("block_pattern_cover", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BLOCK_PATTERN_FLOWERS = ITEMS.register("block_pattern_flowers", () -> new Item(new Item.Properties()));
 
-    public static final RegistryObject<Item> BEROOT_CAULDRON = ITEMS.register("beroot_cauldron", () -> new BerootCauldronItem(ModBlocks.BEROOT_CAULDRON.get(), new Item.Properties()));
+    public static final RegistryObject<Item> BEROOT_CAULDRON = ITEMS.register("beroot_cauldron", () -> new BlockItem(ModBlocks.BEROOT_CAULDRON.get(), new Item.Properties()));
 
     public static final RegistryObject<Item> ROOTED_SOUP = ITEMS.register("rooted_soup", () -> new RootedSoupItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> BEROOT_COOK_BOOK = ITEMS.register("beroot_cook_book", () -> new BerootCookbookItem(new Item.Properties().stacksTo(1)));

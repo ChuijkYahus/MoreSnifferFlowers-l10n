@@ -3,18 +3,15 @@ package net.abraxator.moresnifferflowers.blockentities;
 import net.abraxator.moresnifferflowers.init.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
-public class GiantCropBlockEntity extends ModBlockEntity implements MultiBlockEntity {
-    public BlockPos center;
+public class GiantCropBlockEntity extends MultiBlockEntity {
     public boolean canGrow = false;
     public double growProgress = 0;
     public int state = 0; //0 NONE; 1 ANIMATION; 2 SACK;
@@ -22,7 +19,6 @@ public class GiantCropBlockEntity extends ModBlockEntity implements MultiBlockEn
 
     public GiantCropBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.GIANT_CROP.get(), pPos, pBlockState);
-        this.center = this.getBlockPos();
     }
 
     @Override
@@ -59,7 +55,6 @@ public class GiantCropBlockEntity extends ModBlockEntity implements MultiBlockEn
         pTag.putBoolean("canGrow", canGrow);
         pTag.putDouble("growProgress", growProgress);
         pTag.putFloat("staticGameTime", staticGameTime);
-        pTag.put("center", NbtUtils.writeBlockPos(this.center));
         pTag.putInt("state", this.state);
     }
 
@@ -69,22 +64,6 @@ public class GiantCropBlockEntity extends ModBlockEntity implements MultiBlockEn
         this.canGrow = pTag.getBoolean("canGrow");
         this.growProgress = pTag.getDouble("growProgress");
         this.staticGameTime = pTag.getFloat("staticGameTime");
-        this.center = NbtUtils.readBlockPos(pTag.getCompound("center"));
         this.state = pTag.getInt("state");
-    }
-
-    @Override
-    public AABB getRenderBoundingBox() {
-        return AABB.ofSize(this.center.getCenter(), 3, 3, 3);
-    }
-
-    @Override
-    public BlockPos getCenter() {
-        return center;
-    }
-
-    @Override
-    public void setCenter(BlockPos pos) {
-        center = pos;
     }
 }

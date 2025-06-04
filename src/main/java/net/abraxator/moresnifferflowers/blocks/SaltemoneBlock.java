@@ -42,25 +42,25 @@ public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable
         pBuilder.add(HorizontalDirectionalBlock.FACING, ModStateProperties.CENTER, getAgeProperty());
     }
 
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection());
+        return getStateForPlacementHelper(context, this);
     }
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity pPlacer, ItemStack stack) {
-        placementHelper(level, pos, state, pPlacer, stack);
+        place(level, pos, state, pPlacer, stack);
     }
+
 
     @Override
     public boolean canSurvive(BlockState blockState, LevelReader level, BlockPos blockPos) {
-        if(level.getBlockEntity(blockPos) instanceof SaltemoneBlockEntity entity) {
-            var list = fullBlockShape(entity.center, blockState).filter(pos -> super.canSurvive(level.getBlockState(pos), level, pos)).toList();
-            boolean isWaterBelow = fullBlockShape(entity.center.below(), blockState).allMatch(level::isWaterAt);
+       return canSurviveHelper(blockState, level, blockPos, ModBlocks.SALTEMONE.get(), ModBlocks.SOURLEMONE.get());
+    }
 
-            return !level.isWaterAt(blockPos) && (list.size() == 4 || corruptionCheck(entity.getCenter(), level, blockState, ModBlocks.SOURLEMONE.get())) && isWaterBelow;
-        }
-        var list = fullBlockShape(blockPos, blockState).filter(pos -> super.canSurvive(level.getBlockState(pos), level, pos)).toList();
-        return !level.isWaterAt(blockPos) && list.size() == 4;
+    @Override
+    public boolean extraSurviveRequirements(LevelReader level, BlockPos pos, BlockState state) {
+        return !level.isWaterAt(pos) && level.isWaterAt(pos.below());
     }
 
     @Override
