@@ -10,6 +10,8 @@ public class ModClientConfig {
     public static final ForgeConfigSpec.IntValue BLOCK_PATTERN_RENDER_DISTANCE;
     public static final ForgeConfigSpec.DoubleValue BLOCK_PATTERN_OFFSET;
     public static final ForgeConfigSpec.BooleanValue BLOCK_PATTERN_SMOOTH_LIGHTING;
+    public static final ForgeConfigSpec.BooleanValue BLOCK_PATTERN_TRANSPARENCY;
+
 
 
 
@@ -47,6 +49,11 @@ public class ModClientConfig {
                 .comment("Enables smooth lighting for block patterns")
                 .translation("moresnifferflowers.configuration.block_pattern_smooth_lighting")
                 .define("Block Pattern Smooth Lighting", true);
+
+        BLOCK_PATTERN_TRANSPARENCY = builder
+                .comment("Enables transparency for block patters (noticeable only with resource packs)")
+                .translation("moresnifferflowers.configuration.block_pattern_transparency")
+                .define("Block Pattern Transparency", false);
 
         builder.pop();
 

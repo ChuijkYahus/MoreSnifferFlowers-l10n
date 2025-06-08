@@ -123,6 +123,7 @@ public class ClientRegistration {
         event.registerSpriteSet(ModParticles.ACIDRIPIA_FALL.get(), BondripiaParticle.AcidripiaFallProvider::new);
         event.registerSpriteSet(ModParticles.ACIDRIPIA_LAND.get(), BondripiaParticle.AcidripiaLandProvider::new);
 
+        event.registerSpriteSet(ModParticles.TORCHFLAME.get(), TorchflameParticle.Provider::new);
 
 
     }

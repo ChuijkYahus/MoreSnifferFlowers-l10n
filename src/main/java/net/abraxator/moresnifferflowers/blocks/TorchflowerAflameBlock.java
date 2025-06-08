@@ -1,44 +1,186 @@
 package net.abraxator.moresnifferflowers.blocks;
 
+import net.abraxator.moresnifferflowers.blockentities.TorchflowerBlockEntity;
+import net.abraxator.moresnifferflowers.init.ModItems;
+import net.abraxator.moresnifferflowers.init.ModParticles;
+import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BoneMealItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
-public class TorchflowerAflameBlock extends BushBlock {
+public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock, BonemealableBlock {
     public static final VoxelShape SHAPE = Block.box(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D);
 
     public TorchflowerAflameBlock(Properties properties) {
         super(properties);
+        this.registerDefaultState(defaultBlockState().setValue(ModStateProperties.AGE_2, 0));
     }
 
     @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
+        pBuilder.add(ModStateProperties.AGE_2);
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         super.animateTick(state, level, pos, random);
+        Vec3 vec3 = state.getOffset(level, pos);
+        Vec3 offset = new Vec3(pos.getX() + vec3.x, pos.getY() + vec3.y, pos.getZ() + vec3.z);
+        Vec3 center = pos.getCenter().add(vec3);
 
-        if (random.nextInt(24) == 0) {
-            level.playLocalSound((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 1.0F + random.nextFloat(), random.nextFloat() * 0.7F + 0.3F, false);
+        if (state.getValue(ModStateProperties.AGE_2) == 1) {
+            if (random.nextInt(24) == 0) {
+                level.playLocalSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 1.0F + random.nextFloat(), random.nextFloat() * 0.7F + 0.3F, false);
+            }
+
+            for (int j1 = 0; j1 < 2; ++j1) {
+                if (random.nextFloat() < 0.6F) {
+                    double d7 = offset.x + random.nextDouble();
+                    double d12 = (offset.y + 1) - random.nextDouble() * (double) 0.1F;
+                    double d17 = offset.z + random.nextDouble();
+                    level.addParticle(ParticleTypes.LARGE_SMOKE, d7, d12, d17, 0.0D, 0.0D, 0.0D);
+                }
+            }
+            if (random.nextFloat() < 0.3F) {
+                double d1 = center.x + random.nextDouble() / 3;
+                double d2 = (center.y + 0.7) - random.nextDouble() / 2;
+                double d3 = center.z + random.nextDouble() / 3;
+                Particle particle = Minecraft.getInstance().particleEngine.createParticle(ModParticles.TORCHFLAME.get(), d1, d2, d3, 0.0D, 0.0D, 0.0D);
+                if (particle != null) {
+                    particle.scale(0.5F + random.nextFloat());
+                }
+            }
         }
-
-        for(int j1 = 0; j1 < 2; ++j1) {
-            double d7 = (double)pos.getX() + random.nextDouble();
-            double d12 = (double)(pos.getY() + 1) - random.nextDouble() * (double)0.1F;
-            double d17 = (double)pos.getZ() + random.nextDouble();
-            level.addParticle(ParticleTypes.LARGE_SMOKE, d7, d12, d17, 0.0D, 0.0D, 0.0D);
-        }
-
     }
 
     @Override
-    public VoxelShape getShape(BlockState p_272748_, BlockGetter p_273408_, BlockPos p_272762_, CollisionContext p_272649_) {
-        return SHAPE;
+    public boolean isRandomlyTicking(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        int age = state.getValue(ModStateProperties.AGE_2);
+        if (age == 0 && isBonemealSuccess(level)) {
+            level.setBlockAndUpdate(pos, Blocks.TORCHFLOWER.defaultBlockState());
+        }
+        if (age == 1 && !level.getBlockState(pos.below()).is(Blocks.NETHERRACK) && isBonemealSuccess(level)) {
+            level.setBlockAndUpdate(pos, state.setValue(ModStateProperties.AGE_2, 2));
+        }
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        ItemStack stack = player.getItemInHand(hand);
+        int age = state.getValue(ModStateProperties.AGE_2);
+
+
+        if (age == 0 && stack.is(Items.BONE_MEAL)) {
+            if (isBonemealSuccess(level)) {
+                if (level instanceof ServerLevel serverLevel) performBonemeal(serverLevel, level.random, pos, state);
+            }else if (!player.isCreative()) stack.shrink(1);
+
+            BoneMealItem.addGrowthParticles(level, pos, 10);
+            return InteractionResult.SUCCESS;
+        }
+
+        if (age == 1 && PotionUtils.getPotion(stack) == Potions.WATER){
+            level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, (1.0F + level.getRandom().nextFloat() * 0.2F) * 0.7F);
+
+            RandomSource random = level.getRandom();
+            for(int j1 = 0; j1 < 10; ++j1) {
+                Vec3 vec3 = state.getOffset(level, pos);
+                Vec3 center = pos.getCenter().add(vec3);
+                double d7 = center.x + random.nextDouble() - 0.5;
+                double d12 = center.y - random.nextDouble()+ 0.5;
+                double d17 = center.z + random.nextDouble()- 0.5;
+
+                level.addParticle(new DustParticleOptions(new Vector3f(1F, 1F, 1F), 2), d7, d12, d17, 0.0D, 0.0D, 0.0D);
+            }
+
+            if (!player.isCreative()) player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
+            level.setBlock(pos, state.setValue(ModStateProperties.AGE_2, 2), 3);
+            return InteractionResult.SUCCESS;
+        }
+
+        if (age == 2){
+            popResource(level, pos, ModItems.FIERY_SPICE.get().getDefaultInstance());
+            level.setBlock(pos, state.setValue(ModStateProperties.AGE_2, 0), 3);
+            return InteractionResult.SUCCESS;
+        }
+
+        return InteractionResult.PASS;
+    }
+
+    public boolean isBonemealSuccess(Level level) {
+       return level.random.nextFloat() < 0.3F;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+        return new TorchflowerBlockEntity(pPos, pState);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        return tickerHelper(pLevel);
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        Vec3 vec3 = state.getOffset(level, pos);
+        return SHAPE.move(vec3.x, vec3.y, vec3.z);
+    }
+
+    @Override
+    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, boolean isClient) {
+        return state.getValue(ModStateProperties.AGE_2) == 0;
+    }
+
+    @Override
+    public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
+       return isBonemealSuccess(level);
+    }
+
+    @Override
+    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
+        level.setBlockAndUpdate(pos, Blocks.TORCHFLOWER.defaultBlockState());
     }
 }

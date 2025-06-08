@@ -210,6 +210,10 @@ public class BlockPatternRenderer {
     public void render(PoseStack stack, MultiBufferSource bufferSource) {
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.cutoutMipped());
 
+        if (ModClientConfig.BLOCK_PATTERN_TRANSPARENCY.get()){
+            buffer = bufferSource.getBuffer(RenderType.translucent());
+        }
+
         for (RenderQuad quad : cachedQuads) {
             quad.render(stack, buffer);
         }

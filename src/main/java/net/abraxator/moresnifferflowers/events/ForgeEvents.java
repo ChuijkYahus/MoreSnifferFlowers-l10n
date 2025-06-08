@@ -264,8 +264,10 @@ public class ForgeEvents {
             }
         }
 
-        if (state.is(Blocks.TORCHFLOWER) && item.is(Items.FLINT_AND_STEEL)){
-            level.setBlock(pos, ModBlocks.TORCHFLOWER_AFLAME.get().defaultBlockState(), 3);
+        if (state.is(Blocks.TORCHFLOWER) && itemStack.is(Items.FLINT_AND_STEEL)){
+            itemStack.hurtAndBreak(1, player, player1 -> {});
+            player.setItemInHand(hand, itemStack);
+            level.setBlock(pos, ModBlocks.TORCHFLOWER_AFLAME.get().defaultBlockState().setValue(ModStateProperties.AGE_2, 1), 3);
             event.setCancellationResult(InteractionResult.SUCCESS);
             event.setCanceled(true);
         }
