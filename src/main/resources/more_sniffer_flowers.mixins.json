@@ -8,6 +8,7 @@
     "AgeableMobMixin",
     "BlockBehaviourMixin",
     "FarmBlockMixin",
+    "FlowerBlockMixin",
     "InventoryMenuMixin",
     "ItemEntityMixin",
     "LeavesBlockMixin",

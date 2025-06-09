@@ -7,10 +7,6 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
 
 public class ModItemProperties {
-    public static final int FRAME_TIME = 20;
-    public static final int FRAME_AMOUNT = 3;
-    public static final int COPRESSOR_ANIMATION_FRAMES = FRAME_TIME * FRAME_AMOUNT;
-    
     public static void register() {
         ItemProperties.register(ModItems.DYESPRIA.get(), MoreSnifferFlowers.loc("color"), (pStack, pLevel, pEntity, pSeed) -> {
             if(!Dye.getDyeFromDyespria(pStack).isEmpty()) {

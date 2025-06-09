@@ -26,6 +26,7 @@ public class ModStateProperties {
     public static final BooleanProperty NATURAL = BooleanProperty.create("natural");
     public static final BooleanProperty HYDRATED = BooleanProperty.create("hydrated");
     public static final EnumProperty<BlockPattern> BLOCK_PATTERN = EnumProperty.create("block_pattern", BlockPattern.class);
+    public static final IntegerProperty FIRE_TICKS = IntegerProperty.create("fire_ticks", 0, 5);
 
 
 }

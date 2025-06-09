@@ -47,17 +47,18 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
 
     public TorchflowerAflameBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(defaultBlockState().setValue(ModStateProperties.AGE_2, 0));
+        this.registerDefaultState(defaultBlockState().setValue(ModStateProperties.AGE_2, 0).setValue(ModStateProperties.FIRE_TICKS, 0));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(ModStateProperties.AGE_2);
+        pBuilder.add(ModStateProperties.AGE_2).add(ModStateProperties.FIRE_TICKS);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        if (!level.isClientSide) return;
         super.animateTick(state, level, pos, random);
         Vec3 vec3 = state.getOffset(level, pos);
         Vec3 offset = new Vec3(pos.getX() + vec3.x, pos.getY() + vec3.y, pos.getZ() + vec3.z);
@@ -90,8 +91,11 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
 
     @Override
     public boolean isRandomlyTicking(BlockState state) {
-        return true;
+        int age = state.getValue(ModStateProperties.AGE_2);
+        return age == 0 || age == 1 ;
     }
+
+
 
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
@@ -99,8 +103,15 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
         if (age == 0 && isBonemealSuccess(level)) {
             level.setBlockAndUpdate(pos, Blocks.TORCHFLOWER.defaultBlockState());
         }
-        if (age == 1 && !level.getBlockState(pos.below()).is(Blocks.NETHERRACK) && isBonemealSuccess(level)) {
-            level.setBlockAndUpdate(pos, state.setValue(ModStateProperties.AGE_2, 2));
+        if (age == 1 && (!level.getBlockState(pos.below(2)).is(Blocks.NETHERRACK) || level.isRainingAt(pos))) {
+            int fire = state.getValue(ModStateProperties.FIRE_TICKS);
+
+            if (fire < 5 && !level.isRainingAt(pos)) {
+                level.setBlockAndUpdate(pos, state.setValue(ModStateProperties.FIRE_TICKS, fire + 1));
+            } else {
+                level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, (1.0F + level.getRandom().nextFloat() * 0.2F) * 0.7F);
+                level.setBlockAndUpdate(pos, state.setValue(ModStateProperties.AGE_2, 2));
+            }
         }
     }
 
@@ -108,6 +119,7 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
         int age = state.getValue(ModStateProperties.AGE_2);
+        int fire = state.getValue(ModStateProperties.FIRE_TICKS);
 
 
         if (age == 0 && stack.is(Items.BONE_MEAL)) {
@@ -120,10 +132,8 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
         }
 
         if (age == 1 && PotionUtils.getPotion(stack) == Potions.WATER){
-            level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, (1.0F + level.getRandom().nextFloat() * 0.2F) * 0.7F);
-
             RandomSource random = level.getRandom();
-            for(int j1 = 0; j1 < 10; ++j1) {
+            for(int j1 = 0; j1 < (fire + 1)*2; ++j1) {
                 Vec3 vec3 = state.getOffset(level, pos);
                 Vec3 center = pos.getCenter().add(vec3);
                 double d7 = center.x + random.nextDouble() - 0.5;
@@ -134,7 +144,16 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
             }
 
             if (!player.isCreative()) player.setItemInHand(hand, new ItemStack(Items.GLASS_BOTTLE));
-            level.setBlock(pos, state.setValue(ModStateProperties.AGE_2, 2), 3);
+
+            if (fire < 5) {
+                level.setBlockAndUpdate(pos, state.setValue(ModStateProperties.FIRE_TICKS, fire + 1));
+                level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, (1.0F + level.getRandom().nextFloat() * 0.2F) * 0.7F);
+
+            } else {
+                level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1F, (1.0F + level.getRandom().nextFloat() * 0.2F) * 0.7F);
+                level.setBlockAndUpdate(pos, state.setValue(ModStateProperties.AGE_2, 2));
+            }
+
             return InteractionResult.SUCCESS;
         }
 
