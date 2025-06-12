@@ -143,6 +143,10 @@ public class MoreSnifferFlowers {
         return new ResourceLocation("minecraft", path);
     }
 
+    public static ResourceLocation ofLoc(String path) {
+        return ResourceLocation.of(path, ':');
+    }
+
     public static String sLoc(String path) {
         return loc(path).toString();
     }

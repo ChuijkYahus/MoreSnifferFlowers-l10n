@@ -347,6 +347,10 @@
  	"moresnifferflowers.configuration.block_patterns": "Block Patterns",
  	"moresnifferflowers.configuration.block_patterns.button": "Edit",
  	"moresnifferflowers.configuration.block_patterns.tooltip": "Settings related to Block Patterns",
+ 	"moresnifferflowers.configuration.rebrewing": "Block Patterns",
+ 	"moresnifferflowers.configuration.rebrewing.button": "Edit",
+ 	"moresnifferflowers.configuration.rebrewing.tooltip": "Settings related to the Rebrewing Recipe",
+
  	
  	"moresnifferflowers.configuration.restart_required": "A lot of these require a game restart seemingly at random. Restart your game before reporting it as a bug!",
 
@@ -366,6 +370,16 @@
  	"moresnifferflowers.configuration.block_pattern_offset.tooltip": "How far block patterns are from their block, low values Z-fight, high values look detached",
  	"moresnifferflowers.configuration.block_pattern_smooth_lighting": "Block Pattern Smooth Lighting",
  	"moresnifferflowers.configuration.block_pattern_smooth_lighting.tooltip": "Enables smooth lighting for block patterns",
+ 	
+ 	"moresnifferflowers.configuration.rebrew_length": "Length Item",
+ 	"moresnifferflowers.configuration.rebrew_amplifier": "Amplifier Item",
+ 	"moresnifferflowers.configuration.rebrew_splash": "Splash Item",
+ 	"moresnifferflowers.configuration.rebrew_lingering": "Lingering Item",
+ 	"moresnifferflowers.configuration.rebrew_length.tooltip": "",
+ 	"moresnifferflowers.configuration.rebrew_amplifier.tooltip": "",
+ 	"moresnifferflowers.configuration.rebrew_splash.tooltip": "",
+ 	"moresnifferflowers.configuration.rebrew_lingering.tooltip": "",
+
 
 
 
