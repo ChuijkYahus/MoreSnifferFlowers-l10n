@@ -207,6 +207,11 @@ public class ModRecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput);
 
 
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.TORCHFLAME.get().asItem())
+                .requires(Ingredient.of(ModItems.FIERY_SPICE.get()), 4)
+                .unlockedBy("has_fiery_spice", has(ModItems.FIERY_SPICE.get()))
+                .save(pRecipeOutput);
+
         ModCustomRecipeProvider.createRecipes(pRecipeOutput);
     }
 

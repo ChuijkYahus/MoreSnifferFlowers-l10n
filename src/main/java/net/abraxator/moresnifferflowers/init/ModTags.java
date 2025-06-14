@@ -37,6 +37,8 @@ public class ModTags {
         public static final TagKey<Block> DYED = create(Registries.BLOCK, "dyed");
         public static final TagKey<Block> NO_CORRUPTED_SLIME_COLLISION = create(Registries.BLOCK, "no_corrupted_slime_collision");
         public static final TagKey<Block> UNCORRUPTABLE = create(Registries.BLOCK, "uncorruptable");
+        public static final TagKey<Block> STICKABLE = create(Registries.BLOCK, "stickable");
+
     }
 
     public static class ModBannerPatternTags {

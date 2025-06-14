@@ -36,7 +36,7 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
                 ModBlocks.GIANT_POTATO.get(), ModBlocks.GIANT_NETHERWART.get(), ModBlocks.GIANT_BEETROOT.get(), ModBlocks.GIANT_WHEAT.get(), ModBlocks.CAULORFLOWER.get(),
                 ModBlocks.CORRUPTED_LEAVES.get(), ModBlocks.CORRUPTED_LEAVES_BUSH.get(), ModBlocks.VIVICUS_LEAVES.get(), ModBlocks.VIVICUS_LEAVES_SPROUT.get());
         this.tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.GIANT_CARROT.get(), ModBlocks.GIANT_POTATO.get(), ModBlocks.GIANT_NETHERWART.get(), ModBlocks.GIANT_BEETROOT.get(), ModBlocks.GIANT_WHEAT.get(), ModBlocks.CAULORFLOWER.get());
-        this.tag(BlockTags.MINEABLE_WITH_SHOVEL).add(ModBlocks.CORRUPTED_SLUDGE.get(), ModBlocks.CORRUPTED_SLIME_LAYER.get(), ModBlocks.CORRUPTED_GRASS_BLOCK.get(), ModBlocks.CURED_GRASS_BLOCK.get(), ModBlocks.SALTY_CLUMP.get());
+        this.tag(BlockTags.MINEABLE_WITH_SHOVEL).add(ModBlocks.CORRUPTED_SLUDGE.get(), ModBlocks.CORRUPTED_SLIME_LAYER.get(), ModBlocks.CORRUPTED_GRASS_BLOCK.get(), ModBlocks.CURED_GRASS_BLOCK.get(), ModBlocks.SALTY_CLUMP.get(), ModBlocks.SOUR_PUDDLE.get());
 
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(
                 ModBlocks.AMBER_BLOCK.get(), ModBlocks.GARNET_BLOCK.get(), ModBlocks.CROPRESSOR_OUT.get(), ModBlocks.CROPRESSOR_CENTER.get(), ModBlocks.REBREWING_STAND_BOTTOM.get(),
@@ -83,6 +83,9 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         this.tag(ModTags.ModBlockTags.UNCORRUPTABLE).add(ModBlocks.CORRUPTED_LOG.get(), ModBlocks.CORRUPTED_LEAVES_BUSH.get(), ModBlocks.CORRUPTED_LEAVES.get(), ModBlocks.STRIPPED_CORRUPTED_LOG.get()
                 , ModBlocks.CORRUPTED_WOOD.get(), ModBlocks.STRIPPED_CORRUPTED_WOOD.get(), ModBlocks.DECAYED_LOG.get());
         this.tag(ModTags.ModBlockTags.NO_CORRUPTED_SLIME_COLLISION).add(ModBlocks.SALTEMONE.get(), ModBlocks.SOURLEMONE.get());
+
+        this.tag(ModTags.ModBlockTags.STICKABLE).add(Blocks.GRASS).add(Blocks.STONE)
+                .add(Blocks.SAND).add(Blocks.GRAVEL).add(Blocks.TALL_GRASS).addTags(BlockTags.LEAVES, BlockTags.DIRT, BlockTags.REPLACEABLE);
 
         this.tag(BlockTags.CAULDRONS).add(ModBlocks.ACID_FILLED_CAULDRON.get(), ModBlocks.BONMEEL_FILLED_CAULDRON.get());
         this.tag(BlockTags.DIRT).add(ModBlocks.CORRUPTED_GRASS_BLOCK.get(), ModBlocks.CURED_GRASS_BLOCK.get());

@@ -42,7 +42,7 @@ public class ModBlocks {
             DeferredRegister.create(ForgeRegistries.BLOCKS, MoreSnifferFlowers.MOD_ID);
 
     public static final RegistryObject<Block> TORCHFLOWER_AFLAME = registerBlockWithItem("torchflower_aflame", () -> new TorchflowerAflameBlock(BlockBehaviour.Properties.copy(Blocks.TORCHFLOWER).noCollission().randomTicks().lightLevel(value -> value.getValue(ModStateProperties.AGE_2) == 1 ? 12 : 0)));
-    public static final RegistryObject<Block> TORCHFLAME = registerBlockWithItem("torchflame", () -> new HalfTransparentBlock(BlockBehaviour.Properties.of().sound(SoundType.EMPTY).lightLevel(value -> 12).instabreak().noOcclusion().pushReaction(PushReaction.DESTROY).noCollission()));
+    public static final RegistryObject<Block> TORCHFLAME = registerBlockWithItem("torchflame", () -> new TorchflameBlock(BlockBehaviour.Properties.of().sound(SoundType.EMPTY).lightLevel(value -> 12).instabreak().noOcclusion().pushReaction(PushReaction.DESTROY).noCollission()));
 
     public static final RegistryObject<Block> DAWNBERRY_VINE = registerBlockNoItem("dawnberry_vine", () -> new DawnberryVineBlock(BlockBehaviour.Properties.of().mapColor(MapColor.GLOW_LICHEN).noCollission().strength(0.2F).sound(SoundType.GLOW_LICHEN).lightLevel(value -> value.getValue(DawnberryVineBlock.AGE) >= 3 ? 3 : 0).ignitedByLava().pushReaction(PushReaction.DESTROY).randomTicks().noOcclusion(), false));
     public static final RegistryObject<Block> GLOOMBERRY_VINE = registerBlockNoItem("gloomberry_vine", () -> new GloomberryVineBlock(BlockBehaviour.Properties.of().mapColor(MapColor.GLOW_LICHEN).noCollission().strength(0.2F).sound(SoundType.GLOW_LICHEN).ignitedByLava().pushReaction(PushReaction.DESTROY).randomTicks().noOcclusion()));
@@ -157,8 +157,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> SOURLEMONE = registerBlockNoItem("sourlemone", () -> new SourlemonBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTEMONE.get()).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
     public static final RegistryObject<Block> SALTY_CLUMP = registerBlockNoItem("salty_clump", () -> new SaltyClumpBlock(BlockBehaviour.Properties.copy(Blocks.SMALL_AMETHYST_BUD).noOcclusion().sound(SoundType.SAND).pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never).noCollission()));
     public static final RegistryObject<Block> DRIPSALT = registerBlockNoItem("dripsalt", () -> new DripsaltBlock(BlockBehaviour.Properties.copy(Blocks.POINTED_DRIPSTONE)));
-    public static final RegistryObject<Block> SOUR_CLUMP = registerBlockWithItem("sour_clump", () -> new SaltyClumpBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTY_CLUMP.get()).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never).noCollission()));
-    public static final RegistryObject<Block> SOUR_PUDDLE = registerBlockWithItem("sour_puddle", () -> new SourPuddleBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTY_CLUMP.get()).friction(0.98F).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never)));
+    public static final RegistryObject<Block> SOUR_PUDDLE = registerBlockWithItem("sour_puddle", () -> new SourPuddleBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTY_CLUMP.get()).requiresCorrectToolForDrops().friction(0.98F).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never)));
 
 
     private static <T extends Block> RegistryObject<T> registerBlockNoItem(String name, Supplier<T> block) {

@@ -17,6 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -150,29 +151,22 @@ public class ForgeEvents {
             for (ItemEntity item : nearbyItems) {
                 pullItemTowardPlayer(player, item);
             }
-        }
 
-        if (event.phase == TickEvent.Phase.END && player.hasEffect(ModMobEffects.OLD_NEGATIVE_SWEET.get())) {
-            MobEffectInstance instance = player.getEffect(ModMobEffects.OLD_NEGATIVE_SWEET.get());
-            int amplifier = instance.getAmplifier();
-            if(player.getRandom().nextDouble() > 0.01 * amplifier) {
-                return;
-            }
-            if(player.getRandom().nextBoolean()) {
-                Vec3 oldMovement = player.getDeltaMovement();
-                Vec3 laggyMovement = new Vec3(-oldMovement.x * (0.5 * amplifier), oldMovement.y, -oldMovement.z * (0.8 * amplifier));
-                player.setDeltaMovement(laggyMovement);
-            } else {
-                Vec3 jitter = new Vec3(
-                        (Math.random() - 0.5) * (0.2 * amplifier),
-                        0,
-                        (Math.random() - 0.5) * (0.2 * amplifier)
-                );
-                player.setDeltaMovement(player.getDeltaMovement().add(jitter));
+            BlockPos pos = player.getOnPos();
+            BlockState state = level.getBlockState(pos);
+            Vec3 vec3 = pos.getCenter();
+            if (event.phase == TickEvent.Phase.END ||event.side.isClient()) return;
+            int momentum = Mth.floor((player.walkDist - player.walkDistO)  * 250);
+
+            if (momentum > 1 && level.getGameTime() % (150 - momentum) == 0 && state.is(ModTags.ModBlockTags.STICKABLE)){
+                level.playSound(null, pos, state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 1.0F, 0.5F + level.getRandom().nextFloat() * 0.8F);
+                ItemEntity itemEntity = new ItemEntity(level, vec3.x, vec3.y + 0.6F, vec3.z, state.getBlock().asItem().getDefaultInstance());
+                level.addFreshEntity(itemEntity);
             }
         }
 
-        if (event.phase == TickEvent.Phase.END || event.player.level().isClientSide) return;
+        // if (event.phase == TickEvent.Phase.END || event.player.level().isClientSide) return;
+
 
         event.player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
             cap.tick(event.player);
@@ -183,8 +177,27 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onItemPickup(EntityItemPickupEvent event) {
         Player player = event.getEntity();
-        if (player.hasEffect(ModMobEffects.STICKY.get()) && !player.isCrouching()) {
-            event.setCanceled(true);
+        ItemEntity itemEntity = event.getItem();
+
+        if (player.hasEffect(ModMobEffects.STICKY.get())) {
+           if (!player.isCrouching()) {
+               event.setCanceled(true);
+           } else {
+               int amplifier = player.getEffect(ModMobEffects.STICKY.get()).getAmplifier();
+               int slowdown = 5 + amplifier*2;
+               if (event.getEntity().level().getGameTime() % 5 != 0) {
+                   event.setCanceled(true);
+                   return;
+               }
+                ItemStack stack = itemEntity.getItem();
+                ItemStack retStack = stack.split(1);
+
+                player.addItem(retStack);
+
+                itemEntity.setItem(stack);
+                event.setCanceled(true);
+           }
+
         }
     }
     
@@ -303,6 +316,7 @@ public class ForgeEvents {
         return false;
     }
 
+    // ChatGPT code
     private static void pullItemTowardPlayer(Player player, ItemEntity item) {
         Vec3 playerPos = player.position().add(0, 1, 0); // Aim for player's chest, not feet
         Vec3 itemPos = item.position();

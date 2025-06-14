@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.data;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
@@ -40,6 +41,13 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.BLOCK_PATTERN_STARS.get());
         basicItem(ModItems.BLOCK_PATTERN_COVER.get());
         basicItem(ModItems.BLOCK_PATTERN_FLOWERS.get());
+
+        basicItem(ModItems.SALTY_SPICE.get());
+        basicItem(ModItems.SOUR_SPICE.get());
+        basicItem(ModItems.FIERY_SPICE.get());
+        basicItem(ModItems.SWEET_SPICE.get());
+
+        basicItem(ModBlocks.TORCHFLAME.get().asItem());
 
 
         /*for(int i = 1; i <= ModItemProperties.COPRESSOR_ANIMATION_FRAMES; i++) {

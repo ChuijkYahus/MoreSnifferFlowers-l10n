@@ -79,7 +79,12 @@
 	
 	"item.moresnifferflowers.beroot_cook_book": "Beroot Cookbook",
 	"item.moresnifferflowers.rooted_soup": "Rooted Soup",
+	"item.moresnifferflowers.flavorful_roots": "Flavorful Roots",
 	"item.moresnifferflowers.salty_spice": "Salty Spice",
+	"item.moresnifferflowers.sour_spice": "Sour Spice",
+	"item.moresnifferflowers.fiery_spice": "Fiery Spice",
+	"item.moresnifferflowers.sweet_spice": "Sweet Spice",
+
 	"item.moresnifferflowers.burned_slot": "Burned Slot",
 
 	"item.moresnifferflowers.block_pattern_pipes": "Pipes Block Pattern",
@@ -204,6 +209,10 @@
 
 	"block.moresnifferflowers.dripsalt": "Dripsalt",
 	"block.moresnifferflowers.salty_clump": "Salty Clump",
+	"block.moresnifferflowers.sour_puddle": "Sour Puddle",
+
+	"block.moresnifferflowers.torchflame": "Torchflame",
+	"block.moresnifferflowers.torchflower_aflame": "Torchflower",
 
 
 
@@ -213,7 +222,7 @@
 	"message.more_sniffer_flowers.dyespria_mode": "Current Mode",
 
 	"tooltip.dyespria.usage": "Hover+Right-click to insert dye \nRight-click compatible block to paint \nSneak+Scroll to change paint mode\n",
-	"tooltip.patternspria.usage": "Hover+Right-click to insert pattern \nRight-click compatible block to paint \nSneak+Scroll to change paint mode\n Accepts Block Patterns and Banner Patterns \n",
+	"tooltip.patternspria.usage": "Controls like Dyespria \nShift+Right-click to copy pattern color \nAccepts: \n-Block Patterns \n-Banner Patterns \n",
 	"tooltip.dyespria.empty": "Empty",
 	"tooltip.jar_of_bonmeel.usage": "Can be applied to a fully grown 3x3 grid of the following crops: \nCarrot, Potato, Wheat, Beetroot and Nether Wart",
 	"tooltip.amber_shard.usage": "Can be used as an armor trim material",
@@ -225,7 +234,7 @@
 	"tooltip.wip": "WIP",
 	"tooltip.vivicus_antidote": "Cures Boblings and Corrupted Grass",
 	"tooltip.dyescrapia": "Scrapes the dye off of colored blocks",
-	"tooltip.saltemone_seeds": "Plant on water!",
+	"tooltip.saltemone_seeds": "Plantable on water",
 
 # Advancements 🏆🏆🏆
 	"advancements.more_sniffer_flowers.dyespria_plant": "Colorful plants",
