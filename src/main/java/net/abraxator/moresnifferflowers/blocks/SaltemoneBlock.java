@@ -112,11 +112,20 @@ public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (level.getBlockEntity(pos) instanceof SaltemoneBlockEntity entity && pos.equals(entity.center)) {
             if (isMaxAge(state)) {
-                Vec3 vec3 = entity.center.getCenter().relative(state.getValue(HorizontalDirectionalBlock.FACING), 0.5D).relative(state.getValue(HorizontalDirectionalBlock.FACING).getClockWise(), 0.5D).relative(Direction.UP, 1);
+                Direction direction = state.getValue(HorizontalDirectionalBlock.FACING);
+                Vec3 vec3 = entity.center.getCenter().relative(direction, 0.5D).relative(direction.getClockWise(), 0.5D).relative(Direction.UP, 1);
+
                 SaltBubbleProjectile projectile = new SaltBubbleProjectile(vec3.x, vec3.y, vec3.z, level);
+
+                projectile.setNoGravity(true);
                 projectile.setCorrupted(isCorrupted());
-                projectile.shoot(vec3.x, vec3.y, vec3.z, 0.5F, 0.1F);
+                projectile.shoot(random.nextFloat() / 4, 1, random.nextFloat() / 4, 0.5F, 1.5F);
+                projectile.setState(0);
+                Vec3 deltaMovement = projectile.getDeltaMovement();
+                projectile.setDeltaMovement(deltaMovement.x /2, deltaMovement.y /2, deltaMovement.z/2);
+
                 level.addFreshEntity(projectile);
+
             } else {
                 growHelper(level, pos, state);
             }

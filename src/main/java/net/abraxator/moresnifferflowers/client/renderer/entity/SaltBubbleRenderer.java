@@ -25,21 +25,31 @@ public class SaltBubbleRenderer extends EntityRenderer<SaltBubbleProjectile> {
     }
 
     @Override
-    public void render(SaltBubbleProjectile pEntity, float pEntityYaw, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight) {
-        if(pEntity.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(pEntity) < 12.25)) {
-            pPoseStack.pushPose();
-            pPoseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(pPartialTick, pEntity.yRotO, pEntity.getYRot()) - 180F));
-            pPoseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(pPartialTick, pEntity.xRotO, pEntity.getXRot())));
-            pPoseStack.translate(0, -0.5, 0);
-            pPoseStack.scale(0.6F, 0.6F, 0.6F);
+    public void render(SaltBubbleProjectile entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+        if(CoolProjectileRenderer.projectileCameraCheck(entity, this.entityRenderDispatcher)) {
+            poseStack.pushPose();
+            poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTick, entity.yRotO, entity.getYRot()) - 180F));
+            poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTick, entity.xRotO, entity.getXRot())));
+            poseStack.translate(0, -1.0, 0);
+
+            float scale = 1F;
+            float time = (entity.tickCount + partialTick) / 20f;
+
+            if (entity.getState() == 1){
+                scale = 1.1f + 0.4F * Mth.sin(time / 2 * Mth.TWO_PI);
+                poseStack.translate(0, -scale + 1.1, 0);
+            }
+
+            poseStack.scale(scale, scale, scale);
+
             this.model.renderToBuffer(
-                    pPoseStack,
-                    pBufferSource.getBuffer(this.model.renderType(this.getTextureLocation(pEntity))),
-                    pPackedLight,
+                    poseStack,
+                    buffer.getBuffer(this.model.renderType(this.getTextureLocation(entity))),
+                    packedLight,
                     OverlayTexture.NO_OVERLAY,
                     1, 1, 1, 1);
-            pPoseStack.popPose();
-            super.render(pEntity, pEntityYaw, pPartialTick, pPoseStack, pBufferSource, pPackedLight);
+            poseStack.popPose();
+            super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
         }
     }
 

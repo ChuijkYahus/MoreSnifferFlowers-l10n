@@ -104,7 +104,7 @@ dependencies {
     compileOnly("curse.maven:zeta-968868:6432578")
 
     //right click harvest
-    compileOnly("curse.maven:RightClickHarvest-${RCH_id}:${RCH_version}")
+    compileOnly("curse.maven:rightclickharvest-452834:6326903")
 }
 
 mixin {

@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,24 +33,25 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onConfigLoad(ModConfigEvent.Reloading event){
-        List<ResourceLocation> locations = new ArrayList<>();
+        if (event.getConfig().getSpec() instanceof ForgeConfigSpec spec && spec.isLoaded()) {
+            List<ResourceLocation> locations = new ArrayList<>();
 
-        locations.add(MoreSnifferFlowers.ofLoc(ModServerConfig.REBREWING_AMPLIFIER.get()));
-        locations.add(MoreSnifferFlowers.ofLoc(ModServerConfig.REBREWING_LENGTH.get()));
-        locations.add(MoreSnifferFlowers.ofLoc(ModServerConfig.REBREWING_SPLASH.get()));
-        locations.add(MoreSnifferFlowers.ofLoc(ModServerConfig.REBREWING_LINGERING.get()));
+            locations.add(MoreSnifferFlowers.ofLoc(ModServerConfig.REBREWING_AMPLIFIER.get()));
+            locations.add(MoreSnifferFlowers.ofLoc(ModServerConfig.REBREWING_LENGTH.get()));
+            locations.add(MoreSnifferFlowers.ofLoc(ModServerConfig.REBREWING_SPLASH.get()));
+            locations.add(MoreSnifferFlowers.ofLoc(ModServerConfig.REBREWING_LINGERING.get()));
 
-        for (ResourceLocation location : locations){
-            if (!ForgeRegistries.ITEMS.containsKey(location)){
-                MoreSnifferFlowers.LOGGER.error("Error in Rebrewing Server Config, couldn't find item: " + location);
+            for (ResourceLocation location : locations) {
+                if (!ForgeRegistries.ITEMS.containsKey(location)) {
+                    MoreSnifferFlowers.LOGGER.error("Error in Rebrewing Server Config, couldn't find item: " + location);
+                }
+
             }
-
         }
-
     }
 
     /*@SubscribeEvent
     public static void onRegisterDataMapTypes(RegisterDataMapTypesEven event) {
-        event.register(ModDataMaps.CORRUPTABLE);
+        event.register(ModDataMaps.CORRUPTIBLE);
     }*/
 }
