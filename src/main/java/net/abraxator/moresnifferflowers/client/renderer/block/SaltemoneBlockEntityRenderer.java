@@ -15,21 +15,25 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.phys.Vec3;
 
 public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implements BlockEntityRenderer<T> {
-    private ModelPart model;
+    private final ModelPart body;
+    private final ModelPart top;
     private static final Material SALTEMONE_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/saltemone"));
     private static final Material SOURLEMON_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/sourlemon"));
 
     public SaltemoneBlockEntityRenderer(BlockEntityRendererProvider.Context pContext) {
-        this.model = pContext.bakeLayer(ModModelLayerLocations.SALTEMONE);
+        this.body = pContext.bakeLayer(ModModelLayerLocations.SALTEMONE);
+        this.top = pContext.bakeLayer(ModModelLayerLocations.SALTEMONE_TOP);
     }
 
     @Override
     public void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         if(blockEntity.getBlockState().getValue(ModStateProperties.CENTER) && blockEntity.getBlockState().getValue(ModStateProperties.AGE_2) >= 2) {
+            poseStack.pushPose();
             Direction direction = blockEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
             poseStack.mulPose(direction.getCounterClockWise().getRotation());
             poseStack.mulPose(Axis.XN.rotationDegrees(-90));
@@ -40,8 +44,20 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
                 case SOUTH -> poseStack.translate(-1, 0, 0);
                 case NORTH -> poseStack.translate(0, 0, 1);
             }
+
             Material material = blockEntity.getBlockState().is(ModBlocks.SOURLEMONE.get()) ? SOURLEMON_TEXTURE : SALTEMONE_TEXTURE;
-            this.model.render(poseStack, material.buffer(buffer, RenderType::entityCutout), packedLight, packedOverlay);
+
+            this.body.render(poseStack, material.buffer(buffer, RenderType::entityCutout), packedLight, packedOverlay);
+
+            float time = (blockEntity.getLevel().getGameTime() + partialTick) / 20f;
+            float scale = 1.0f + 0.3f * Mth.sin(time / 2 * Mth.TWO_PI + blockEntity.center.getX() + blockEntity.center.getZ());
+
+            poseStack.scale(scale,  scale / 1.5f + 0.4f, scale);
+            poseStack.translate(0, -scale + 2.32 , 0);
+
+            this.top.render(poseStack, material.buffer(buffer, RenderType::entityCutout), packedLight, packedOverlay);
+            poseStack.popPose();
+
         }
     }
 

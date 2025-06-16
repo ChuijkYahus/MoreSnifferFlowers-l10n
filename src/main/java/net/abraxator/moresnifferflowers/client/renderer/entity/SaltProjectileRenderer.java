@@ -9,8 +9,7 @@ public class SaltProjectileRenderer extends CoolProjectileRenderer<SaltProjectil
     public static final ResourceLocation TEXTURE_SALT = MoreSnifferFlowers.loc("textures/entity/salt_projectile.png");
     public static final ResourceLocation TEXTURE_SOUR = MoreSnifferFlowers.loc("textures/entity/sour_projectile.png");
 
-
-    protected SaltProjectileRenderer(EntityRendererProvider.Context context) {
+    public SaltProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);
     }
 

@@ -28,19 +28,29 @@ public class SaltBubbleRenderer extends EntityRenderer<SaltBubbleProjectile> {
     public void render(SaltBubbleProjectile entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         if(CoolProjectileRenderer.projectileCameraCheck(entity, this.entityRenderDispatcher)) {
             poseStack.pushPose();
-            poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTick, entity.yRotO, entity.getYRot()) - 180F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTick, entity.yRotO, entity.getYRot())));
             poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTick, entity.xRotO, entity.getXRot())));
             poseStack.translate(0, -1.0, 0);
 
             float scale = 1F;
             float time = (entity.tickCount + partialTick) / 20f;
 
+            float scaleAmount = entity.getState() == 1 ? 0.4F : 0.3F;
+
+            scale = 1.1f + scaleAmount * Mth.sin(time / 2 * Mth.TWO_PI);
+            poseStack.translate(0, -scale + 1.1, 0);
+
+
             if (entity.getState() == 1){
-                scale = 1.1f + 0.4F * Mth.sin(time / 2 * Mth.TWO_PI);
-                poseStack.translate(0, -scale + 1.1, 0);
+                poseStack.translate(0, 0.2f * Mth.sin(time / 4 * Mth.TWO_PI), 0);
+            }
+
+            if (entity.getState() == 2){
+                scale *= 2;
             }
 
             poseStack.scale(scale, scale, scale);
+
 
             this.model.renderToBuffer(
                     poseStack,

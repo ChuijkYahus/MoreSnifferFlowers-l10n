@@ -4,6 +4,8 @@ import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
 import net.abraxator.moresnifferflowers.entities.SaltBubbleProjectile;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
+import net.abraxator.moresnifferflowers.networking.SaltemoneParticlePacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -26,6 +28,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
@@ -113,25 +116,25 @@ public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable
         if (level.getBlockEntity(pos) instanceof SaltemoneBlockEntity entity && pos.equals(entity.center)) {
             if (isMaxAge(state)) {
                 Direction direction = state.getValue(HorizontalDirectionalBlock.FACING);
-                Vec3 vec3 = entity.center.getCenter().relative(direction, 0.5D).relative(direction.getClockWise(), 0.5D).relative(Direction.UP, 1);
+                Vec3 vec3 = entity.center.getCenter().relative(direction, 0.5D).relative(direction.getClockWise(), 0.5D).relative(Direction.UP, 0.0);
+                float speed = 0.2F;
 
                 SaltBubbleProjectile projectile = new SaltBubbleProjectile(vec3.x, vec3.y, vec3.z, level);
 
                 projectile.setNoGravity(true);
                 projectile.setCorrupted(isCorrupted());
-                projectile.shoot(random.nextFloat() / 4, 1, random.nextFloat() / 4, 0.5F, 1.5F);
                 projectile.setState(0);
-                Vec3 deltaMovement = projectile.getDeltaMovement();
-                projectile.setDeltaMovement(deltaMovement.x /2, deltaMovement.y /2, deltaMovement.z/2);
+                projectile.setDeltaMovement((random.nextFloat() - 0.5)*speed,1*speed, (random.nextFloat() - 0.5)*speed);
 
                 level.addFreshEntity(projectile);
+
+                ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new SaltemoneParticlePacket(vec3.toVector3f()));
 
             } else {
                 growHelper(level, pos, state);
             }
         }
     }
-
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entityinside) {

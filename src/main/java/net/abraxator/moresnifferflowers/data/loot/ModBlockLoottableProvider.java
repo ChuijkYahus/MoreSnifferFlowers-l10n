@@ -306,7 +306,8 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         add(ModBlocks.SOURLEMONE.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.SOURLEMONE.get(), ModItems.SOURLEMONE_SEEDS.get()));
 
         add(ModBlocks.SALTY_CLUMP.get(), simpleIncreasingConditional(ModStateProperties.AMOUNT_4, ModBlocks.SALTY_CLUMP.get(), ModItems.SALTY_SPICE.get()));
-        dropSelf(ModBlocks.SOUR_PUDDLE.get());
+        add(ModBlocks.SOUR_PUDDLE.get(), createSingleItemTable(ModItems.SOUR_SPICE.get()));
+
 
         add(ModBlocks.DRIPSALT.get(), createSingleItemTable(ModBlocks.DRIPSALT.get().asItem()));
 

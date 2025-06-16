@@ -8,7 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -33,7 +32,7 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onConfigLoad(ModConfigEvent.Reloading event){
-        if (event.getConfig().getSpec() instanceof ForgeConfigSpec spec && spec.isLoaded()) {
+        if (ModServerConfig.SERVER_CONFIG.isLoaded()) {
             List<ResourceLocation> locations = new ArrayList<>();
 
             locations.add(MoreSnifferFlowers.ofLoc(ModServerConfig.REBREWING_AMPLIFIER.get()));

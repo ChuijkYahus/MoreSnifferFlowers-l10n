@@ -1,4 +1,4 @@
-// 1.20.1	2025-06-14T18:59:04.9881547	Loot Tables
+// 1.20.1	2025-06-16T21:54:43.7480151	Loot Tables
 421d4c078004a75f24902e1d857ee88a3c0688d2 data/moresnifferflowers/loot_tables/blocks/acidripia.json
 16882dced81963aacd1b4d32ed8e0ca33a618998 data/moresnifferflowers/loot_tables/blocks/acid_filled_cauldron.json
 e37d1e0a9608760103f1f41ea813a4050dadc2fc data/moresnifferflowers/loot_tables/blocks/amber_block.json
@@ -75,7 +75,7 @@ d9de98fedc8ef8c767e2615eefec9fa6c8f0650d data/moresnifferflowers/loot_tables/blo
 9d888cfd5bebbcc4f93fae19e4217d060055a6ae data/moresnifferflowers/loot_tables/blocks/saltemone.json
 1c859a4945b0a1f705915ab764de51da1c832bcb data/moresnifferflowers/loot_tables/blocks/salty_clump.json
 394487b7a0f69a7e4baafb38a43940de5e6e2b86 data/moresnifferflowers/loot_tables/blocks/sourlemone.json
-d95cd1615d6c2e2aa85c0569c39f1d5ad64db2cd data/moresnifferflowers/loot_tables/blocks/sour_puddle.json
+2f38b264f8ea31a5a522c06316cc5b931f76b5a9 data/moresnifferflowers/loot_tables/blocks/sour_puddle.json
 f759a7ffa7cfb207d4f14b87921d508db7942cae data/moresnifferflowers/loot_tables/blocks/stripped_corrupted_log.json
 280dedd674ca54ed97690cd53aea39284809b8af data/moresnifferflowers/loot_tables/blocks/stripped_corrupted_wood.json
 ee052a5b63f9af7a9a5f943050895d50448be34a data/moresnifferflowers/loot_tables/blocks/stripped_vivicus_log.json

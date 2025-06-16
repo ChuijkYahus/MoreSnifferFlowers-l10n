@@ -44,5 +44,8 @@ public class ModPacketHandler {
         CHANNEL.messageBuilder(PatternspriaModePacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
                 .encoder(PatternspriaModePacket::encode).decoder(PatternspriaModePacket::new).consumerMainThread(PatternspriaModePacket::handle).add();
 
+        CHANNEL.messageBuilder(SaltemoneParticlePacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(SaltemoneParticlePacket::encode).decoder(SaltemoneParticlePacket::new).consumerMainThread(SaltemoneParticlePacket::handle).add();
+
     }
 }

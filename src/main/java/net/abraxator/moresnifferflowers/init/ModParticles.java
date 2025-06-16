@@ -26,5 +26,7 @@ public class ModParticles {
     public static final RegistryObject<SimpleParticleType> ACIDRIPIA_LAND = PARTICLES.register("acidripia_land", () -> new SimpleParticleType(false));
 
     public static final RegistryObject<SimpleParticleType> TORCHFLAME = PARTICLES.register("torchflame", () -> new SimpleParticleType(false));
+    public static final RegistryObject<SimpleParticleType> BUBBLE = PARTICLES.register("bubble", () -> new SimpleParticleType(false));
+
 
 }

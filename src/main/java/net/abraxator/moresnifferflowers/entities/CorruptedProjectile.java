@@ -80,19 +80,19 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult pResult) {
-        super.onHitBlock(pResult);
-        var pos = pResult.getBlockPos();
-        var posRelative = pResult.getBlockPos().relative(pResult.getDirection());
-        var posRelativeBelow = pResult.getBlockPos().relative(pResult.getDirection()).below();
+    protected void onHitBlock(BlockHitResult result) {
+        super.onHitBlock(result);
+        var pos = result.getBlockPos();
+        var posRelative = result.getBlockPos().relative(result.getDirection());
+        var posRelativeBelow = result.getBlockPos().relative(result.getDirection()).below();
 
         var state = this.level().getBlockState(pos);
         var stateRelative = this.level().getBlockState(posRelative);
-        var stateRelativeBelow = this.level().getBlockState(pResult.getBlockPos().relative(pResult.getDirection()).below());
+        var stateRelativeBelow = this.level().getBlockState(result.getBlockPos().relative(result.getDirection()).below());
 
         if (this.level().getBlockState(pos).is(ModTags.ModBlockTags.NO_CORRUPTED_SLIME_COLLISION)) return;
 
-        if(checkState(this.level().getBlockState(pResult.getBlockPos()))) {
+        if(checkState(this.level().getBlockState(result.getBlockPos()))) {
             var layer = state.getValue(ModStateProperties.LAYER);
             this.level().setBlockAndUpdate(
                     pos,
@@ -101,7 +101,7 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
         } else {
             transformBlock(this.level(), pos);
 
-            if (checkState(this.level().getBlockState(pResult.getBlockPos().relative(pResult.getDirection())))) {
+            if (checkState(this.level().getBlockState(result.getBlockPos().relative(result.getDirection())))) {
                 var layerRelative = stateRelative.getValue(ModStateProperties.LAYER);
                 this.level().setBlockAndUpdate(
                         posRelative,
@@ -110,9 +110,9 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
 
             if (stateRelative.is(Blocks.AIR) || stateRelative.is(BlockTags.FIRE) || (stateRelative.canBeReplaced() && !stateRelative.liquid())) {
 
-                    if(pResult.getDirection() == Direction.UP && !state.is(Blocks.AIR)) {
+                    if(result.getDirection() == Direction.UP && !state.is(Blocks.AIR)) {
                         this.level().setBlockAndUpdate(
-                                pResult.getBlockPos().relative(pResult.getDirection()),
+                                result.getBlockPos().relative(result.getDirection()),
                                 ModBlocks.CORRUPTED_SLIME_LAYER.get().defaultBlockState().setValue(ModStateProperties.LAYER, 1));
                         this.discard();
                     } else {
