@@ -11,12 +11,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -33,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
 
-public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable, ModCropBlock, MultiBlock {
+public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock, Corruptable, ModCropBlock, MultiBlock {
     public SaltemoneBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(defaultBlockState().setValue(ModStateProperties.CENTER, false).setValue(getAgeProperty(), 0).setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH));
@@ -41,24 +37,18 @@ public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable
     protected static final VoxelShape AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
 
     @Override
+    public @Nullable Block corruptedBlock() {
+        return ModBlocks.SOURLEMONE.get();
+    }
+
+    @Override
+    public Block curedBlock() {
+        return ModBlocks.SALTEMONE.get();
+    }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         pBuilder.add(HorizontalDirectionalBlock.FACING, ModStateProperties.CENTER, getAgeProperty());
-    }
-
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return getStateForPlacementHelper(context, this);
-    }
-
-    @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity pPlacer, ItemStack stack) {
-        place(level, pos, state, pPlacer, stack);
-    }
-
-
-    @Override
-    public boolean canSurvive(BlockState blockState, LevelReader level, BlockPos blockPos) {
-       return canSurviveHelper(blockState, level, blockPos, ModBlocks.SALTEMONE.get(), ModBlocks.SOURLEMONE.get());
     }
 
     @Override
@@ -77,10 +67,6 @@ public class SaltemoneBlock extends Block implements ModEntityBlock, Corruptable
         return BlockPos.betweenClosedStream(new AABB(center, relative));
     }
 
-    @Override
-    public BlockState updateShape(BlockState stateOriginal, Direction dir, BlockState stateNew, LevelAccessor level, BlockPos pCurrentPos, BlockPos pNewPos) {
-        return updateShapeHelper(stateOriginal, level, pCurrentPos);
-    }
 
     @Override
     public IntegerProperty getAgeProperty() {

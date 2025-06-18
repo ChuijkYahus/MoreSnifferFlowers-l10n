@@ -13,13 +13,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ParticleUtils;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.AbstractCauldronBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock, ModCropBlock, Corruptable, MultiBlock {
+public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock, ModCropBlock, Corruptable, MultiBlock {
     public BondripiaBlock(Properties p_49795_) {
         super(p_49795_);
         this.defaultBlockState()
@@ -42,6 +42,16 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
     }
     private static final VoxelShape SHAPE = Block.box(2.0, 13.0, 2.0, 14.0, 16.0, 14.0);
     private static final VoxelShape SHAPE_CENTER = Block.box(0.0, 13.0, 0.0, 16.0, 16.0, 16.0);
+
+    @Override
+    public @Nullable Block corruptedBlock() {
+        return ModBlocks.ACIDRIPIA.get();
+    }
+
+    @Override
+    public Block curedBlock() {
+        return ModBlocks.BONDRIPIA.get();
+    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
@@ -60,11 +70,6 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
     @Override
     public boolean directional() {
         return false;
-    }
-
-    @Override
-    public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity pPlacer, ItemStack pStack) {
-        place(pLevel, pPos, pState, pPlacer, pStack);
     }
     
     @Override
@@ -171,18 +176,8 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
     }
 
     @Override
-    public boolean canSurvive(BlockState blockState, LevelReader level, BlockPos blockPos) {
-       return canSurviveHelper(blockState, level, blockPos, ModBlocks.BONDRIPIA.get(), ModBlocks.ACIDRIPIA.get());
-    }
-
-    @Override
     public boolean extraSurviveRequirements(LevelReader level, BlockPos pos, BlockState state) {
         return Block.canSupportCenter(level, pos.above(), Direction.DOWN) && !level.isWaterAt(pos);
-    }
-
-    @Override
-    public BlockState updateShape(BlockState stateOriginal, Direction dir, BlockState stateNew, LevelAccessor level, BlockPos pCurrentPos, BlockPos pNewPos) {
-       return updateShapeHelper(stateOriginal, level, pCurrentPos);
     }
     
     @Nullable
@@ -222,5 +217,4 @@ public class BondripiaBlock extends SporeBlossomBlock implements ModEntityBlock,
         return SHAPE;
 
     }
-
 }

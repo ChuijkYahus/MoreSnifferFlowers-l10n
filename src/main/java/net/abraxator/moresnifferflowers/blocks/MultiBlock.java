@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
@@ -37,6 +38,7 @@ public interface MultiBlock {
    Override updateShape - return updateShapeHelper
    Override canSurvive - return canSurviveHelper
    Optionally Override extraSurviveRequirements
+   Optionally add preventCreativeDrops into playerWillDestroy
 
    growHelper - for bone meal and tick growth
 
@@ -54,6 +56,7 @@ public interface MultiBlock {
 
 
     default void place(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity pPlacer, ItemStack stack){
+        if (level.isClientSide()) return;
         fullBlockShape(pos, state).forEach(blockPos -> {
             blockPos = blockPos.immutable();
             level.setBlock(blockPos, state.setValue(ModStateProperties.CENTER, pos.equals(blockPos)), 3);
@@ -66,7 +69,11 @@ public interface MultiBlock {
     default BlockState getStateForPlacementHelper(BlockPlaceContext context, Block ts) {
         LevelReader level = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        BlockState state = ts.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection());
+        BlockState state = ts.defaultBlockState();
+
+        if (directional()){
+            state = state.setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection());
+        }
 
         return canPlace(level, pos, state) ? state : null;
     }
@@ -76,6 +83,7 @@ public interface MultiBlock {
     }
 
     default void destroy(BlockPos center, Level level, BlockState state){
+        if (level.isClientSide()) return;
         fullBlockShape(center, state).forEach(pos ->{
             if (level.getBlockState(pos).is(state.getBlock())) {
                 level.destroyBlock(pos, true);
@@ -84,19 +92,21 @@ public interface MultiBlock {
     }
 
     default boolean allBlocksPresent(LevelReader level, BlockPos pos, BlockState state, Block originalBlock, @Nullable Block corruptedBlock){
-       BlockPos center = getCenter(level, pos);
-       boolean ret;
-       if (corruptedBlock != null) {
-           ret = fullBlockShape(center, state).allMatch(blockPos -> level.getBlockState(blockPos).is(originalBlock) || level.getBlockState(blockPos).is(corruptedBlock));
-       } else {
-           ret = fullBlockShape(center, state).allMatch(blockPos -> level.getBlockState(blockPos).is(originalBlock));
-       }
+        if (level.isClientSide()) return true;
+        BlockPos center = getCenter(level, pos);
 
-       if (ret && level.getBlockEntity(pos) instanceof MultiBlockEntity entity && !entity.isPlaced) {
-           fullBlockShape(center, state).forEach(blockPos -> MultiBlockEntity.setPlaced(level, blockPos));
-       }
+        boolean ret;
+        if (corruptedBlock != null) {
+            ret = fullBlockShape(center, state).allMatch(blockPos -> level.getBlockState(blockPos).is(originalBlock) || level.getBlockState(blockPos).is(corruptedBlock));
+        } else {
+            ret = fullBlockShape(center, state).allMatch(blockPos -> level.getBlockState(blockPos).is(originalBlock));
+        }
 
-       return ret;
+        if (ret && level.getBlockEntity(pos) instanceof MultiBlockEntity entity && !entity.isPlaced) {
+            fullBlockShape(center, state).forEach(blockPos -> MultiBlockEntity.setPlaced(level, blockPos));
+        }
+
+        return ret;
     }
 
     default BlockState updateShapeHelper(BlockState state, LevelAccessor level, BlockPos pos){
@@ -129,6 +139,13 @@ public interface MultiBlock {
     //Runs for every single block
     default boolean extraSurviveRequirements(LevelReader level, BlockPos pos, BlockState state){
         return true;
+    }
+
+    // Add this to playerWillDestroy
+    default void preventCreativeDrops(Player player, Level level, BlockPos pos){
+        if (player.isCreative() && level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+            level.destroyBlock(entity.center, false);
+        }
     }
 
     default BlockPos getCenter(LevelReader level, BlockPos pos){
