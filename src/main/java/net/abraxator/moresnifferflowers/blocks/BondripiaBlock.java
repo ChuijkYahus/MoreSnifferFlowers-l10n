@@ -21,6 +21,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -75,6 +77,12 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
     @Override
     public boolean isRandomlyTicking(BlockState pState) {
         return true;
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        return tickerHelper(pLevel);
     }
 
     @Override
@@ -210,7 +218,8 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
         if(getter.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
             if(state.getValue(ModStateProperties.CENTER)) return SHAPE_CENTER;
-            var offset = pos.subtract(entity.getCenter());
+            BlockPos center = entity.getCenter();
+            var offset = pos.subtract(center);
             return Block.box(Math.min(2.0 - offset.getX()*2, 2), 13.0, Math.min(2.0 - offset.getZ()*2, 2), Math.max(14.0 - offset.getX()*2, 14), 16.0, Math.max(14.0 - offset.getZ()*2, 14));
         }
 

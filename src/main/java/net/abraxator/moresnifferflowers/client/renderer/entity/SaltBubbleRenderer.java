@@ -33,7 +33,8 @@ public class SaltBubbleRenderer extends EntityRenderer<SaltBubbleProjectile> {
             poseStack.translate(0, -1.0, 0);
 
             float scale = 1F;
-            float time = (entity.tickCount + partialTick) / 20f;
+            float randomOffset = (float) (entity.position().x +entity.position().y + entity.position().z) * 10;
+            float time = (entity.tickCount + randomOffset + partialTick) / 20f;
 
             float scaleAmount = entity.getState() == 1 ? 0.4F : 0.3F;
 

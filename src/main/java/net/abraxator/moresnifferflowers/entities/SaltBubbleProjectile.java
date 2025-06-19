@@ -7,11 +7,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -36,9 +39,9 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
     public SaltBubbleProjectile(double x, double y, double z, Level level) {
         super(ModEntityTypes.SALT_BUBBLE.get(), x, y, z , level);
         this.pos = new Vector3f((float) x, (float) y, (float) z);
-        this.height = level.random.nextIntBetweenInclusive(1, 6) + level.random.nextFloat();
-        this.slowdown = 1.0f + 0.14f / height;
-        this.maxTime = level.random.nextIntBetweenInclusive(1000, 1500);
+        this.height = level.random.nextIntBetweenInclusive(10, 20) + level.random.nextFloat();
+        this.slowdown = 1.0f + 0.10f / (height * 2);
+        this.maxTime = level.random.nextIntBetweenInclusive(4800, 7200);
 
     }
 
@@ -54,7 +57,19 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        pop();
+        boolean natural = true;
+
+        if (level() instanceof ServerLevel serverLevel && source.getEntity() instanceof Player && source.isIndirect()) {
+            int orbs = Mth.floor(height/2);
+            if (orbs < 3) orbs = 3;
+            int i = serverLevel.random.nextIntBetweenInclusive(2, orbs);
+            ExperienceOrb.award(serverLevel, this.position(), i);
+            serverLevel.playSound(null, blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 2.0F, 0.8f + random.nextFloat() * 0.4f);
+            natural = false;
+        }
+
+        pop(natural);
+
         return true;
     }
 
@@ -64,7 +79,7 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
         int state = getState();
 
         if (pos != null && state == 0) {
-            if (this.pos.distance(this.position().toVector3f()) > height || speed.distanceTo(new Vec3(0,0,0)) < 0.05) {
+            if (this.pos.distance(this.position().toVector3f()) > height || speed.distanceTo(new Vec3(0,0,0)) < 0.01) {
                 setState(1);
                 setDeltaMovement(0, 0, 0);
             } else {
@@ -77,7 +92,7 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
         if (pos != null) {
             time++;
             if (time >= maxTime) {
-                pop();
+                pop(true);
                 return;
             }
         }
@@ -85,8 +100,13 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
         super.tick();
     }
 
-    private void pop() {
-        int projectiles = random.nextFloat() < 0.25f ? 2 : 1;
+    public void pop(boolean natural) {
+        int projectiles;
+        if (natural){
+            projectiles = random.nextFloat() < 0.40f ? 1 : 0;
+        } else {
+            projectiles = random.nextFloat() < 0.25f ? 2 : 1;
+        }
         setState(2);
         for (int i = 0; i < projectiles; i++) {
             SaltProjectile projectile = new SaltProjectile(level());

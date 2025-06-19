@@ -22,12 +22,21 @@ public class MultiBlockEntity extends ModBlockEntity {
     protected void saveAdditional(CompoundTag pTag) {
         super.saveAdditional(pTag);
         pTag.put("center", NbtUtils.writeBlockPos(this.center));
+        pTag.putBoolean("placed", this.isPlaced);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveAdditional(tag);
+        return tag;
     }
 
     @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);
         this.center = NbtUtils.readBlockPos(pTag.getCompound("center"));
+        this.isPlaced = pTag.getBoolean("placed");
     }
 
     @Override
@@ -36,15 +45,15 @@ public class MultiBlockEntity extends ModBlockEntity {
     }
 
     public BlockPos getCenter() {
-        return center;
+        return this.center;
     }
 
     public void setCenter(BlockPos pos) {
-        center = pos;
+        this.center = pos;
     }
 
     public void setPlaced() {
-        isPlaced = true;
+        this.isPlaced = true;
     }
 
     public static void setPlaced(LevelReader level, BlockPos blockPos) {
