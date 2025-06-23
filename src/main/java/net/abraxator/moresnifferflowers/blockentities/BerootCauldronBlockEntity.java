@@ -1,6 +1,8 @@
 package net.abraxator.moresnifferflowers.blockentities;
 
 import net.abraxator.moresnifferflowers.blocks.BerootCauldronBlock;
+import net.abraxator.moresnifferflowers.client.ModColorHandler;
+import net.abraxator.moresnifferflowers.components.BetterNonNullList;
 import net.abraxator.moresnifferflowers.init.ModBlockEntities;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.networking.BerootCauldronCraftPacket;
@@ -40,22 +42,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class BerootCauldronBlockEntity extends MultiBlockEntity {
-    public int beetroots;
-    public List<ItemStack> ingredients = new ArrayList<>();
-    public int itemRot;
-    public int soupAnimationFrame;
+    public int beetroots = 0;
+    private final int foodLimit = 8;
+    public BetterNonNullList<ItemStack> ingredients = BetterNonNullList.withSize(foodLimit, ItemStack.EMPTY);
+    public int itemRot = 0;
     public ItemStack soup = ItemStack.EMPTY;
     public int soupCount = 0;
     public boolean isCrafted = false;
     public final int MAX_SOUP_COUNT = 6;
-    private final int foodLimit = 8;
     private final int beetrootLimit = 4;
     private final int spoonSpeed = 10;
-    int spoonRotation;
-    public boolean redSoup;
-    boolean crafting;
-    int craftingTimeRemaining;
-    final int CRAFTING_TIME = 72;
+    int spoonRotation = 0;
+    public boolean redSoup = true;
+    boolean crafting = false;
+    int craftingTimeRemaining = 0;
+    public boolean isCenter = false;
 
     public BerootCauldronBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.BEROOT_CAULDRON.get(), pPos, pBlockState);
@@ -65,21 +66,21 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         if(itemStack.is(ModItems.CROPRESSED_BEETROOT.get()) && this.beetroots < beetrootLimit && !this.isCrafted) {
             addBeetroot(itemStack, player);
             this.redSoup = true;
-        } else if (!itemStack.isEmpty() && this.ingredients.size() < foodLimit && !Nutrition.getNutritionForItem(itemStack.getItem()).isEmpty() && !this.isCrafted && this.beetroots > 0) {
+        } else if (!itemStack.isEmpty() && !ingredients.isFull() && !Nutrition.getNutritionForItem(itemStack.getItem()).isEmpty() && !this.isCrafted && this.beetroots > 0) {
             addIngredient(itemStack, player);
             this.redSoup = false;
-        } else if(itemStack.is(Items.BOWL) && hasSoup() && this.isCrafted) {
-            giveSoup(itemStack, player);
-        } else if (!ingredients.isEmpty() && !this.isCrafted && player != null) {
+        } else if(itemStack.is(Items.BOWL)) {
+           return giveSoup(itemStack, player);
+        } else if (!ingredients.isFullyDefault() && !this.isCrafted && player != null) {
             this.crafting = true;
         } else return InteractionResult.PASS;
 
         return InteractionResult.SUCCESS;
     }
     
-    public void craft(Player player) {
+    public void craft() {
         //initialize all variables for soup creation
-        if(ingredients.isEmpty()) {
+        if(ingredients.isFullyDefault()) {
             return;
         }
 
@@ -89,7 +90,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         ItemStack soup = ModItems.ROOTED_SOUP.get().getDefaultInstance();
         CompoundTag tag = new CompoundTag();
         int neutral = 0;
-        this.ingredients.forEach(stack -> {
+        this.ingredients.validStream().forEach(stack -> {
                     Nutrition nutrition = Nutrition.getNutritionForItem(stack.getItem());
                     nutrition.getNutritionEntries().forEach(entry -> 
                             map.merge(entry.nutrition(), entry.weight(), Integer::sum));
@@ -101,9 +102,9 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
                 .map((Map.Entry<NutritionType, Integer> entry) -> new NutritionEntry(entry.getKey(), entry.getValue()))
                 .sorted(Comparator.comparing(NutritionEntry::weight))
                 .toList());
-        int sat = ingredients.stream().mapToInt(value -> (int) value.getFoodProperties(player).getSaturationModifier()).sum();
-        int food = ingredients.stream().mapToInt(value -> value.getFoodProperties(player).getNutrition()).sum();
-        int ingredients = this.ingredients.size();
+        int sat = ingredients.validStream().mapToInt(value -> (int) value.getFoodProperties(null).getSaturationModifier()).sum();
+        int food = ingredients.validStream().mapToInt(value -> value.getFoodProperties(null).getNutrition()).sum();
+        int ingredients = this.ingredients.getValidSize();
         this.soupCount = this.beetroots + (ingredients / 4);
         int soupFood = 6 + (food / ingredients);
         float soupSat = 7 + ((float) sat / ingredients);
@@ -119,6 +120,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         tag.putInt("soupFood", soupFood);
         tag.putFloat("soupSat", soupSat);
         tag.putInt("soupCount", Math.min(Math.max(soupCount, 1), 4));
+        tag.putInt("color", ModColorHandler.RGBtoInt(color()));
 
         //effect init
         ListTag effectTag = new ListTag();
@@ -149,27 +151,29 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         //soup creation
         soup.setTag(tag);
         this.soup = soup;
+        System.out.println("soup = " + soup + "client = "+level.isClientSide);
+        setChanged();
     }
 
     @Override
     public void tick(Level level){
-        var pos = this.getBlockPos();
-        if (pos.equals(this.center)) {
+        if (isCenter) {
             suckInItems(level, this.center);
         }
     }
 
     @Override
     public void clientTick(ClientLevel level) {
+        if (!isCenter) return;
 
         this.itemRot++;
-        soupAnimFrame();
         if(this.crafting && this.craftingTimeRemaining < 9) {
             this.spoonRotation++;
             this.craftingTimeRemaining++;
             this.itemRot += 10;
             if(this.spoonRotation * spoonSpeed >= this.soupCount * 180) {
-                 ModPacketHandler.CHANNEL.sendToServer(new BerootCauldronCraftPacket(this.getBlockPos()));
+                 ModPacketHandler.CHANNEL.sendToServer(new BerootCauldronCraftPacket(this.center));
+                 craft();
                 this.crafting = false;
                 this.isCrafted = true;
                 this.craftingTimeRemaining = 0;
@@ -200,23 +204,37 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
     }
     
     public boolean hasSoup() {
-        return this.soupCount > 0;
+        return this.soupCount > 0 && !soup.equals(ItemStack.EMPTY);
     }
 
 
-    private void giveSoup(ItemStack itemStack, Player player) {
+    private InteractionResult giveSoup(ItemStack itemStack, Player player) {
+        boolean b = !hasSoup();
+        boolean b1 = !this.isCrafted;
+        boolean isServer = !level.isClientSide;
+
+        if (b || b1){
+            return InteractionResult.FAIL;
+        }
         itemStack.shrink(1);
-        player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getItemInHand(InteractionHand.MAIN_HAND), player, this.soup));
+
+        ItemStack soup1 = this.soup.copy();
+        player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getItemInHand(InteractionHand.MAIN_HAND), player, soup1));
+        System.out.println("soup1 = " + soup1 + " amount = " + soupCount + "client=" + level.isClientSide);
         this.soupCount -= 1;
         if (this.soupCount <= 0){
             this.soup = ItemStack.EMPTY;
             clearIngredients();
+            System.out.println("cleared");
         }
+
+        setChanged();
+        return InteractionResult.SUCCESS;
     }
 
     private void addIngredient(ItemStack itemStack, Player player) {
-        this.ingredients.add(new ItemStack(itemStack.getItem(), 1));
-        int ingredients = this.ingredients.size();
+        this.ingredients.set(ingredients.getFirstEmptySlot() ,new ItemStack(itemStack.getItem(), 1));
+        int ingredients = this.ingredients.getValidSize();
         this.soupCount = this.beetroots + (ingredients / 4);
 
         if (level.isClientSide){
@@ -232,11 +250,12 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         }
 
         itemStack.shrink(1);
+        setChanged();
     }
     
     private void addBeetroot(ItemStack itemStack, Player player) {
         this.beetroots++;
-        int ingredients = this.ingredients.size();
+        int ingredients = this.ingredients.getValidSize();
         this.soupCount = this.beetroots + (ingredients / 4);
 
         itemStack.shrink(1);
@@ -254,6 +273,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
                         Mth.cos(i), 0.5F, Mth.sin(i));
             }
         }
+        setChanged();
     }
 
 
@@ -290,13 +310,6 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         if (this.crafting) partialTick *= 10;
         return (this.itemRot + partialTick) * 2;
     }
-
-    public void soupAnimFrame() {
-        int frameTime = this.crafting ? 5 : 12;
-        int frame = 0;
-        if (this.level.getGameTime() % frameTime == 0) this.soupAnimationFrame++;
-        this.soupAnimationFrame = this.soupAnimationFrame % 30;
-    }
     
     public float getSpoonRotation(float partialTick) {
         if(this.crafting) {
@@ -328,20 +341,23 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         this.beetroots = 0;
         this.isCrafted = false;
     }
+
+
     
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
+        tag.putBoolean("isCenter", isCenter);
+        if (!isCenter) return;
+
         tag.putInt("beetroots", this.beetroots);
         ListTag items = new ListTag();
-        for (int i = 0; i < ingredients.size(); i++) {
-            ItemStack stack = ingredients.get(i);
+        for (ItemStack stack : ingredients) {
             CompoundTag itemTag = new CompoundTag();
-            itemTag.putByte("Slot", (byte) i);
             stack.save(itemTag);
             items.add(itemTag);
         }
-        tag.put("items", items);
+        tag.put("ingredients", items);
         tag.putInt("soupCount", this.soupCount);
         tag.putBoolean("crafting", this.crafting);
         tag.putInt("craftingTime", this.craftingTimeRemaining);
@@ -349,25 +365,35 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         tag.putBoolean("redSoup", this.redSoup);
         tag.putInt("spoonRotation", this.spoonRotation);
 
-
-
         if(!this.soup.isEmpty()) {
             CompoundTag soupTag = new CompoundTag();
             this.soup.save(soupTag);
             tag.put("soup", soupTag);
+            System.out.println("saving soupTag = " + soupTag + "count = " + this.soupCount);
         }
+        System.out.println("saved");
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        this.ingredients = new ArrayList<>();
+        isCenter = tag.getBoolean("isCenter");
+        if (!isCenter) return;
+
+        this.ingredients.clear();
         this.beetroots = tag.getInt("beetroots");
-        ListTag items = tag.getList("items", 10);
-        for (int i = 0; i < items.size(); i++) {
-            CompoundTag itemTag = items.getCompound(i);
-                this.ingredients.add(ItemStack.of(itemTag));
+
+        ListTag ingredientsTag = tag.getList("ingredients", 10);
+        for (int i = 0; i < this.ingredients.size(); i++) {
+            if (i < ingredientsTag.size()) {
+                CompoundTag itemTag = ingredientsTag.getCompound(i);
+                ItemStack stack = ItemStack.of(itemTag);
+                this.ingredients.set(i, stack);
+            } else {
+                this.ingredients.set(i, ItemStack.EMPTY);
+            }
         }
+
         this.soupCount = tag.getInt("soupCount");
         this.crafting = tag.getBoolean("crafting");
         this.craftingTimeRemaining = tag.getInt("craftingTime");
@@ -376,8 +402,13 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         this.spoonRotation = tag.getInt("spoonRotation");
 
 
-        if(tag.contains("soup")) {
+        boolean soup1 = tag.contains("soup");
+
+        if(soup1) {
             this.soup = ItemStack.of(tag.getCompound("soup"));
+            System.out.println("loaded soup = " + soup);
+        } else {
+            System.out.println("loaded tag without soup = " + tag);
         }
     }
 
@@ -388,14 +419,14 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         return tag;
     }
 
-    @Override
+/*    @Override
     public void handleUpdateTag(CompoundTag tag) {
         this.load(tag);
-    }
+    }*/
 
 
     public Vec3 color() {
-        return color(null);
+        return color(Items.AIR);
     }
 
     public Vec3 color(Item item) {
@@ -403,53 +434,60 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         int g = 0;
         int b = 0;
 
-        var latestIngredient = !this.ingredients.isEmpty() ? this.ingredients.get(this.ingredients.size() -1).getItem() : null;
-        if (item != null)
+        Item latestIngredient = Items.AIR;
+        if (!ingredients.isFullyDefault()){
+            latestIngredient = ingredients.getLastValid().getItem();
+        }
+
+        if (!item.equals(Items.AIR))
             latestIngredient = item;
 
         int loop = this.isCrafted ? this.ingredients.size() : 1;
 
-        if (latestIngredient != null){
+        if (!latestIngredient.equals(Items.AIR)) {
             for (int i  = 0; i < loop; i++) {
                 if (this.isCrafted) latestIngredient = this.ingredients.get(i).getItem();
-                NutritionType nutritionType = Nutrition.getLargestNutrition(latestIngredient);
-                switch (nutritionType) {
-                    case SOUR -> {
-                        r += 255;
-                        g += 205;
-                        b += 0;
-                    }
-                    case SALTY -> {
-                        r += 190;
-                        g += 233;
-                        b += 233;
-                    }
-                    case SPICY -> {
-                        r += 187;
-                        g += 67;
-                        b += 48;
-                    }
-                    case SWEET -> {
-                        r += 230;
-                        g += 120;
-                        b += 150;
-                    }
-                    case NEUTRAL -> {
-                        r += 140;
-                        g += 102;
-                        b += 30;
+
+                if (!latestIngredient.equals(Items.AIR)) {
+                    NutritionType nutritionType = Nutrition.getLargestNutrition(latestIngredient);
+                    switch (nutritionType) {
+                        case SOUR -> {
+                            r += 255;
+                            g += 205;
+                            b += 0;
+                        }
+                        case SALTY -> {
+                            r += 190;
+                            g += 233;
+                            b += 233;
+                        }
+                        case SPICY -> {
+                            r += 187;
+                            g += 67;
+                            b += 48;
+                        }
+                        case SWEET -> {
+                            r += 230;
+                            g += 120;
+                            b += 150;
+                        }
+                        case NEUTRAL -> {
+                            r += 140;
+                            g += 102;
+                            b += 30;
+                        }
                     }
                 }
             }
         }
 
-        if (this.isCrafted){
-            r = r/ingredients.size();
-            g = g/ingredients.size();
-            b = b/ingredients.size();
+        if (this.isCrafted && !ingredients.isFullyDefault()){
+            r = r/ingredients.getValidSize();
+            g = g/ingredients.getValidSize();
+            b = b/ingredients.getValidSize();
         }
 
-        if (this.redSoup && item == null && !this.isCrafted) {
+        if (this.redSoup && item.equals(Items.AIR) && !this.isCrafted) {
             r = 164;
             g = 39;
             b = 44;

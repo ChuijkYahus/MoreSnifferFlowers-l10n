@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -26,11 +27,11 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
-public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implements BlockEntityRenderer<T> {
+public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> implements BlockEntityRenderer<T> {
     private final ModelPart cauldron;
     private final ModelPart spoon;
 
-    public SoupCauldronRenderer(BlockEntityRendererProvider.Context context) {
+    public BerootCauldronRenderer(BlockEntityRendererProvider.Context context) {
         this.cauldron = context.bakeLayer(ModModelLayerLocations.BEROOT_CAULDRON);
         this.spoon = context.bakeLayer(ModModelLayerLocations.BEROOT_SPOON);
     }
@@ -39,8 +40,6 @@ public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implement
     public void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         final Material CAULDRON_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/beroot_cauldron"));
         final Material SPOON_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/beroot_spoon"));
-        final ResourceLocation SOUP_TEXTURE = MoreSnifferFlowers.loc("textures/block/beroot_soup.png");
-        final ResourceLocation FINISHED_SOUP_TEXTURE = MoreSnifferFlowers.loc("textures/block/beroot_soup1.png");
         final VertexConsumer cauldron_consumer = CAULDRON_TEXTURE.buffer(buffer, RenderType::entityCutout);
         final VertexConsumer spoon_consumer = SPOON_TEXTURE.buffer(buffer, RenderType::entitySolid);
         final RandomSource randomSource = blockEntity.getLevel().getRandom();
@@ -74,11 +73,13 @@ public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implement
             float g = (float) (blockEntity.color().y / 255);
             float b = (float) (blockEntity.color().z / 255);
             float y = -((float) 1 / 6 * soupCount);
-            ResourceLocation SOUPY = blockEntity.isCrafted ? FINISHED_SOUP_TEXTURE : SOUP_TEXTURE;
+            float soupScale =0.332f;
 
-            renderFace(matrix4f, matrix3f, buffer.getBuffer(RenderType.beaconBeam(SOUPY, false)),
+            poseStack.scale(1 + soupScale, 1, 1 + soupScale);
+            poseStack.translate(-soupScale*0.565, 0, soupScale*0.565);
+            renderFace(matrix4f, matrix3f, buffer.getBuffer(RenderType.cutoutMipped()),
                     r, g, b, 1F,
-                    minX, maxX, y, minZ, maxZ, blockEntity.soupAnimationFrame, blockEntity.isCrafted);
+                    minX, maxX, y, minZ, maxZ, packedLight, blockEntity.isCrafted);
             poseStack.popPose();
 
             //SPOON
@@ -94,7 +95,7 @@ public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implement
             }
             
             //ITEMS
-            for (int i = 0; i < blockEntity.ingredients.size(); i++) {
+            for (int i = 0; i < blockEntity.ingredients.getValidSize(); i++) {
                 poseStack.pushPose();
                 rotate(poseStack, direction, true);
                 ItemStack itemStack = blockEntity.ingredients.get(i);
@@ -133,18 +134,16 @@ public class SoupCauldronRenderer<T extends BerootCauldronBlockEntity> implement
         if (!isItems) poseStack.mulPose(Axis.XN.rotationDegrees(90));
     }
 
-    private void renderFace(Matrix4f pose, Matrix3f normal, VertexConsumer consumer, float red, float green, float blue, float alpha, float x0, float x1, float y, float z0, float z1, int frame, boolean isCrafted) {
-        float ysize = isCrafted ? 192 : 160F;
-        float xsize = 32F;
-        int frameCount = isCrafted ? 6 : 5;
-        frame = frame % frameCount;
-        float magicNumberY = (1.0F / ysize * (24F + frame*32));
-        float magicNumberX = 1.0F / xsize * 24.0F;
-        float two = 1.0F / ysize * (32.0F * frame);
-        consumer.vertex(pose, x1, y, z0).color(red, green, blue, alpha).uv(magicNumberX, two).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-        consumer.vertex(pose, x1, y, z1).color(red, green, blue, alpha).uv(magicNumberX, magicNumberY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-        consumer.vertex(pose, x0, y, z1).color(red, green, blue, alpha).uv(0, magicNumberY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-        consumer.vertex(pose, x0, y, z0).color(red, green, blue, alpha).uv(0, two).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+    private void renderFace(Matrix4f pose, Matrix3f normal, VertexConsumer consumer, float red, float green, float blue, float alpha, float x0, float x1, float y, float z0, float z1, int light, boolean isCrafted) {
+
+        String name = isCrafted ? "beroot_soup1" : "beroot_soup";
+        ResourceLocation resourceLocation = MoreSnifferFlowers.loc("block/" + name);
+        TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(resourceLocation);
+
+        consumer.vertex(pose, x1, y, z0).color(red, green, blue, alpha).uv(sprite.getU0(), sprite.getV0()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+        consumer.vertex(pose, x1, y, z1).color(red, green, blue, alpha).uv(sprite.getU0(), sprite.getV1()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+        consumer.vertex(pose, x0, y, z1).color(red, green, blue, alpha).uv(sprite.getU1(), sprite.getV1()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+        consumer.vertex(pose, x0, y, z0).color(red, green, blue, alpha).uv(sprite.getU1(), sprite.getV0()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
     }
 
     @Override

@@ -23,22 +23,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class InventoryScreenMixin extends EffectRenderingInventoryScreen<InventoryMenu> implements RecipeUpdateListener {
     @Unique
     private static final ResourceLocation TEXTURE_LOCATION = MoreSnifferFlowers.loc("textures/gui/container/hardened_mouth.png");
-    @Unique
-    private int moreSnifferFlowers$mouthSlotX;
-    @Unique
-    private int moreSnifferFlowers$mouthSlotY;
 
     public InventoryScreenMixin(InventoryMenu menu, Inventory playerInventory, Component title, int moreSnifferFlowers$mouthSlotX, int moreSnifferFlowers$mouthSlotY) {
         super(menu, playerInventory, title);
-        this.moreSnifferFlowers$mouthSlotX = moreSnifferFlowers$mouthSlotX;
-        this.moreSnifferFlowers$mouthSlotY = moreSnifferFlowers$mouthSlotY;
-    }
-
-    @Inject(method = "init", at = @At("TAIL"))
-    public void init(CallbackInfo ci){
-        this.moreSnifferFlowers$mouthSlotX = ModClientConfig.HARDENED_MOUTH_X.get();
-        this.moreSnifferFlowers$mouthSlotY = ModClientConfig.HARDENED_MOUTH_Y.get();
-
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;renderBackground(Lnet/minecraft/client/gui/GuiGraphics;)V", shift = At.Shift.AFTER))
@@ -46,8 +33,8 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
         Player player = this.minecraft.player;
         if (player.hasEffect(ModMobEffects.HARDENED_MOUTH.get())){
 
-            int x = this.leftPos + this.moreSnifferFlowers$mouthSlotX;
-            int y = this.topPos + this.moreSnifferFlowers$mouthSlotY;
+            int x = this.leftPos + ModClientConfig.HARDENED_MOUTH_X.get();
+            int y = this.topPos + ModClientConfig.HARDENED_MOUTH_Y.get();
             guiGraphics.blit(TEXTURE_LOCATION, x, y, 0, 0, 24, 60);
 
             player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(hardenedMouthCapability -> {

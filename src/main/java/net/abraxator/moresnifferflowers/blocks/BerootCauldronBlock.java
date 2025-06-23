@@ -6,7 +6,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -56,6 +58,14 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
     }
 
     @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(level, pos, state, placer, stack);
+        if (level.getBlockEntity(getCenter(level, pos)) instanceof BerootCauldronBlockEntity entity) {
+            entity.isCenter = true;
+        }
+    }
+
+    @Override
     public boolean directional() {
         return true;
     }
@@ -69,11 +79,8 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         var item = player.getItemInHand(InteractionHand.MAIN_HAND);
-        BlockPos entityPos = BlockPos.withinManhattanStream(level.getBlockState(pos.below()).is(this) ? pos.below() : pos, 2, 1, 2)
-                .filter(blockPos -> isEntityBlock(level, blockPos))
-                .findFirst().orElse(null);
 
-        if(entityPos != null && level.getBlockEntity(entityPos) instanceof BerootCauldronBlockEntity blockEntity) {
+        if(level.getBlockEntity(getCenter(level, pos)) instanceof BerootCauldronBlockEntity blockEntity) {
             return blockEntity.addItem(item, player);
         }
         

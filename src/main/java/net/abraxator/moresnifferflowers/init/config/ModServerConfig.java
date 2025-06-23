@@ -6,6 +6,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -47,25 +48,29 @@ public class ModServerConfig {
 
         REBREWING_LENGTH = builder
                 .translation("moresnifferflowers.configuration.rebrew_length")
-                .define("Rebrewing Length", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(Items.REDSTONE)).toString());
+                .define("Rebrewing Length", itemToString(Items.REDSTONE));
 
         REBREWING_AMPLIFIER = builder
                 .translation("moresnifferflowers.configuration.rebrew_amplifier")
-                .define("Rebrewing Amplifier", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(Items.GLOWSTONE_DUST)).toString());
+                .define("Rebrewing Amplifier", itemToString(Items.GLOWSTONE_DUST));
 
         REBREWING_SPLASH = builder
                 .translation("moresnifferflowers.configuration.rebrew_splash")
-                .define("Rebrewing Splash", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(Items.GUNPOWDER)).toString());
+                .define("Rebrewing Splash", itemToString(Items.GUNPOWDER));
 
         REBREWING_LINGERING = builder
                 .translation("moresnifferflowers.configuration.rebrew_lingering")
-                .define("Rebrewing Lingering", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(Items.DRAGON_BREATH)).toString());
+                .define("Rebrewing Lingering", itemToString(Items.DRAGON_BREATH));
 
 
         builder.pop();
 
 
         SERVER_CONFIG = builder.build();
+    }
+
+    private static @NotNull String itemToString(Item glowstoneDust) {
+        return Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(glowstoneDust)).toString();
     }
 
     public static Item itemFromLoc(String loc) {

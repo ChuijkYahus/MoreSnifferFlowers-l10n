@@ -16,6 +16,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -150,5 +151,17 @@ public class ModColorHandler {
 
     public static float[] hexToRGB(int hex) {
         return new float[] {(hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF};
+    }
+
+    public static int RGBtoInt(Vec3 color) {
+        int r = (int) color.x;
+        int g = (int) color.y;
+        int b = (int) color.z;
+
+        int rgb = r;
+        rgb = (rgb << 8) + g;
+        rgb = (rgb << 8) + b;
+
+        return rgb;
     }
 }

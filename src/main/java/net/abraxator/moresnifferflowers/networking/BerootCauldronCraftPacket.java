@@ -22,7 +22,7 @@ public record BerootCauldronCraftPacket(BlockPos blockPos) {
             var player = ctx.getSender();
             var level = player.level();
             BerootCauldronBlockEntity entity = ((BerootCauldronBlockEntity) level.getBlockEntity(packet.blockPos()));
-            entity.craft(player);
+            entity.craft();
         });
     }
 }

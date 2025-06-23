@@ -30,16 +30,8 @@ public class RootedSoupItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack itemstack = player.getItemInHand(usedHand);
-        if (itemstack.isEdible()) {
-            if (player.canEat(itemstack.getFoodProperties(player).canAlwaysEat())) {
-                player.startUsingItem(usedHand);
-                return InteractionResultHolder.consume(itemstack);
-            } else {
-                return InteractionResultHolder.fail(itemstack);
-            }
-        } else {
-            return InteractionResultHolder.pass(player.getItemInHand(usedHand));
-        }
+        player.startUsingItem(usedHand);
+        return InteractionResultHolder.consume(itemstack);
     }
     
     @Override

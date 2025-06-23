@@ -273,7 +273,7 @@ public class BlockPatternRenderer {
         }
     }
 
-    private static int getPackedLight(Level level, BlockPos pos) {
+    public static int getPackedLight(Level level, BlockPos pos) {
         int blockLight = level.getBrightness(LightLayer.BLOCK, pos);
         int skyLight = level.getBrightness(LightLayer.SKY, pos);
         return LightTexture.pack(blockLight, skyLight);

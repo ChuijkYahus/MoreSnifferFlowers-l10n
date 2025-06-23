@@ -106,7 +106,7 @@ public class ClientRegistration {
         event.registerBlockEntityRenderer(ModBlockEntities.MOD_HANGING_SIGN.get(), HangingSignRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.VIVICUS_HANGING_SIGN.get(), VivicusHangingSignRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.BONDRIPIA.get(), BondripiaBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(ModBlockEntities.BEROOT_CAULDRON.get(), SoupCauldronRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.BEROOT_CAULDRON.get(), BerootCauldronRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.SALTEMONE.get(), SaltemoneBlockEntityRenderer::new);
 
     }
