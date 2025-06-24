@@ -102,8 +102,12 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
                 .map((Map.Entry<NutritionType, Integer> entry) -> new NutritionEntry(entry.getKey(), entry.getValue()))
                 .sorted(Comparator.comparing(NutritionEntry::weight))
                 .toList());
-        int sat = ingredients.validStream().mapToInt(value -> (int) value.getFoodProperties(null).getSaturationModifier()).sum();
-        int food = ingredients.validStream().mapToInt(value -> value.getFoodProperties(null).getNutrition()).sum();
+        int sat = ingredients.validStream()
+                .filter(itemStack -> itemStack.getFoodProperties(null) != null)
+                .mapToInt(value -> (int) value.getFoodProperties(null).getSaturationModifier()).sum();
+        int food = ingredients.validStream()
+                .filter(itemStack -> itemStack.getFoodProperties(null) != null)
+                .mapToInt(value -> value.getFoodProperties(null).getNutrition()).sum();
         int ingredients = this.ingredients.getValidSize();
         this.soupCount = this.beetroots + (ingredients / 4);
         int soupFood = 6 + (food / ingredients);
@@ -115,43 +119,87 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
                 neutral += nutritionEntry.weight();
             }
         }
-        
+
+        int soupUses = Math.min(Math.max(Math.round(food / 2f), 1), 4);
+
         //values into tag
         tag.putInt("soupFood", soupFood);
         tag.putFloat("soupSat", soupSat);
-        tag.putInt("soupCount", Math.min(Math.max(soupCount, 1), 4));
+        tag.putInt("soupCount", soupUses);
+        tag.putInt("soupCountMax", soupUses);
         tag.putInt("color", ModColorHandler.RGBtoInt(color()));
+
+        float positiveThreshold = 0.5f;
+        float negativeThreshold = 0.75f;
+        float perfectMix = (positiveThreshold + negativeThreshold) / 2f;
+        int maxAmp = 4;
+        float ampThresholds = (perfectMix - positiveThreshold) / maxAmp;
+
+        int minDuration = 60*20; // A minute
+        int duration = minDuration + neutral / 100 * 60*20 ; // max 9 minutes
+
+        int totalFlavour = 0; // for neutral effect calculations
+        int blandThreshold = 120;
+        int minFlavour = 50;
 
         //effect init
         ListTag effectTag = new ListTag();
         for (NutritionEntry nutritionEntry : entryList) {
-            int scale = nutritionEntry.weight() / (neutral / 2 + 1);
-            int dur = scale * 20;
-            int amp = (int) (scale / 1.5);
-            Boolean positive = null;
+            if (!nutritionEntry.nutrition().equals(NutritionType.NEUTRAL)) {
+                totalFlavour += nutritionEntry.weight();
+                int ratio = nutritionEntry.weight() / (neutral / 2 + 1);
+                int amplifier = 1;
+                Boolean positive = null;
 
-            if(scale > 0.75) {
-                positive = false;
-            } else if (scale > 0.5) {
-                positive = true;
-            }
-            
-            if(positive != null) {
-                CompoundTag compoundTag = new CompoundTag();
-                compoundTag.putInt("nutritionType", nutritionEntry.nutrition().ordinal());
-                compoundTag.putBoolean("positive", positive);
-                compoundTag.putInt("dur", dur);
-                compoundTag.putInt("amp", amp);
-                effectTag.add(compoundTag);
+                if (ratio > negativeThreshold) {
+                    amplifier = Math.round((ratio - negativeThreshold) / ampThresholds);
+                    positive = false;
+                    duration /= 2;
+                } else if (ratio > positiveThreshold) {
+                    positive = true;
+                }
+
+                amplifier = Math.max(Math.min(amplifier, maxAmp), 1);
+
+                if (positive != null && nutritionEntry.weight() >= minFlavour) {
+                    CompoundTag compoundTag = new CompoundTag();
+                    compoundTag.putInt("nutritionType", nutritionEntry.nutrition().ordinal());
+                    compoundTag.putBoolean("positive", positive);
+                    compoundTag.putInt("dur", duration);
+                    compoundTag.putInt("amp", amplifier);
+                    effectTag.add(compoundTag);
+                }
             }
         }
+
+        //Neutral effects
+        if (effectTag.isEmpty()){
+            if (totalFlavour < blandThreshold){
+                CompoundTag compoundTag = new CompoundTag();
+                compoundTag.putInt("nutritionType", NutritionType.NEUTRAL.ordinal());
+                compoundTag.putBoolean("positive", false);
+                compoundTag.putInt("dur", duration);
+                compoundTag.putInt("amp", 1);
+                effectTag.add(compoundTag);
+
+            }else {
+                CompoundTag compoundTag = new CompoundTag();
+                compoundTag.putInt("nutritionType", NutritionType.NEUTRAL.ordinal());
+                compoundTag.putBoolean("positive", true);
+                compoundTag.putInt("dur", duration);
+                compoundTag.putInt("amp", Math.min(Mth.floor((float) (totalFlavour - blandThreshold) / 100 + 1), 3));
+                effectTag.add(compoundTag);
+
+            }
+
+        }
+
         tag.put("effects", effectTag);
 
-        
-        //soup creation
+        System.out.println("created soup = " + tag);
+
         soup.setTag(tag);
         this.soup = soup;
-        System.out.println("soup = " + soup + "client = "+level.isClientSide);
         setChanged();
     }
 
@@ -220,12 +268,10 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
 
         ItemStack soup1 = this.soup.copy();
         player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getItemInHand(InteractionHand.MAIN_HAND), player, soup1));
-        System.out.println("soup1 = " + soup1 + " amount = " + soupCount + "client=" + level.isClientSide);
         this.soupCount -= 1;
         if (this.soupCount <= 0){
             this.soup = ItemStack.EMPTY;
             clearIngredients();
-            System.out.println("cleared");
         }
 
         setChanged();
@@ -369,9 +415,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
             CompoundTag soupTag = new CompoundTag();
             this.soup.save(soupTag);
             tag.put("soup", soupTag);
-            System.out.println("saving soupTag = " + soupTag + "count = " + this.soupCount);
         }
-        System.out.println("saved");
     }
 
     @Override
@@ -406,9 +450,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
 
         if(soup1) {
             this.soup = ItemStack.of(tag.getCompound("soup"));
-            System.out.println("loaded soup = " + soup);
         } else {
-            System.out.println("loaded tag without soup = " + tag);
         }
     }
 

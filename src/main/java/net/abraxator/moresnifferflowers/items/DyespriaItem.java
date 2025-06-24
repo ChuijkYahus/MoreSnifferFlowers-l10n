@@ -23,7 +23,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -48,7 +47,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -173,26 +171,10 @@ public class DyespriaItem extends BlockItem implements Colorable {
 
     @Override
     public int getBarColor(ItemStack stack) {
-        int lowColor = 0x8c1111;
-        int highColor = 0x179529;
         int input = getDyespriaUses(stack)-1;
         int maxInput= 4;
 
-        int lowRed = (lowColor >> 16) & 0xFF;
-        int lowGreen = (lowColor >> 8) & 0xFF;
-        int lowBlue = lowColor & 0xFF;
-
-        int highRed = (highColor >> 16) & 0xFF;
-        int highGreen = (highColor >> 8) & 0xFF;
-        int highBlue = highColor & 0xFF;
-
-        float[] lowHSB =  Color.RGBtoHSB(lowRed, lowGreen, lowBlue, null);
-        float[] highHSB =  Color.RGBtoHSB(highRed, highGreen, highBlue, null);
-
-
-        float finalHue = ((lowHSB[0] * (Math.abs(input - maxInput))) + (highHSB[0] * input)) / maxInput;
-
-        return Mth.hsvToRgb(finalHue, 1.0F, 1.0F);
+        return ModColorHandler.barColorHelper(input, maxInput);
     }
 
     @Override

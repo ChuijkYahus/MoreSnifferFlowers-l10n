@@ -2,6 +2,7 @@ package net.abraxator.moresnifferflowers.items;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
+import net.abraxator.moresnifferflowers.client.ModColorHandler;
 import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.components.DyespriaMode;
 import net.abraxator.moresnifferflowers.components.EntityDistanceComparator;
@@ -16,7 +17,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -36,9 +36,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -287,26 +285,10 @@ public class PatternspriaItem extends Item {
 
     @Override
     public int getBarColor(ItemStack stack) {
-        int lowColor = 0x8c1111;
-        int highColor = 0x179529;
         int input = getPatternspriaUses(stack)-1;
         int maxInput= 4;
 
-        int lowRed = (lowColor >> 16) & 0xFF;
-        int lowGreen = (lowColor >> 8) & 0xFF;
-        int lowBlue = lowColor & 0xFF;
-
-        int highRed = (highColor >> 16) & 0xFF;
-        int highGreen = (highColor >> 8) & 0xFF;
-        int highBlue = highColor & 0xFF;
-
-        float[] lowHSB =  Color.RGBtoHSB(lowRed, lowGreen, lowBlue, null);
-        float[] highHSB =  Color.RGBtoHSB(highRed, highGreen, highBlue, null);
-
-
-        float finalHue = ((lowHSB[0] * (Math.abs(input - maxInput))) + (highHSB[0] * input)) / maxInput;
-
-        return Mth.hsvToRgb(finalHue, 1.0F, 1.0F);
+        return ModColorHandler.barColorHelper(input, maxInput);
     }
 
     @Override

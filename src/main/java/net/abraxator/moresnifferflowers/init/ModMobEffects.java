@@ -24,7 +24,6 @@ public class ModMobEffects {
     public static final RegistryObject<MobEffect> HARDENED_MOUTH = EFFECTS.register("hardened_mouth", () -> new HardenedMouthEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
     //Sweet
     public static final RegistryObject<MobEffect> STICKY = EFFECTS.register("sticky", () -> new SimpleEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
-    public static final RegistryObject<MobEffect> OLD_NEGATIVE_SWEET = EFFECTS.register("old_negative_sweet", () -> new SimpleEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
     public static final RegistryObject<MobEffect> POSITIVE_SWEET = EFFECTS.register("positive_sweet", () -> new SimpleEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
     // Neutral
     public static final RegistryObject<MobEffect> BLAND = EFFECTS.register("bland", () -> new SimpleEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
