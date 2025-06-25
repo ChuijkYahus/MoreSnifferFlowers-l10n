@@ -320,8 +320,14 @@
 
 	"moresnifferflowers.creative_tab": "More Sniffer Flowers",
 
-	"gui.mores_sniffer_flowers.cropressing_category": "Cropressing",
+	"gui.moresnifferflowers.cropressing_category": "Cropressing",
 	"gui.moresnifferflowers.corrupting_category": "Corrupting",
+	"gui.moresnifferflowers.cookbook.sour": "Sour",
+	"gui.moresnifferflowers.cookbook.salty": "Salty",
+	"gui.moresnifferflowers.cookbook.spicy": "Spicy",
+	"gui.moresnifferflowers.cookbook.sweet": "Sweet",
+	"gui.moresnifferflowers.cookbook.neutral": "Neutral",
+
 
 	"entity.moresnifferflowers.dragonfly": "Dragonfly",
 	"entity.moresnifferflowers.bobling": "Bobling",

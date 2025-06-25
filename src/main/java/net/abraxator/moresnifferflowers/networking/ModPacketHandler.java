@@ -47,5 +47,8 @@ public class ModPacketHandler {
         CHANNEL.messageBuilder(SaltemoneParticlePacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(SaltemoneParticlePacket::encode).decoder(SaltemoneParticlePacket::new).consumerMainThread(SaltemoneParticlePacket::handle).add();
 
+        CHANNEL.messageBuilder(BerootCookbookScreenPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(BerootCookbookScreenPacket::encode).decoder(BerootCookbookScreenPacket::decode).consumerMainThread(BerootCookbookScreenPacket::handle).add();
+
     }
 }

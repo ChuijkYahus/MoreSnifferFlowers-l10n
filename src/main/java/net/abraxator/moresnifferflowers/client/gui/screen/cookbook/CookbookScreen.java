@@ -9,12 +9,16 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -63,11 +67,15 @@ public class CookbookScreen extends Screen {
         int xPos = x + 150;
         int yPos = y + 20;
         ItemStack item = nutrition.getItem().getDefaultInstance();
-        
-        guiGraphics.drawString(font, item.getDisplayName().getString(), xPos, yPos, ChatFormatting.BLACK.getColor());
+        String string = item.getDisplayName().getString();
+        int nameLength = string.length();
+
+        guiGraphics.drawWordWrap(font, FormattedText.of(string, Style.EMPTY.withBold(true).withUnderlined(true)), xPos, yPos, 108, ChatFormatting.DARK_GRAY.getColor());
+        if (nameLength > 16) yPos += 9;
         for (NutritionEntry nutritionEntry : nutrition.getNutritionEntries()) {
             yPos += 10;
-            guiGraphics.drawString(font, nutritionEntry.nutrition().name + ": " + nutritionEntry.weight(), xPos, yPos, nutritionEntry.nutrition().color);
+            MutableComponent nutritionName = Component.translatable("gui.moresnifferflowers.cookbook." + nutritionEntry.nutrition().name).withStyle(ChatFormatting.BOLD);
+            guiGraphics.drawString(font, nutritionName.append(" : ").append(String.valueOf(nutritionEntry.weight())), xPos, yPos, nutritionEntry.nutrition().color);
         }
     }
     
@@ -75,7 +83,7 @@ public class CookbookScreen extends Screen {
         int xPos = 18;
         int yPos = 16;
         guiGraphics.blit(RENDERABLES, x + 17, y + 15, 25, 0, 111, 144);
-        
+
         for (int i = startIndex + 1; i < startIndex + 1 + PAGE_SIZE && i < this.nutritions.size() + 1; i++) {
             Nutrition nutrition = nutritions.get(i - 1);
             boolean unlocked = this.unlocked.contains(nutrition.getItem());
@@ -104,7 +112,19 @@ public class CookbookScreen extends Screen {
     }
     
     public void pageToItems(NutritionType type) {
-        this.nutritions = NutritionLoader.typeNutritions.get(type);
+        List<Nutrition> list = new ArrayList<>(NutritionLoader.typeNutritions.get(type).stream().toList());
+        list.sort(Comparator.comparing( nutrition -> {
+            float weight = 0;
+            for (NutritionEntry entry : nutrition.getNutritionEntries()){
+                    if (entry.nutrition().equals(type)){
+                        weight += entry.weight();
+                    } else {
+                        weight += 0.001f* entry.weight();
+                    }
+            }
+            return -weight; // .reversed doesnt work for some reason???
+        }));
+        this.nutritions = list;
         this.turnPage(Page.ITEMS);
     }
     

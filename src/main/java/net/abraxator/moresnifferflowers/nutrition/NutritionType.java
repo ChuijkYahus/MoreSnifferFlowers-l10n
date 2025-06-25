@@ -1,7 +1,6 @@
 package net.abraxator.moresnifferflowers.nutrition;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.minecraft.ChatFormatting;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.effect.MobEffect;
@@ -11,11 +10,11 @@ import java.util.Map;
 import java.util.function.IntFunction;
 
 public enum NutritionType {
-    SOUR("sour", ChatFormatting.YELLOW.getColor()),
-    SALTY("salty", ChatFormatting.GRAY.getColor()),
-    SPICY("spicy", ChatFormatting.DARK_RED.getColor()),
-    SWEET("sweet", ChatFormatting.LIGHT_PURPLE.getColor()),
-    NEUTRAL("neutral", ChatFormatting.GOLD.getColor()),;
+    SOUR("sour", 0xe6a005),
+    SALTY("salty", 0x8bb8c3),
+    SPICY("spicy", 0xbb4330),
+    SWEET("sweet", 0xe67896),
+    NEUTRAL("neutral", 0x8c661e),;
 
 
     public final String name;

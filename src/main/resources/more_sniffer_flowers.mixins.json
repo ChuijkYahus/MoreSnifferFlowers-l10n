@@ -13,7 +13,6 @@
     "ItemEntityMixin",
     "LeavesBlockMixin",
     "RightClickHarvestModInitMixin",
-    "ServerPlayerMixin",
     "ShutUpWarnsMixin",
     "SlotMixin",
     "SnifferEggMixin",
@@ -23,7 +22,6 @@
     "AmbientOcclusionFaceMixin",
     "InventoryScreenMixin",
     "LevelRendererMixin",
-    "LocalPlayerMixin",
     "SpriteResourceLoaderMixin",
     "SpriteResourceLoaderMixin$PalettedPermutationsAccessor"
   ],

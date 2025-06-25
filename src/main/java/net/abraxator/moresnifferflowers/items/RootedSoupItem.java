@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.items;
 
+import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.client.ModColorHandler;
 import net.abraxator.moresnifferflowers.nutrition.NutritionType;
 import net.minecraft.nbt.CompoundTag;
@@ -42,6 +43,7 @@ public class RootedSoupItem extends Item {
         int sat = tag.getInt("soupSat");
         List<MobEffectInstance> effects = new ArrayList<>();
         ListTag effectsTag = tag.getList("effects", 10);
+
         for (Tag tag1 : effectsTag) {
             CompoundTag effectTag = (CompoundTag) tag1;
             int id = effectTag.getInt("nutritionType");
@@ -63,8 +65,17 @@ public class RootedSoupItem extends Item {
         
         if(uses <= 0) {
             return Items.BOWL.getDefaultInstance();
-        } 
-        
+        }
+
+        // Cookbook unlocking
+        ListTag ingredientListTag = tag.getList("ingredients", 10);
+        for (Tag ingredientTag : ingredientListTag) {
+            ItemStack ingredient = ItemStack.of((CompoundTag) ingredientTag);
+            player.getCapability(CapabilityList.UNLOCKED_NUTRITIONS).ifPresent(nutritionCapability -> {
+                nutritionCapability.addItem(ingredient.getItem());
+            });
+        }
+
         tag.putInt("soupCount", uses);
         stack.setTag(tag);
         return stack;

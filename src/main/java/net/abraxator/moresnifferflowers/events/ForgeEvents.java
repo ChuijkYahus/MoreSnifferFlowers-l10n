@@ -5,7 +5,6 @@ import net.abraxator.moresnifferflowers.blocks.MultiBlock;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
-import net.abraxator.moresnifferflowers.events.custom.SlotTakeEvent;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
 import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
@@ -63,10 +62,6 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onAddReloadListener(AddReloadListenerEvent event) {
         event.addListener(new NutritionLoader());
-    }
-
-    @SubscribeEvent
-    public static void onSlotTake(SlotTakeEvent event){
     }
 
     @SubscribeEvent

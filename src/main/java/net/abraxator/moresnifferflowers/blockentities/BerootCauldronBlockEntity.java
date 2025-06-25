@@ -69,7 +69,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         } else if (!itemStack.isEmpty() && !ingredients.isFull() && !Nutrition.getNutritionForItem(itemStack.getItem()).isEmpty() && !this.isCrafted && this.beetroots > 0) {
             addIngredient(itemStack, player);
             this.redSoup = false;
-        } else if(itemStack.is(Items.BOWL)) {
+        } else if(itemStack.is(Items.BOWL) && isCrafted) {
            return giveSoup(itemStack, player);
         } else if (!ingredients.isFullyDefault() && !this.isCrafted && player != null) {
             this.crafting = true;
@@ -120,7 +120,18 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
             }
         }
 
-        int soupUses = Math.min(Math.max(Math.round(food / 2f), 1), 4);
+        int maxSoupUses = 6;
+        int soupUses = Math.min(Math.max(Math.round(food / 3f) + (ingredients - foodLimit / 2) / 2, 1), maxSoupUses);
+
+
+        //For Cookbook unlocking
+        ListTag ingredientListTag = new ListTag();
+        for (ItemStack stack : this.ingredients.validStream().toList() ){
+            CompoundTag ingredientTag = new CompoundTag();
+            stack.save(ingredientTag);
+            ingredientListTag.add(ingredientTag);
+        }
+        tag.put("ingredients", ingredientListTag);
 
         //values into tag
         tag.putInt("soupFood", soupFood);
@@ -142,14 +153,18 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         int blandThreshold = 120;
         int minFlavour = 50;
 
+
+        System.out.println("entryList = " + entryList);
         //effect init
         ListTag effectTag = new ListTag();
         for (NutritionEntry nutritionEntry : entryList) {
             if (!nutritionEntry.nutrition().equals(NutritionType.NEUTRAL)) {
                 totalFlavour += nutritionEntry.weight();
-                int ratio = nutritionEntry.weight() / (neutral / 2 + 1);
+                float ratio = nutritionEntry.weight() / (neutral * 1.2f + 1f);
                 int amplifier = 1;
                 Boolean positive = null;
+
+                System.out.println(nutritionEntry.nutrition() + " ratio = " + ratio);
 
                 if (ratio > negativeThreshold) {
                     amplifier = Math.round((ratio - negativeThreshold) / ampThresholds);
@@ -157,6 +172,9 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
                     duration /= 2;
                 } else if (ratio > positiveThreshold) {
                     positive = true;
+                    amplifier = maxAmp;
+                    float inaccuracy = Mth.abs(ratio - perfectMix);
+                    amplifier -= Math.round(inaccuracy / ampThresholds);
                 }
 
                 amplifier = Math.max(Math.min(amplifier, maxAmp), 1);
@@ -219,7 +237,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
             this.spoonRotation++;
             this.craftingTimeRemaining++;
             this.itemRot += 10;
-            if(this.spoonRotation * spoonSpeed >= this.soupCount * 180) {
+            if(this.spoonRotation * spoonSpeed >= this.soupCount * 180 && soupCount != 0) {
                  ModPacketHandler.CHANNEL.sendToServer(new BerootCauldronCraftPacket(this.center));
                  craft();
                 this.crafting = false;
@@ -267,7 +285,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         itemStack.shrink(1);
 
         ItemStack soup1 = this.soup.copy();
-        player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getItemInHand(InteractionHand.MAIN_HAND), player, soup1));
+        player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getItemInHand(InteractionHand.MAIN_HAND), player, soup1, false));
         this.soupCount -= 1;
         if (this.soupCount <= 0){
             this.soup = ItemStack.EMPTY;

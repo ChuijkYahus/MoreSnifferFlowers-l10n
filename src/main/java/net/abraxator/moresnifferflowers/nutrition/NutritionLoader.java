@@ -1,7 +1,7 @@
 package net.abraxator.moresnifferflowers.nutrition;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.gson.*;
 import com.mojang.datafixers.util.Either;
@@ -20,6 +20,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class NutritionLoader extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
@@ -29,9 +30,9 @@ public class NutritionLoader extends SimpleJsonResourceReloadListener {
             ), Codec.INT
     );
     
-    public static Map<String, List<Nutrition>> modNutritions = ImmutableMap.of();
-    public static Map<NutritionType, List<Nutrition>> typeNutritions = ImmutableMap.of();
-    public static List<Nutrition> allNutritions = ImmutableList.of();
+    public static Map<String, Set<Nutrition>> modNutritions = ImmutableMap.of();
+    public static Map<NutritionType, Set<Nutrition>> typeNutritions = ImmutableMap.of();
+    public static Set<Nutrition> allNutritions = ImmutableSet.of();
     
     public NutritionLoader() {
         super(GSON, "nutrition");
@@ -39,9 +40,9 @@ public class NutritionLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-        Map<String, List<Nutrition>> modNutritions = new HashMap<>();
-        Map<NutritionType, List<Nutrition>> typeNutritions = new HashMap<>();
-        List<Nutrition> allNutritions = new ArrayList<>();
+        Map<String, Set<Nutrition>> modNutritions = new HashMap<>();
+        Map<NutritionType, Set<Nutrition>> typeNutritions = new HashMap<>();
+        Set<Nutrition> allNutritions = new HashSet<>();
 
         for (Map.Entry<ResourceLocation, JsonElement> entry : object.entrySet()) {
             Map<Item, List<NutritionEntry>> currentModNutritions = Maps.newHashMap();
@@ -57,17 +58,17 @@ public class NutritionLoader extends SimpleJsonResourceReloadListener {
                         Map<Item, NutritionEntry> map = new HashMap<>();
                         
                         for (Map.Entry<Either<TagKey<Item>, Item>, Integer> mapEntry : values.left().get().entrySet()) {
-                            List<Item> itemList = new ArrayList<>();
+                            Set<Item> itemList = new HashSet<>();
                             Map.Entry<Item, NutritionEntry> ret;
 
                             if (mapEntry.getKey().left().isPresent()) {
                                 itemList = (Arrays.stream(Ingredient.of(mapEntry.getKey().left().get()).getItems())
                                         .map(ItemStack::getItem)
-                                        .toList()
+                                        .collect(Collectors.toSet())
                                 );
                             }
                             if (mapEntry.getKey().right().isPresent()) {
-                                itemList = List.of(mapEntry.getKey().right().get());
+                                itemList = Set.of(mapEntry.getKey().right().get());
                             }
 
                             for (Item item : itemList) {
@@ -91,7 +92,7 @@ public class NutritionLoader extends SimpleJsonResourceReloadListener {
         
             var nutritionList = currentModNutritions.entrySet().stream()
                     .map(itemListEntry -> new Nutrition(itemListEntry.getKey(), itemListEntry.getValue()))
-                    .toList();
+                    .collect(Collectors.toSet());
             modNutritions.put(
                     path.getPath(), 
                     nutritionList);
@@ -101,14 +102,14 @@ public class NutritionLoader extends SimpleJsonResourceReloadListener {
                 for (NutritionEntry nutritionEntry : nutrition.getNutritionEntries()) {
                     NutritionType type  = nutritionEntry.nutrition();
                     typeNutritions
-                            .computeIfAbsent(type, k -> new ArrayList<>())
+                            .computeIfAbsent(type, k -> new HashSet<>())
                             .add(nutrition);
                 }
             }
         }
         
-        this.modNutritions = modNutritions;
-        this.typeNutritions = typeNutritions;
-        this.allNutritions = allNutritions;
+        NutritionLoader.modNutritions = modNutritions;
+        NutritionLoader.typeNutritions = typeNutritions;
+        NutritionLoader.allNutritions = allNutritions;
     }
 }
