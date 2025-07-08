@@ -10,20 +10,23 @@ import java.util.Map;
 import java.util.function.IntFunction;
 
 public enum NutritionType {
-    SOUR("sour", 0xe6a005),
-    SALTY("salty", 0x8bb8c3),
-    SPICY("spicy", 0xbb4330),
-    SWEET("sweet", 0xe67896),
-    NEUTRAL("neutral", 0x8c661e),;
+    SOUR("sour", 0xe6a005, 0.5f),
+    SALTY("salty", 0x8bb8c3, 0.4f),
+    SPICY("spicy", 0xbb4330, 0.3f),
+    SWEET("sweet", 0xe67896, 0.2f),
+    NEUTRAL("neutral", 0x8c661e, 0.1f),;
 
 
     public final String name;
     public final int color;
+    public final float priority;
+
     private static final IntFunction<NutritionType> BY_ID = ByIdMap.continuous(NutritionType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
     
-    NutritionType(String name, int color) {
+    NutritionType(String name, int color, float priority) {
         this.name = name;
         this.color = color;
+        this.priority = priority;
     }
     
     public static NutritionType byId(int id) {

@@ -31,7 +31,7 @@ public class BetterNonNullList<E> extends NonNullList<E> {
     }
 
     /**
-     * Creates a new BetterNonNullList with <i>fixed</i> size and default value. The list will be filled with the default value.
+     * Creates a new BetterNonNullList with <i>fixed</i> size and default speed. The list will be filled with the default speed.
      */
     public static <E> BetterNonNullList<E> withSize(int size, E defaultValue) {
         Validate.notNull(defaultValue);

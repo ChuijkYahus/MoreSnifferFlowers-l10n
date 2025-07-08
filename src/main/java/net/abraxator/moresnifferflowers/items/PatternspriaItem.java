@@ -306,7 +306,7 @@ public class PatternspriaItem extends Item {
         if (tag.contains("uses")){
             int uses = tag.getInt("uses");
             if (uses > 4 || uses < 0) {
-                MoreSnifferFlowers.LOGGER.warn("Invalid uses value for patternspria: " + uses);
+                MoreSnifferFlowers.LOGGER.warn("Invalid uses speed for patternspria: " + uses);
                 tag.putInt("uses", 4);
                 return 4;
             }
@@ -318,7 +318,7 @@ public class PatternspriaItem extends Item {
     public static void setPatternspriaUses(ItemStack stack, int uses) {
         var tag = stack.getOrCreateTag();
         if (tag.contains("uses") && tag.getInt("uses") < 0 || tag.getInt("uses") > 4) {
-            MoreSnifferFlowers.LOGGER.warn("Invalid uses value for patternspria: " + tag.getInt("uses") + "new: " + uses);
+            MoreSnifferFlowers.LOGGER.warn("Invalid uses speed for patternspria: " + tag.getInt("uses") + "new: " + uses);
             tag.putInt("uses", 4);
             return;
         }

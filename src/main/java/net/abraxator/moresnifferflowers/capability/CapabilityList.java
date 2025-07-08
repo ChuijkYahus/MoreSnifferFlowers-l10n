@@ -20,10 +20,14 @@ public class CapabilityList {
     public static final Capability<NutritionCapability> UNLOCKED_NUTRITIONS = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<HardenedMouthCapability> MOUTH_SLOTS = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<BlockPatternCapability> BLOCK_PATTERNS = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<ComboMealCapability> COMBO_MEAL = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.register(NutritionCapability.class);
         event.register(HardenedMouthCapability.class);
+        event.register(BlockPatternCapability.class);
+        event.register(ComboMealCapability.class);
+
     }
 
     @SubscribeEvent
@@ -66,6 +70,10 @@ public class CapabilityList {
                         return MOUTH_SLOTS.orEmpty(cap, inst);
                     }
                 });
+
+                ComboMealCapability comboMealCapability = new ComboMealCapability();
+                event.addCapability(comboMealCapability.ID, comboMealCapability);
+
             }
         }
     }

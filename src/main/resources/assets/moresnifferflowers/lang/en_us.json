@@ -141,8 +141,8 @@
 	"block.moresnifferflowers.acidripia": "Acidripia",
 	
 	"block.moresnifferflowers.cropressor": "Cropressor",
-	"block.moresnifferflowers.cropressor_centre": "Cropressor Base",
-	"block.moresnifferflowers.cropressor_out": "Cropressor Outer",
+	"block.moresnifferflowers.cropressor_center": "Cropressor",
+	"block.moresnifferflowers.cropressor_out": "Cropressor",
 
 	"block.moresnifferflowers.giant_potato": "Giant Potato",
 	"block.moresnifferflowers.giant_netherwart": "Giant Nether Wart",
@@ -315,6 +315,13 @@
 	"block.minecraft.banner.moresnifferflowers.evil.pink": "Pink Pattern of Evil",
 
 	"effect.moresnifferflowers.extracted": "Extracted",
+	"effect.moresnifferflowers.salty": "Salty",
+	"effect.moresnifferflowers.combo_meal": "Combo Meal",
+	"effect.moresnifferflowers.pants_on_fire": "Pants on Fire",
+	"effect.moresnifferflowers.bland": "Bland",
+	"effect.moresnifferflowers.well_balanced": "Well Balanced",
+	"effect.moresnifferflowers.sticky": "Sticky",
+
 	
 	"death.attack.moresnifferflowersveggies": "Já si nemyslim že se tenhle text ukazuje ve hře ale jestli jo tak zdravim 😊😊👋👋",
 

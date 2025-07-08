@@ -23,7 +23,7 @@ public class DirectionStorageHelper {
             case 3 -> Direction.SOUTH;
             case 4 -> Direction.WEST;
             case 5 -> Direction.EAST;
-            default -> throw new IllegalStateException("Error converting to Direction, Unexpected value: " + directionId);
+            default -> throw new IllegalStateException("Error converting to Direction, Unexpected speed: " + directionId);
         };
     }
 }

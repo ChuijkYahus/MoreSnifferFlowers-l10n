@@ -15,10 +15,13 @@ public class ModMobEffects {
     public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(
             ForgeRegistries.MOB_EFFECTS, MoreSnifferFlowers.MOD_ID);
     public static final RegistryObject<MobEffect> EXTRACTED = EFFECTS.register("extracted", () -> new ExtractedEffect(MobEffectCategory.NEUTRAL, 14058905));
+
+    //Sour
     public static final RegistryObject<MobEffect> NEGATIVE_SOUR = EFFECTS.register("negative_sour", () -> new SimpleEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
     public static final RegistryObject<MobEffect> POSITIVE_SOUR = EFFECTS.register("positive_sour", () -> new SimpleEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
-    public static final RegistryObject<MobEffect> NEGATIVE_SALTY = EFFECTS.register("negative_salty", () -> new SimpleEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
-    public static final RegistryObject<MobEffect> POSITIVE_SALTY = EFFECTS.register("positive_salty", () -> new SimpleEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
+    //Salty
+    public static final RegistryObject<MobEffect> SALTY = EFFECTS.register("salty", () -> new SaltyEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
+    public static final RegistryObject<MobEffect> COMBO_MEAL = EFFECTS.register("combo_meal", () -> new SimpleEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
     //Spicy
     public static final RegistryObject<MobEffect> PANTS_ON_FIRE = EFFECTS.register("pants_on_fire", () -> new PantsOnFireEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
     public static final RegistryObject<MobEffect> HARDENED_MOUTH = EFFECTS.register("hardened_mouth", () -> new HardenedMouthEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));

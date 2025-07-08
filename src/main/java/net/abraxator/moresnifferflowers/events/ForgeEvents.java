@@ -21,6 +21,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
@@ -45,6 +47,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -54,6 +57,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
@@ -137,6 +142,36 @@ public class ForgeEvents {
     }
 
     @SubscribeEvent
+    public static void onAttackEntity(AttackEntityEvent event) {
+       Player player = event.getEntity();
+       ItemStack stack = player.getMainHandItem();
+       boolean isCharged = player.getAttackStrengthScale(0.5f) > 0.9f;
+
+        if (player.hasEffect(ModMobEffects.COMBO_MEAL.get()) && stack.is(ItemTags.TOOLS)) {
+
+           int amplifier = Objects.requireNonNull(player.getEffect(ModMobEffects.COMBO_MEAL.get())).getAmplifier();
+
+           player.getCapability(CapabilityList.COMBO_MEAL).ifPresent(cap -> {
+               if (isCharged){
+                   cap.speed *= 1 + (amplifier / 4f + 1) / 10f;
+                   cap.duration = (int) (100 / (cap.speed * 2));
+
+                   player.getAttribute(Attributes.ATTACK_SPEED).removeModifier(UUID.fromString("41DD0153-E92A-B00B-9800-EFFEC53C00B0"));
+                   AttributeModifier mod = new AttributeModifier(UUID.fromString("41DD0153-E92A-B00B-9800-EFFEC53C00B0"), "combo_meal", cap.speed - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
+                   player.getAttribute(Attributes.ATTACK_SPEED).addPermanentModifier(mod);
+
+               } else {
+
+                   cap.duration /= 2;
+
+               }
+           });
+
+       }
+    }
+
+
+    @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         Level level = player.level();
@@ -164,8 +199,13 @@ public class ForgeEvents {
 
 
         event.player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
-            cap.tick(event.player);
+            cap.tick(player);
         });
+
+        event.player.getCapability(CapabilityList.COMBO_MEAL).ifPresent(cap -> {
+            cap.tick(player);
+        });
+
 
     }
 
