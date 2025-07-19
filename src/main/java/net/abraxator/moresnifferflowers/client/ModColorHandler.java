@@ -2,7 +2,6 @@ package net.abraxator.moresnifferflowers.client;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blocks.ColorableVivicusBlock;
-import net.abraxator.moresnifferflowers.blocks.cropressor.CropressorBlockBase;
 import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
@@ -45,12 +44,6 @@ public class ModColorHandler {
 
             return originalColor;
         }, Blocks.OAK_LEAVES, Blocks.JUNGLE_LEAVES, Blocks.ACACIA_LEAVES, Blocks.DARK_OAK_LEAVES, Blocks.VINE, Blocks.MANGROVE_LEAVES, Blocks.BIRCH_LEAVES, Blocks.SPRUCE_LEAVES, Blocks.MANGROVE_LEAVES);
-        event.register((state, level, pos, tintIndex) -> {
-            if(tintIndex == 0 && state.getValue(ModStateProperties.FULLNESS) > 0) {
-                return state.getValue(CropressorBlockBase.CROP).tint;
-            }
-            return -1;
-        }, ModBlocks.CROPRESSOR_CENTER.get());
         event.register((pState, pLevel, pPos, pTintIndex) -> {
             Colorable colorable = ((Colorable) pState.getBlock());
             Dye dye = colorable.getDyeFromBlock(pState);

@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.components;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -95,4 +96,10 @@ public class BetterNonNullList<E> extends NonNullList<E> {
         return list.stream().filter(e -> !isDefault(e));
     }
 
+
+    public @NotNull E setDefault(int index) {
+        E ret = this.get(index);
+        list.set(index, defaultValue);
+        return ret;
+    }
 }
