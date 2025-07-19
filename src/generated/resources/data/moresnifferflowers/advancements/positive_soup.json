@@ -1,0 +1,43 @@
+{
+  "parent": "moresnifferflowers:beroot_cauldron",
+  "criteria": {
+    "has_positive_soup_effects": {
+      "conditions": {
+        "effects": {
+          "moresnifferflowers:combo_meal": {},
+          "moresnifferflowers:hardened_mouth": {},
+          "moresnifferflowers:positive_sour": {},
+          "moresnifferflowers:positive_sweet": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "fallback": "Have 4 positive soup effects at the same time",
+      "translate": "advancements.more_sniffer_flowers.positive_soup.desc"
+    },
+    "frame": "challenge",
+    "hidden": false,
+    "icon": {
+      "item": "moresnifferflowers:rooted_soup",
+      "nbt": "{color:16759889}"
+    },
+    "show_toast": true,
+    "title": {
+      "fallback": "Michelin Star Chef",
+      "translate": "advancements.more_sniffer_flowers.positive_soup"
+    }
+  },
+  "requirements": [
+    [
+      "has_positive_soup_effects"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  },
+  "sends_telemetry_event": true
+}

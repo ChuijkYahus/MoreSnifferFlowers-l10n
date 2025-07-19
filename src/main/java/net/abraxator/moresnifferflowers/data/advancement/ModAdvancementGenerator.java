@@ -1,15 +1,17 @@
 package net.abraxator.moresnifferflowers.data.advancement;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.init.ModAdvancementCritters;
-import net.abraxator.moresnifferflowers.init.ModBlocks;
-import net.abraxator.moresnifferflowers.init.ModItems;
-import net.abraxator.moresnifferflowers.init.ModTags;
+import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.FrameType;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.critereon.EffectsChangedTrigger;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.critereon.MobEffectsPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -92,8 +94,61 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                 .addCriterion("has_cropressed_crop", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(ModTags.ModItemTags.CROPRESSED_CROPS).build()))
                 .save(consumer, MoreSnifferFlowers.loc("cropressor").toString());
 
+       var cauldron = Advancement.Builder.advancement()
+                .parent(bonmeel)
+                .display(
+                        ModItems.BEROOT_CAULDRON.get(),
+                        Component.translatableWithFallback("advancements.more_sniffer_flowers.beroot_cauldron", "Glooby, and never Soupy"),
+                        Component.translatableWithFallback("advancements.more_sniffer_flowers.beroot_cauldron.desc", "Craft the Beroot Cauldron"),
+                        null,
+                        FrameType.TASK,
+                        true,
+                        true,
+                        false
+                )
+                .addCriterion("has_beroot_cauldron", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(ModItems.BEROOT_CAULDRON.get()).build()))
+                .save(consumer, MoreSnifferFlowers.loc("beroot_cauldron").toString());
+
+        ItemStack rootedSoup = ModItems.ROOTED_SOUP.get().getDefaultInstance();
+        rootedSoup.getOrCreateTag().putInt("color", 0xFFBC51);
+
         Advancement.Builder.advancement()
-                .parent(root)
+                .parent(cauldron)
+                .display(
+                        rootedSoup,
+                        Component.translatableWithFallback("advancements.more_sniffer_flowers.positive_soup", "Michelin Star Chef"),
+                        Component.translatableWithFallback("advancements.more_sniffer_flowers.positive_soup.desc", "Have 4 positive soup effects at the same time"),
+                        null,
+                        FrameType.CHALLENGE,
+                        true,
+                        true,
+                        false
+                )
+                .addCriterion("has_positive_soup_effects",EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.effects().and(ModMobEffects.POSITIVE_SWEET.get()).and(ModMobEffects.POSITIVE_SOUR.get()).and(ModMobEffects.COMBO_MEAL.get()).and(ModMobEffects.HARDENED_MOUTH.get())))
+                .rewards(AdvancementRewards.Builder.experience(100))
+                .save(consumer, MoreSnifferFlowers.loc("positive_soup").toString());
+
+        Advancement.Builder.advancement()
+                .parent(cauldron)
+                .display(
+                        Items.POISONOUS_POTATO,
+                        Component.translatableWithFallback("advancements.more_sniffer_flowers.negative_soup", "Pasta Burner"),
+                        Component.translatableWithFallback("advancements.more_sniffer_flowers.negative_soup.desc", "Have 4 negative soup effects at the same time"),
+                        null,
+                        FrameType.CHALLENGE,
+                        true,
+                        true,
+                        true
+                )
+                .addCriterion("has_negative_soup_effects", EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.effects().and(ModMobEffects.STICKY.get()).and(ModMobEffects.NEGATIVE_SOUR.get()).and(ModMobEffects.SALTY.get()).and(ModMobEffects.PANTS_ON_FIRE.get())))
+                .rewards(AdvancementRewards.Builder.experience(53))
+                .save(consumer, MoreSnifferFlowers.loc("negative_soup").toString());
+
+
+
+
+        Advancement.Builder.advancement()
+                .parent(bonmeel)
                 .display(
                         ModItems.REBREWING_STAND.get(),
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.rebrew", "Local Rebrewery"),

@@ -256,11 +256,19 @@
 	"advancements.more_sniffer_flowers.cure": "A bobling of Kindness",
 	"advancements.more_sniffer_flowers.cure.desc": "Cure a vivicus sapling to get regular (kind) boblings",
 	"advancements.more_sniffer_flowers.ambush": "Ambushed by great loot",
-	"advancements.more_sniffer_flowers.ambush.desc": "Break an amber block to get whats inside (the \"great\" part not guaranteed)",
+	"advancements.more_sniffer_flowers.ambush.desc": "Break an amber block to get what's inside (the \"great\" part not guaranteed)",
 	"advancements.more_sniffer_flowers.garbush": "Garbushed by garbush loot",
 	"advancements.more_sniffer_flowers.garbush.desc": "Break a Garnet block, like amber but more violent",
 	"advancements.more_sniffer_flowers.dye_boat": "Whatever colors your boat",
 	"advancements.more_sniffer_flowers.dye_boat.desc": "Dye the vivicus boat any color, pretty unlikely to happen during actual gameplay",
+
+	"advancements.more_sniffer_flowers.beroot_cauldron": "Glooby, and never Soupy",
+	"advancements.more_sniffer_flowers.beroot_cauldron.desc": "Craft the Beroot Cauldron",
+	"advancements.more_sniffer_flowers.positive_soup": "Michelin Star Chef",
+	"advancements.more_sniffer_flowers.positive_soup.desc": "Have 4 positive soup effects at the same time \n(Well Balanced doesnt count)",
+	"advancements.more_sniffer_flowers.negative_soup": "Pasta Burner",
+	"advancements.more_sniffer_flowers.negative_soup.desc": "Make a soup that's pure ass \n(Have 4 negative soup effects at the same time)",
+
 
 # Trims 🛡️🛡️🛡️
 	"trim_pattern.moresnifferflowers.aroma": "Aroma Armor Trim",

@@ -1,11 +1,13 @@
 {
   "parent": "moresnifferflowers:bonmeel",
   "criteria": {
-    "has_rebrewed_potion": {
+    "has_beroot_cauldron": {
       "conditions": {
         "items": [
           {
-            "tag": "moresnifferflowers:rebrewed_potions"
+            "items": [
+              "moresnifferflowers:beroot_cauldron"
+            ]
           }
         ]
       },
@@ -15,23 +17,23 @@
   "display": {
     "announce_to_chat": true,
     "description": {
-      "fallback": "Rebrew an Extracted Potion",
-      "translate": "advancements.more_sniffer_flowers.rebrew.desc"
+      "fallback": "Craft the Beroot Cauldron",
+      "translate": "advancements.more_sniffer_flowers.beroot_cauldron.desc"
     },
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "moresnifferflowers:rebrewing_stand"
+      "item": "moresnifferflowers:beroot_cauldron"
     },
     "show_toast": true,
     "title": {
-      "fallback": "Local Rebrewery",
-      "translate": "advancements.more_sniffer_flowers.rebrew"
+      "fallback": "Glooby, and never Soupy",
+      "translate": "advancements.more_sniffer_flowers.beroot_cauldron"
     }
   },
   "requirements": [
     [
-      "has_rebrewed_potion"
+      "has_beroot_cauldron"
     ]
   ],
   "sends_telemetry_event": true

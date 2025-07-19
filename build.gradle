@@ -14,6 +14,7 @@ repositories {
     maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
     maven { url = "https://maven.tterrag.com" } // Registrate
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
+    maven { url = "https://api.modrinth.com/maven" }
     mavenCentral()
 }
 
@@ -75,6 +76,7 @@ dependencies {
     // Sometimes JEI disappears for some reason
     // modRuntimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
     modRuntimeOnly("curse.maven:jei-238222:6075247")
+
 
     // MODS FOR COMPATIBILITY TESTS
 
