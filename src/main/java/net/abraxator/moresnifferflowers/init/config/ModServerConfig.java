@@ -16,6 +16,9 @@ public class ModServerConfig {
     public static final ForgeConfigSpec SERVER_CONFIG;
     public static final ForgeConfigSpec.DoubleValue CORRUPTION_SPREAD_SPEED;
     public static final ForgeConfigSpec.BooleanValue CORRUPTED_TREE_GROW_THROUGH;
+    public static final ForgeConfigSpec.BooleanValue CORRUPTED_TREE_BONE_MEAL;
+    public static final ForgeConfigSpec.BooleanValue CORRUPTED_BOBLING_GRIEFING;
+    public static final ForgeConfigSpec.BooleanValue CORRUPTED_SLUDGE_GRIEFING;
 
     public static final ForgeConfigSpec.ConfigValue<String> REBREWING_LENGTH;
     public static final ForgeConfigSpec.ConfigValue<String> REBREWING_AMPLIFIER;
@@ -38,6 +41,22 @@ public class ModServerConfig {
                 .comment("Should the corrupted tree be able to grow through and destroy blocks? Default = true")
                 .translation("moresnifferflowers.configuration.corrupted_tree_grow_through")
                 .define("Corrupted Tree Grow Trough", true);
+
+        CORRUPTED_TREE_BONE_MEAL = builder
+                .comment("Should corrupted sapling require bone meal to grow at all? Default = true")
+                .translation("moresnifferflowers.configuration.corrupted_tree_bone_meal")
+                .define("Corrupted Tree Bone Meal", true);
+
+        CORRUPTED_BOBLING_GRIEFING = builder
+                .comment("Should boblings spawn projectiles when hit and replace blocks when planting? Default = false")
+                .translation("moresnifferflowers.configuration.corrupted_bobling_griefing")
+                .define("Corrupted Bobling Griefing", false);
+
+        CORRUPTED_SLUDGE_GRIEFING = builder
+                .comment("Should sludges shoot projectiles when blocks get destroyed? Default = true")
+                .translation("moresnifferflowers.configuration.corrupted_sludge_griefing")
+                .define("Corrupted Sludge Griefing", true);
+
 
         builder.pop();
 

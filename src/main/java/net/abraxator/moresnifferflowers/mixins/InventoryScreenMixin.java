@@ -41,18 +41,11 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
                 float maxCooldown = (float) hardenedMouthCapability.getMaxCooldown(player);
                 float cooldown = (float) hardenedMouthCapability.getCooldown();
                 int height = Math.round(14F - (14F * (cooldown / maxCooldown)));
+
                 guiGraphics.blit(TEXTURE_LOCATION, x + 5, y + 23 + 14 - height , 32, 14 - height, 14, height);
 
             });
 
         }
     }
-
-/*    @Inject(method = "containerTick", at = @At("TAIL"))
-    public void containerTick(CallbackInfo ci) {
-
-    }*/
-
-
-
 }

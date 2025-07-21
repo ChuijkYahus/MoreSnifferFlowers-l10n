@@ -5,6 +5,7 @@ import net.abraxator.moresnifferflowers.init.ModBlockEntities;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.ModTags;
+import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
 import net.abraxator.moresnifferflowers.networking.CorruptedSludgePacket;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.recipes.CorruptionRecipe;
@@ -103,7 +104,7 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
         public boolean handleGameEvent(ServerLevel pLevel, GameEvent pGameEvent, GameEvent.Context pContext, Vec3 pPos) {
             CorruptedSludgeBlockEntity entity;
 
-            if (pContext.affectedState() == null || CorruptionRecipe.canBeCorrupted(pContext.affectedState().getBlock(), pLevel)) return false;
+            if (pContext.affectedState() == null || !CorruptionRecipe.canBeCorrupted(pContext.affectedState().getBlock(), pLevel)) return false;
             
             if(pLevel.getBlockEntity(BlockPos.containing(this.positionSource.getPosition(pLevel).get())) instanceof CorruptedSludgeBlockEntity entity1) {
                 entity = entity1;
@@ -148,11 +149,13 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
                 return !corrupted.isPresent();
             }
 
-            if(pGameEvent == GameEvent.BLOCK_DESTROY && pContext.affectedState().is(ModTags.ModBlockTags.CORRUPTED_SLUDGE) && !pPos.equals(this.positionSource.getPosition(pLevel).get())) {
-                var projectileNumber = (pContext.affectedState().is(ModBlocks.CORRUPTED_LEAVES.get()) || pContext.affectedState().is(ModBlocks.CORRUPTED_LEAVES_BUSH.get())  ? pLevel.random.nextInt(1) : pLevel.random.nextInt(5)) + 2;
-                shootProjectiles(this.positionSource.getPosition(pLevel).get(), projectileNumber, pLevel);
-                entity.updateUses();
-                return false;
+            if (ModServerConfig.CORRUPTED_SLUDGE_GRIEFING.get()) {
+                if (pGameEvent == GameEvent.BLOCK_DESTROY && pContext.affectedState().is(ModTags.ModBlockTags.CORRUPTED_SLUDGE) && !pPos.equals(this.positionSource.getPosition(pLevel).get())) {
+                    var projectileNumber = (pContext.affectedState().is(ModBlocks.CORRUPTED_LEAVES.get()) || pContext.affectedState().is(ModBlocks.CORRUPTED_LEAVES_BUSH.get()) ? pLevel.random.nextInt(1) : pLevel.random.nextInt(5)) + 2;
+                    shootProjectiles(this.positionSource.getPosition(pLevel).get(), projectileNumber, pLevel);
+                    entity.updateUses();
+                    return false;
+                }
             }
 
             return false;

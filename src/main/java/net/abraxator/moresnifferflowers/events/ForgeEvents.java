@@ -197,7 +197,6 @@ public class ForgeEvents {
 
         // if (event.phase == TickEvent.Phase.END || event.player.level().isClientSide) return;
 
-
         event.player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
             cap.tick(player);
         });
@@ -206,15 +205,7 @@ public class ForgeEvents {
             cap.tick(player);
         });
 
-      //  System.out.println("player.getActiveEffects() = " + player.getActiveEffects() + "isclient=" + level.isClientSide);
     }
-
-    @SubscribeEvent
-    public static void onEffectExpiration(MobEffectEvent.Remove event) {
-       Level level = event.getEntity().level();
-       System.out.println("Effect Removed, is Client: " + level.isClientSide );
-    }
-
 
     @SubscribeEvent
     public static void onItemPickup(EntityItemPickupEvent event) {
