@@ -2,7 +2,7 @@ package net.abraxator.moresnifferflowers.blocks.corrupted;
 
 import com.mojang.serialization.MapCodec;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
-import net.abraxator.moresnifferflowers.init.ModServerConfig;
+import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;

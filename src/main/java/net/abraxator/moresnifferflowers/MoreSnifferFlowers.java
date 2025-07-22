@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
 import net.abraxator.moresnifferflowers.client.ClientRegistration;
 import net.abraxator.moresnifferflowers.init.*;
+import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.worldgen.configurations.ModTreeDecoratorTypes;
 import net.abraxator.moresnifferflowers.worldgen.configurations.ModTrunkPlacerTypes;
@@ -117,6 +118,15 @@ public class MoreSnifferFlowers {
 
     public void clientConfig(ModContainer container){
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+    }
+
+
+    public static ResourceLocation vanillaLoc(String path) {
+        return ResourceLocation.withDefaultNamespace(path);
+    }
+
+    public static ResourceLocation ofLoc(String path) {
+        return ResourceLocation.bySeparator(path, ':');
     }
 
     public static String sLoc(String path) {
