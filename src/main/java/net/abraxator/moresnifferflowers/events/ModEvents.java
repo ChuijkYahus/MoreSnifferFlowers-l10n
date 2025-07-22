@@ -4,17 +4,21 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.data.datamaps.ModDataMaps;
 import net.abraxator.moresnifferflowers.entities.BoblingEntity;
 import net.abraxator.moresnifferflowers.init.ModEntityTypes;
+import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.SpawnPlacementType;
 import net.minecraft.world.entity.SpawnPlacementTypes;
-import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class ModEvents {
@@ -25,12 +29,31 @@ public class ModEvents {
 
 
     @SubscribeEvent
+    public static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
+        event.register(ModEntityTypes.BOBLING.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mob::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+    }
+
+    @SubscribeEvent
     public static void onRegisterDataMapTypes(RegisterDataMapTypesEvent event) {
         event.register(ModDataMaps.CORRUPTABLE);
     }
 
     @SubscribeEvent
-    public static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
-        event.register(ModEntityTypes.BOBLING.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mob::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+    public static void onConfigLoad(ModConfigEvent.Reloading event){
+        if (ModServerConfig.SERVER_CONFIG.isLoaded()) {
+            List<ResourceLocation> locations = new ArrayList<>();
+
+            locations.add(MoreSnifferFlowers.ofLoc(ModServerConfig.REBREWING_AMPLIFIER.get()));
+            locations.add(MoreSnifferFlowers.ofLoc(ModServerConfig.REBREWING_LENGTH.get()));
+            locations.add(MoreSnifferFlowers.ofLoc(ModServerConfig.REBREWING_SPLASH.get()));
+            locations.add(MoreSnifferFlowers.ofLoc(ModServerConfig.REBREWING_LINGERING.get()));
+
+            for (ResourceLocation location : locations) {
+                if (!BuiltInRegistries.ITEM.containsKey(location)) {
+                    MoreSnifferFlowers.LOGGER.error("Error in Rebrewing Server Config, couldn't find item: " + location);
+                }
+
+            }
+        }
     }
 }

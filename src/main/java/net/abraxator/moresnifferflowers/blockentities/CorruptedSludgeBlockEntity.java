@@ -35,7 +35,7 @@ import java.util.Set;
 public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEventListener.Provider<CorruptedSludgeBlockEntity.CorruptedSludgeListener> {
     public CorruptedSludgeListener corruptedSludgeListener;
     public int usesLeft = -1;
-    public int stateChange;
+    public int stateChange = 1;
     
     public CorruptedSludgeBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.CORRUPTED_SLUDGE.get(), pPos, pBlockState);
@@ -45,6 +45,10 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
 
     public void updateUses() {
         this.usesLeft--;
+
+        if (stateChange == 0) { // I HATE YOU !!!!!!! WHY ARE YOU ZERO
+            this.stateChange = usesLeft / 4;
+        }
 
         if(this.usesLeft % stateChange == 0 && this.getBlockState().getValue(ModStateProperties.USES_4) - 1 != -1) {
             this.level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(ModStateProperties.USES_4, this.getBlockState().getValue(ModStateProperties.USES_4) - 1));
@@ -136,7 +140,7 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
                     entity.updateUses();
                 });
 
-                return !corrupted.isPresent();
+                return false;
             }
 
             if (ModServerConfig.CORRUPTED_SLUDGE_GRIEFING.get()) {

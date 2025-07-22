@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "cropressing_moresnifferflowers:cropressed_carrot"
+        "recipe": "moresnifferflowers:cropressed_carrot_from_cropressing"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "cropressing_moresnifferflowers:cropressed_carrot"
+      "moresnifferflowers:cropressed_carrot_from_cropressing"
     ]
   }
 }

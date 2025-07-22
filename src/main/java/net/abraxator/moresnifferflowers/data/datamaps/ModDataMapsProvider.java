@@ -40,7 +40,10 @@ public class ModDataMapsProvider extends DataMapProvider {
         compostables.add(ModBlocks.VIVICUS_LEAVES.asItem().builtInRegistryHolder(), new Compostable(1.0F), false);
         
         var corruptables = this.builder(ModDataMaps.CORRUPTABLE);
-        corruptables.add(Blocks.GRASS_BLOCK.builtInRegistryHolder(), new Corruptable(ModBlocks.CORRUPTED_GRASS_BLOCK.get()), false);
+        corruptables.add(Blocks.GRASS_BLOCK.builtInRegistryHolder(), new Corruptable( List.of(
+                Pair.of(ModBlocks.CORRUPTED_GRASS_BLOCK.get(), 15),
+                Pair.of(Blocks.COARSE_DIRT, 85)
+                )), false);
         corruptables.add(Blocks.DIRT.builtInRegistryHolder(), new Corruptable(Blocks.COARSE_DIRT), false);
         corruptables.add(Blocks.STONE.builtInRegistryHolder(), new Corruptable(Blocks.NETHERRACK), false);
         corruptables.add(Blocks.DEEPSLATE.builtInRegistryHolder(), new Corruptable(Blocks.BLACKSTONE), false);

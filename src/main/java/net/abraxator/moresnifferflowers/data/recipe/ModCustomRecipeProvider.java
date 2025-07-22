@@ -32,6 +32,6 @@ public class ModCustomRecipeProvider extends RecipeProvider {
     }
 
     public static void createCropressing(RecipeOutput recipeOutput, ItemLike result, ItemLike crop) {
-        new CropressingRecipeBuilder(result).requiresCrop(crop.asItem()).unlockedBy("has_cropressor", has(ModBlocks.CROPRESSOR_OUT.get())).save(recipeOutput, "cropressing_" + result.asItem());
+        new CropressingRecipeBuilder(result).requiresCrop(crop.asItem()).unlockedBy("has_cropressor", has(ModBlocks.CROPRESSOR_OUT.get())).save(recipeOutput, result.asItem().toString() + "_from_cropressing");
     }
 }

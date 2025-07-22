@@ -45,7 +45,11 @@
       "value": [
         {
           "block": "moresnifferflowers:corrupted_grass_block",
-          "weight": 100
+          "weight": 15
+        },
+        {
+          "block": "minecraft:coarse_dirt",
+          "weight": 85
         }
       ]
     },
