@@ -5,11 +5,9 @@ import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.concurrent.CompletableFuture;
@@ -22,7 +20,7 @@ public class ModCustomRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildRecipes(RecipeOutput pRecipeOutput) {
-        
+
     }
 
     public static void createRecipes(RecipeOutput recipeOutput) {
@@ -34,6 +32,6 @@ public class ModCustomRecipeProvider extends RecipeProvider {
     }
 
     public static void createCropressing(RecipeOutput recipeOutput, ItemLike result, ItemLike crop) {
-        new CropressingRecipeBuilder(result).requiresCrop(crop.asItem()).unlockedBy("has_cropressor", has(ModBlocks.CROPRESSOR_OUT.get())).save(recipeOutput, getItemName(result) + "_from_cropressing");
+        new CropressingRecipeBuilder(result).requiresCrop(crop.asItem()).unlockedBy("has_cropressor", has(ModBlocks.CROPRESSOR_OUT.get())).save(recipeOutput, "cropressing_" + result.asItem());
     }
 }

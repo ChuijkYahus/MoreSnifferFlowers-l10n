@@ -6,12 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.abraxator.moresnifferflowers.init.ModRecipeSerializers;
 import net.abraxator.moresnifferflowers.init.ModRecipeTypes;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -28,7 +22,7 @@ public record CropressingRecipe(Ingredient ingredient, int count, ItemStack resu
     @Override
     public boolean matches(SingleRecipeInput pInput, Level pLevel) {
         ItemStack itemStack = pInput.item();
-        return itemStack.getCount() == count && ingredient.test(itemStack.copyWithCount(1));
+        return itemStack.getCount() >= count && ingredient.test(itemStack.copyWithCount(1));
     }
 
     @Override

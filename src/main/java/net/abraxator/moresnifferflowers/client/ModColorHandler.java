@@ -1,35 +1,28 @@
 package net.abraxator.moresnifferflowers.client;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.blockentities.CropressorBlockEntity;
 import net.abraxator.moresnifferflowers.blocks.ColorableVivicusBlock;
-import net.abraxator.moresnifferflowers.blocks.cropressor.CropressorBlockBase;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
-import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.abraxator.moresnifferflowers.init.ModItems;
+import net.abraxator.moresnifferflowers.items.DyespriaItem;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
 @EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class ModBlockColors {
+public class ModColorHandler {
     @SubscribeEvent
-    public static void onRegisterBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
-        event.register((state, level, pos, tintIndex) -> {
-            if(tintIndex == 0 && state.getValue(ModStateProperties.FULLNESS) > 0) {
-                return state.getValue(ModStateProperties.CROP).tint;
-            }        
-            
-            return -1;
-        }, ModBlocks.CROPRESSOR_CENTER.get());
+    public static void onRegisterBlockColorHandlers(net.neoforged.neoforge.client.event.RegisterColorHandlersEvent.Block event) {
         event.register((pState, pLevel, pPos, pTintIndex) -> {
             Colorable colorable = ((Colorable) pState.getBlock());
             Dye dye = colorable.getDyeFromBlock(pState);
@@ -86,5 +79,64 @@ public class ModBlockColors {
                 ModBlocks.VIVICUS_DOOR.get(), ModBlocks.VIVICUS_TRAPDOOR.get(), ModBlocks.VIVICUS_PRESSURE_PLATE.get(),
                 ModBlocks.VIVICUS_BUTTON.get(), ModBlocks.VIVICUS_LEAVES.get(), ModBlocks.VIVICUS_SAPLING.get(),
                 ModBlocks.VIVICUS_LEAVES_SPROUT.get(), ModBlocks.VIVICUS_SIGN.get(), ModBlocks.VIVICUS_HANGING_SIGN.get());
+    }
+
+    @SubscribeEvent
+    public static void onRegisterItemColorHandlers(RegisterColorHandlersEvent.Item event) {
+        event.register((pStack, pTintIndex) -> {
+            Dye dye = Dye.getDyeFromDyespria(pStack);
+            if(pTintIndex != 0 || dye.isEmpty()) {
+                return -1;
+            } else {
+                return Dye.colorForDye(((DyespriaItem) pStack.getItem()), dye.color());
+            }
+        }, ModItems.DYESPRIA.get());
+        event.register((pStack, pTintIndex) -> {
+            return pTintIndex > 0 ? -1 : pStack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getColor();
+        }, ModItems.EXTRACTED_BOTTLE.get(), ModItems.REBREWED_POTION.get(), ModItems.REBREWED_SPLASH_POTION.get(), ModItems.REBREWED_LINGERING_POTION.get());
+    }
+
+    public static float @NotNull [] getColorHSB(int originalColor) {
+        int startRed = (originalColor >> 16) & 0xFF;
+        int startGreen = (originalColor >> 8) & 0xFF;
+        int startBlue = originalColor & 0xFF;
+        return Color.RGBtoHSB(startRed, startGreen, startBlue, null);
+    }
+
+    public static float[] hexToRGB(int hex) {
+        return new float[] {(hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF};
+    }
+
+    public static int RGBtoInt(Vec3 color) {
+        int r = (int) color.x;
+        int g = (int) color.y;
+        int b = (int) color.z;
+
+        int rgb = r;
+        rgb = (rgb << 8) + g;
+        rgb = (rgb << 8) + b;
+
+        return rgb;
+    }
+
+    public static int barColorHelper(int input, int maxInput){
+        int lowColor = 0x8c1111;
+        int highColor = 0x179529;
+
+        int lowRed = (lowColor >> 16) & 0xFF;
+        int lowGreen = (lowColor >> 8) & 0xFF;
+        int lowBlue = lowColor & 0xFF;
+
+        int highRed = (highColor >> 16) & 0xFF;
+        int highGreen = (highColor >> 8) & 0xFF;
+        int highBlue = highColor & 0xFF;
+
+        float[] lowHSB =  Color.RGBtoHSB(lowRed, lowGreen, lowBlue, null);
+        float[] highHSB =  Color.RGBtoHSB(highRed, highGreen, highBlue, null);
+
+
+        float finalHue = ((lowHSB[0] * (Math.abs(input - maxInput))) + (highHSB[0] * input)) / maxInput;
+
+        return Mth.hsvToRgb(finalHue, 1.0F, 1.0F);
     }
 }

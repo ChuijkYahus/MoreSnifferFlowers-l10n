@@ -15,27 +15,25 @@ import net.abraxator.moresnifferflowers.client.renderer.entity.BoblingRenderer;
 import net.abraxator.moresnifferflowers.client.renderer.entity.CorruptedProjectileRenderer;
 import net.abraxator.moresnifferflowers.client.renderer.entity.DragonflyRenderer;
 import net.abraxator.moresnifferflowers.client.renderer.entity.ModBoatRenderer;
-import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.*;
-import net.abraxator.moresnifferflowers.items.DyespriaItem;
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.*;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
-import net.minecraft.world.item.alchemy.PotionContents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforgespi.locating.IModFile;
 
@@ -117,22 +115,6 @@ public class ClientRegistration {
         event.registerSpriteSet(ModParticles.ACIDRIPIA_LAND.get(), BondripiaParticle.AcidripiaLandProvider::new);
 
     }
-
-    @SubscribeEvent
-    public static void onRegisterItemColorHandlers(RegisterColorHandlersEvent.Item event) {
-        event.register((pStack, pTintIndex) -> {
-            Dye dye = Dye.getDyeFromDyespria(pStack);
-            if(pTintIndex != 0 || dye.isEmpty()) {
-                return -1;
-            } else {
-                return Dye.colorForDye(((DyespriaItem) pStack.getItem()), dye.color());
-            }
-        }, ModItems.DYESPRIA.get());
-        event.register((pStack, pTintIndex) -> {
-            return pTintIndex > 0 ? -1 : pStack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getColor();
-        }, ModItems.EXTRACTED_BOTTLE.get(), ModItems.REBREWED_POTION.get(), ModItems.REBREWED_SPLASH_POTION.get(), ModItems.REBREWED_LINGERING_POTION.get());
-    }
-
 
     @SubscribeEvent
     public static void addPackFinders(AddPackFindersEvent event) {

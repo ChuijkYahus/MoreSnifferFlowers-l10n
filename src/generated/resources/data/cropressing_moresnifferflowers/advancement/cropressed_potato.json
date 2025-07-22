@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:cropressed_wheat_from_cropressing"
+        "recipe": "cropressing_moresnifferflowers:cropressed_potato"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:cropressed_wheat_from_cropressing"
+      "cropressing_moresnifferflowers:cropressed_potato"
     ]
   }
 }

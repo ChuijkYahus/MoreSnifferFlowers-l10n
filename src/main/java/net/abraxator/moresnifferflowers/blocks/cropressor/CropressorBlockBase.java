@@ -3,23 +3,20 @@ package net.abraxator.moresnifferflowers.blocks.cropressor;
 import com.mojang.serialization.MapCodec;
 import net.abraxator.moresnifferflowers.blockentities.CropressorBlockEntity;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
+import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -42,7 +39,7 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
     protected static final VoxelShape CENTER_WEST = Block.box(0, 0, 0, 16, 11, 16);
     protected static final VoxelShape CENTER_NORTH = Block.box(0, 0, 0, 16, 11, 16);
     public static final MapCodec<CropressorBlockBase> CODEC = simpleCodec(properties1 -> new CropressorBlockBase(properties1, Part.CENTER));
-    
+
     public CropressorBlockBase(Properties pProperties, Part part) {
         super(pProperties);
         PART = part;
@@ -52,7 +49,7 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
     protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
         return CODEC;
     }
-    
+
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         Direction direction = getConnectedDirection(pState);
@@ -75,7 +72,7 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(FACING, ModStateProperties.FULLNESS, ModStateProperties.CROP);
+        pBuilder.add(FACING, ModStateProperties.FULLNESS);
     }
 
     private Direction getNeighbourDirection(Part part, Direction direction) {
@@ -96,6 +93,11 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
         
         return super.updateShape(pState, pDirection, pNeighborState, pLevel, pCurrentPos, pNeighborPos);
             
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+        return ModItems.CROPRESSOR.get().getDefaultInstance();
     }
 
     @Nullable
@@ -126,19 +128,16 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
-        ENTITY_POS = PART == Part.OUT ? pPos : getEntityPos(pLevel, pPos, PART);
-        if(pLevel.getBlockEntity(ENTITY_POS) instanceof CropressorBlockEntity entity) {
-            if (!pLevel.isClientSide && entity.canInteract() && pPlayer.getMainHandItem().is(ModTags.ModItemTags.CROPRESSABLE_CROPS)) {
-                entity.addItem(pPlayer.getMainHandItem());
+    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        ENTITY_POS = getEntityPos(level, pos, PART);
+        if (!level.isClientSide && level.getBlockEntity(ENTITY_POS) instanceof CropressorBlockEntity entity && entity.canInteract() && player.getMainHandItem().is(ModTags.ModItemTags.CROPRESSABLE)) {
 
-                return ItemInteractionResult.SUCCESS;
-            }
+            return entity.addItem(player.getItemInHand(hand));
         }
-        
-        return super.useItemOn(pStack, pState, pLevel, pPos, pPlayer, pHand, pHitResult);
+
+        return ItemInteractionResult.FAIL;
     }
-    
+
     public static BlockPos getEntityPos(BlockAndTintGetter level, BlockPos blockPos, Part part) {
         if(part == Part.OUT) {
             return blockPos;
