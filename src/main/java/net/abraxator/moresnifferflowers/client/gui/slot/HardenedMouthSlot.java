@@ -1,7 +1,7 @@
 package net.abraxator.moresnifferflowers.client.gui.slot;
 
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
-import net.abraxator.moresnifferflowers.init.ModMobEffects;
+import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -154,6 +154,6 @@ public class HardenedMouthSlot extends Slot {
     }
 
     public boolean hasHardenedMouthEffect() {
-        return player.hasEffect(ModMobEffects.HARDENED_MOUTH.get());
+        return player.hasEffect(ModEffects.HARDENED_MOUTH.get());
     }
 }

@@ -1,7 +1,7 @@
 package net.abraxator.moresnifferflowers.items;
 
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
-import net.abraxator.moresnifferflowers.networking.BerootCookbookScreenPacket;
+import net.abraxator.moresnifferflowers.networking.toClient.BerootCookbookScreenPacket;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;

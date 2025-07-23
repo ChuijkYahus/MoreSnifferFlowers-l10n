@@ -1,4 +1,4 @@
-package net.abraxator.moresnifferflowers.networking;
+package net.abraxator.moresnifferflowers.networking.toClient;
 
 import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
 import net.minecraft.client.Minecraft;

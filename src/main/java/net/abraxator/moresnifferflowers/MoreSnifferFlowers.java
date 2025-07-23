@@ -44,7 +44,7 @@ public class MoreSnifferFlowers {
         ModLoot.CONDITIONS.register(modEventBus);
         ModFeatures.FEATURES.register(modEventBus);
         ModCreativeTabs.TABS.register(modEventBus);
-        ModMobEffects.EFFECTS.register(modEventBus);
+        ModEffects.EFFECTS.register(modEventBus);
         ModSoundEvents.SOUNDS.register(modEventBus);
         ModPaintings.PAINTINGS.register(modEventBus);
         ModParticles.PARTICLES.register(modEventBus);

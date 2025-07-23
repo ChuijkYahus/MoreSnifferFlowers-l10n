@@ -5,7 +5,7 @@ import net.abraxator.moresnifferflowers.entities.SaltBubbleProjectile;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
-import net.abraxator.moresnifferflowers.networking.SaltemoneParticlePacket;
+import net.abraxator.moresnifferflowers.networking.toClient.SaltemoneParticlePacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;

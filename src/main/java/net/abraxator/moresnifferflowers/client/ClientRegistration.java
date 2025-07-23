@@ -4,10 +4,7 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.client.gui.screen.RebrewingStandScreen;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
 import net.abraxator.moresnifferflowers.client.model.block.*;
-import net.abraxator.moresnifferflowers.client.model.entity.BoblingModel;
-import net.abraxator.moresnifferflowers.client.model.entity.CorruptedProjectileModel;
-import net.abraxator.moresnifferflowers.client.model.entity.DragonflyModel;
-import net.abraxator.moresnifferflowers.client.model.entity.SaltBubbleModel;
+import net.abraxator.moresnifferflowers.client.model.entity.*;
 import net.abraxator.moresnifferflowers.client.particle.*;
 import net.abraxator.moresnifferflowers.client.renderer.block.*;
 import net.abraxator.moresnifferflowers.client.renderer.custom.BlockPatternRenderer;
@@ -64,6 +61,7 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModModelLayerLocations.VIVICUS_BOAT_LAYER, BoatModel::createBodyModel);
         event.registerLayerDefinition(ModModelLayerLocations.VIVICUS_CHEST_BOAT_LAYER, ChestBoatModel::createBodyModel);
         event.registerLayerDefinition(ModModelLayerLocations.SALT_BUBBLE, SaltBubbleModel::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayerLocations.GLUING_GUM, GluingGumModel::createBodyLayer);
 
         //BLOCK
         event.registerLayerDefinition(ModModelLayerLocations.GIANT_CARROT, GiantCropModels::createGiantCarrotLayer);
@@ -92,6 +90,7 @@ public class ClientRegistration {
         event.registerEntityRenderer(ModEntityTypes.JAR_OF_ACID.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(ModEntityTypes.SALT_BUBBLE.get(), SaltBubbleRenderer::new);
         event.registerEntityRenderer(ModEntityTypes.SALT_PROJECTILE.get(), SaltProjectileRenderer::new);
+        event.registerEntityRenderer(ModEntityTypes.GLUING_GUM_ENTITY.get(), GluingGumRenderer::new);
 
     }
 

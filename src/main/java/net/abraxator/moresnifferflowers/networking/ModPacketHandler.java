@@ -1,6 +1,10 @@
 package net.abraxator.moresnifferflowers.networking;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.networking.toClient.*;
+import net.abraxator.moresnifferflowers.networking.toServer.BerootCauldronCraftPacket;
+import net.abraxator.moresnifferflowers.networking.toServer.DyespriaModePacket;
+import net.abraxator.moresnifferflowers.networking.toServer.PatternspriaModePacket;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -49,6 +53,9 @@ public class ModPacketHandler {
 
         CHANNEL.messageBuilder(BerootCookbookScreenPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(BerootCookbookScreenPacket::encode).decoder(BerootCookbookScreenPacket::decode).consumerMainThread(BerootCookbookScreenPacket::handle).add();
+
+        CHANNEL.messageBuilder(UpdateIsGluedPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(UpdateIsGluedPacket::encode).decoder(UpdateIsGluedPacket::new).consumerMainThread(UpdateIsGluedPacket::handle).add();
 
     }
 }

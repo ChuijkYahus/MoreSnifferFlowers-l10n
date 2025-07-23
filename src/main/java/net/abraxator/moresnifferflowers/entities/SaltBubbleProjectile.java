@@ -2,7 +2,7 @@ package net.abraxator.moresnifferflowers.entities;
 
 import net.abraxator.moresnifferflowers.init.ModEntityTypes;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
-import net.abraxator.moresnifferflowers.networking.SaltemoneParticlePacket;
+import net.abraxator.moresnifferflowers.networking.toClient.SaltemoneParticlePacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;

@@ -1,9 +1,9 @@
 package net.abraxator.moresnifferflowers.events;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.blocks.MultiBlock;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.abraxator.moresnifferflowers.capability.GluedCapability;
 import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
@@ -16,10 +16,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -32,12 +31,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -50,13 +46,11 @@ import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.ChunkDataEvent;
 import net.minecraftforge.event.level.ChunkWatchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -113,12 +107,35 @@ public class ForgeEvents {
 
     }
 
+    @SubscribeEvent
+    public static void onEffectAdded(MobEffectEvent.Added event){
+        MobEffect effect = Objects.requireNonNull(event.getEffectInstance()).getEffect();
+        LivingEntity entity = event.getEntity();
+
+        if (effect.equals(ModEffects.GLUED.get())){
+            GluedCapability.setAndSync(entity, true);
+        }
+    }
 
     @SubscribeEvent
-    public static void onEffectExpiration(MobEffectEvent event){
-        MobEffectInstance effectInstance = event.getEffectInstance();
+    public static void onEffectRemove(MobEffectEvent.Remove event){
+        MobEffect effect = Objects.requireNonNull(event.getEffectInstance()).getEffect();
         LivingEntity entity = event.getEntity();
-        if (effectInstance.getEffect().equals(ModMobEffects.HARDENED_MOUTH.get()) && entity instanceof Player player){
+
+        onEffectEnd(effect, entity);
+    }
+
+    @SubscribeEvent
+    public static void onEffectExpire(MobEffectEvent.Expired event){
+        MobEffect effect = Objects.requireNonNull(event.getEffectInstance()).getEffect();
+        LivingEntity entity = event.getEntity();
+
+        onEffectEnd(effect, entity);
+    }
+
+    public static void onEffectEnd(MobEffect effect, LivingEntity entity) {
+
+        if (effect.equals(ModEffects.HARDENED_MOUTH.get()) && entity instanceof Player player) {
             player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(hardenedMouthCapability -> {
                 hardenedMouthCapability.getMouthSlotItems().forEach(itemStack -> {
                     if (HardenedMouthSlot.moveToPlayerInventory(player.inventoryMenu, itemStack)) return;
@@ -127,7 +144,12 @@ public class ForgeEvents {
                 });
                 hardenedMouthCapability.clear();
             });
-        };
+        }
+
+        if (effect.equals(ModEffects.GLUED.get())) {
+            GluedCapability.setAndSync(entity, false);
+        }
+
     }
 
     @SubscribeEvent
@@ -147,9 +169,9 @@ public class ForgeEvents {
        ItemStack stack = player.getMainHandItem();
        boolean isCharged = player.getAttackStrengthScale(0.5f) > 0.9f;
 
-        if (player.hasEffect(ModMobEffects.COMBO_MEAL.get()) && stack.is(ItemTags.TOOLS)) {
+        if (player.hasEffect(ModEffects.COMBO_MEAL.get()) && stack.is(ItemTags.TOOLS)) {
 
-           int amplifier = Objects.requireNonNull(player.getEffect(ModMobEffects.COMBO_MEAL.get())).getAmplifier();
+           int amplifier = Objects.requireNonNull(player.getEffect(ModEffects.COMBO_MEAL.get())).getAmplifier();
 
            player.getCapability(CapabilityList.COMBO_MEAL).ifPresent(cap -> {
                if (isCharged){
@@ -175,25 +197,6 @@ public class ForgeEvents {
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         Level level = player.level();
-        if (player.hasEffect(ModMobEffects.STICKY.get())) {
-            double pullRange = 8.0D;
-            List<ItemEntity> nearbyItems = level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(pullRange), item -> !item.hasPickUpDelay());
-            for (ItemEntity item : nearbyItems) {
-                pullItemTowardPlayer(player, item);
-            }
-
-            BlockPos pos = player.getOnPos();
-            BlockState state = level.getBlockState(pos);
-            Vec3 vec3 = pos.getCenter();
-            if (event.phase == TickEvent.Phase.END ||event.side.isClient()) return;
-            int momentum = Mth.floor((player.walkDist - player.walkDistO)  * 250);
-
-            if (momentum > 1 && level.getGameTime() % (150 - momentum) == 0 && state.is(ModTags.ModBlockTags.STICKABLE)){
-                level.playSound(null, pos, state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 1.0F, 0.5F + level.getRandom().nextFloat() * 0.8F);
-                ItemEntity itemEntity = new ItemEntity(level, vec3.x, vec3.y + 0.6F, vec3.z, state.getBlock().asItem().getDefaultInstance());
-                level.addFreshEntity(itemEntity);
-            }
-        }
 
         // if (event.phase == TickEvent.Phase.END || event.player.level().isClientSide) return;
 
@@ -212,11 +215,11 @@ public class ForgeEvents {
         Player player = event.getEntity();
         ItemEntity itemEntity = event.getItem();
 
-        if (player.hasEffect(ModMobEffects.STICKY.get())) {
+        if (player.hasEffect(ModEffects.STICKY.get())) {
            if (!player.isCrouching()) {
                event.setCanceled(true);
            } else {
-               int amplifier = player.getEffect(ModMobEffects.STICKY.get()).getAmplifier();
+               int amplifier = player.getEffect(ModEffects.STICKY.get()).getAmplifier();
                int slowdown = 5 + amplifier*2;
                if (event.getEntity().level().getGameTime() % 5 != 0) {
                    event.setCanceled(true);
@@ -247,6 +250,7 @@ public class ForgeEvents {
 
     }
 
+    // TODO: Clean this up
     @SubscribeEvent
     public static void onPlayerInteractRightClickItem(PlayerInteractEvent.RightClickBlock event) {
         Player player = event.getEntity();
@@ -317,57 +321,5 @@ public class ForgeEvents {
             event.setCancellationResult(InteractionResult.SUCCESS);
             event.setCanceled(true);
         }
-    }
-
-
-
-    @SubscribeEvent
-    public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        BlockPos pos = event.getPos();
-        LevelAccessor levelAccessor = event.getLevel();
-        BlockEntity blockEntity = levelAccessor.getBlockEntity(pos);
-        Level level = event.getPlayer().level();
-        BlockState state = event.getState();
-
-     //   blockBreakEventWithoutPlayer(pos, levelAccessor);
-    }
-
-    public static boolean blockBreakEventWithoutPlayer(BlockPos pos, LevelAccessor levelAccessor) {
-        BlockEntity blockEntity = levelAccessor.getBlockEntity(pos);
-        Level level = (Level) levelAccessor;
-        BlockState blockState = level.getBlockState(pos);
-
-        if (blockState.getBlock() instanceof MultiBlock multiBlock){
-            multiBlock.destroy(multiBlock.getCenter(level, pos), level, blockState);
-        }
-
-        if (BlockPatternCapability.hasPattern(pos, level)) {
-            BlockPatternCapability.removePattern(pos, level);
-            return true;
-        }
-
-        return false;
-    }
-
-    // ChatGPT code
-    private static void pullItemTowardPlayer(Player player, ItemEntity item) {
-        Vec3 playerPos = player.position().add(0, 1, 0); // Aim for player's chest, not feet
-        Vec3 itemPos = item.position();
-        Vec3 direction = playerPos.subtract(itemPos);
-
-
-        // Don't do anything if very close already
-        if (direction.lengthSqr() < 0.5) {
-            return;
-        }
-
-        direction = direction.normalize().scale(0.05); // SMALL pull per tick
-
-        Vec3 currentVelocity = item.getDeltaMovement();
-
-        // Slightly steer the velocity toward the player
-        Vec3 newVelocity = currentVelocity.add(direction).scale(0.95); // Dampen a bit
-
-        item.setDeltaMovement(newVelocity);
     }
 }

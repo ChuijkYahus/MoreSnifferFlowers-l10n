@@ -1,7 +1,7 @@
 package net.abraxator.moresnifferflowers.capability;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.init.ModMobEffects;
+import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -20,10 +20,10 @@ public class ComboMealCapability implements ICapabilityProvider, INBTSerializabl
     public float speed = 1;
     public int duration = 0;
     private final LazyOptional<ComboMealCapability> optional = LazyOptional.of(() -> this);
-    ResourceLocation ID = MoreSnifferFlowers.loc("combo_meal");
+    public static final ResourceLocation ID = MoreSnifferFlowers.loc("combo_meal");
 
     public void tick(Player player) {
-        if (player.hasEffect(ModMobEffects.COMBO_MEAL.get()) && player instanceof attackStrengthTickerAccessor accessor){
+        if (player.hasEffect(ModEffects.COMBO_MEAL.get())){
             if (duration <= 0){
                 speed = 1;
                 player.getAttribute(Attributes.ATTACK_SPEED).removeModifier(UUID.fromString("41DD0153-E92A-B00B-9800-EFFEC53C00B0"));
@@ -37,7 +37,7 @@ public class ComboMealCapability implements ICapabilityProvider, INBTSerializabl
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        return optional.cast(); // I hope this doesnt break anything
+        return CapabilityList.COMBO_MEAL.orEmpty(cap, optional.cast());
     }
 
     @Override
@@ -53,9 +53,5 @@ public class ComboMealCapability implements ICapabilityProvider, INBTSerializabl
     public void deserializeNBT(CompoundTag tag) {
        speed = tag.getFloat("speed");
        duration = tag.getInt("duration");
-    }
-
-    public interface attackStrengthTickerAccessor{
-        int moreSnifferFlowers$getAttackStrengthTickerAccessor();
     }
 }

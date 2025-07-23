@@ -11,7 +11,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public class ModMobEffects {
+public class ModEffects {
     public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(
             ForgeRegistries.MOB_EFFECTS, MoreSnifferFlowers.MOD_ID);
     public static final RegistryObject<MobEffect> EXTRACTED = EFFECTS.register("extracted", () -> new ExtractedEffect(MobEffectCategory.NEUTRAL, 14058905));
@@ -26,8 +26,10 @@ public class ModMobEffects {
     public static final RegistryObject<MobEffect> PANTS_ON_FIRE = EFFECTS.register("pants_on_fire", () -> new PantsOnFireEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
     public static final RegistryObject<MobEffect> HARDENED_MOUTH = EFFECTS.register("hardened_mouth", () -> new HardenedMouthEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
     //Sweet
-    public static final RegistryObject<MobEffect> STICKY = EFFECTS.register("sticky", () -> new SimpleEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
-    public static final RegistryObject<MobEffect> POSITIVE_SWEET = EFFECTS.register("positive_sweet", () -> new SimpleEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
+    public static final RegistryObject<MobEffect> STICKY = EFFECTS.register("sticky", () -> new StickyEffect(MobEffectCategory.HARMFUL, 0xa3679c));
+    public static final RegistryObject<MobEffect> GLUING_TOUCH = EFFECTS.register("gluing_touch", () -> new SimpleEffect(MobEffectCategory.BENEFICIAL, 0xe084b8));
+    public static final RegistryObject<MobEffect> GLUED = EFFECTS.register("glued", () -> new GluedEffect(MobEffectCategory.HARMFUL, 0x863c93)); // caused by the 2 above
+
     // Neutral
     public static final RegistryObject<MobEffect> BLAND = EFFECTS.register("bland", () -> new SimpleEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
     public static final RegistryObject<MobEffect> WELL_BALANCED = EFFECTS.register("well_balanced", () -> new WellBalancedEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00)

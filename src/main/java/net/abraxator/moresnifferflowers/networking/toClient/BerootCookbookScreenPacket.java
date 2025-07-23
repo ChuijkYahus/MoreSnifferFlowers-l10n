@@ -1,4 +1,4 @@
-package net.abraxator.moresnifferflowers.networking;
+package net.abraxator.moresnifferflowers.networking.toClient;
 
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.capability.NutritionCapability;

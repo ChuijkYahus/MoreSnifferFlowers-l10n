@@ -3,7 +3,7 @@ package net.abraxator.moresnifferflowers.mixins;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
-import net.abraxator.moresnifferflowers.init.ModMobEffects;
+import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -31,7 +31,7 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;renderBackground(Lnet/minecraft/client/gui/GuiGraphics;)V", shift = At.Shift.AFTER))
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         Player player = this.minecraft.player;
-        if (player.hasEffect(ModMobEffects.HARDENED_MOUTH.get())){
+        if (player.hasEffect(ModEffects.HARDENED_MOUTH.get())){
 
             int x = this.leftPos + ModClientConfig.HARDENED_MOUTH_X.get();
             int y = this.topPos + ModClientConfig.HARDENED_MOUTH_Y.get();

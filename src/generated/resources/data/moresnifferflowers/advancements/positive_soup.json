@@ -5,9 +5,9 @@
       "conditions": {
         "effects": {
           "moresnifferflowers:combo_meal": {},
+          "moresnifferflowers:gluing_touch": {},
           "moresnifferflowers:hardened_mouth": {},
-          "moresnifferflowers:positive_sour": {},
-          "moresnifferflowers:positive_sweet": {}
+          "moresnifferflowers:positive_sour": {}
         }
       },
       "trigger": "minecraft:effects_changed"

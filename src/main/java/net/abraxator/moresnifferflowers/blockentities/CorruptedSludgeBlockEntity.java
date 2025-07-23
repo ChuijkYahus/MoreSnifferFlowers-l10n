@@ -6,7 +6,7 @@ import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.ModTags;
 import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
-import net.abraxator.moresnifferflowers.networking.CorruptedSludgePacket;
+import net.abraxator.moresnifferflowers.networking.toClient.CorruptedSludgePacket;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.recipes.CorruptionRecipe;
 import net.minecraft.core.BlockPos;
@@ -45,12 +45,16 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
     public void updateUses() {
         this.usesLeft--;
 
+        if (stateChange == 0){
+            stateChange = usesLeft / 4;
+        }
+
         if(this.usesLeft % stateChange == 0 && this.getBlockState().getValue(ModStateProperties.USES_4) - 1 != -1) {
             this.level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(ModStateProperties.USES_4, this.getBlockState().getValue(ModStateProperties.USES_4) - 1));
         }
 
         if(this.usesLeft <= 0) {
-            CorruptedSludgeListener.shootProjectiles(this.getBlockPos().getCenter(), this.level.random.nextIntBetweenInclusive(8, 16), this.level);
+            if (ModServerConfig.CORRUPTED_SLUDGE_GRIEFING.get()) CorruptedSludgeListener.shootProjectiles(this.getBlockPos().getCenter(), this.level.random.nextIntBetweenInclusive(8, 16), this.level);
             super.setRemoved();
             this.level.setBlockAndUpdate(this.getBlockPos(), Blocks.AIR.defaultBlockState());
         }

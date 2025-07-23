@@ -20,7 +20,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class ModEntityTypes {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MoreSnifferFlowers.MOD_ID);
 
-    public static final RegistryObject<EntityType<BoblingEntity>> BOBLING = buildNoEgg(MoreSnifferFlowers.loc("bobling"), makeBuilder(BoblingEntity::new, MobCategory.CREATURE, 0.375F, 0.8125F, 80, 3), false);
+    public static final RegistryObject<EntityType<BoblingEntity>> BOBLING = buildNoEgg(MoreSnifferFlowers.loc("bobling"), makeBuilder(BoblingEntity::new, MobCategory.CREATURE, 0.375F, 0.8125F, 150, 3), false);
     public static final RegistryObject<EntityType<DragonflyProjectile>> DRAGONFLY = buildNoEgg(MoreSnifferFlowers.loc("dragonfly"), makeBuilder(DragonflyProjectile::new, MobCategory.MISC, 0.21875F, 0.21875F, 80, 3), false);
     public static final RegistryObject<EntityType<CorruptedProjectile>> CORRUPTED_SLIME_BALL = buildNoEgg(MoreSnifferFlowers.loc("corrupted_slime_ball"), makeBuilder(CorruptedProjectile::new, MobCategory.MISC, 0.25F, 0.25F, 80, 3), false);
     public static final RegistryObject<EntityType<ModBoatEntity>> MOD_CORRUPTED_BOAT = buildNoEgg(MoreSnifferFlowers.loc("mod_corrupted_boat"), makeBuilder(ModBoatEntity::new, MobCategory.MISC, 1.375f, 0.5625f, 80, 3), false);
@@ -30,6 +30,7 @@ public class ModEntityTypes {
     public static final RegistryObject<EntityType<JarOfAcidProjectile>> JAR_OF_ACID = buildNoEgg(MoreSnifferFlowers.loc("jar_of_acid"), makeBuilder(JarOfAcidProjectile::new, MobCategory.MISC, 0.25F, 0.25F, 80, 3), false);
     public static final RegistryObject<EntityType<SaltBubbleProjectile>> SALT_BUBBLE = buildNoEgg(MoreSnifferFlowers.loc("salt_bubble"), makeBuilder(SaltBubbleProjectile::new, MobCategory.MISC, 0.7F, 0.7F, 80, 3), false);
     public static final RegistryObject<EntityType<SaltProjectile>> SALT_PROJECTILE = buildNoEgg(MoreSnifferFlowers.loc("salt_projectile"), makeBuilder(SaltProjectile::new, MobCategory.MISC, 0.25F, 0.25F, 80, 3), false);
+    public static final RegistryObject<EntityType<GluingGumEntity>> GLUING_GUM_ENTITY = buildNoEgg(MoreSnifferFlowers.loc("gluing_gum_entity"), makeBuilder(GluingGumEntity::new, MobCategory.MISC, 0.25F, 0.25F, 80, 3), false);
 
     private static <E extends Entity> RegistryObject<EntityType<E>> make(ResourceLocation id, EntityType.EntityFactory<E> factory, MobCategory classification, float width, float height, int primary, int secondary) {
         return make(id, factory, classification, width, height, false, primary, secondary);

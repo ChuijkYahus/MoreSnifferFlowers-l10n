@@ -1,4 +1,4 @@
-package net.abraxator.moresnifferflowers.networking;
+package net.abraxator.moresnifferflowers.networking.toServer;
 
 import net.abraxator.moresnifferflowers.items.PatternspriaItem;
 import net.minecraft.network.FriendlyByteBuf;

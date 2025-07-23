@@ -6,9 +6,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public interface HardenedMouthCapability extends INBTSerializable<CompoundTag> {
+public interface HardenedMouthCapability extends INBTSerializable<CompoundTag>, ICapabilityProvider {
      ResourceLocation ID = MoreSnifferFlowers.loc("mouth_inventory");
 
      int cooldown = 0;

@@ -144,9 +144,6 @@ public class CropressorBlockEntity extends ModBlockEntity implements Container {
                 success = true;
             }
 
-            System.out.println("container = " + container);
-
-
             if (success) {
                 currentCrop = new ItemStack(copy.getItem(), getTotalAmount(copy.getItem()));
                 barLength = Math.min(Mth.ceil((float) getTotalAmount(copy.getItem()) / 2), 8);

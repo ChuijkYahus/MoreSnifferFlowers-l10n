@@ -3,7 +3,7 @@ package net.abraxator.moresnifferflowers.capability;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.components.DirectionStorageHelper;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
-import net.abraxator.moresnifferflowers.networking.UpdateBlockPatternsPacket;
+import net.abraxator.moresnifferflowers.networking.toClient.UpdateBlockPatternsPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

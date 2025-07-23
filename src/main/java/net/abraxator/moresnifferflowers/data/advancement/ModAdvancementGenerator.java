@@ -79,7 +79,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                 .addCriterion("used_bonmeel", ModAdvancementCritters.usedBonmeel())
                 .save(consumer, MoreSnifferFlowers.loc("bonmeel").toString());
 
-        Advancement.Builder.advancement()
+       var cropressing = Advancement.Builder.advancement()
                 .parent(bonmeel)
                 .display(
                         ModItems.CROPRESSED_BEETROOT.get(),
@@ -95,7 +95,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                 .save(consumer, MoreSnifferFlowers.loc("cropressor").toString());
 
        var cauldron = Advancement.Builder.advancement()
-                .parent(bonmeel)
+                .parent(cropressing)
                 .display(
                         ModItems.BEROOT_CAULDRON.get(),
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.beroot_cauldron", "Glooby, and never Soupy"),
@@ -124,7 +124,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                         true,
                         false
                 )
-                .addCriterion("has_positive_soup_effects",EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.effects().and(ModMobEffects.POSITIVE_SWEET.get()).and(ModMobEffects.POSITIVE_SOUR.get()).and(ModMobEffects.COMBO_MEAL.get()).and(ModMobEffects.HARDENED_MOUTH.get())))
+                .addCriterion("has_positive_soup_effects",EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.effects().and(ModEffects.GLUING_TOUCH.get()).and(ModEffects.POSITIVE_SOUR.get()).and(ModEffects.COMBO_MEAL.get()).and(ModEffects.HARDENED_MOUTH.get())))
                 .rewards(AdvancementRewards.Builder.experience(100))
                 .save(consumer, MoreSnifferFlowers.loc("positive_soup").toString());
 
@@ -140,7 +140,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                         true,
                         true
                 )
-                .addCriterion("has_negative_soup_effects", EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.effects().and(ModMobEffects.STICKY.get()).and(ModMobEffects.NEGATIVE_SOUR.get()).and(ModMobEffects.SALTY.get()).and(ModMobEffects.PANTS_ON_FIRE.get())))
+                .addCriterion("has_negative_soup_effects", EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.effects().and(ModEffects.STICKY.get()).and(ModEffects.NEGATIVE_SOUR.get()).and(ModEffects.SALTY.get()).and(ModEffects.PANTS_ON_FIRE.get())))
                 .rewards(AdvancementRewards.Builder.experience(53))
                 .save(consumer, MoreSnifferFlowers.loc("negative_soup").toString());
 
@@ -148,7 +148,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
 
 
         Advancement.Builder.advancement()
-                .parent(bonmeel)
+                .parent(cropressing)
                 .display(
                         ModItems.REBREWING_STAND.get(),
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.rebrew", "Local Rebrewery"),
