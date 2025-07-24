@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.entities;
 
 import net.abraxator.moresnifferflowers.blocks.Corruptable;
+import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.recipes.CorruptionRecipe;
 import net.minecraft.core.BlockPos;
@@ -143,6 +144,14 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
                     corruptable.onCorrupt(level, blockPos, level.getBlockState(blockPos), block);
                 } else {
                     level.setBlockAndUpdate(blockPos, block.withPropertiesOf(state));
+
+                    level.getChunkAt(blockPos).getCapability(CapabilityList.CORRUPTION).ifPresent(cap -> {
+                        boolean hasResistance = cap.resistance > 0;
+                            cap.isSource = !hasResistance;
+                            cap.isNeighbor = hasResistance;
+                            cap.count++;
+                    });
+
                 }
 
                 if (level.getNearestPlayer(this, 15) instanceof ServerPlayer serverPlayer) {

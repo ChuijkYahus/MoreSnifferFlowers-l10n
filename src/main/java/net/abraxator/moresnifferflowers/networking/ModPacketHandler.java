@@ -54,8 +54,8 @@ public class ModPacketHandler {
         CHANNEL.messageBuilder(BerootCookbookScreenPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(BerootCookbookScreenPacket::encode).decoder(BerootCookbookScreenPacket::decode).consumerMainThread(BerootCookbookScreenPacket::handle).add();
 
-        CHANNEL.messageBuilder(UpdateIsGluedPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(UpdateIsGluedPacket::encode).decoder(UpdateIsGluedPacket::new).consumerMainThread(UpdateIsGluedPacket::handle).add();
+        CHANNEL.messageBuilder(UpdateGluedPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(UpdateGluedPacket::encode).decoder(UpdateGluedPacket::new).consumerMainThread(UpdateGluedPacket::handle).add();
 
     }
 }

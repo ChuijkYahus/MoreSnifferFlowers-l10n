@@ -28,6 +28,7 @@
       "state": {
         "Name": "moresnifferflowers:corrupted_grass_block",
         "Properties": {
+          "crowded": "false",
           "snowy": "false"
         }
       }

@@ -221,7 +221,7 @@
 # Tooltips 📜📜📜
 	"message.more_sniffer_flowers.dyespria_mode": "Current Mode",
 
-	"tooltip.dyespria.usage": "Hover+Right-click to insert dye \nRight-click compatible block to paint \nSneak+Scroll to change paint mode\n",
+	"tooltip.dyespria.usage": "Hover+Right-click to insert dye \nRight-click compatible block or pattern to paint \nSneak+Scroll to change paint mode\n",
 	"tooltip.patternspria.usage": "Controls like Dyespria \nShift+Right-click to copy pattern color \nAccepts: \n-Block Patterns \n-Banner Patterns \n",
 	"tooltip.dyespria.empty": "Empty",
 	"tooltip.jar_of_bonmeel.usage": "Can be applied to a fully grown 3x3 grid of the following crops: \nCarrot, Potato, Wheat, Beetroot and Nether Wart",
@@ -233,7 +233,7 @@
 	"tooltip.extracted_bottle.obtain": "Obtainable using Bottle o' Extraction",
 	"tooltip.wip": "WIP",
 	"tooltip.vivicus_antidote": "Cures Boblings and Corrupted Grass",
-	"tooltip.dyescrapia": "Scrapes the dye off of colored blocks",
+	"tooltip.dyescrapia": "Scrapes off dye and block patterns",
 	"tooltip.saltemone_seeds": "Plantable on water",
 
 # Advancements 🏆🏆🏆
@@ -329,6 +329,9 @@
 	"effect.moresnifferflowers.bland": "Bland",
 	"effect.moresnifferflowers.well_balanced": "Well Balanced",
 	"effect.moresnifferflowers.sticky": "Sticky",
+	"effect.moresnifferflowers.gluing_touch": "Gluing Touch",
+	"effect.moresnifferflowers.glued": "Glued",
+
 
 	
 	"death.attack.moresnifferflowersveggies": "Já si nemyslim že se tenhle text ukazuje ve hře ale jestli jo tak zdravim 😊😊👋👋",
