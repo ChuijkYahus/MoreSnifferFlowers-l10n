@@ -6,6 +6,8 @@ import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.ModStatePropertiesUnsafe;
 import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
+import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
+import net.abraxator.moresnifferflowers.networking.toClient.CorruptionParticlePacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -22,6 +24,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.lighting.LightEngine;
+import net.minecraftforge.network.PacketDistributor;
 
 public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
     public CorruptedGrassBlock(BlockBehaviour.Properties properties) {
@@ -66,6 +69,16 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
     }
 
     @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        super.onRemove(state, level, pos, newState, movedByPiston);
+        LevelChunk chunk = level.getChunkAt(pos);
+
+        chunk.getCapability(CapabilityList.CORRUPTION).ifPresent(cap -> {
+            if (cap.count > 0) cap.count--;
+        });
+    }
+
+    @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (!canBeGrass(state, level, pos)) {
             if (!level.isAreaLoaded(pos, 1)) return;
@@ -75,14 +88,17 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
             if (state.getValue(ModStateProperties.CROWDED)) return;
             if (level.getMaxLocalRawBrightness(pos.above()) <=6 && random.nextDouble() < 0.2D *  ModServerConfig.CORRUPTION_SPREAD_SPEED.get()) {
                 BlockState blockstate = this.defaultBlockState();
+                boolean spreadSuccess = false;
 
                 for (int i = 0; i < 4; i++) {
-                   if (spread(level, pos, random, blockstate))
-                        placeCorruptedLeaves(level, pos, random);
+
+                    if (!spreadSuccess) spreadSuccess = spread(level, pos, random, blockstate);
+
+                    if (spreadSuccess) placeCorruptedLeaves(level, pos, random);
 
                 }
 
-                placeTallGrass(level, pos);
+               if (spreadSuccess) placeTallGrass(level, pos);
             }
         }
     }
@@ -100,44 +116,13 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
         BlockPos pos1 = pos.offset(random.nextIntBetweenInclusive(-2,2), random.nextIntBetweenInclusive(-2,2), random.nextIntBetweenInclusive(-2,2));
         BlockState state1 = level.getBlockState(pos1);
 
-        if (state1.is(BlockTags.DIRT) && canPropagate(blockstate, level, pos1) && !state1.is(ModBlocks.CURED_GRASS_BLOCK.get()) && !state1.is(ModBlocks.CORRUPTED_GRASS_BLOCK.get()) ) {
+        boolean canSpread = state1.is(BlockTags.DIRT) && canPropagate(blockstate, level, pos1) && !state1.is(ModBlocks.CURED_GRASS_BLOCK.get()) && !state1.is(ModBlocks.CORRUPTED_GRASS_BLOCK.get());
+
+        if (canSpread) {
 
             if (level.isClientSide) return false;
-            LevelChunk chunkNew = level.getChunkAt(pos1);
-            LevelChunk chunkOriginal = level.getChunkAt(pos);
 
-            boolean differentChunk = CorruptionCapability.areDifferentChunks(level, pos1, pos);
-            
-            boolean isSourceOriginal = CorruptionCapability.isSource(chunkOriginal);
-            boolean isSourceNew = CorruptionCapability.isSource(chunkNew);
-            boolean isNeighborNew = CorruptionCapability.isNeighbor(chunkNew);
-            
-            int count = CorruptionCapability.getCount(chunkNew);
-            int resistance = CorruptionCapability.getResistance(chunkNew);
-
-            if (differentChunk) {
-               if (isSourceOriginal) {
-                   chunkNew.getCapability(CapabilityList.CORRUPTION).ifPresent(capability -> capability.isNeighbor = true);
-
-               } else if (isNeighborNew) {
-                   return false;
-               }
-
-            }
-
-            if (!isNeighborNew && !isSourceNew) return false;
-
-            if (isNeighborNew && !isSourceNew) {
-                int maxResistance = 5;
-                int maxCorruption = 150;
-                double chance = 1 - (double) count / Math.max(maxCorruption - resistance*(maxCorruption / maxResistance), 1);
-                if (chance <= 0) level.setBlock(pos, blockstate.setValue(ModStateProperties.CROWDED, true), 3);
-                if (random.nextDouble() > chance) {
-                    return false;
-                }
-            }
-
-            CorruptionCapability.addCount(chunkNew);
+            if (checkChunks(level, pos, random, blockstate, pos1)) return false;
 
             level.setBlockAndUpdate(pos1, blockstate.setValue(SNOWY, level.getBlockState(pos1.above()).is(Blocks.SNOW)));
 
@@ -145,9 +130,70 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
             if (random.nextFloat() < 0.10F && level.getBlockState(posAbove).isAir()){
                 level.setBlock(posAbove, ModBlocks.CORRUPTED_WART.get().defaultBlockState(), 3);
             }
+
+            return true;
         }
 
-        return true;
+        return false;
+    }
+
+    private static boolean checkChunks(ServerLevel level, BlockPos pos, RandomSource random, BlockState blockstate, BlockPos pos1) {
+        LevelChunk chunkNew = level.getChunkAt(pos1);
+        LevelChunk chunkOriginal = level.getChunkAt(pos);
+
+        boolean differentChunk = CorruptionCapability.areDifferentChunks(level, pos1, pos);
+
+        boolean isSourceOriginal = CorruptionCapability.isSource(chunkOriginal);
+        boolean isSourceNew = CorruptionCapability.isSource(chunkNew);
+        boolean isNeighborNew = CorruptionCapability.isNeighbor(chunkNew);
+
+        int count = CorruptionCapability.getCount(chunkNew);
+        int resistance = CorruptionCapability.getResistance(chunkNew);
+
+        if (differentChunk) {
+           if (isSourceOriginal) {
+               chunkNew.getCapability(CapabilityList.CORRUPTION).ifPresent(capability -> capability.isNeighbor = true);
+
+           } else if (isNeighborNew) {
+               return true;
+           }
+
+        }
+
+        if (!isNeighborNew && !isSourceNew) {
+            setCrowded(level, pos, blockstate, resistance, chunkOriginal);
+            return true;
+        }
+
+        if (isNeighborNew && !isSourceNew) {
+            int maxResistance = CorruptionCapability.MAX_RESISTANCE;
+            int maxCorruption = CorruptionCapability.MAX_CORRUPTION;
+
+            double chance = 1 - (double) count / Math.max(maxCorruption - resistance*(maxCorruption / maxResistance), 1);
+
+            if (chance <= 0) {
+                setCrowded(level, pos, blockstate, resistance, chunkOriginal);
+                return true;
+            }
+
+            if (random.nextDouble() > chance) {
+                return true;
+            }
+        }
+
+        CorruptionCapability.addCount(chunkNew);
+        return false;
+    }
+
+    private static void setCrowded(ServerLevel level, BlockPos pos, BlockState blockstate, int resistance, LevelChunk chunkOriginal) {
+        level.setBlock(pos, blockstate.setValue(ModStateProperties.CROWDED, true), 3);
+
+        boolean isPositive = resistance > 0;
+        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(),new CorruptionParticlePacket(pos, isPositive, false));
+
+        if (isPositive){
+            CorruptionCapability.sendFlowerParticles(chunkOriginal);
+        }
     }
 
     private static void placeTallGrass(ServerLevel level, BlockPos pos) {

@@ -6,7 +6,6 @@ import net.abraxator.moresnifferflowers.networking.toClient.UpdateGluedPacket;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -41,17 +40,7 @@ public class GluedCapability implements ICapabilityProvider, INBTSerializable<Co
     }
 
     public static void sync(LivingEntity entity, boolean isGlued) {
-        if (!(entity instanceof ServerPlayer player)) {
-            ModPacketHandler.CHANNEL.send(
-                    PacketDistributor.TRACKING_ENTITY.with(() -> entity),
-                    new UpdateGluedPacket(isGlued, entity.getId())
-            );
-        } else {
-            ModPacketHandler.CHANNEL.send(
-                    PacketDistributor.PLAYER.with(() -> (ServerPlayer) entity),
-                    new UpdateGluedPacket(isGlued, entity.getId())
-            );
-        }
+        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(),new UpdateGluedPacket(isGlued, entity.getId()));
     }
 
     public static void playSound(Level level, Entity entity){

@@ -57,5 +57,8 @@ public class ModPacketHandler {
         CHANNEL.messageBuilder(UpdateGluedPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(UpdateGluedPacket::encode).decoder(UpdateGluedPacket::new).consumerMainThread(UpdateGluedPacket::handle).add();
 
+        CHANNEL.messageBuilder(CorruptionParticlePacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(CorruptionParticlePacket::encode).decoder(CorruptionParticlePacket::new).consumerMainThread(CorruptionParticlePacket::handle).add();
+
     }
 }

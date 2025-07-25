@@ -3,7 +3,6 @@ package net.abraxator.moresnifferflowers.events;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
-import net.abraxator.moresnifferflowers.capability.CorruptionCapability;
 import net.abraxator.moresnifferflowers.capability.GluedCapability;
 import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
 import net.abraxator.moresnifferflowers.init.*;
@@ -25,10 +24,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -238,7 +234,11 @@ public class ForgeEvents {
 
        if (state.is(ModTags.ModBlockTags.CORRUPTION_SHIELDING) && badLevel instanceof Level level){
            LevelChunk chunk = level.getChunkAt(event.getPos());
-           CorruptionCapability.addResistance(chunk, 1);
+           chunk.getCapability(CapabilityList.CORRUPTION).ifPresent(cap ->{
+               cap.resistance++;
+               cap.isSource = false;
+               cap.flowers.add(event.getPos());
+           });
        }
     }
 
@@ -250,8 +250,13 @@ public class ForgeEvents {
         ItemStack itemStack = event.getItemStack();
         Level level = event.getLevel();
         BlockPos pos = event.getPos();
-        var state = level.getBlockState(pos);
-        var item = player.getItemInHand(hand).getItem().getDefaultInstance();
+        BlockState state = level.getBlockState(pos);
+        ItemStack item = player.getItemInHand(hand).getItem().getDefaultInstance();
+
+        {
+            //This is the DEBUG BLOCK, remember to delete everything from the DEBUG BLOCK later
+
+        }
 
         if (event.isCanceled()) return;
 

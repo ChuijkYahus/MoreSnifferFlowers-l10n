@@ -23,9 +23,10 @@ public class BlockBehaviourMixin {
             BlockPatternCapability.removePattern(pos, level);
         }
 
-        if (state.is(ModTags.ModBlockTags.CORRUPTION_SHIELDING)){
+        if (state.is(ModTags.ModBlockTags.CORRUPTION_SHIELDING) && !level.isClientSide){
             LevelChunk chunk = level.getChunkAt(pos);
             CorruptionCapability.addResistance(chunk, -1);
+            CorruptionCapability.removeFlower(chunk, pos);
         }
     }
 }
