@@ -2,7 +2,7 @@ package net.abraxator.moresnifferflowers.capability;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
-import net.abraxator.moresnifferflowers.networking.toClient.UpdateGluedPacket;
+import net.abraxator.moresnifferflowers.networking.toClient.SyncGluedPacket;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -24,11 +24,12 @@ public class GluedCapability implements ICapabilityProvider, INBTSerializable<Co
     private final LazyOptional<GluedCapability> optional = LazyOptional.of(() -> this);
     public static final ResourceLocation ID = MoreSnifferFlowers.loc("is_glued");
 
-    public static void setAndSync(LivingEntity entity, boolean isGlued){
+    public static void setAndSync(LivingEntity entity, boolean isGlued, boolean playSound) {
         Level level = entity.level();
         if (level.isClientSide) return;
 
-        playSound(level, entity);
+        if (playSound) playSound(level, entity);
+
         entity.getCapability(CapabilityList.GLUED).ifPresent(cap -> {
             cap.isGlued = isGlued;
             cap.sync(entity);
@@ -40,7 +41,7 @@ public class GluedCapability implements ICapabilityProvider, INBTSerializable<Co
     }
 
     public static void sync(LivingEntity entity, boolean isGlued) {
-        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(),new UpdateGluedPacket(isGlued, entity.getId()));
+        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(),new SyncGluedPacket(isGlued, entity.getId()));
     }
 
     public static void playSound(Level level, Entity entity){

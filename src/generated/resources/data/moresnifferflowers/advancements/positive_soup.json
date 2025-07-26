@@ -7,7 +7,7 @@
           "moresnifferflowers:combo_meal": {},
           "moresnifferflowers:gluing_touch": {},
           "moresnifferflowers:hardened_mouth": {},
-          "moresnifferflowers:positive_sour": {}
+          "moresnifferflowers:untouchable": {}
         }
       },
       "trigger": "minecraft:effects_changed"

@@ -13,8 +13,8 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public record UpdateGluedPacket(boolean isGlued, int entityId) {
-    public UpdateGluedPacket(FriendlyByteBuf buf) {
+public record SyncGluedPacket(boolean isGlued, int entityId) {
+    public SyncGluedPacket(FriendlyByteBuf buf) {
         this(buf.readBoolean(), buf.readInt());
     }
 
@@ -23,13 +23,13 @@ public record UpdateGluedPacket(boolean isGlued, int entityId) {
         buf.writeInt(entityId);
     }
 
-    public static void handle(UpdateGluedPacket packet, Supplier<NetworkEvent.Context> context) {
+    public static void handle(SyncGluedPacket packet, Supplier<NetworkEvent.Context> context) {
         context.get().enqueueWork(() -> handlePacket(packet));
         context.get().setPacketHandled(true);
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static void handlePacket(UpdateGluedPacket packet) {
+    private static void handlePacket(SyncGluedPacket packet) {
         Level level = Minecraft.getInstance().level;
         if (level == null) return;
 

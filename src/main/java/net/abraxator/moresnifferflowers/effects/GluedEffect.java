@@ -19,7 +19,7 @@ public class GluedEffect extends MobEffect {
         entity.hasImpulse = false;
 
         if (entity.level().getGameTime() % 41 == 0) {
-            GluedCapability.setAndSync(entity, true);
+            GluedCapability.setAndSync(entity, true, false);
         }
     }
 

@@ -14,25 +14,25 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public record UpdateBlockPatternsPacket(CompoundTag tag, ChunkPos pos) {
+public record SyncBlockPatternsPacket(CompoundTag tag, ChunkPos pos) {
 
-    public static void encode(UpdateBlockPatternsPacket msg, FriendlyByteBuf buf) {
+    public static void encode(SyncBlockPatternsPacket msg, FriendlyByteBuf buf) {
         buf.writeNbt(msg.tag);
         buf.writeChunkPos(msg.pos);
     }
 
-    public static UpdateBlockPatternsPacket decode(FriendlyByteBuf buf) {
-        return new UpdateBlockPatternsPacket(buf.readNbt(), buf.readChunkPos());
+    public static SyncBlockPatternsPacket decode(FriendlyByteBuf buf) {
+        return new SyncBlockPatternsPacket(buf.readNbt(), buf.readChunkPos());
     }
 
-    public static void handle(UpdateBlockPatternsPacket msg, Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(SyncBlockPatternsPacket msg, Supplier<NetworkEvent.Context> ctx) {
         NetworkEvent.Context context = ctx.get();
         context.enqueueWork(() -> handlePacket(msg));
         context.setPacketHandled(true);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void handlePacket(UpdateBlockPatternsPacket msg) {
+    public static void handlePacket(SyncBlockPatternsPacket msg) {
         Level level = Minecraft.getInstance().level;
         ChunkPos chunkPos = msg.pos;
         LevelChunk chunk = level.getChunkSource().getChunk(chunkPos.x, chunkPos.z, false);

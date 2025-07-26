@@ -4,9 +4,9 @@
     "has_negative_soup_effects": {
       "conditions": {
         "effects": {
-          "moresnifferflowers:negative_sour": {},
           "moresnifferflowers:pants_on_fire": {},
           "moresnifferflowers:salty": {},
+          "moresnifferflowers:slippery": {},
           "moresnifferflowers:sticky": {}
         }
       },

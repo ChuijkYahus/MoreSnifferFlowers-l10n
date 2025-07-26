@@ -22,7 +22,7 @@ public class EntityMixin {
 
         if(entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(ModEffects.GLUED.get()) && !level.isClientSide){
             livingEntity.removeEffect(ModEffects.GLUED.get());
-            GluedCapability.setAndSync(livingEntity,false);
+            GluedCapability.setAndSync(livingEntity,false, true);
         }
     }
 }

@@ -32,6 +32,8 @@ public interface HardenedMouthCapability extends INBTSerializable<CompoundTag>, 
 
      int getCooldown();
 
+     void onEffectEnd(Player player);
+
      void setCooldown(int cooldown);
 
      int getMaxCooldown(Player player);

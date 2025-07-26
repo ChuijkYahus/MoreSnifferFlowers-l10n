@@ -4,7 +4,6 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.capability.GluedCapability;
-import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
 import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
@@ -20,11 +19,12 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -44,12 +44,10 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.event.level.ChunkWatchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.Objects;
-import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
@@ -60,24 +58,13 @@ public class ForgeEvents {
         event.addListener(new NutritionLoader());
     }
 
-
-    @SubscribeEvent
-    public static void onChunkWatch(ChunkWatchEvent.Watch event) {
-        Player player = event.getPlayer();
-        if (!event.getLevel().isClientSide){
-            LevelChunk chunk = event.getChunk();
-            chunk.getCapability(CapabilityList.BLOCK_PATTERNS).ifPresent(blockPatternCapability -> blockPatternCapability.sync(chunk.getPos()));
-        }
-
-    }
-
     @SubscribeEvent
     public static void onEffectAdded(MobEffectEvent.Added event){
         MobEffect effect = Objects.requireNonNull(event.getEffectInstance()).getEffect();
         LivingEntity entity = event.getEntity();
 
         if (effect.equals(ModEffects.GLUED.get())){
-            GluedCapability.setAndSync(entity, true);
+            GluedCapability.setAndSync(entity, true, true);
         }
     }
 
@@ -99,20 +86,18 @@ public class ForgeEvents {
 
     public static void onEffectEnd(MobEffect effect, LivingEntity entity) {
 
-        if (effect.equals(ModEffects.HARDENED_MOUTH.get()) && entity instanceof Player player) {
-            player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(hardenedMouthCapability -> {
-                hardenedMouthCapability.getMouthSlotItems().forEach(itemStack -> {
-                    if (HardenedMouthSlot.moveToPlayerInventory(player.inventoryMenu, itemStack)) return;
-                    if (itemStack.isEmpty()) return;
-                    player.drop(itemStack, true);
-                });
-                hardenedMouthCapability.clear();
-            });
+        if (entity instanceof Player player) {
+            if (effect.equals(ModEffects.HARDENED_MOUTH.get()))
+                player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> cap.onEffectEnd(player));
+
+            if (effect.equals(ModEffects.SLIPPERY.get()))
+                player.getCapability(CapabilityList.SLIPPERY).ifPresent(cap -> cap.onEffectEnd(player));
+
         }
 
-        if (effect.equals(ModEffects.GLUED.get())) {
-            GluedCapability.setAndSync(entity, false);
-        }
+        if (effect.equals(ModEffects.GLUED.get()))
+            GluedCapability.setAndSync(entity, false, true);
+
 
     }
 
@@ -135,26 +120,9 @@ public class ForgeEvents {
         Entity entity = event.getTarget();
         Level level = player.level();
 
-        if (player.hasEffect(ModEffects.COMBO_MEAL.get()) && stack.is(ItemTags.TOOLS)) {
+        if (player.hasEffect(ModEffects.COMBO_MEAL.get()) && stack.is(ItemTags.TOOLS))
+            player.getCapability(CapabilityList.COMBO_MEAL).ifPresent(cap -> cap.onAttack(player, isCharged));
 
-            int amplifier = Objects.requireNonNull(player.getEffect(ModEffects.COMBO_MEAL.get())).getAmplifier();
-
-            player.getCapability(CapabilityList.COMBO_MEAL).ifPresent(cap -> {
-                if (isCharged){
-                    cap.speed *= 1 + (amplifier / 4f + 1) / 10f;
-                    cap.duration = (int) (100 / (cap.speed * 2));
-
-                    player.getAttribute(Attributes.ATTACK_SPEED).removeModifier(UUID.fromString("41DD0153-E92A-B00B-9800-EFFEC53C00B0"));
-                    AttributeModifier mod = new AttributeModifier(UUID.fromString("41DD0153-E92A-B00B-9800-EFFEC53C00B0"), "combo_meal", cap.speed - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
-                    player.getAttribute(Attributes.ATTACK_SPEED).addPermanentModifier(mod);
-
-                } else {
-
-                    cap.duration /= 2;
-
-                }
-            });
-        }
 
         if(player.hasEffect(ModEffects.GLUING_TOUCH.get()) && isCharged && entity instanceof LivingEntity livingEntity && !level.isClientSide) {
             int amplifier = Objects.requireNonNull(player.getEffect(ModEffects.GLUING_TOUCH.get())).getAmplifier();
@@ -176,13 +144,16 @@ public class ForgeEvents {
 
         // if (event.phase == TickEvent.Phase.END || event.player.level().isClientSide) return;
 
-        event.player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
-            cap.tick(player);
-        });
+        if (!level.isClientSide) {
+            if (player.hasEffect(ModEffects.HARDENED_MOUTH.get()))
+                event.player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> cap.tick(player));
+        }
 
-        event.player.getCapability(CapabilityList.COMBO_MEAL).ifPresent(cap -> {
-            cap.tick(player);
-        });
+        if (player.hasEffect(ModEffects.SLIPPERY.get()))
+            event.player.getCapability(CapabilityList.SLIPPERY).ifPresent(cap -> cap.tick(player));
+
+        if (player.hasEffect(ModEffects.COMBO_MEAL.get()))
+            event.player.getCapability(CapabilityList.COMBO_MEAL).ifPresent(cap -> cap.tick(player));
 
     }
 

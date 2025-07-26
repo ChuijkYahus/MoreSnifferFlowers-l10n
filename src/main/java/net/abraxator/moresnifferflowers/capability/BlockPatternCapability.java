@@ -3,7 +3,7 @@ package net.abraxator.moresnifferflowers.capability;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.components.DirectionStorageHelper;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
-import net.abraxator.moresnifferflowers.networking.toClient.UpdateBlockPatternsPacket;
+import net.abraxator.moresnifferflowers.networking.toClient.SyncBlockPatternsPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -120,7 +120,7 @@ public class BlockPatternCapability implements ICapabilityProvider, INBTSerializ
 
     public void sync(ChunkPos pos){
         CompoundTag compoundtag = this.save(new CompoundTag());
-        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new UpdateBlockPatternsPacket(compoundtag, pos));
+        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new SyncBlockPatternsPacket(compoundtag, pos));
     }
 
     public int count() {

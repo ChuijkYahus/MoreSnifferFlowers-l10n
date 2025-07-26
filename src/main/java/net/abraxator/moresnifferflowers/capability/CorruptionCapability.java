@@ -21,8 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class CorruptionCapability implements ICapabilityProvider, INBTSerializable<CompoundTag> {
     public static final ResourceLocation ID = MoreSnifferFlowers.loc("corruption");
@@ -63,18 +61,6 @@ public class CorruptionCapability implements ICapabilityProvider, INBTSerializab
         });
     }
 
-    public static void addFlower(LevelChunk chunk, BlockPos pos) {
-        chunk.getCapability(CapabilityList.CORRUPTION).ifPresent(cap -> cap.flowers.add(pos));
-    }
-
-    public static void removeFlower(LevelChunk chunk, BlockPos pos) {
-        chunk.getCapability(CapabilityList.CORRUPTION).ifPresent(cap -> cap.flowers.remove(pos));
-    }
-
-    public static void addResistance(LevelChunk chunk, int amount) {
-        chunk.getCapability(CapabilityList.CORRUPTION).ifPresent(cap -> cap.resistance += amount);
-    }
-
     public static void cure(LevelChunk chunk){
         chunk.getCapability(CapabilityList.CORRUPTION).ifPresent(cap -> {
             cap.count = 0;
@@ -83,36 +69,12 @@ public class CorruptionCapability implements ICapabilityProvider, INBTSerializab
         });
     }
 
-    public static void addCount(LevelChunk chunk) {
-        chunk.getCapability(CapabilityList.CORRUPTION).ifPresent(cap -> cap.count++);
-    }
-
     public static boolean areDifferentChunks(Level level, BlockPos pos1, BlockPos pos2) {
        return !level.getChunkAt(pos1).getPos().equals(level.getChunkAt(pos2).getPos());
     }
 
-    public static boolean isSource(LevelChunk chunk){
-        AtomicBoolean ret = new AtomicBoolean(false);
-        chunk.getCapability(CapabilityList.CORRUPTION).ifPresent(cap -> ret.set(cap.isSource));
-       return ret.get();
-    }
-
-    public static boolean isNeighbor(LevelChunk chunk){
-        AtomicBoolean ret = new AtomicBoolean(false);
-        chunk.getCapability(CapabilityList.CORRUPTION).ifPresent(cap -> ret.set(cap.isNeighbor));
-        return ret.get();
-    }
-
-    public static int getCount(LevelChunk chunk){
-        AtomicInteger ret = new AtomicInteger(0);
-        chunk.getCapability(CapabilityList.CORRUPTION).ifPresent(cap -> ret.set(cap.count));
-        return ret.get();
-    }
-
-    public static int getResistance(LevelChunk chunk){
-        AtomicInteger ret = new AtomicInteger(0);
-        chunk.getCapability(CapabilityList.CORRUPTION).ifPresent(cap -> ret.set(cap.resistance));
-        return ret.get();
+    public static CorruptionCapability get(LevelChunk chunk) {
+        return chunk.getCapability(CapabilityList.CORRUPTION).orElseThrow(IllegalStateException::new);
     }
 
     public static void printDebug(LevelChunk chunk){

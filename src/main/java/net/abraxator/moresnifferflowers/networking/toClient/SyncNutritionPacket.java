@@ -16,16 +16,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public record UpdateNutritionPacket(Set<Item> nutritionItems) {
+public record SyncNutritionPacket(Set<Item> nutritionItems) {
 
-    public static void encode(UpdateNutritionPacket msg, FriendlyByteBuf buffer) {
+    public static void encode(SyncNutritionPacket msg, FriendlyByteBuf buffer) {
         buffer.writeInt(msg.nutritionItems.size());
         for (Item item : msg.nutritionItems) {
             buffer.writeResourceLocation(BuiltInRegistries.ITEM.getKey(item));
         }
     }
 
-    public static UpdateNutritionPacket decode(FriendlyByteBuf buffer) {
+    public static SyncNutritionPacket decode(FriendlyByteBuf buffer) {
         int size = buffer.readInt();
         Set<Item> nutritionItems = new HashSet<>();
 
@@ -37,17 +37,17 @@ public record UpdateNutritionPacket(Set<Item> nutritionItems) {
             }
         }
 
-        return new UpdateNutritionPacket(nutritionItems);
+        return new SyncNutritionPacket(nutritionItems);
     }
 
-    public static void handle(UpdateNutritionPacket msg, Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(SyncNutritionPacket msg, Supplier<NetworkEvent.Context> ctx) {
         NetworkEvent.Context context = ctx.get();
         context.enqueueWork(() -> handlePacket(msg, context));
         context.setPacketHandled(true);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void handlePacket(UpdateNutritionPacket msg, NetworkEvent.Context context) {
+    public static void handlePacket(SyncNutritionPacket msg, NetworkEvent.Context context) {
         Player player = Minecraft.getInstance().player;
         if (player != null) {
             player.getCapability(CapabilityList.UNLOCKED_NUTRITIONS).ifPresent(cap -> {

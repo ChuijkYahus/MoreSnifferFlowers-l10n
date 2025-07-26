@@ -141,14 +141,17 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
         LevelChunk chunkNew = level.getChunkAt(pos1);
         LevelChunk chunkOriginal = level.getChunkAt(pos);
 
+        CorruptionCapability capNew = CorruptionCapability.get(chunkNew);
+        CorruptionCapability capOriginal = CorruptionCapability.get(chunkOriginal);
+
         boolean differentChunk = CorruptionCapability.areDifferentChunks(level, pos1, pos);
 
-        boolean isSourceOriginal = CorruptionCapability.isSource(chunkOriginal);
-        boolean isSourceNew = CorruptionCapability.isSource(chunkNew);
-        boolean isNeighborNew = CorruptionCapability.isNeighbor(chunkNew);
+        boolean isSourceOriginal = capOriginal.isSource;
+        boolean isSourceNew = capNew.isSource;
+        boolean isNeighborNew = capNew.isNeighbor;
 
-        int count = CorruptionCapability.getCount(chunkNew);
-        int resistance = CorruptionCapability.getResistance(chunkNew);
+        int count = capNew.count;
+        int resistance = capNew.resistance;
 
         if (differentChunk) {
            if (isSourceOriginal) {
@@ -181,7 +184,7 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
             }
         }
 
-        CorruptionCapability.addCount(chunkNew);
+        capNew.count++;
         return false;
     }
 

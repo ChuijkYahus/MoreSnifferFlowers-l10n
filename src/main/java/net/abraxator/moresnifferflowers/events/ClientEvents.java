@@ -1,9 +1,11 @@
-package net.abraxator.moresnifferflowers.client;
+package net.abraxator.moresnifferflowers.events;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.abraxator.moresnifferflowers.client.ClientRegistration;
 import net.abraxator.moresnifferflowers.client.renderer.custom.BlockPatternRenderer;
 import net.abraxator.moresnifferflowers.entities.GluingGumEntity;
 import net.abraxator.moresnifferflowers.init.ModEffects;
@@ -26,9 +28,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent.MouseScrollingEvent;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -95,7 +95,7 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public static void renderGumModel(RenderLivingEvent.Post<?, ?> event) {
+    public static void renderLiving(RenderLivingEvent.Post<?, ?> event) {
         LivingEntity entity = event.getEntity();
 
         entity.getCapability(CapabilityList.GLUED).ifPresent(cap -> {
@@ -119,7 +119,7 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public static void renderGumOverlay(RenderGuiOverlayEvent.Pre event) {
+    public static void renderGuiOverlay(RenderGuiOverlayEvent.Pre event) {
         // ChatGPT code that worked first time???
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null || !player.hasEffect(ModEffects.GLUED.get())) return;
@@ -140,6 +140,53 @@ public class ClientEvents {
 
         RenderSystem.disableBlend();
     }
+
+    @SubscribeEvent
+    public static void renderPlayer(RenderPlayerEvent event) {
+        Player player = event.getEntity();
+        PoseStack pose = event.getPoseStack();
+
+        if (player.hasEffect(ModEffects.SLIPPERY.get())){
+            player.getCapability(CapabilityList.SLIPPERY).ifPresent(cap -> {
+                if (cap.isFallen){
+                    pose.translate(0.0D, -0.0D, 0.0D);
+                    pose.mulPose(Axis.ZP.rotationDegrees(90.0F));
+                    pose.mulPose(Axis.XN.rotationDegrees(player.yHeadRot + player.yHeadRotO));
+
+                }
+            });
+        }
+    }
+
+
+    @SubscribeEvent
+    public static void cameraEvent(ViewportEvent event) {
+        Camera camera = event.getCamera();
+        LocalPlayer player = Minecraft.getInstance().player;
+        double partial = event.getPartialTick();
+
+        player.getCapability(CapabilityList.SLIPPERY).ifPresent(cap -> {
+            if (cap.isFallen){
+                double offset = -1d;
+
+                if (cap.maxFallenTicks == cap.fallenTicks){ //falling down
+                    offset = -partial;
+                }
+
+
+                //getting up
+                if (cap.fallenTicks == 11) offset = -1d + partial / 4d;
+                if (cap.fallenTicks == 10) offset = -1d + (1 + partial / 4d);
+                if (cap.fallenTicks < 10 && cap.fallenTicks > 1) offset = -0.5d;
+                if (cap.fallenTicks == 1) offset = -0.5d +  partial / 2;
+                if (cap.fallenTicks == 0) offset = 0d;
+
+                camera.move(0, offset ,0);
+            }
+        });
+    }
+
+
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
