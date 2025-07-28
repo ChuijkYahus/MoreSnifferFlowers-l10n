@@ -4,12 +4,17 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
+import net.abraxator.moresnifferflowers.blocks.ModCropBlock;
+import net.abraxator.moresnifferflowers.blocks.MultiBlock;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.client.ClientRegistration;
 import net.abraxator.moresnifferflowers.client.renderer.custom.BlockPatternRenderer;
+import net.abraxator.moresnifferflowers.components.PreviewState;
 import net.abraxator.moresnifferflowers.entities.GluingGumEntity;
 import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.abraxator.moresnifferflowers.init.ModItems;
+import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.networking.toServer.DyespriaModePacket;
@@ -18,16 +23,35 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.PlaceOnWaterBlockItem;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent.MouseScrollingEvent;
-import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -54,43 +78,106 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void renderLevelStage(RenderLevelStageEvent event){
-        if (event.getStage().equals(RenderLevelStageEvent.Stage.AFTER_SKY)) {
-            PoseStack poseStack = event.getPoseStack();
-            Camera camera = event.getCamera();
-            double camX = camera.getPosition().x;
-            double camY = camera.getPosition().y;
-            double camZ = camera.getPosition().z;
-            Matrix4f projectionMatrix = event.getProjectionMatrix();
+        RenderLevelStageEvent.Stage stage = event.getStage();
+        PoseStack poseStack = event.getPoseStack();
+        Camera camera = event.getCamera();
+        Matrix4f projectionMatrix = event.getProjectionMatrix();
+        Minecraft minecraft = Minecraft.getInstance();
+        Level level = minecraft.level;
+        Frustum frustum = event.getFrustum();
 
-            BlockPatternRenderer BUFFER_MANAGER = ClientRegistration.getBlockPatternRenderer();
-            Minecraft minecraft = Minecraft.getInstance();
-            Level level = minecraft.level;
-            BlockPatternRenderer.CameraTracker cameraTracker = new BlockPatternRenderer.CameraTracker();
-            if (level == null || minecraft.player == null) return;
 
-            if (cameraTracker.hasMoved(camera)) {
-                BUFFER_MANAGER.markDirty();
-            }
-            int chunkRenderDistance = Math.min(ModClientConfig.getBlockPatternRenderDistance(), minecraft.options.getEffectiveRenderDistance());
-
-            poseStack.pushPose();
-            poseStack.translate(-camX, -camY, -camZ);
-            Matrix4f view = poseStack.last().pose();
-
-            List<LevelChunk> levelChunks = new ArrayList<>();
-
-            ChunkPos playerChunkPos = minecraft.player.chunkPosition();
-            for (int x = -chunkRenderDistance; x < chunkRenderDistance ; x++) {
-                for (int z = -chunkRenderDistance; z < chunkRenderDistance ; z++) {
-                    levelChunks.add(level.getChunk(x + playerChunkPos.x,z + playerChunkPos.z));
-                }
-            }
-
-            BUFFER_MANAGER.cachePatterns(level, camX, camY, camZ, view, projectionMatrix, levelChunks, event.getFrustum());
-            BUFFER_MANAGER.render(poseStack, Minecraft.getInstance().renderBuffers().bufferSource());
-
-            poseStack.popPose();
+        if (stage.equals(RenderLevelStageEvent.Stage.AFTER_SKY)) {
+            renderBlockPatterns(frustum, camera, level, minecraft, poseStack, projectionMatrix);
         }
+
+        if (stage.equals(RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS)){
+            LocalPlayer player = minecraft.player;
+            if (player.getMainHandItem().getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof MultiBlock multiBlock && blockItem.getBlock() instanceof EntityBlock block) {
+               HitResult hitResult = minecraft.hitResult;
+
+               if (hitResult instanceof BlockHitResult blockHitResult){
+                   boolean placeOnWater = false;
+
+                   if (blockItem instanceof PlaceOnWaterBlockItem) {
+                       blockHitResult = Item.getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
+                       placeOnWater = level.isWaterAt(blockHitResult.getBlockPos());
+                   };
+
+                   Direction hitDirection = blockHitResult.getDirection();
+                   BlockPos hitPos = blockHitResult.getBlockPos();
+                   BlockPos pos =  hitPos.relative(hitDirection);
+
+                   BlockState state = blockItem.getBlock().defaultBlockState()
+                           .trySetValue(HorizontalDirectionalBlock.FACING, player.getDirection())
+                           .trySetValue(ModStateProperties.CENTER, true);
+                   if (blockItem.getBlock() instanceof ModCropBlock cropBlock)
+                       state = state.trySetValue(cropBlock.getAgeProperty(), cropBlock.getMaxAge());
+
+                   BlockEntity entity = block.newBlockEntity(pos, state);
+
+                   if (entity instanceof MultiBlockEntity multiBlockEntity && level.getBlockState(pos).canBeReplaced() && (!level.getBlockState(hitPos).isAir() || placeOnWater)) {
+
+                       boolean canPlace = multiBlock.canPlace(level, pos, state);
+
+                       double camX = camera.getPosition().x;
+                       double camY = camera.getPosition().y;
+                       double camZ = camera.getPosition().z;
+
+                       multiBlockEntity.previewState = canPlace ? PreviewState.PREVIEW : PreviewState.INVALID;
+                       if (level.getBlockState(hitPos).canBeReplaced() && !placeOnWater) pos = pos.relative(hitDirection.getOpposite());
+
+                       poseStack.pushPose();
+
+                       poseStack.translate(pos.getX() - camX,pos.getY() - camY,pos.getZ() - camZ);
+
+                       MultiBufferSource.BufferSource buffer = minecraft.renderBuffers().bufferSource();
+                       BlockEntityRenderer<BlockEntity> entityRender = minecraft.getBlockEntityRenderDispatcher().getRenderer(entity);
+
+                       if (entityRender != null)
+                           entityRender.render(entity, event.getPartialTick(), poseStack, buffer, 0xFFFFFF, OverlayTexture.NO_OVERLAY);
+
+                       poseStack.popPose();
+
+                   }
+               }
+            }
+        }
+
+
+    }
+
+    private static void renderBlockPatterns(Frustum frustum, Camera camera, Level level, Minecraft minecraft, PoseStack poseStack, Matrix4f projectionMatrix) {
+        double camX = camera.getPosition().x;
+        double camY = camera.getPosition().y;
+        double camZ = camera.getPosition().z;
+
+        BlockPatternRenderer BUFFER_MANAGER = ClientRegistration.getBlockPatternRenderer();
+        BlockPatternRenderer.CameraTracker cameraTracker = new BlockPatternRenderer.CameraTracker();
+        if (level == null || minecraft.player == null) return;
+
+        if (cameraTracker.hasMoved(camera)) {
+            BUFFER_MANAGER.markDirty();
+        }
+        int chunkRenderDistance = Math.min(ModClientConfig.getBlockPatternRenderDistance(), minecraft.options.getEffectiveRenderDistance());
+
+        poseStack.pushPose();
+        poseStack.translate(-camX, -camY, -camZ);
+        Matrix4f view = poseStack.last().pose();
+
+        List<LevelChunk> levelChunks = new ArrayList<>();
+
+        ChunkPos playerChunkPos = minecraft.player.chunkPosition();
+        for (int x = -chunkRenderDistance; x < chunkRenderDistance ; x++) {
+            for (int z = -chunkRenderDistance; z < chunkRenderDistance ; z++) {
+                levelChunks.add(level.getChunk(x + playerChunkPos.x,z + playerChunkPos.z));
+            }
+        }
+
+        BUFFER_MANAGER.cachePatterns(level, camX, camY, camZ, view, projectionMatrix, levelChunks, frustum);
+        BUFFER_MANAGER.render(poseStack, Minecraft.getInstance().renderBuffers().bufferSource());
+
+        poseStack.popPose();
     }
 
     @SubscribeEvent
@@ -131,7 +218,6 @@ public class ClientEvents {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        // Your custom overlay texture
         ResourceLocation texture = MoreSnifferFlowers.loc("textures/gui/glued_overlay.png");
         RenderSystem.setShaderTexture(0, texture);
 
@@ -149,48 +235,13 @@ public class ClientEvents {
             player.getCapability(CapabilityList.SLIPPERY).ifPresent(cap -> {
                 if (cap.isFallen){
 
-
                     pose.mulPose(Axis.ZP.rotationDegrees(180.0F));
-//
                     pose.translate(0.0D, -0.5D, 0.0D);
-
-                    // pose.mulPose(Axis.YP.rotationDegrees(90.0F));
-
 
                 }
             });
         }
     }
-
-
-    @SubscribeEvent
-    public static void cameraEvent(ViewportEvent event) {
-        Camera camera = event.getCamera();
-        LocalPlayer player = Minecraft.getInstance().player;
-        double partial = event.getPartialTick();
-
-        player.getCapability(CapabilityList.SLIPPERY).ifPresent(cap -> {
-            if (cap.isFallen){
-/*                double offset = -1d;
-
-                if (cap.maxFallenTicks == cap.fallenTicks){ //falling down
-                    offset = -partial;
-                }
-
-
-                //getting up
-                if (cap.fallenTicks == 11) offset = -1d + partial / 4d;
-                if (cap.fallenTicks == 10) offset = -1d + (1 + partial / 4d);
-                if (cap.fallenTicks < 10 && cap.fallenTicks > 1) offset = -0.5d;
-                if (cap.fallenTicks == 1) offset = -0.5d +  partial / 2;
-                if (cap.fallenTicks == 0) offset = 0d;
-
-                camera.move(0, offset ,0);*/
-            }
-        });
-    }
-
-
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {

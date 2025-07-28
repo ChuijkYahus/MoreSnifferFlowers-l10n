@@ -1,10 +1,12 @@
 package net.abraxator.moresnifferflowers.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
+import net.abraxator.moresnifferflowers.components.PreviewState;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.client.model.geom.ModelPart;
@@ -15,11 +17,14 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.phys.Vec3;
 
-public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implements BlockEntityRenderer<T> {
+import java.util.function.Function;
+
+public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implements BlockEntityRenderer<T>, MultiblockRender {
     private final ModelPart body;
     private final ModelPart top;
     private static final Material SALTEMONE_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/saltemone"));
@@ -33,6 +38,14 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
     @Override
     public void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         if(blockEntity.getBlockState().getValue(ModStateProperties.CENTER) && blockEntity.getBlockState().getValue(ModStateProperties.AGE_2) >= 2) {
+            PreviewState previewState = blockEntity.previewState;
+            Function<ResourceLocation, RenderType> renderType = getRenderType(previewState);
+
+            VertexConsumer baseConsumer = SALTEMONE_TEXTURE.buffer(buffer, renderType);
+            VertexConsumer corruptedConsumer = SOURLEMON_TEXTURE.buffer(buffer, renderType);
+
+            VertexConsumer consumer = blockEntity.getBlockState().is(ModBlocks.SALTEMONE.get()) ? baseConsumer : corruptedConsumer;
+
             poseStack.pushPose();
             Direction direction = blockEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
             poseStack.mulPose(direction.getCounterClockWise().getRotation());
@@ -45,17 +58,15 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
                 case NORTH -> poseStack.translate(0, 0, 1);
             }
 
-            Material material = blockEntity.getBlockState().is(ModBlocks.SOURLEMONE.get()) ? SOURLEMON_TEXTURE : SALTEMONE_TEXTURE;
+            render(body ,poseStack, consumer, packedLight, packedOverlay, previewState);
 
-            this.body.render(poseStack, material.buffer(buffer, RenderType::entityCutout), packedLight, packedOverlay);
-
-            float time = (blockEntity.getLevel().getGameTime() + partialTick) / 20f;
+            float time = (level().getGameTime() + partialTick) / 20f;
             float scale = 1.0f + 0.3f * Mth.sin(time / 2 * Mth.TWO_PI + blockEntity.center.getX() + blockEntity.center.getZ());
 
             poseStack.scale(scale,  scale / 1.5f + 0.4f, scale);
             poseStack.translate(0, -scale + 2.32 , 0);
 
-            this.top.render(poseStack, material.buffer(buffer, RenderType::entityCutout), packedLight, packedOverlay);
+            render(top ,poseStack, consumer, packedLight, packedOverlay, previewState);
             poseStack.popPose();
 
         }
