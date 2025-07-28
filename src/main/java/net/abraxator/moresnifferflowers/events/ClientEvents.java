@@ -19,7 +19,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
@@ -72,7 +71,7 @@ public class ClientEvents {
             if (cameraTracker.hasMoved(camera)) {
                 BUFFER_MANAGER.markDirty();
             }
-            int chunkRenderDistance = Math.min(Mth.ceil((double) ModClientConfig.getBlockPatternRenderDistance() / 16D) + 1, minecraft.options.getEffectiveRenderDistance());
+            int chunkRenderDistance = Math.min(ModClientConfig.getBlockPatternRenderDistance(), minecraft.options.getEffectiveRenderDistance());
 
             poseStack.pushPose();
             poseStack.translate(-camX, -camY, -camZ);
@@ -87,7 +86,7 @@ public class ClientEvents {
                 }
             }
 
-            BUFFER_MANAGER.renderPatternOverlay(level, camX, camY, camZ, view, projectionMatrix, levelChunks, event.getFrustum());
+            BUFFER_MANAGER.cachePatterns(level, camX, camY, camZ, view, projectionMatrix, levelChunks, event.getFrustum());
             BUFFER_MANAGER.render(poseStack, Minecraft.getInstance().renderBuffers().bufferSource());
 
             poseStack.popPose();
@@ -142,16 +141,21 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public static void renderPlayer(RenderPlayerEvent event) {
+    public static void renderPlayer(RenderPlayerEvent.Pre event) {
         Player player = event.getEntity();
         PoseStack pose = event.getPoseStack();
 
         if (player.hasEffect(ModEffects.SLIPPERY.get())){
             player.getCapability(CapabilityList.SLIPPERY).ifPresent(cap -> {
                 if (cap.isFallen){
-                    pose.translate(0.0D, -0.0D, 0.0D);
-                    pose.mulPose(Axis.ZP.rotationDegrees(90.0F));
-                    pose.mulPose(Axis.XN.rotationDegrees(player.yHeadRot + player.yHeadRotO));
+
+
+                    pose.mulPose(Axis.ZP.rotationDegrees(180.0F));
+//
+                    pose.translate(0.0D, -0.5D, 0.0D);
+
+                    // pose.mulPose(Axis.YP.rotationDegrees(90.0F));
+
 
                 }
             });
@@ -167,7 +171,7 @@ public class ClientEvents {
 
         player.getCapability(CapabilityList.SLIPPERY).ifPresent(cap -> {
             if (cap.isFallen){
-                double offset = -1d;
+/*                double offset = -1d;
 
                 if (cap.maxFallenTicks == cap.fallenTicks){ //falling down
                     offset = -partial;
@@ -181,7 +185,7 @@ public class ClientEvents {
                 if (cap.fallenTicks == 1) offset = -0.5d +  partial / 2;
                 if (cap.fallenTicks == 0) offset = 0d;
 
-                camera.move(0, offset ,0);
+                camera.move(0, offset ,0);*/
             }
         });
     }

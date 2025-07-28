@@ -398,9 +398,7 @@
  	"moresnifferflowers.configuration.hardened_mouth_y.tooltip": "Move extra slots from the Hardened mouth effect up and down",
  	
  	"moresnifferflowers.configuration.block_pattern_render_distance": "Block Pattern Render Distance",
- 	"moresnifferflowers.configuration.block_pattern_render_distance.tooltip": "Input in blocks. Negative values use a division of your current render distance instead",
- 	"moresnifferflowers.configuration.block_pattern_offset": "Block Pattern Offset",
- 	"moresnifferflowers.configuration.block_pattern_offset.tooltip": "How far block patterns are from their block, low values Z-fight, high values look detached",
+ 	"moresnifferflowers.configuration.block_pattern_render_distance.tooltip": "Input in chunks. Negative values use a division of your current render distance instead",
  	"moresnifferflowers.configuration.block_pattern_smooth_lighting": "Block Pattern Smooth Lighting",
  	"moresnifferflowers.configuration.block_pattern_smooth_lighting.tooltip": "Enables smooth lighting for block patterns",
  	

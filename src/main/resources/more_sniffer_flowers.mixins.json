@@ -10,6 +10,7 @@
     "EntityMixin",
     "FarmBlockMixin",
     "FlowerBlockMixin",
+    "FoodDataMixin",
     "InventoryMenuMixin",
     "ItemEntityMixin",
     "LeavesBlockMixin",

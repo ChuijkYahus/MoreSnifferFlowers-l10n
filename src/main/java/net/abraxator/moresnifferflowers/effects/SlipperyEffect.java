@@ -6,15 +6,16 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-public class HardenedMouthEffect extends MobEffect {
-    public HardenedMouthEffect(MobEffectCategory category, int color) {
+public class SlipperyEffect extends MobEffect {
+    public SlipperyEffect(MobEffectCategory category, int color) {
         super(category, color);
     }
 
     @Override
     public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
-        if (livingEntity instanceof Player player && !livingEntity.level().isClientSide)
-            player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> cap.tick(player));
+        if (livingEntity instanceof Player player)
+            player.getCapability(CapabilityList.SLIPPERY).ifPresent(cap -> cap.tick(player, amplifier));
+
     }
 
     @Override

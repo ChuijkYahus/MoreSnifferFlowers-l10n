@@ -17,11 +17,11 @@ public class ModEffects {
     public static final RegistryObject<MobEffect> EXTRACTED = EFFECTS.register("extracted", () -> new ExtractedEffect(MobEffectCategory.NEUTRAL, 14058905));
 
     //Sour
-    public static final RegistryObject<MobEffect> SLIPPERY = EFFECTS.register("slippery", () -> new SimpleEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
+    public static final RegistryObject<MobEffect> SLIPPERY = EFFECTS.register("slippery", () -> new SlipperyEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
     public static final RegistryObject<MobEffect> UNTOUCHABLE = EFFECTS.register("untouchable", () -> new SimpleEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
     //Salty
     public static final RegistryObject<MobEffect> SALTY = EFFECTS.register("salty", () -> new SaltyEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
-    public static final RegistryObject<MobEffect> COMBO_MEAL = EFFECTS.register("combo_meal", () -> new SimpleEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
+    public static final RegistryObject<MobEffect> COMBO_MEAL = EFFECTS.register("combo_meal", () -> new ComboMealEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
     //Spicy
     public static final RegistryObject<MobEffect> PANTS_ON_FIRE = EFFECTS.register("pants_on_fire", () -> new PantsOnFireEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
     public static final RegistryObject<MobEffect> HARDENED_MOUTH = EFFECTS.register("hardened_mouth", () -> new HardenedMouthEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));

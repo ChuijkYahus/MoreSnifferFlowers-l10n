@@ -144,17 +144,6 @@ public class ForgeEvents {
 
         // if (event.phase == TickEvent.Phase.END || event.player.level().isClientSide) return;
 
-        if (!level.isClientSide) {
-            if (player.hasEffect(ModEffects.HARDENED_MOUTH.get()))
-                event.player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> cap.tick(player));
-        }
-
-        if (player.hasEffect(ModEffects.SLIPPERY.get()))
-            event.player.getCapability(CapabilityList.SLIPPERY).ifPresent(cap -> cap.tick(player));
-
-        if (player.hasEffect(ModEffects.COMBO_MEAL.get()))
-            event.player.getCapability(CapabilityList.COMBO_MEAL).ifPresent(cap -> cap.tick(player));
-
     }
 
     @SubscribeEvent

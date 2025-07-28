@@ -212,6 +212,13 @@ public class ModRecipesProvider extends RecipeProvider {
                 .unlockedBy("has_fiery_spice", has(ModItems.FIERY_SPICE.get()))
                 .save(pRecipeOutput);
 
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.BEROOT_COOK_BOOK.get())
+                .requires(Ingredient.of(Items.BOOK), 1)
+                .requires(Ingredient.of(ModItems.CROPRESSED_BEETROOT.get()), 1)
+                .unlockedBy("cropressed_beetroot", has(ModItems.CROPRESSED_BEETROOT.get()))
+                .save(pRecipeOutput);
+
+
         ModCustomRecipeProvider.createRecipes(pRecipeOutput);
     }
 

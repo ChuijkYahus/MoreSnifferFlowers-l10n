@@ -1,7 +1,6 @@
 package net.abraxator.moresnifferflowers.networking.toClient;
 
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
-import net.abraxator.moresnifferflowers.capability.GluedCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -13,14 +12,16 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public record SyncSlipperyPacket(boolean isFallen, int entityId) {
+public record SyncSlipperyPacket(boolean isFallen, int entityId, int fallenTicks, int maxFallenTicks) {
     public SyncSlipperyPacket(FriendlyByteBuf buf) {
-        this(buf.readBoolean(), buf.readInt());
+        this(buf.readBoolean(), buf.readInt(), buf.readInt(),  buf.readInt());
     }
 
     public void encode(FriendlyByteBuf buf) {
         buf.writeBoolean(isFallen);
         buf.writeInt(entityId);
+        buf.writeInt(fallenTicks);
+        buf.writeInt(maxFallenTicks);
     }
 
     public static void handle(SyncSlipperyPacket packet, Supplier<NetworkEvent.Context> context) {
@@ -36,10 +37,19 @@ public record SyncSlipperyPacket(boolean isFallen, int entityId) {
         Entity entity = level.getEntity(packet.entityId);
 
         if (entity instanceof Player player) {
-            GluedCapability.playSound(level, entity);
+
             player.getCapability(CapabilityList.SLIPPERY).ifPresent(cap -> {
                 cap.isFallen = packet.isFallen;
+                cap.fallenTicks = packet.fallenTicks;
+                cap.maxFallenTicks = packet.maxFallenTicks;
+
+                if (!cap.isFallen){
+                    cap.getUp(player);
+                }
             });
+
+
+
         }
     }
 }

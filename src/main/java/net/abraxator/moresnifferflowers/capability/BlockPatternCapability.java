@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class BlockPatternCapability implements ICapabilityProvider, INBTSerializable<CompoundTag> {
-    private final Map<BlockPos, PatternData> patterns = new HashMap<>();
+    public final Map<BlockPos, PatternData> patterns = new HashMap<>();
     private final LazyOptional<BlockPatternCapability> optional = LazyOptional.of(() -> this);
     ResourceLocation ID = MoreSnifferFlowers.loc("block_patterns");
     

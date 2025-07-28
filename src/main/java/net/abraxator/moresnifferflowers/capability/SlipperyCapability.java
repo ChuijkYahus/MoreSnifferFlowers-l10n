@@ -1,7 +1,6 @@
 package net.abraxator.moresnifferflowers.capability;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.networking.toClient.SyncSlipperyPacket;
 import net.minecraft.core.Direction;
@@ -10,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +22,6 @@ import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class SlipperyCapability implements ICapabilityProvider, INBTSerializable<CompoundTag> {
@@ -40,25 +39,25 @@ public class SlipperyCapability implements ICapabilityProvider, INBTSerializable
         if (isFallen) getUp(player);
     }
 
-    public void tick(Player player){
+    public void tick(Player player, int amplifier) {
         float yaw = player.getYRot();
         Vec3 motion = player.getDeltaMovement();
-        float speed = (float) Math.sqrt(motion.x * motion.x + motion.z * motion.z);
+        float speed = (float) (motion.x + motion.y + motion.z);
 
         if (isFallen){
             fallenTicks--;
             player.setJumping(false);
             player.setDeltaMovement(motion.x, Math.min(motion.y, 0), motion.z);
 
+            if (!player.getPose().equals(Pose.SWIMMING)) player.setForcedPose(Pose.SWIMMING);
+
             if (fallenTicks <= 0){
                 getUp(player);
             }
 
-        } else {
+        } else if (!player.level().isClientSide){
 
-            int amplifier = Objects.requireNonNull(player.getEffect(ModEffects.SLIPPERY.get())).getAmplifier();
-
-            boolean speedChange = (speed - lastSpeed) < -0.5f; // this currently doesnt work
+            boolean speedChange = Math.abs(speed - lastSpeed) > 0.60f; // this only works for falling down for some reason
             float rotationLimit = Math.max(90f - amplifier*10, 15f);
             boolean rotationChange = Math.abs(Mth.wrapDegrees(yaw - lastYaw)) > rotationLimit && player.isSprinting();
 
@@ -73,7 +72,7 @@ public class SlipperyCapability implements ICapabilityProvider, INBTSerializable
 
 
 
-    private void fallDown(Player player, int amplifier) {
+    public void fallDown(Player player, int amplifier) {
         isFallen = true;
         maxFallenTicks = 30 + amplifier * 10;
         fallenTicks = maxFallenTicks;
@@ -83,21 +82,23 @@ public class SlipperyCapability implements ICapabilityProvider, INBTSerializable
         player.getAttribute(Attributes.MOVEMENT_SPEED).addTransientModifier(mod);
 
         player.level().playSound(null, player.blockPosition(), SoundEvents.SLIME_SQUISH, SoundSource.PLAYERS, 1f, 1f);
+
         sync(player);
     }
 
-    private void getUp(Player player) {
+    public void getUp(Player player) {
         fallenTicks = 0;
         isFallen = false;
 
         player.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(ATTRIBUTE_ID);
-        sync(player);
+        player.setForcedPose(null);
+       if (!player.level().isClientSide) sync(player);
     }
 
 
 
     public void sync(Player player){
-        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(),new SyncSlipperyPacket(isFallen, player.getId()));
+        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(),new SyncSlipperyPacket(isFallen, player.getId(), fallenTicks, maxFallenTicks));
     }
 
     public static SlipperyCapability get(Player player) {
@@ -115,6 +116,8 @@ public class SlipperyCapability implements ICapabilityProvider, INBTSerializable
         tag.putFloat("lastYaw", lastYaw);
         tag.putFloat("lastSpeed", lastSpeed);
         tag.putBoolean("isFallen", isFallen);
+        tag.putInt("fallenTicks", fallenTicks);
+        tag.putInt("maxFallenTicks", maxFallenTicks);
         return tag;
     }
 
@@ -123,5 +126,7 @@ public class SlipperyCapability implements ICapabilityProvider, INBTSerializable
         lastYaw = nbt.getFloat("lastYaw");
         lastSpeed = nbt.getFloat("lastSpeed");
         isFallen = nbt.getBoolean("isFallen");
+        fallenTicks = nbt.getInt("fallenTicks");
+        maxFallenTicks = nbt.getInt("maxFallenTicks");
     }
 }
