@@ -11,18 +11,14 @@ import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.function.Function;
 
 public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implements BlockEntityRenderer<T>, MultiblockRender {
     private final ModelPart body;
@@ -39,12 +35,13 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
     public void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         if(blockEntity.getBlockState().getValue(ModStateProperties.CENTER) && blockEntity.getBlockState().getValue(ModStateProperties.AGE_2) >= 2) {
             PreviewState previewState = blockEntity.previewState;
-            Function<ResourceLocation, RenderType> renderType = getRenderType(previewState);
 
-            VertexConsumer baseConsumer = SALTEMONE_TEXTURE.buffer(buffer, renderType);
-            VertexConsumer corruptedConsumer = SOURLEMON_TEXTURE.buffer(buffer, renderType);
+            Material material = blockEntity.getBlockState().is(ModBlocks.SALTEMONE.get()) ? SALTEMONE_TEXTURE : SOURLEMON_TEXTURE;
+            VertexConsumer consumer = getConsumer(previewState, material, buffer);
 
-            VertexConsumer consumer = blockEntity.getBlockState().is(ModBlocks.SALTEMONE.get()) ? baseConsumer : corruptedConsumer;
+            if (previewState.equals(PreviewState.PLACED)){
+
+            }
 
             poseStack.pushPose();
             Direction direction = blockEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);

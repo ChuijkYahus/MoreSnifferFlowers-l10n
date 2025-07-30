@@ -36,6 +36,12 @@ import java.util.stream.Stream;
 
 
 public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable, MultiBlock {
+    public static final VoxelShape SHAPE_POTATO = makeShapePotato();
+    public static final VoxelShape SHAPE_CARROT = makeShapeCarrot();
+    public static final VoxelShape SHAPE_BEET = makeShapeBeet();
+    public static final VoxelShape SHAPE_NETHERWART = makeShapeWart();
+    public static final VoxelShape SHAPE_WHEAT = makeShapeWheat();
+
     public GiantCropBlock(Properties pProperties) {
         super(pProperties);
         registerDefaultState(defaultBlockState().setValue(ModStateProperties.CENTER, false));
@@ -180,18 +186,18 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
             if (x == 0 && z == 0){
                 return SHAPE;
             } else {
-                if (this.equals(ModBlocks.GIANT_POTATO.get())) return makeShapePotato().move(x, y, z).optimize();
-                if (this.equals(ModBlocks.GIANT_CARROT.get())) return makeShapeCarrot().move(x, y, z).optimize();
-                if (this.equals(ModBlocks.GIANT_BEETROOT.get())) return makeShapeBeet().move(x, y, z).optimize();
-                if (this.equals(ModBlocks.GIANT_NETHERWART.get())) return makeShapeWart().move(x, y, z).optimize();
-                if (this.equals(ModBlocks.GIANT_WHEAT.get())) return makeShapeWheat().move(x, y, z).optimize();
+                if (this.equals(ModBlocks.GIANT_POTATO.get())) return SHAPE_POTATO.move(x, y, z);
+                if (this.equals(ModBlocks.GIANT_CARROT.get())) return SHAPE_CARROT.move(x, y, z);
+                if (this.equals(ModBlocks.GIANT_BEETROOT.get())) return SHAPE_BEET.move(x, y, z);
+                if (this.equals(ModBlocks.GIANT_NETHERWART.get())) return SHAPE_NETHERWART.move(x, y, z);
+                if (this.equals(ModBlocks.GIANT_WHEAT.get())) return SHAPE_WHEAT.move(x, y, z);
             }
 
         }
         return SHAPE;
     }
 
-    public VoxelShape makeShapePotato(){
+    public static VoxelShape makeShapePotato(){
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(-0.4375, -0.0625, -0.4375, 1.4375, 2.125, 1.4375), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(-0.3125, 2.125, -0.3125, 1.3125, 2.375, 1.3125), BooleanOp.OR);
@@ -199,14 +205,14 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         return shape;
     }
 
-    public VoxelShape makeShapeWheat(){
+    public static VoxelShape makeShapeWheat(){
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(-0.5625, -0.0625, -0.5625, 1.5625, 2.9375, 1.5625), BooleanOp.OR);
 
         return shape;
     }
 
-    public VoxelShape makeShapeCarrot(){
+    public static VoxelShape makeShapeCarrot(){
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(-0.6875, -0.0625, -0.6875, 1.6875, 0.4375, 1.6875), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(-0.4375, 0.375, -0.4375, 1.4375, 1.875, 1.4375), BooleanOp.OR);
@@ -214,7 +220,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         return shape;
     }
 
-    public VoxelShape makeShapeWart(){
+    public static VoxelShape makeShapeWart(){
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(-0.5625, 1.25, -0.5625, 1.5625, 3, 1.5625), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(-0.125, 0, -0.125, 1.125, 1.25, 1.125), BooleanOp.OR);
@@ -222,7 +228,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         return shape;
     }
 
-    public VoxelShape makeShapeBeet(){
+    public static VoxelShape makeShapeBeet(){
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(-0.375, -0.0625, -0.375, 1.375, 1.75, 1.375), BooleanOp.OR);
 

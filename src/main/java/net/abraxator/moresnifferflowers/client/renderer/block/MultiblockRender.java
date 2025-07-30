@@ -6,7 +6,9 @@ import net.abraxator.moresnifferflowers.components.PreviewState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
@@ -14,8 +16,12 @@ import java.util.function.Function;
 
 public interface MultiblockRender {
 
-    default Function<ResourceLocation, RenderType> getRenderType(PreviewState previewState) {
+    default Function<ResourceLocation, RenderType> getConsumer(PreviewState previewState) {
        return previewState.equals(PreviewState.PLACED) ? RenderType::entityCutout : RenderType::entityTranslucentCull;
+    }
+
+    default VertexConsumer getConsumer(PreviewState previewState, Material material, MultiBufferSource bufferSource) {
+        return material.buffer(bufferSource, previewState.equals(PreviewState.PLACED) ? RenderType::entityCutout : RenderType::entityTranslucentCull);
     }
 
 

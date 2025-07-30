@@ -29,6 +29,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.stream.Stream;
 
 public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntityBlock, MultiBlock {
+    public static final VoxelShape SHAPE_UPPER = makeShapeUpper();
+    public static final VoxelShape SHAPE_LOWER = makeShapeLower();
+    public static final VoxelShape SHAPE_LOWER_ROTATED = makeShapeLowerRotated();
+    public static final VoxelShape SHAPE_INSIDE = Shapes.box(-0.75, 0.5625, -0.875, 0.75, 1, 0.625);
+    public static final VoxelShape SHAPE_FULL = Shapes.box(-0.875, 0.5, -1, 0.875, 1.6875, 0.75);
+
     public BerootCauldronBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(defaultBlockState().setValue(ModStateProperties.CENTER, false).setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH));
@@ -118,10 +124,10 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
                 case WEST -> z -= 1;
             }
 
-            if (y != 0) return makeShapeUpper().move(x,y,z);
+            if (y != 0) return SHAPE_UPPER.move(x,y,z);
             if (state.getValue(HorizontalDirectionalBlock.FACING).equals(Direction.WEST) || state.getValue(HorizontalDirectionalBlock.FACING).equals(Direction.EAST))
-                return makeShapeLowerRotated().move(x,y,z);
-            return makeShapeLower().move(x,y,z);
+                return SHAPE_LOWER_ROTATED.move(x,y,z);
+            return SHAPE_LOWER.move(x,y,z);
         }
 
         return Shapes.block();
@@ -142,7 +148,7 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
                 case WEST -> z -= 1;
             }
 
-            return makeShapeFull().move(x,y,z);
+            return SHAPE_FULL.move(x,y,z);
         }
 
         return Shapes.block();
@@ -171,20 +177,6 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
         shape = Shapes.join(shape, Shapes.box(-0.375, 0, -1.125, 0.375, 0.6875, 0.875), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(-0.875, 0.5, -1, 0.875, 1.6875, 0.75), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(-0.75, 0.5625, -0.875, 0.75, 1.6875, 0.625), BooleanOp.ONLY_FIRST);
-
-        return shape.optimize();
-    }
-
-    public static VoxelShape makeShapeFull(){
-        VoxelShape shape = Shapes.empty();
-        shape = Shapes.join(shape, Shapes.box(-0.875, 0.5, -1, 0.875, 1.6875, 0.75), BooleanOp.OR);
-
-        return shape.optimize();
-    }
-
-    public static VoxelShape makeShapeInside(){
-        VoxelShape shape = Shapes.empty();
-        shape = Shapes.join(shape, Shapes.box(-0.75, 0.5625, -0.875, 0.75, 1, 0.625), BooleanOp.OR);
 
         return shape.optimize();
     }

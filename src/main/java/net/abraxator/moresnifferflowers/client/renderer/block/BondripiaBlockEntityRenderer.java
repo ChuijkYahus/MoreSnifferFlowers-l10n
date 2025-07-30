@@ -37,7 +37,7 @@ public class BondripiaBlockEntityRenderer<T extends BondripiaBlockEntity> implem
             poseStack.mulPose(Axis.XP.rotationDegrees(180));
             PreviewState previewState = blockEntity.previewState;
 
-            Function<ResourceLocation, RenderType> renderType = getRenderType(previewState);
+            Function<ResourceLocation, RenderType> renderType = getConsumer(previewState);
 
             VertexConsumer baseConsumer = BONDRIPIA_TEXTURE.buffer(buffer, renderType);
             VertexConsumer corruptedConsumer = ACIDRIPIA_TEXTURE.buffer(buffer, renderType);
