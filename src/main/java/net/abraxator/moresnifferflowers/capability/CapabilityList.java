@@ -22,6 +22,7 @@ public class CapabilityList {
     public static final Capability<GluedCapability> GLUED = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<CorruptionCapability> CORRUPTION = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<SlipperyCapability> SLIPPERY = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<UntouchableCapability> UNTOUCHABLE = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.register(NutritionCapability.class);
@@ -31,6 +32,7 @@ public class CapabilityList {
         event.register(GluedCapability.class);
         event.register(CorruptionCapability.class);
         event.register(SlipperyCapability.class);
+        event.register(UntouchableCapability.class);
 
     }
 
@@ -42,6 +44,7 @@ public class CapabilityList {
                 event.addCapability(HardenedMouthCapability.ID, new HardenedMouthCapabilityHandler());
                 event.addCapability(ComboMealCapability.ID,  new ComboMealCapability());
                 event.addCapability(SlipperyCapability.ID,  new SlipperyCapability());
+                event.addCapability(UntouchableCapability.ID,  new UntouchableCapability());
 
             }
 

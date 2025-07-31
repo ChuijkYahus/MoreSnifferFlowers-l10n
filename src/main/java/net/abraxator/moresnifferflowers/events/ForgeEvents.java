@@ -4,6 +4,7 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.capability.GluedCapability;
+import net.abraxator.moresnifferflowers.capability.UntouchableCapability;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
 import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
@@ -38,6 +39,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -93,6 +95,12 @@ public class ForgeEvents {
             if (effect.equals(ModEffects.SLIPPERY.get()))
                 player.getCapability(CapabilityList.SLIPPERY).ifPresent(cap -> cap.onEffectEnd(player));
 
+            if (effect.equals(ModEffects.COMBO_MEAL.get()))
+                player.getCapability(CapabilityList.COMBO_MEAL).ifPresent(cap -> cap.onEffectEnd(player));
+
+            if (effect.equals(ModEffects.UNTOUCHABLE.get()))
+                player.getCapability(CapabilityList.UNTOUCHABLE).ifPresent(cap -> cap.onEffectEnd(player));
+
         }
 
         if (effect.equals(ModEffects.GLUED.get()))
@@ -132,10 +140,14 @@ public class ForgeEvents {
             }
 
         }
-
-
     }
 
+    @SubscribeEvent
+    public static void onAttacked(LivingAttackEvent event) {
+        if (event.getEntity() instanceof Player player && player.hasEffect(ModEffects.UNTOUCHABLE.get())){
+            player.getCapability(CapabilityList.UNTOUCHABLE).ifPresent(UntouchableCapability::onAttacked);
+        }
+    }
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {

@@ -44,7 +44,6 @@ public class HardenedMouthSlot extends Slot {
     public ItemStack getItem() {
         if (itemStorage.get().size() == 2)
             return itemStorage.get().get(index);
-        System.out.println(itemStorage.get());
         return ItemStack.EMPTY;
     }
 
@@ -69,7 +68,7 @@ public class HardenedMouthSlot extends Slot {
         if (player.level().isClientSide) return;
 
         switch (clickType){
-            case PICKUP -> {
+            case PICKUP, QUICK_CRAFT, PICKUP_ALL -> {
                 if (slotStack.isEmpty()) {
                     // Place item into empty slot
                     if (!carried.isEmpty()) {

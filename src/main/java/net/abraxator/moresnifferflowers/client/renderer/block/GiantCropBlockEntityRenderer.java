@@ -59,7 +59,7 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 		Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/" + path));
 
 		PreviewState previewState = blockEntity.previewState;
-		Function<ResourceLocation, RenderType> renderType = getConsumer(previewState);
+		Function<ResourceLocation, RenderType> renderType = getRenderTypeFunction(previewState);
 		VertexConsumer vertexConsumer = TEXTURE.buffer(buffer, renderType);
 
 		double growProgress = previewState.equals(PreviewState.PLACED) ? blockEntity.growProgress : 1;

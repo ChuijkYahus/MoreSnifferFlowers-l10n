@@ -33,16 +33,12 @@ public class BondripiaBlockEntityRenderer<T extends BondripiaBlockEntity> implem
     @Override
     public void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         if(blockEntity.getBlockState().getValue(ModStateProperties.CENTER) && blockEntity.getBlockState().getValue(ModStateProperties.AGE_2) >= 2) {
+
             poseStack.translate(0.5, 1.5, 0.5);
             poseStack.mulPose(Axis.XP.rotationDegrees(180));
             PreviewState previewState = blockEntity.previewState;
 
-            Function<ResourceLocation, RenderType> renderType = getConsumer(previewState);
-
-            VertexConsumer baseConsumer = BONDRIPIA_TEXTURE.buffer(buffer, renderType);
-            VertexConsumer corruptedConsumer = ACIDRIPIA_TEXTURE.buffer(buffer, renderType);
-
-            VertexConsumer consumer = blockEntity.getBlockState().is(ModBlocks.BONDRIPIA.get()) ? baseConsumer : corruptedConsumer;
+            VertexConsumer consumer = getConsumer(buffer, blockEntity, BONDRIPIA_TEXTURE, ACIDRIPIA_TEXTURE, ModBlocks.ACIDRIPIA.get());
 
             render(model, poseStack, consumer, packedLight, packedOverlay, previewState);
         }

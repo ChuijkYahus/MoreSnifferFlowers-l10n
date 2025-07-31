@@ -34,7 +34,7 @@ public abstract class FoodDataMixin {
             foodLevelModifier = Math.round(foodLevelModifier / division);
             saturationLevelModifier = saturationLevelModifier / division;
 
-            eat(foodLevelModifier, saturationLevelModifier);
         }
+        eat(foodLevelModifier, saturationLevelModifier);
     }
 }

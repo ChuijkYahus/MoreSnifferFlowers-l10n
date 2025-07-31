@@ -28,14 +28,16 @@ public class SlipperyCapability implements ICapabilityProvider, INBTSerializable
     public static final UUID ATTRIBUTE_ID = UUID.fromString("41DD0153-E92A-B00B-9800-EFFEC5511BB1");
     private final LazyOptional<SlipperyCapability> optional = LazyOptional.of(() -> this);
     public static final ResourceLocation ID = MoreSnifferFlowers.loc("slippery");
-    public float lastYaw;
-    public float lastSpeed;
-    public boolean isFallen;
-    public int fallenTicks;
-    public int maxFallenTicks;
+    public float lastYaw = 0;
+    public float lastSpeed = 0;
+    public boolean isFallen = false;
+    public int fallenTicks = 0;
+    public int maxFallenTicks = 0;
 
 
     public void onEffectEnd(Player player) {
+        lastSpeed = 0;
+        lastYaw = 0;
         if (isFallen) getUp(player);
     }
 
@@ -55,7 +57,7 @@ public class SlipperyCapability implements ICapabilityProvider, INBTSerializable
                 getUp(player);
             }
 
-        } else if (!player.level().isClientSide){
+        } else if (!player.level().isClientSide && !(lastSpeed == 0 && lastYaw == 0)){
 
             boolean speedChange = Math.abs(speed - lastSpeed) > 0.60f; // this only works for falling down for some reason
             float rotationLimit = Math.max(90f - amplifier*10, 15f);

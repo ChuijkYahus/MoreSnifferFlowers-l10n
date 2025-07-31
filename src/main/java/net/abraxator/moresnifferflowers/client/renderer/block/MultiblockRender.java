@@ -2,7 +2,10 @@ package net.abraxator.moresnifferflowers.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.abraxator.moresnifferflowers.blockentities.ModBlockEntity;
+import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
 import net.abraxator.moresnifferflowers.components.PreviewState;
+import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -11,17 +14,31 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.function.Function;
 
 public interface MultiblockRender {
 
-    default Function<ResourceLocation, RenderType> getConsumer(PreviewState previewState) {
+    default Function<ResourceLocation, RenderType> getRenderTypeFunction(PreviewState previewState) {
        return previewState.equals(PreviewState.PLACED) ? RenderType::entityCutout : RenderType::entityTranslucentCull;
     }
 
-    default VertexConsumer getConsumer(PreviewState previewState, Material material, MultiBufferSource bufferSource) {
-        return material.buffer(bufferSource, previewState.equals(PreviewState.PLACED) ? RenderType::entityCutout : RenderType::entityTranslucentCull);
+    default RenderType getRenderType(PreviewState previewState, ResourceLocation location) {
+        return previewState.equals(PreviewState.PLACED) ? RenderType.entityCutout(location) : RenderType.entityTranslucentCull(location);
+    }
+
+    default VertexConsumer getConsumer(MultiBufferSource buffer, MultiBlockEntity blockEntity, Material materialBase, Material materialCorrupted, Block blockCorrupted) {
+        PreviewState previewState = blockEntity.previewState;
+
+        RenderType renderTypeBase = getRenderType(previewState, materialBase.atlasLocation());
+        RenderType renderTypeCorrupted = getRenderType(previewState, materialCorrupted.atlasLocation());
+
+        VertexConsumer baseConsumer = materialBase.sprite().wrap(buffer.getBuffer(renderTypeBase));
+        VertexConsumer corruptedConsumer = materialCorrupted.sprite().wrap(buffer.getBuffer(renderTypeCorrupted));
+
+        return blockEntity.getBlockState().is(blockCorrupted) ? corruptedConsumer : baseConsumer;
     }
 
 

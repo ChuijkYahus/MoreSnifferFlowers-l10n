@@ -157,7 +157,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> SOURLEMONE = registerBlockNoItem("sourlemone", () -> new SourlemonBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTEMONE.get()).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
     public static final RegistryObject<Block> SALTY_CLUMP = registerBlockNoItem("salty_clump", () -> new SaltyClumpBlock(BlockBehaviour.Properties.copy(Blocks.SMALL_AMETHYST_BUD).noOcclusion().sound(SoundType.SAND).pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never).noCollission()));
     public static final RegistryObject<Block> DRIPSALT = registerBlockNoItem("dripsalt", () -> new DripsaltBlock(BlockBehaviour.Properties.copy(Blocks.POINTED_DRIPSTONE)));
-    public static final RegistryObject<Block> SOUR_PUDDLE = registerBlockNoItem("sour_puddle", () -> new SourPuddleBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTY_CLUMP.get()).requiresCorrectToolForDrops().friction(0.98F).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never)));
+    public static final RegistryObject<Block> SOUR_PUDDLE = registerBlockNoItem("sour_puddle", () -> new SourPuddleBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTY_CLUMP.get()).sound(SoundType.MUD).requiresCorrectToolForDrops().friction(0.98F).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never)));
 
 
     private static <T extends Block> RegistryObject<T> registerBlockNoItem(String name, Supplier<T> block) {
