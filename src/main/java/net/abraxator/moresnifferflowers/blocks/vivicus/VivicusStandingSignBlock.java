@@ -7,12 +7,14 @@ import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import org.apache.commons.compress.harmony.pack200.NewAttribute;
+import org.jetbrains.annotations.Nullable;
 
 public class VivicusStandingSignBlock extends ModStandingSignBlock implements ColorableVivicusBlock {
     public VivicusStandingSignBlock(WoodType p_56991_, Properties p_56990_) {
@@ -29,5 +31,10 @@ public class VivicusStandingSignBlock extends ModStandingSignBlock implements Co
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return new VivicusSignBlockEntity(pPos, pState);
+    }
+
+    @Override
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        return stateForPlacementHelper(super.getStateForPlacement(context), context);
     }
 }

@@ -7,12 +7,12 @@
   "mixins": [
     "AgeableMobMixin",
     "BlockBehaviourMixin",
+    "BlockMixin",
     "EntityMixin",
     "FarmBlockMixin",
     "FlowerBlockMixin",
     "FoodDataMixin",
     "InventoryMenuMixin",
-    "ItemEntityMixin",
     "LeavesBlockMixin",
     "RightClickHarvestModInitMixin",
     "ShutUpWarnsMixin",
@@ -23,7 +23,7 @@
   "client": [
     "AmbientOcclusionFaceMixin",
     "InventoryScreenMixin",
-    "LevelRendererMixin",
+    "ItemRenderMixin",
     "SpriteResourceLoaderMixin",
     "SpriteResourceLoaderMixin$PalettedPermutationsAccessor"
   ],

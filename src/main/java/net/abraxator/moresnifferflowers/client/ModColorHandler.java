@@ -150,9 +150,17 @@ public class ModColorHandler {
         return Color.RGBtoHSB(startRed, startGreen, startBlue, null);
     }
 
-    public static float[] hexToRGB(int hex) {
+    public static float[] hexToRGBLarge(int hex) {
         return new float[] {(hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF};
     }
+
+    public static float[] hexToRGB(int hex) {
+        int r = (hex >> 16) & 0xFF;
+        int g = (hex >> 8) & 0xFF;
+        int b = hex & 0xFF;
+        return new float[] {r / 255f, g/ 255f, b/ 255f};
+    }
+
 
     public static int RGBtoInt(Vec3 color) {
         int r = (int) color.x;

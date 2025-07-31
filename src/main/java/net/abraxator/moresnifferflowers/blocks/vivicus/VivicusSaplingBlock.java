@@ -8,12 +8,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.grower.OakTreeGrower;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import org.jetbrains.annotations.Nullable;
 
 public class VivicusSaplingBlock extends SaplingBlock implements ColorableVivicusBlock {
     public final VivicusTreeGrower vivicusTreeGrower = new VivicusTreeGrower();
@@ -48,5 +50,10 @@ public class VivicusSaplingBlock extends SaplingBlock implements ColorableVivicu
         } else {
             this.vivicusTreeGrower.growTree(pLevel, pLevel.getChunkSource().getGenerator(), pPos, pState, pRandom);
         }
+    }
+
+    @Override
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        return stateForPlacementHelper(super.getStateForPlacement(context), context);
     }
 }

@@ -21,18 +21,18 @@ public class ModEffects {
     public static final RegistryObject<MobEffect> UNTOUCHABLE = EFFECTS.register("untouchable", () -> new UntouchableEffect(MobEffectCategory.BENEFICIAL, 0xfffa5e));
     //Salty
     public static final RegistryObject<MobEffect> SALTY = EFFECTS.register("salty", () -> new SaltyEffect(MobEffectCategory.HARMFUL, 0x0cab1ac));
-    public static final RegistryObject<MobEffect> COMBO_MEAL = EFFECTS.register("combo_meal", () -> new ComboMealEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
+    public static final RegistryObject<MobEffect> COMBO_MEAL = EFFECTS.register("combo_meal", () -> new ComboMealEffect(MobEffectCategory.BENEFICIAL, 0xf2e9da));
     //Spicy
-    public static final RegistryObject<MobEffect> PANTS_ON_FIRE = EFFECTS.register("pants_on_fire", () -> new PantsOnFireEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
-    public static final RegistryObject<MobEffect> HARDENED_MOUTH = EFFECTS.register("hardened_mouth", () -> new HardenedMouthEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00));
+    public static final RegistryObject<MobEffect> PANTS_ON_FIRE = EFFECTS.register("pants_on_fire", () -> new PantsOnFireEffect(MobEffectCategory.HARMFUL, 0x3e4d94));
+    public static final RegistryObject<MobEffect> HARDENED_MOUTH = EFFECTS.register("hardened_mouth", () -> new HardenedMouthEffect(MobEffectCategory.BENEFICIAL, 0xc56922));
     //Sweet
     public static final RegistryObject<MobEffect> STICKY = EFFECTS.register("sticky", () -> new StickyEffect(MobEffectCategory.HARMFUL, 0xa3679c));
     public static final RegistryObject<MobEffect> GLUING_TOUCH = EFFECTS.register("gluing_touch", () -> new SimpleEffect(MobEffectCategory.BENEFICIAL, 0xe084b8));
     public static final RegistryObject<MobEffect> GLUED = EFFECTS.register("glued", () -> new GluedEffect(MobEffectCategory.HARMFUL, 0x863c93)); // caused by the 2 above
 
     // Neutral
-    public static final RegistryObject<MobEffect> BLAND = EFFECTS.register("bland", () -> new SimpleEffect(MobEffectCategory.HARMFUL, 0x08d7b00));
-    public static final RegistryObject<MobEffect> WELL_BALANCED = EFFECTS.register("well_balanced", () -> new WellBalancedEffect(MobEffectCategory.BENEFICIAL, 0x08d7b00)
+    public static final RegistryObject<MobEffect> BLAND = EFFECTS.register("bland", () -> new SimpleEffect(MobEffectCategory.HARMFUL, 0x7a8484));
+    public static final RegistryObject<MobEffect> WELL_BALANCED = EFFECTS.register("well_balanced", () -> new WellBalancedEffect(MobEffectCategory.BENEFICIAL, 0xc5a73c)
             .addAttributeModifier(Attributes.ATTACK_DAMAGE, "41DD0153-E92A-486E-9800-EFFEC12C4386", 0.2F, AttributeModifier.Operation.MULTIPLY_TOTAL)
             .addAttributeModifier(Attributes.ATTACK_SPEED, "41DD0153-E92A-486E-9800-EFFEC22C4386", 0.1F, AttributeModifier.Operation.MULTIPLY_TOTAL)
             .addAttributeModifier(Attributes.LUCK, "41DD0153-E92A-486E-9800-EFFEC32C4386", 0.5F, AttributeModifier.Operation.MULTIPLY_TOTAL)

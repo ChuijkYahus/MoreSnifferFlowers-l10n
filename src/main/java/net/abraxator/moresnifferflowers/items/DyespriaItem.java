@@ -107,6 +107,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
 
         if (level.getBlockEntity(blockPos.above()) instanceof DyespriaPlantBlockEntity entity) {
             entity.dye = Dye.getDyeFromDyespria(oldStack);
+            if (getDyespriaUses(oldStack) < 4) entity.dye = new Dye(entity.dye.color(), entity.dye.amount() - 1);
             entity.setChanged();
         }
 
@@ -152,8 +153,8 @@ public class DyespriaItem extends BlockItem implements Colorable {
 
        int originalColor = BlockPatternCapability.getPattern(pos, level).color();
        int dyeColor = dye.color().getFireworkColor();
-       float[] originalHSB = ModColorHandler.hexToRGB(originalColor);
-       float[] dyeHSB = ModColorHandler.hexToRGB(dyeColor);
+       float[] originalHSB = ModColorHandler.hexToRGBLarge(originalColor);
+       float[] dyeHSB = ModColorHandler.hexToRGBLarge(dyeColor);
 
        int r =  Math.round((originalHSB[0]*5 + dyeHSB[0]) / 6);
        int g =  Math.round((originalHSB[1]*5 + dyeHSB[1]) / 6);

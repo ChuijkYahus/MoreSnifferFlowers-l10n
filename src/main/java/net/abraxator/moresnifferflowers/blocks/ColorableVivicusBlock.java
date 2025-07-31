@@ -11,9 +11,11 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -42,6 +44,17 @@ public interface ColorableVivicusBlock extends Colorable {
         if(!level.isClientSide()) {
             particles(randomSource, ((ServerLevel) level), dye, blockPos);
         }
+    }
+
+    default int getColorId(BlockPlaceContext context){
+       return context.getItemInHand().getOrCreateTag().getInt(TAG_ID);
+    }
+
+    default @Nullable BlockState stateForPlacementHelper(BlockState state, BlockPlaceContext context) {
+        if (state != null) {
+            return state.setValue(ModStateProperties.COLOR, DyeColor.byId(getColorId(context)));
+        }
+        return null;
     }
 
     @Override
