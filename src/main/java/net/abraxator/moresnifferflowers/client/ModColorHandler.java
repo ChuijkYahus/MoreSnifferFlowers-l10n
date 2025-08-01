@@ -28,22 +28,6 @@ import java.awt.*;
 public class ModColorHandler {
     @SubscribeEvent
     public static void onRegisterBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
-        event.register((state, level, pos, tintIndex) -> {
-
-            int originalColor = level != null && pos != null ? BiomeColors.getAverageFoliageColor(level, pos) : FoliageColor.getDefaultColor();
-
-            if (state.is(Blocks.BIRCH_LEAVES)) originalColor = FoliageColor.getBirchColor();
-            if (state.is(Blocks.SPRUCE_LEAVES)) originalColor = FoliageColor.getEvergreenColor();
-            if (state.is(Blocks.MANGROVE_LEAVES)) originalColor = FoliageColor.getMangroveColor();
-
-            if(tintIndex == 0 && ModStatePropertiesUnsafe.hasCustomLeavesProperties(state) && !state.getValue(ModStatePropertiesUnsafe.NOT_CORRUPTED)) {
-                float[] colorHSB = getColorHSB(originalColor);
-
-                return Color.HSBtoRGB( -colorHSB[0]/1.5F, colorHSB[1] - 0.25F, colorHSB[2] - 0.23F);
-            }
-
-            return originalColor;
-        }, Blocks.OAK_LEAVES, Blocks.JUNGLE_LEAVES, Blocks.ACACIA_LEAVES, Blocks.DARK_OAK_LEAVES, Blocks.VINE, Blocks.MANGROVE_LEAVES, Blocks.BIRCH_LEAVES, Blocks.SPRUCE_LEAVES, Blocks.MANGROVE_LEAVES);
         event.register((pState, pLevel, pPos, pTintIndex) -> {
             Colorable colorable = ((Colorable) pState.getBlock());
             Dye dye = colorable.getDyeFromBlock(pState);
@@ -140,6 +124,17 @@ public class ModColorHandler {
             }
             return 0xffffff;
         }), ModItems.ROOTED_SOUP.get());
+
+
+        event.register(((stack, tintIndex) ->{
+            if (stack.getOrCreateTag().contains(Colorable.TAG_HEX)) {
+                return stack.getOrCreateTag().getInt(Colorable.TAG_HEX);
+            }
+            return 0xffffff;
+        }), ModBlocks.VIVICUS_LOG.get(),  ModBlocks.VIVICUS_WOOD.get(), ModBlocks.STRIPPED_VIVICUS_LOG.get(),  ModBlocks.STRIPPED_VIVICUS_WOOD.get(), ModBlocks.VIVICUS_PLANKS.get(),
+                ModBlocks.VIVICUS_STAIRS.get(), ModBlocks.VIVICUS_SLAB.get(), ModBlocks.VIVICUS_FENCE.get(), ModBlocks.VIVICUS_FENCE_GATE.get(), ModBlocks.VIVICUS_DOOR.get(),
+                ModBlocks.VIVICUS_TRAPDOOR.get(), ModBlocks.VIVICUS_PRESSURE_PLATE.get(), ModBlocks.VIVICUS_BUTTON.get(), ModBlocks.VIVICUS_LEAVES.get(), ModBlocks.VIVICUS_SAPLING.get(),
+                ModBlocks.VIVICUS_LEAVES_SPROUT.get(), ModItems.VIVICUS_SIGN.get(), ModItems.VIVICUS_HANGING_SIGN.get(), ModItems.VIVICUS_BOAT.get(), ModItems.VIVICUS_CHEST_BOAT.get());
 
     }
 

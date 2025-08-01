@@ -45,7 +45,7 @@ public class ModClientConfig {
                 .define("Block Pattern Smooth Lighting", true);
 
         BLOCK_PATTERN_TRANSPARENCY = builder
-                .comment("Enables transparency for block patters (noticeable only with resource packs)")
+                .comment("Enables transparency for block patters (only noticeable with resource packs)")
                 .translation("moresnifferflowers.configuration.block_pattern_transparency")
                 .define("Block Pattern Transparency", false);
 

@@ -157,4 +157,5 @@ public class ModItems {
 
     public static final RegistryObject<Item> CREATIVE_TAB_ICON = ITEMS.register("creative_tab_icon", () -> new CreativeTabItem(new Item.Properties()));
     public static final RegistryObject<Item> WAND_OF_CUBING = ITEMS.register("wand_of_cubing", () -> new WandOfCubingItem(new Item.Properties()));
+    public static final RegistryObject<Item> DEBUG_FLOWER = ITEMS.register("debug_flower", () -> new DebugFlowerItem(new Item.Properties()));
 }

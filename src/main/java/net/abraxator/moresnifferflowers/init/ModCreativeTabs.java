@@ -71,10 +71,12 @@ public class ModCreativeTabs {
                 output.accept(ModItems.SOURLEMONE_SEEDS.get());
                 output.accept(ModBlocks.SOUR_PUDDLE.get());
 
-                output.accept(ModItems.FIERY_SPICE.get());
-                output.accept(ModItems.SWEET_SPICE.get());
-
+                output.accept(ModBlocks.TORCHFLOWER_AFLAME.get());
                 output.accept(ModBlocks.TORCHFLAME.get());
+                output.accept(ModItems.FIERY_SPICE.get());
+
+                output.accept(ModBlocks.TORCHEWFLOWER.get());
+                output.accept(ModItems.SWEET_SPICE.get());
 
                 output.accept(ModItems.BELT_PIECE.get());
                 output.accept(ModItems.ENGINE_PIECE.get());

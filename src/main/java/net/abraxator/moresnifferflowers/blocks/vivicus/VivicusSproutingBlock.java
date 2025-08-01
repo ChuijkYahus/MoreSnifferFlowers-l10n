@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -138,5 +139,10 @@ public class VivicusSproutingBlock extends Block implements ModCropBlock, Colora
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
         return stateForPlacementHelper(super.getStateForPlacement(context), context);
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+        return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state));
     }
 }

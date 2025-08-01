@@ -1,0 +1,98 @@
+package net.abraxator.moresnifferflowers.blocks;
+
+import net.abraxator.moresnifferflowers.init.ModEffects;
+import net.abraxator.moresnifferflowers.init.ModItems;
+import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+
+public class TorchewflowerBlock extends BushBlock implements ModCropBlock {
+    public TorchewflowerBlock(Properties properties) {
+        super(properties);
+        this.registerDefaultState(defaultBlockState().setValue(getAgeProperty(), 0));
+    }
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(getAgeProperty());
+    }
+
+    @Override
+    public IntegerProperty getAgeProperty() {
+        return ModStateProperties.AGE_3;
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        super.onRemove(state, level, pos, newState, movedByPiston);
+        if (getAge(state) == getMaxAge()){
+            popResource(level, pos, ModItems.SWEET_SPICE.get().getDefaultInstance());
+        }
+    }
+
+    @Override
+    public boolean isRandomlyTicking(BlockState state) {
+        int age = getAge(state);
+        return age < 2;
+    }
+
+    @Override
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        super.entityInside(state, level, pos, entity);
+        if (getAge(state) == 2 && entity instanceof LivingEntity livingEntity) {
+            livingEntity.addEffect(new MobEffectInstance(ModEffects.GLUED.get(), 100, 0));
+            level.setBlock(pos, state.setValue(getAgeProperty(), getMaxAge()), 3);
+        }
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (isMaxAge(state)){
+            popResource(level, pos, ModItems.SWEET_SPICE.get().getDefaultInstance());
+            level.setBlock(pos, state.setValue(getAgeProperty(), 0), 3);
+            return InteractionResult.SUCCESS;
+        }
+        return super.use(state, level, pos, player, hand, hit);
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        Vec3 vec3 = state.getOffset(level, pos);
+        return TorchflowerAflameBlock.SHAPE.move(vec3.x, vec3.y, vec3.z);
+    }
+
+    @Override
+    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, boolean isClient) {
+        int age = getAge(state);
+        return age < 2;
+    }
+
+    @Override
+    public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
+        return TorchflowerAflameBlock.isBonemealSuccess(level);
+    }
+
+    @Override
+    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
+        level.setBlock(pos, state.setValue(getAgeProperty(), getAge(state) + 1), 3);
+    }
+}

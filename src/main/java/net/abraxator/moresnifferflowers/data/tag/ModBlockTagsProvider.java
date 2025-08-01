@@ -87,7 +87,7 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         this.tag(ModTags.ModBlockTags.STICKABLE).add(Blocks.GRASS).add(Blocks.STONE)
                 .add(Blocks.SAND).add(Blocks.GRAVEL).add(Blocks.TALL_GRASS).addTags(BlockTags.LEAVES, BlockTags.DIRT, BlockTags.REPLACEABLE);
 
-        this.tag(ModTags.ModBlockTags.CORRUPTION_SHIELDING).add(Blocks.OXEYE_DAISY);
+        this.tag(ModTags.ModBlockTags.CORRUPTION_SHIELDING).add(Blocks.OXEYE_DAISY, Blocks.SUNFLOWER, Blocks.PITCHER_PLANT);
 
         this.tag(BlockTags.CAULDRONS).add(ModBlocks.ACID_FILLED_CAULDRON.get(), ModBlocks.BONMEEL_FILLED_CAULDRON.get());
         this.tag(BlockTags.DIRT).add(ModBlocks.CORRUPTED_GRASS_BLOCK.get(), ModBlocks.CURED_GRASS_BLOCK.get());

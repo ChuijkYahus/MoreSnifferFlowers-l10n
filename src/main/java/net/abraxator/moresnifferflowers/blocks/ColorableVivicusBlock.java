@@ -15,6 +15,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -55,6 +56,16 @@ public interface ColorableVivicusBlock extends Colorable {
             return state.setValue(ModStateProperties.COLOR, DyeColor.byId(getColorId(context)));
         }
         return null;
+    }
+
+    default @NotNull ItemStack cloneItemStackHelper(BlockState state, ItemStack stack) {
+        int colorId = state.getValue(ModStateProperties.COLOR).getId();
+        int color = colorValues().get(DyeColor.byId(colorId));
+
+        stack.getOrCreateTag().putInt(Colorable.TAG_HEX, color);
+        stack.getOrCreateTag().putInt(Colorable.TAG_ID, colorId);
+
+        return stack;
     }
 
     @Override

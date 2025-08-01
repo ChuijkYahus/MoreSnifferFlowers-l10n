@@ -33,6 +33,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -42,17 +43,25 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock, BonemealableBlock {
+public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock, ModCropBlock {
     public static final VoxelShape SHAPE = Block.box(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D);
 
     public TorchflowerAflameBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(defaultBlockState().setValue(ModStateProperties.AGE_2, 0).setValue(ModStateProperties.FIRE_TICKS, 0));
+        this.registerDefaultState(defaultBlockState().setValue(getAgeProperty(), 0).setValue(ModStateProperties.FIRE_TICKS, 0));
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(ModStateProperties.AGE_2).add(ModStateProperties.FIRE_TICKS);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(getAgeProperty()).add(ModStateProperties.FIRE_TICKS);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        super.onRemove(state, level, pos, newState, movedByPiston);
+        if (getAge(state) == getMaxAge()){
+            popResource(level, pos, ModItems.SWEET_SPICE.get().getDefaultInstance());
+        }
     }
 
     @Override
@@ -64,7 +73,7 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
         Vec3 offset = new Vec3(pos.getX() + vec3.x, pos.getY() + vec3.y, pos.getZ() + vec3.z);
         Vec3 center = pos.getCenter().add(vec3);
 
-        if (state.getValue(ModStateProperties.AGE_2) == 1) {
+        if (getAge(state) == 1) {
             if (random.nextInt(24) == 0) {
                 level.playLocalSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 1.0F + random.nextFloat(), random.nextFloat() * 0.7F + 0.3F, false);
             }
@@ -91,7 +100,7 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
 
     @Override
     public boolean isRandomlyTicking(BlockState state) {
-        int age = state.getValue(ModStateProperties.AGE_2);
+        int age = getAge(state);
         return age == 0 || age == 1 ;
     }
 
@@ -99,7 +108,7 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
 
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        int age = state.getValue(ModStateProperties.AGE_2);
+        int age = getAge(state);
         if (age == 0 && isBonemealSuccess(level)) {
             level.setBlockAndUpdate(pos, Blocks.TORCHFLOWER.defaultBlockState());
         }
@@ -110,7 +119,7 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
                 level.setBlockAndUpdate(pos, state.setValue(ModStateProperties.FIRE_TICKS, fire + 1));
             } else {
                 level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, (1.0F + level.getRandom().nextFloat() * 0.2F) * 0.7F);
-                level.setBlockAndUpdate(pos, state.setValue(ModStateProperties.AGE_2, 2));
+                level.setBlockAndUpdate(pos, state.setValue(getAgeProperty(), 2));
             }
         }
     }
@@ -118,7 +127,7 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
-        int age = state.getValue(ModStateProperties.AGE_2);
+        int age = getAge(state);
         int fire = state.getValue(ModStateProperties.FIRE_TICKS);
 
 
@@ -151,7 +160,7 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
 
             } else {
                 level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1F, (1.0F + level.getRandom().nextFloat() * 0.2F) * 0.7F);
-                level.setBlockAndUpdate(pos, state.setValue(ModStateProperties.AGE_2, 2));
+                level.setBlockAndUpdate(pos, state.setValue(getAgeProperty(), 2));
             }
 
             return InteractionResult.SUCCESS;
@@ -159,14 +168,14 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
 
         if (age == 2){
             popResource(level, pos, ModItems.FIERY_SPICE.get().getDefaultInstance());
-            level.setBlock(pos, state.setValue(ModStateProperties.AGE_2, 0), 3);
+            level.setBlock(pos, state.setValue(getAgeProperty(), 0), 3);
             return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.PASS;
     }
 
-    public boolean isBonemealSuccess(Level level) {
+    public static boolean isBonemealSuccess(Level level) {
        return level.random.nextFloat() < 0.3F;
     }
 
@@ -190,7 +199,7 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
 
     @Override
     public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, boolean isClient) {
-        return state.getValue(ModStateProperties.AGE_2) == 0;
+        return getAge(state) == 0;
     }
 
     @Override
@@ -201,5 +210,10 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
     @Override
     public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
         level.setBlockAndUpdate(pos, Blocks.TORCHFLOWER.defaultBlockState());
+    }
+
+    @Override
+    public IntegerProperty getAgeProperty() {
+        return ModStateProperties.AGE_2;
     }
 }

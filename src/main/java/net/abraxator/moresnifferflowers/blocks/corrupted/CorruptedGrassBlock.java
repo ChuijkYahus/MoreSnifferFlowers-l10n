@@ -90,15 +90,12 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
                 BlockState blockstate = this.defaultBlockState();
                 boolean spreadSuccess = false;
 
-                for (int i = 0; i < 4; i++) {
-
-                    if (!spreadSuccess) spreadSuccess = spread(level, pos, random, blockstate);
-
-                    if (spreadSuccess) placeCorruptedLeaves(level, pos, random);
-
+                for (int i = 0; i < 4 && !spreadSuccess; i++) {
+                    spreadSuccess = spread(level, pos, random, blockstate);
                 }
 
-               if (spreadSuccess) placeTallGrass(level, pos);
+                placeCorruptedLeaves(level, pos, random);
+                placeTallGrass(level, pos);
             }
         }
     }
@@ -174,7 +171,7 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock {
 
             double chance = 1 - (double) count / Math.max(maxCorruption - resistance*(maxCorruption / maxResistance), 1);
 
-            if (chance <= 0) {
+            if (chance <= 0.01) {
                 setCrowded(level, pos, blockstate, resistance, chunkOriginal);
                 return true;
             }

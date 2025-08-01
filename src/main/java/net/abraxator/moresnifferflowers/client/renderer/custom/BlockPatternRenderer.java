@@ -77,9 +77,8 @@ public class BlockPatternRenderer {
                                 if (smoothLighting) {
                                     ModelBlockRenderer.AmbientOcclusionFace aoFace = new ModelBlockRenderer.AmbientOcclusionFace();
                                     aoFace.calculate(level, state, pos.relative(dir), dir, new float[Direction.values().length * 2], new BitSet(3), true);
-                                    AmbientOcclusionFaceAccessor faceAccessor = (AmbientOcclusionFaceAccessor) aoFace;
-                                    brightness = new float[]{faceAccessor.moreSnifferFlowers$getBrightness()[0], faceAccessor.moreSnifferFlowers$getBrightness()[1], faceAccessor.moreSnifferFlowers$getBrightness()[2], faceAccessor.moreSnifferFlowers$getBrightness()[3]};
-                                    lightmap = new int[]{faceAccessor.moreSnifferFlowers$getLightmap()[0], faceAccessor.moreSnifferFlowers$getLightmap()[1], faceAccessor.moreSnifferFlowers$getLightmap()[2], faceAccessor.moreSnifferFlowers$getLightmap()[3]};
+                                    brightness = aoFace.brightness;
+                                    lightmap = aoFace.lightmap;
 
                                 } else {
                                     int packed = getPackedLight(level, pos.relative(dir));

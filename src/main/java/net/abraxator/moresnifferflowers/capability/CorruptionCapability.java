@@ -78,8 +78,9 @@ public class CorruptionCapability implements ICapabilityProvider, INBTSerializab
     }
 
     public static void printDebug(LevelChunk chunk){
+        if (chunk.getLevel().isClientSide()) return;
         chunk.getCapability(CapabilityList.CORRUPTION).ifPresent(cap ->{
-            System.out.println("Count: " + cap.count + " Resistance: " + cap.resistance + " isSource: " + cap.isSource + " isNeighbor: " + cap.isNeighbor + " Flowers size: " + cap.flowers.size());
+            MoreSnifferFlowers.LOGGER.debug("Count: " + cap.count + " Resistance: " + cap.resistance + " isSource: " + cap.isSource + " isNeighbor: " + cap.isNeighbor + " Flowers size: " + cap.flowers.size());
         });
     }
 
@@ -92,7 +93,7 @@ public class CorruptionCapability implements ICapabilityProvider, INBTSerializab
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.putInt("count", count);
-        tag.putInt("resistance", count);
+        tag.putInt("resistance", resistance);
         tag.putBoolean("isSource", isSource);
         tag.putBoolean("isNeighbor", isNeighbor);
 

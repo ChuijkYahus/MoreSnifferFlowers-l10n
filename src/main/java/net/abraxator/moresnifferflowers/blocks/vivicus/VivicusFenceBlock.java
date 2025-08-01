@@ -2,8 +2,11 @@ package net.abraxator.moresnifferflowers.blocks.vivicus;
 
 import net.abraxator.moresnifferflowers.blocks.ColorableVivicusBlock;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,5 +28,10 @@ public class VivicusFenceBlock extends FenceBlock implements ColorableVivicusBlo
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
         return stateForPlacementHelper(super.getStateForPlacement(context), context);
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+        return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state));
     }
 }

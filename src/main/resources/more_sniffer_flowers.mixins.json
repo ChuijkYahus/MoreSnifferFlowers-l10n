@@ -18,12 +18,11 @@
     "ShutUpWarnsMixin",
     "SlotMixin",
     "SnifferEggMixin",
+    "BiomeColorsMixin",
     "ThrownPotionMixin"
   ],
   "client": [
-    "AmbientOcclusionFaceMixin",
     "InventoryScreenMixin",
-    "ItemRenderMixin",
     "SpriteResourceLoaderMixin",
     "SpriteResourceLoaderMixin$PalettedPermutationsAccessor"
   ],

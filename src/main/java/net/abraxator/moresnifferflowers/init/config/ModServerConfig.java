@@ -45,14 +45,14 @@ public class ModServerConfig {
                 .define("Corrupted Tree Grow Trough", true);
 
         CORRUPTED_TREE_BONE_MEAL = builder
-                .comment("Should corrupted sapling require bone meal to grow at all? Default = true")
+                .comment("Should corrupted sapling require bone meal to grow at all? Default = false")
                 .translation("moresnifferflowers.configuration.corrupted_tree_bone_meal")
-                .define("Corrupted Tree Bone Meal", true);
+                .define("Corrupted Tree Bone Meal", false);
 
         CORRUPTED_BOBLING_GRIEFING = builder
-                .comment("Should boblings spawn projectiles when hit and replace blocks when planting? Default = false")
+                .comment("Should boblings spawn projectiles when hit and replace blocks when planting? Default = true")
                 .translation("moresnifferflowers.configuration.corrupted_bobling_griefing")
-                .define("Corrupted Bobling Griefing", false);
+                .define("Corrupted Bobling Griefing", true);
 
         CORRUPTED_SLUDGE_GRIEFING = builder
                 .comment("Should sludges shoot projectiles when blocks get destroyed? Default = true")
@@ -87,7 +87,7 @@ public class ModServerConfig {
 
         builder.push("misc");
         SALTEMONE_GRIEFING = builder
-                .comment("Should Saltemone Bubbles drop loot, even when nobody popped them?")
+                .comment("Should Saltemone Bubbles drop loot, even when nobody popped them? Default = true")
                 .translation("moresnifferflowers.configuration.saltemone_lingering")
                 .define("Saltemone Griefing", true);
 

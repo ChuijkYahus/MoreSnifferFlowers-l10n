@@ -7,7 +7,9 @@ import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,5 +38,10 @@ public class VivicusStandingSignBlock extends ModStandingSignBlock implements Co
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
         return stateForPlacementHelper(super.getStateForPlacement(context), context);
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+        return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state));
     }
 }

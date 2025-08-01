@@ -42,9 +42,7 @@ public class HardenedMouthSlot extends Slot {
 
     @Override
     public ItemStack getItem() {
-        if (itemStorage.get().size() == 2)
-            return itemStorage.get().get(index);
-        return ItemStack.EMPTY;
+        return itemStorage.get().get(index);
     }
 
     @Override

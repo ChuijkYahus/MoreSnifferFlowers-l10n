@@ -5,7 +5,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.properties.*;
 
 public class ModStateProperties {
-    // CROP z cropressoru je teď v CropressorBlockBase
     public static final IntegerProperty AGE_1 = IntegerProperty.create("age", 0, 1);
     public static final IntegerProperty AGE_2 = IntegerProperty.create("age", 0, 2);
     public static final IntegerProperty AGE_3 = IntegerProperty.create("age", 0, 3);

@@ -27,12 +27,14 @@ public class Nutrition {
     }
     
     public static Nutrition getNutritionForItem(Item item) {
-        for (Nutrition nutrition : NutritionLoader.modNutritions.get(BuiltInRegistries.ITEM.getKey(item).getNamespace())) {
-            if (nutrition.getItem() == item) {
-                return nutrition;
+        Set<Nutrition> nutritions = NutritionLoader.modNutritions.get(BuiltInRegistries.ITEM.getKey(item).getNamespace());
+        if (nutritions != null) {
+            for (Nutrition nutrition : nutritions) {
+                if (nutrition.getItem() == item) {
+                    return nutrition;
+                }
             }
         }
-        
         return EMPTY;
     }
 
