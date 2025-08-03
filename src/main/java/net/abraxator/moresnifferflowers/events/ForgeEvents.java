@@ -54,7 +54,6 @@ import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
-    
 
     @SubscribeEvent
     public static void onAddReloadListener(AddReloadListenerEvent event) {
@@ -63,7 +62,7 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void onEffectAdded(MobEffectEvent.Added event){
-        MobEffect effect = Objects.requireNonNull(event.getEffectInstance()).getEffect();
+        MobEffect effect = event.getEffectInstance().getEffect();
         LivingEntity entity = event.getEntity();
 
         if (effect.equals(ModEffects.GLUED.get())){
@@ -73,18 +72,20 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void onEffectRemove(MobEffectEvent.Remove event){
-        MobEffect effect = Objects.requireNonNull(event.getEffectInstance()).getEffect();
+        MobEffectInstance effect = event.getEffectInstance();
         LivingEntity entity = event.getEntity();
 
-        onEffectEnd(effect, entity);
+        if (effect == null) return;
+        onEffectEnd(effect.getEffect(), entity);
     }
 
     @SubscribeEvent
     public static void onEffectExpire(MobEffectEvent.Expired event){
-        MobEffect effect = Objects.requireNonNull(event.getEffectInstance()).getEffect();
+        MobEffectInstance effect = event.getEffectInstance();
         LivingEntity entity = event.getEntity();
 
-        onEffectEnd(effect, entity);
+        if (effect == null) return;
+        onEffectEnd(effect.getEffect(), entity);
     }
 
     public static void onEffectEnd(MobEffect effect, LivingEntity entity) {
