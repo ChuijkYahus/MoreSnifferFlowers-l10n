@@ -4,7 +4,9 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.level.ChunkWatchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -13,7 +15,7 @@ import java.util.HashSet;
 @Mod.EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CapabilityEvents {
 
-    // Handle capability persistence when a player dies and respawns
+    // Pure Chatgpt code
     @SubscribeEvent
     public static void onPlayerClone(PlayerEvent.Clone event) {
 
@@ -43,7 +45,6 @@ public class CapabilityEvents {
         oldPlayer.invalidateCaps(); // Clean up old capabilities after cloning
     }
 
-    // Handle capability persistence when a player logs in
     @SubscribeEvent
     public static void onPlayerLoad(PlayerEvent.LoadFromFile event) {
         event.getEntity().getCapability(CapabilityList.UNLOCKED_NUTRITIONS).ifPresent(cap -> {
@@ -56,7 +57,6 @@ public class CapabilityEvents {
         });
     }
 
-    // Handle saving the capability when the player logs out
     @SubscribeEvent
     public static void onPlayerSave(PlayerEvent.SaveToFile event) {
         event.getEntity().getCapability(CapabilityList.UNLOCKED_NUTRITIONS).ifPresent(cap -> {
@@ -78,34 +78,17 @@ public class CapabilityEvents {
         player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
             cap.sync(player);
         });
-       // if (CapabilityList.getBlockPatterns().isEmpty() && player.level() instanceof ServerLevel serverLevel) CapabilityList.setFromDisk(serverLevel);
-    }
-
-/*    @SubscribeEvent
-    public static void onLevelLoad(LevelEvent.Load event) {
-        LevelAccessor levelAccessor = event.getLevel();
-        BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
-
-        if (levelAccessor instanceof ServerLevel serverLevel) {
-            CapabilityList.setFromDisk(serverLevel);
-            blockPatterns.sync();
-        } else {
-        }
     }
 
     @SubscribeEvent
-    public static void onLevelSave(LevelEvent.Save event) {
-        LevelAccessor levelAccessor = event.getLevel();
-        BlockPatternCapability blockPatterns = CapabilityList.getBlockPatterns();
-
-        if (levelAccessor instanceof ServerLevel serverLevel) {
-            BlockPatternSavedData.get(serverLevel).save(blockPatterns.save(new CompoundTag()));
-        } else {
-         //   blockPatterns.clear();
+    public static void onChunkWatch(ChunkWatchEvent.Watch event) {
+        Player player = event.getPlayer();
+        if (!event.getLevel().isClientSide){
+            LevelChunk chunk = event.getChunk();
+            chunk.getCapability(CapabilityList.BLOCK_PATTERNS).ifPresent(blockPatternCapability -> blockPatternCapability.sync(chunk.getPos()));
         }
 
-
-    }*/
+    }
 
 
 }

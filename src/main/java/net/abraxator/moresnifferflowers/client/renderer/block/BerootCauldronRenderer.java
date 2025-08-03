@@ -6,7 +6,7 @@ import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
-import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.abraxator.moresnifferflowers.components.PreviewState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,7 +27,9 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
-public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> implements BlockEntityRenderer<T> {
+import java.util.function.Function;
+
+public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> implements BlockEntityRenderer<T>, MultiblockRender {
     private final ModelPart cauldron;
     private final ModelPart spoon;
 
@@ -40,18 +42,22 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> impleme
     public void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         final Material CAULDRON_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/beroot_cauldron"));
         final Material SPOON_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/beroot_spoon"));
-        final VertexConsumer cauldron_consumer = CAULDRON_TEXTURE.buffer(buffer, RenderType::entityCutout);
-        final VertexConsumer spoon_consumer = SPOON_TEXTURE.buffer(buffer, RenderType::entitySolid);
-        final RandomSource randomSource = blockEntity.getLevel().getRandom();
+
+        PreviewState previewState = blockEntity.previewState;
+        Function<ResourceLocation, RenderType> renderType = getRenderTypeFunction(previewState);
+
+        final VertexConsumer cauldron_consumer = CAULDRON_TEXTURE.buffer(buffer, renderType);
+        final VertexConsumer spoon_consumer = SPOON_TEXTURE.buffer(buffer, renderType);
+        final RandomSource randomSource = level().getRandom();
         final Direction direction = blockEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
 
-        if(blockEntity.getBlockState().getValue(ModStateProperties.CENTER)) {
+        if(blockEntity.canRender()) {
             //CAULDRON
             poseStack.pushPose();
             poseStack.translate(1, 1.5, 0);
             poseStack.mulPose(Axis.XN.rotationDegrees(-180));
             rotate(poseStack, direction, false);
-            cauldron.render(poseStack, cauldron_consumer, packedLight, packedOverlay);
+            render(cauldron, poseStack, cauldron_consumer, packedLight, packedOverlay, previewState);
             poseStack.popPose();
 
             //SOUP
@@ -75,11 +81,13 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> impleme
             float y = -((float) 1 / 6 * soupCount);
             float soupScale =0.332f;
 
-            poseStack.scale(1 + soupScale, 1, 1 + soupScale);
-            poseStack.translate(-soupScale*0.565, 0, soupScale*0.565);
-            renderFace(matrix4f, matrix3f, buffer.getBuffer(RenderType.cutoutMipped()),
-                    r, g, b, 1F,
-                    minX, maxX, y, minZ, maxZ, packedLight, blockEntity.isCrafted);
+            if (soupCount > 0) {
+                poseStack.scale(1 + soupScale, 1, 1 + soupScale);
+                poseStack.translate(-soupScale * 0.565, 0, soupScale * 0.565);
+                renderFace(matrix4f, matrix3f, buffer.getBuffer(RenderType.cutoutMipped()),
+                        r, g, b, 1F,
+                        minX, maxX, y, minZ, maxZ, packedLight, blockEntity.isCrafted);
+            }
             poseStack.popPose();
 
             //SPOON
@@ -90,7 +98,7 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> impleme
                 poseStack.mulPose(Axis.XN.rotationDegrees(-180));
                 rotate(poseStack, direction, false);
                 poseStack.mulPose((new Quaternionf()).rotationY((float) (rot * (Math.PI / 180))));
-                this.spoon.render(poseStack, spoon_consumer, packedLight, packedOverlay);
+                render(spoon ,poseStack, spoon_consumer, packedLight, packedOverlay, previewState);
                 poseStack.popPose();
             }
             

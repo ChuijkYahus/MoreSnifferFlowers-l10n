@@ -24,6 +24,8 @@ import static net.abraxator.moresnifferflowers.init.ModStateProperties.EMPTY;
 
 public interface Colorable {
     Map<DyeColor, Integer> colorValues();
+    String TAG_HEX = "MSF_Hex";
+    String TAG_ID = "MSF_ID";
 
     default TagKey<Block> matchTag() {
         return null;

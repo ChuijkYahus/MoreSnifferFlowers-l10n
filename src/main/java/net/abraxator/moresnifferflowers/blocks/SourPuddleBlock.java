@@ -1,11 +1,15 @@
 package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.entities.SaltProjectile;
+import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -53,12 +57,7 @@ public class SourPuddleBlock extends Block {
     }
 
     public boolean isFull(BlockGetter level, BlockPos pos){
-        AtomicBoolean flag = new AtomicBoolean(true);
-        Direction.Plane.HORIZONTAL.forEach(direction -> {
-            if (!this.connectsTo(level, pos, direction))
-                flag.set(false);
-        });
-        return flag.get();
+        return Direction.Plane.HORIZONTAL.stream().allMatch(direction -> this.connectsTo(level, pos, direction));
     }
 
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
@@ -96,6 +95,15 @@ public class SourPuddleBlock extends Block {
         }
 
         return super.updateShape(newState.setValue(ModStateProperties.FULL, false), facing, facingState, level, currentPos, facingPos);
+    }
+
+    @Override
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        super.entityInside(state, level, pos, entity);
+
+        if (!level.isClientSide && entity instanceof Player player){
+            player.addEffect(new MobEffectInstance(ModEffects.SLIPPERY.get(), 40, 5));
+        }
     }
 
     public boolean isFree(BlockState pState) {

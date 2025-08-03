@@ -124,7 +124,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                         true,
                         false
                 )
-                .addCriterion("has_positive_soup_effects",EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.effects().and(ModEffects.GLUING_TOUCH.get()).and(ModEffects.POSITIVE_SOUR.get()).and(ModEffects.COMBO_MEAL.get()).and(ModEffects.HARDENED_MOUTH.get())))
+                .addCriterion("has_positive_soup_effects",EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.effects().and(ModEffects.GLUING_TOUCH.get()).and(ModEffects.UNTOUCHABLE.get()).and(ModEffects.COMBO_MEAL.get()).and(ModEffects.HARDENED_MOUTH.get())))
                 .rewards(AdvancementRewards.Builder.experience(100))
                 .save(consumer, MoreSnifferFlowers.loc("positive_soup").toString());
 
@@ -140,7 +140,7 @@ public class ModAdvancementGenerator implements ForgeAdvancementProvider.Advance
                         true,
                         true
                 )
-                .addCriterion("has_negative_soup_effects", EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.effects().and(ModEffects.STICKY.get()).and(ModEffects.NEGATIVE_SOUR.get()).and(ModEffects.SALTY.get()).and(ModEffects.PANTS_ON_FIRE.get())))
+                .addCriterion("has_negative_soup_effects", EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.effects().and(ModEffects.STICKY.get()).and(ModEffects.SLIPPERY.get()).and(ModEffects.SALTY.get()).and(ModEffects.PANTS_ON_FIRE.get())))
                 .rewards(AdvancementRewards.Builder.experience(53))
                 .save(consumer, MoreSnifferFlowers.loc("negative_soup").toString());
 

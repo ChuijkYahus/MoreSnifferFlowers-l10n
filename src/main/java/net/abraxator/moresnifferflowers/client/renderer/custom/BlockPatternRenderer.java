@@ -47,24 +47,19 @@ public class BlockPatternRenderer {
         this.dirty = true;
     }
 
-    public void renderPatternOverlay(Level level, double camX, double camY, double camZ, Matrix4f viewMatrix, Matrix4f projectionMatrix, List<LevelChunk> levelChunks, Frustum frustum) {
+    public void cachePatterns(Level level, double camX, double camY, double camZ, Matrix4f viewMatrix, Matrix4f projectionMatrix, List<LevelChunk> levelChunks, Frustum frustum) {
         if (!dirty) return;
         dirty = false;
         cachedQuads.clear();
 
-        BlockPos camPos = BlockPos.containing(camX, camY, camZ);
         frustum.prepare(camX, camY, camZ);
-
-        int renderDistance = ModClientConfig.getBlockPatternRenderDistance();
 
         for (LevelChunk chunk : levelChunks) {
             chunk.getCapability(CapabilityList.BLOCK_PATTERNS).ifPresent(storage -> {
 
-                Stream<BlockPos> patternPositionsNear = storage.getPatternPositionsNear(camPos, renderDistance);
-                if (patternPositionsNear == null) return;
-                List<BlockPos> positions = patternPositionsNear.toList();
+                Stream<BlockPos> patternPositions = storage.patterns.keySet().stream();
 
-                for (BlockPos pos : positions) {
+                patternPositions.forEach(pos -> {
                     BlockPatternCapability.PatternData data = storage.getPattern(pos);
 
                     if (data != null && frustum.isVisible(new AABB(pos))) {
@@ -76,15 +71,15 @@ public class BlockPatternRenderer {
                         for (Direction dir : Direction.values()) {
                             if (state.isFaceSturdy(level, pos, dir) && (!level.getBlockState(pos.relative(dir)).isFaceSturdy(level, pos.relative(dir), dir.getOpposite()) || !level.getBlockState(pos.relative(dir)).canOcclude() )) {
                                 float[] brightness = new float[]{1,1,1,1};
-                                int[] lightmap = new int[4];
+                                int[] lightmap;
                                 boolean smoothLighting = ModClientConfig.BLOCK_PATTERN_SMOOTH_LIGHTING.get();
 
                                 if (smoothLighting) {
                                     ModelBlockRenderer.AmbientOcclusionFace aoFace = new ModelBlockRenderer.AmbientOcclusionFace();
                                     aoFace.calculate(level, state, pos.relative(dir), dir, new float[Direction.values().length * 2], new BitSet(3), true);
-                                    AmbientOcclusionFaceAccessor faceAccessor = (AmbientOcclusionFaceAccessor) aoFace;
-                                    brightness = new float[]{faceAccessor.moreSnifferFlowers$getBrightness()[0], faceAccessor.moreSnifferFlowers$getBrightness()[1], faceAccessor.moreSnifferFlowers$getBrightness()[2], faceAccessor.moreSnifferFlowers$getBrightness()[3]};
-                                    lightmap = new int[]{faceAccessor.moreSnifferFlowers$getLightmap()[0], faceAccessor.moreSnifferFlowers$getLightmap()[1], faceAccessor.moreSnifferFlowers$getLightmap()[2], faceAccessor.moreSnifferFlowers$getLightmap()[3]};
+                                    brightness = aoFace.brightness;
+                                    lightmap = aoFace.lightmap;
+
                                 } else {
                                     int packed = getPackedLight(level, pos.relative(dir));
                                     if (data.isGlowing()) packed = LightTexture.FULL_BRIGHT;
@@ -95,7 +90,7 @@ public class BlockPatternRenderer {
                             }
                         }
                     }
-                }
+                });
             });
         }
     }
@@ -220,7 +215,7 @@ public class BlockPatternRenderer {
     }
 
     private static void translateToFace(PoseStack stack, Direction face, BlockPos pos) {
-        double configOffset = ModClientConfig.BLOCK_PATTERN_OFFSET.get();
+        double configOffset = 0.001f;
         float distance = (float) (configOffset * (Math.abs((pos.getX() + pos.getY() + pos.getZ()) % 4) + 1));
         float scale = distance*2;
         switch (face) {

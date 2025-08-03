@@ -1,7 +1,7 @@
 package net.abraxator.moresnifferflowers.capability;
 
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
-import net.abraxator.moresnifferflowers.networking.toClient.UpdateNutritionPacket;
+import net.abraxator.moresnifferflowers.networking.toClient.SyncNutritionPacket;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -44,7 +44,7 @@ public class NutritionCapabilityHandler implements NutritionCapability {
         if (!player.level().isClientSide) {
             ModPacketHandler.CHANNEL.send(
                     PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
-                    new UpdateNutritionPacket(this.items)
+                    new SyncNutritionPacket(this.items)
             );
         }
     }

@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.blocks.corrupted;
 
+import net.abraxator.moresnifferflowers.capability.CorruptionCapability;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStatePropertiesUnsafe;
 import net.minecraft.core.BlockPos;
@@ -57,6 +58,8 @@ public class CuredGrassBlock extends SpreadingSnowyDirtBlock {
         } else {
             if (!level.isAreaLoaded(pos, 3)) return;
             BlockState blockstate = this.defaultBlockState();
+
+            CorruptionCapability.cure(level.getChunkAt(pos));
 
             for (int i = 0; i < 10; i++) {
                 BlockPos blockpos = pos.offset(random.nextIntBetweenInclusive(-1,1), random.nextIntBetweenInclusive(-3,8), random.nextIntBetweenInclusive(-1,1));

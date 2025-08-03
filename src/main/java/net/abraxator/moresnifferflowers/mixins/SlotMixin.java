@@ -24,30 +24,11 @@ public abstract class SlotMixin {
         if (this.getItem().is(ModItems.BURNED_SLOT.get())){
             cir.setReturnValue(false);
         }
-     //   moreSnifferFlowers$cancelWithoutEffect(cir);
     }
-
-/*    @Inject(method = "mayPlace",at = @At("HEAD"), cancellable = true)
-    public void mayPlace(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-       //  moreSnifferFlowers$cancelWithoutEffect(cir);
-    }*/
 
     @Inject(method = "isHighlightable",at = @At("HEAD"), cancellable = true)
     public void isHighlightable(CallbackInfoReturnable<Boolean> cir) {
-      if (this.getItem().is(ModItems.BURNED_SLOT.get())) cir.setReturnValue(false);
+      if (this.getItem().is(ModItems.BURNED_SLOT.get()))
+          cir.setReturnValue(false);
     }
-
-/*    @Unique
-    private void moreSnifferFlowers$cancelWithoutEffect(CallbackInfoReturnable<Boolean> cir) {
-        if (this.container instanceof Inventory inventory) {
-            Player player = inventory.player;
-            if (player.inventoryMenu instanceof InventoryMenuExtension menuExtension && !player.hasEffect(ModMobEffects.HARDENED_MOUTH.get())) {
-                menuExtension.moreSnifferFlowers$getExtraSlotIds().forEach(integer -> {
-                    if (this.index == integer) cir.setReturnValue(false);
-                });
-            }
-        }
-    }*/
-
-
 }

@@ -1,8 +1,9 @@
 package net.abraxator.moresnifferflowers.capability;
 
+import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
 import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
-import net.abraxator.moresnifferflowers.networking.toClient.UpdateMouthSlotsPacket;
+import net.abraxator.moresnifferflowers.networking.toClient.SyncMouthSlotsPacket;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -61,7 +62,7 @@ public class HardenedMouthCapabilityHandler implements HardenedMouthCapability, 
         if (player instanceof ServerPlayer serverPlayer) {
             ModPacketHandler.CHANNEL.send(
                     PacketDistributor.PLAYER.with(() -> serverPlayer),
-                    new UpdateMouthSlotsPacket(mouthSlots, cooldown)
+                    new SyncMouthSlotsPacket(mouthSlots, cooldown)
             );
         }
     }
@@ -84,15 +85,18 @@ public class HardenedMouthCapabilityHandler implements HardenedMouthCapability, 
 
     }
 
+    public void onEffectEnd(Player player) {
+        getMouthSlotItems().forEach(itemStack -> {
+            if (HardenedMouthSlot.moveToPlayerInventory(player.inventoryMenu, itemStack)) return;
+            if (itemStack.isEmpty()) return;
+            player.drop(itemStack, true);
+        });
+        clear();
+        sync(player);
+    }
 
     public void tick(Player player) {
-        if (!player.hasEffect(ModEffects.HARDENED_MOUTH.get()) && !isEmpty()){
-            mouthSlots.forEach(itemStack -> {
-                player.drop(itemStack, true);
-            });
-            clear();
-            sync(player);
-        }
+
         if (player.level().isClientSide || !player.hasEffect(ModEffects.HARDENED_MOUTH.get())) return;
 
         ItemStack input = this.getItem(0);

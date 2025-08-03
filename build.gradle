@@ -81,10 +81,11 @@ dependencies {
     // MODS FOR COMPATIBILITY TESTS
 
     // shaders
-    /*
-    modRuntimeOnly("curse.maven:embeddium-908741:5681725")
-    modRuntimeOnly("curse.maven:oculus-581495:6020952")
-    */
+
+    // compileOnly("org.embeddedt:embeddium-1.20.1:0.3.32-beta.64+mc1.20.1") // This shit does NOT work!
+    // modRuntimeOnly("org.embeddedt:embeddium-1.20.1:0.3.32-beta.64+mc1.20.1")
+    // modRuntimeOnly("curse.maven:oculus-581495:6020952")
+
 
     // create
 
@@ -96,8 +97,8 @@ dependencies {
 
     //mixin
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+    implementation(jarJar(group: "io.github.llamalad7", name:"mixinextras-forge", version: "[0.5.0,)"))
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
 
     implementation 'org.jetbrains:annotations:26.0.1'
 

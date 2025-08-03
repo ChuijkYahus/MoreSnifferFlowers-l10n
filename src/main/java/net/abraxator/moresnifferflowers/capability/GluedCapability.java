@@ -2,12 +2,15 @@ package net.abraxator.moresnifferflowers.capability;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
-import net.abraxator.moresnifferflowers.networking.toClient.UpdateIsGluedPacket;
+import net.abraxator.moresnifferflowers.networking.toClient.SyncGluedPacket;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -21,8 +24,12 @@ public class GluedCapability implements ICapabilityProvider, INBTSerializable<Co
     private final LazyOptional<GluedCapability> optional = LazyOptional.of(() -> this);
     public static final ResourceLocation ID = MoreSnifferFlowers.loc("is_glued");
 
-    public static void setAndSync(LivingEntity entity, boolean isGlued){
-        if (entity.level().isClientSide) return;
+    public static void setAndSync(LivingEntity entity, boolean isGlued, boolean playSound) {
+        Level level = entity.level();
+        if (level.isClientSide) return;
+
+        if (playSound) playSound(level, entity);
+
         entity.getCapability(CapabilityList.GLUED).ifPresent(cap -> {
             cap.isGlued = isGlued;
             cap.sync(entity);
@@ -34,17 +41,11 @@ public class GluedCapability implements ICapabilityProvider, INBTSerializable<Co
     }
 
     public static void sync(LivingEntity entity, boolean isGlued) {
-        if (!(entity instanceof ServerPlayer player)) {
-            ModPacketHandler.CHANNEL.send(
-                    PacketDistributor.TRACKING_ENTITY.with(() -> entity),
-                    new UpdateIsGluedPacket(isGlued, entity.getId())
-            );
-        } else {
-            ModPacketHandler.CHANNEL.send(
-                    PacketDistributor.PLAYER.with(() -> (ServerPlayer) entity),
-                    new UpdateIsGluedPacket(isGlued, entity.getId())
-            );
-        }
+        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(),new SyncGluedPacket(isGlued, entity.getId()));
+    }
+
+    public static void playSound(Level level, Entity entity){
+        level.playSound(null, entity.getOnPos(), SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, SoundSource.PLAYERS, 5.0F, 0.02F + level.random.nextFloat() * 0.01F);
     }
 
     @Override

@@ -13,12 +13,13 @@ public class GluedEffect extends MobEffect {
 
     @Override
     public void applyEffectTick(LivingEntity entity, int amplifier) {
-        entity.setDeltaMovement(Vec3.ZERO);
+        double y = Math.min(entity.getDeltaMovement().y, 0);
+        entity.setDeltaMovement(new Vec3(0, y ,0));
         entity.setJumping(false);
         entity.hasImpulse = false;
 
         if (entity.level().getGameTime() % 41 == 0) {
-            GluedCapability.setAndSync(entity, true);
+            GluedCapability.setAndSync(entity, true, false);
         }
     }
 

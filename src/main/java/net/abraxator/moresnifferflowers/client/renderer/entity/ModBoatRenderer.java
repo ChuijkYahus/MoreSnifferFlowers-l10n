@@ -29,7 +29,7 @@ import org.joml.Quaternionf;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static net.abraxator.moresnifferflowers.client.ModColorHandler.hexToRGB;
+import static net.abraxator.moresnifferflowers.client.ModColorHandler.hexToRGBLarge;
 
 public class ModBoatRenderer extends BoatRenderer {
     private final Map<ModBoatEntity.Type, Pair<ResourceLocation, ListModel<Boat>>> boatResources;
@@ -68,7 +68,7 @@ public class ModBoatRenderer extends BoatRenderer {
         listmodel.setupAnim(pEntity, pPartialTicks, 0.0F, -0.1F, 0.0F, 0.0F);
         VertexConsumer vertexconsumer = pBuffer.getBuffer(listmodel.renderType(resourcelocation));
         int hex = boatColor(pEntity);
-        listmodel.renderToBuffer(pPoseStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, 1-hexToRGB(hex)[0], 1-hexToRGB(hex)[1], 1-hexToRGB(hex)[2], 1);
+        listmodel.renderToBuffer(pPoseStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, 1- hexToRGBLarge(hex)[0], 1- hexToRGBLarge(hex)[1], 1- hexToRGBLarge(hex)[2], 1);
         if (!pEntity.isUnderWater()) {
             VertexConsumer vertexconsumer1 = pBuffer.getBuffer(RenderType.waterMask());
             if (listmodel instanceof WaterPatchModel waterpatchmodel) {

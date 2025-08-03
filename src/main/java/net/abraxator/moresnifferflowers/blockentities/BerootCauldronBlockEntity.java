@@ -153,8 +153,6 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         int blandThreshold = 120;
         int minFlavour = 50;
 
-
-        System.out.println("entryList = " + entryList);
         //effect init
         ListTag effectTag = new ListTag();
         for (NutritionEntry nutritionEntry : entryList) {
@@ -164,7 +162,6 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
                 int amplifier = 1;
                 Boolean positive = null;
 
-                System.out.println(nutritionEntry.nutrition() + " ratio = " + ratio);
 
                 if (ratio > negativeThreshold) {
                     amplifier = Math.round((ratio - negativeThreshold) / ampThresholds);
@@ -213,8 +210,6 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         }
 
         tag.put("effects", effectTag);
-
-        System.out.println("created soup = " + tag);
 
         soup.setTag(tag);
         this.soup = soup;
@@ -367,7 +362,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
     }
 
     public static List<ItemEntity> getItemsAtAndAbove(Level level, BlockPos pos) {
-        return BerootCauldronBlock.makeShapeInside().toAabbs().stream().flatMap((p_155558_) -> level.getEntitiesOfClass(ItemEntity.class, p_155558_.move(pos.getX(), pos.getY(), pos.getZ() + 1.125), EntitySelector.ENTITY_STILL_ALIVE).stream()).collect(Collectors.toList());
+        return BerootCauldronBlock.SHAPE_INSIDE.toAabbs().stream().flatMap((p_155558_) -> level.getEntitiesOfClass(ItemEntity.class, p_155558_.move(pos.getX(), pos.getY(), pos.getZ() + 1.125), EntitySelector.ENTITY_STILL_ALIVE).stream()).collect(Collectors.toList());
     }
     
     public float getItemsRotation(float partialTick) {

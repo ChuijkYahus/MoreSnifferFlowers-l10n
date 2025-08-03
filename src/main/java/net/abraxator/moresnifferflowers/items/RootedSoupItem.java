@@ -57,10 +57,12 @@ public class RootedSoupItem extends Item {
         }
         
         foodData.eat(food, sat);
-        for (MobEffectInstance effect : effects) {
-            player.addEffect(effect);
+        if (!level.isClientSide) {
+            for (MobEffectInstance effect : effects) {
+                player.addEffect(effect);
+            }
         }
-        
+
         int uses = tag.getInt("soupCount") - 1;
         
         if(uses <= 0) {

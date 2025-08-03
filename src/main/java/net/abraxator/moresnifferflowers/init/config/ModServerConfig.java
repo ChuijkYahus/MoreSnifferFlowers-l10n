@@ -25,6 +25,8 @@ public class ModServerConfig {
     public static final ForgeConfigSpec.ConfigValue<String> REBREWING_SPLASH;
     public static final ForgeConfigSpec.ConfigValue<String> REBREWING_LINGERING;
 
+    public static final ForgeConfigSpec.BooleanValue SALTEMONE_GRIEFING;
+    public static final ForgeConfigSpec.IntValue THROWABLES_COOLDOWN;
 
 
     static {
@@ -33,7 +35,7 @@ public class ModServerConfig {
         builder.push("corruption");
 
         CORRUPTION_SPREAD_SPEED = builder
-                .comment("Spread speed of corrupted grass blocks, 1 = Default, 0 = Disabled")
+                .comment("Spread lastSpeed of corrupted grass blocks, 1 = Default, 0 = Disabled")
                 .translation("moresnifferflowers.configuration.corruption_spread_speed")
                 .defineInRange("Corruption Spread Speed", 1D, 0D, 5D);
 
@@ -43,14 +45,14 @@ public class ModServerConfig {
                 .define("Corrupted Tree Grow Trough", true);
 
         CORRUPTED_TREE_BONE_MEAL = builder
-                .comment("Should corrupted sapling require bone meal to grow at all? Default = true")
+                .comment("Should corrupted sapling require bone meal to grow at all? Default = false")
                 .translation("moresnifferflowers.configuration.corrupted_tree_bone_meal")
-                .define("Corrupted Tree Bone Meal", true);
+                .define("Corrupted Tree Bone Meal", false);
 
         CORRUPTED_BOBLING_GRIEFING = builder
-                .comment("Should boblings spawn projectiles when hit and replace blocks when planting? Default = false")
+                .comment("Should boblings spawn projectiles when hit and replace blocks when planting? Default = true")
                 .translation("moresnifferflowers.configuration.corrupted_bobling_griefing")
-                .define("Corrupted Bobling Griefing", false);
+                .define("Corrupted Bobling Griefing", true);
 
         CORRUPTED_SLUDGE_GRIEFING = builder
                 .comment("Should sludges shoot projectiles when blocks get destroyed? Default = true")
@@ -81,6 +83,18 @@ public class ModServerConfig {
                 .translation("moresnifferflowers.configuration.rebrew_lingering")
                 .define("Rebrewing Lingering", itemToString(Items.DRAGON_BREATH));
 
+        builder.pop();
+
+        builder.push("misc");
+        SALTEMONE_GRIEFING = builder
+                .comment("Should Saltemone Bubbles drop loot, even when nobody popped them? Default = true")
+                .translation("moresnifferflowers.configuration.saltemone_lingering")
+                .define("Saltemone Griefing", true);
+
+        THROWABLES_COOLDOWN = builder
+                .comment("Cooldown for all throwable items, which drop blocks. Input in ticks")
+                .translation("moresnifferflowers.configuration.throwables_cooldown")
+                .defineInRange("Throwables Cooldown", 0, 0, 10000);
 
         builder.pop();
 
@@ -88,8 +102,8 @@ public class ModServerConfig {
         SERVER_CONFIG = builder.build();
     }
 
-    private static @NotNull String itemToString(Item glowstoneDust) {
-        return Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(glowstoneDust)).toString();
+    private static @NotNull String itemToString(Item item) {
+        return Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(item)).toString();
     }
 
     public static Item itemFromLoc(String loc) {

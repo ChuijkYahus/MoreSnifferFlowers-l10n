@@ -20,6 +20,9 @@ public class CapabilityList {
     public static final Capability<BlockPatternCapability> BLOCK_PATTERNS = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<ComboMealCapability> COMBO_MEAL = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<GluedCapability> GLUED = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<CorruptionCapability> CORRUPTION = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<SlipperyCapability> SLIPPERY = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<UntouchableCapability> UNTOUCHABLE = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.register(NutritionCapability.class);
@@ -27,6 +30,9 @@ public class CapabilityList {
         event.register(BlockPatternCapability.class);
         event.register(ComboMealCapability.class);
         event.register(GluedCapability.class);
+        event.register(CorruptionCapability.class);
+        event.register(SlipperyCapability.class);
+        event.register(UntouchableCapability.class);
 
     }
 
@@ -37,6 +43,8 @@ public class CapabilityList {
                 event.addCapability(NutritionCapability.ID, new NutritionCapabilityHandler());
                 event.addCapability(HardenedMouthCapability.ID, new HardenedMouthCapabilityHandler());
                 event.addCapability(ComboMealCapability.ID,  new ComboMealCapability());
+                event.addCapability(SlipperyCapability.ID,  new SlipperyCapability());
+                event.addCapability(UntouchableCapability.ID,  new UntouchableCapability());
 
             }
 
@@ -51,6 +59,9 @@ public class CapabilityList {
         BlockPatternCapability capability = new BlockPatternCapability();
         event.addCapability(capability.ID, capability);
         event.addListener(capability::invalidate);
+
+        event.addCapability(CorruptionCapability.ID, new CorruptionCapability());
+
     }
 
 }

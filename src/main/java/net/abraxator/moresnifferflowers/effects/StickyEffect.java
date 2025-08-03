@@ -4,12 +4,12 @@ import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.abraxator.moresnifferflowers.init.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -30,25 +30,24 @@ public class StickyEffect extends MobEffect {
             pullItemTowards(livingEntity, item);
         }
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide && livingEntity instanceof Player player) {
 
             BlockPos pos = livingEntity.getOnPos();
             BlockState state = level.getBlockState(pos);
             Vec3 vec3 = pos.getCenter();
 
-            int momentum = Mth.floor((livingEntity.walkDist - livingEntity.walkDistO) * 250);
+            boolean isRunning = player.isSprinting();
 
-            int delay = 150 - momentum - (amplifier * 5);
+            int delay = 600 - (amplifier * 50);
             if (delay < 1) delay = 1;
 
-            if (momentum > 1 && level.getGameTime() % delay == 0 && state.is(ModTags.ModBlockTags.STICKABLE)) {
+            if (isRunning && level.getGameTime() % delay == 0 && state.is(ModTags.ModBlockTags.STICKABLE)) {
                 level.playSound(null, pos, state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 1.0F, 0.5F + level.getRandom().nextFloat() * 0.8F);
                 ItemEntity itemEntity = new ItemEntity(level, vec3.x, vec3.y + 0.6F, vec3.z, state.getBlock().asItem().getDefaultInstance());
                 level.addFreshEntity(itemEntity);
                 if (level.random.nextFloat() < 0.3f)
                     livingEntity.addEffect(new MobEffectInstance(ModEffects.GLUED.get(), 40 * amplifier, 0));
             }
-            ;
         }
     }
 

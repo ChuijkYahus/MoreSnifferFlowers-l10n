@@ -39,6 +39,8 @@ public record CorruptionRecipe(ResourceLocation id, String source, List<Entry> l
         map.put(ModBlocks.AMBUSH_TOP.get(), ModBlocks.GARBUSH_TOP.get());
         map.put(ModBlocks.SALTEMONE.get(), ModBlocks.SOURLEMONE.get());
         map.put(ModBlocks.CAULORFLOWER.get(), ModBlocks.PATTERNFLOWER.get());
+        map.put(ModBlocks.TORCHFLOWER_AFLAME.get(), ModBlocks.TORCHEWFLOWER.get());
+        map.put(Blocks.TORCHFLOWER, ModBlocks.TORCHEWFLOWER.get());
 
     });
     
