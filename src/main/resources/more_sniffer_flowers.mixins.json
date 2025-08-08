@@ -11,7 +11,7 @@
     "EntityMixin",
     "FarmBlockMixin",
     "FlowerBlockMixin",
-    "FoodDataMixin",
+    "PlayerMixin",
     "InventoryMenuMixin",
     "LeavesBlockMixin",
     "RightClickHarvestModInitMixin",

@@ -26,7 +26,8 @@ public abstract class FlowerBlockMixin extends BushBlock implements SuspiciousEf
 
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (level.getBrightness(LightLayer.SKY, pos) > 13 && level.isDay() && !level.isRaining()) {
+        super.randomTick(state, level, pos, random);
+        if (state.is(Blocks.TORCHFLOWER) && level.getBrightness(LightLayer.SKY, pos) > 13 && level.isDay() && !level.isRaining()) {
             level.setBlock(pos, ModBlocks.TORCHFLOWER_AFLAME.get().defaultBlockState().setValue(ModStateProperties.AGE_2, 1).setValue(ModStateProperties.FIRE_TICKS, 0), 3);
         }
     }
