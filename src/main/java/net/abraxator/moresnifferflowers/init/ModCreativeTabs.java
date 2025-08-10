@@ -55,13 +55,28 @@ public class ModCreativeTabs {
                 output.accept(ModItems.DYESCRAPIA);
 
                 output.accept(ModBlocks.CAULORFLOWER.get());
-                
+                output.accept(ModBlocks.PATTERNFLOWER.get());
+                output.accept(ModItems.PATTERNSPRIA.get());
+
                 output.accept(ModItems.BONMEELIA_SEEDS.get());
                 output.accept(ModItems.JAR_OF_BONMEEL.get());
                 output.accept(ModItems.BONDRIPIA_SEEDS);
                 output.accept(ModItems.BONWILTIA_SEEDS.get());
                 output.accept(ModItems.JAR_OF_ACID.get());
                 output.accept(ModItems.ACIDRIPIA_SEEDS);
+
+                output.accept(ModItems.SALTEMONE_SEEDS.get());
+                output.accept(ModItems.SALTY_SPICE.get());
+                output.accept(ModItems.DRIPSALT.get());
+                output.accept(ModItems.SOURLEMONE_SEEDS.get());
+                output.accept(ModBlocks.SOUR_PUDDLE.get());
+
+                output.accept(ModBlocks.TORCHFLOWER_AFLAME.get());
+                output.accept(ModBlocks.TORCHFLAME.get());
+                output.accept(ModItems.FIERY_SPICE.get());
+
+                output.accept(ModBlocks.TORCHEWFLOWER.get());
+                output.accept(ModItems.SWEET_SPICE.get());
 
                 output.accept(ModItems.BELT_PIECE.get());
                 output.accept(ModItems.ENGINE_PIECE.get());
@@ -84,8 +99,11 @@ public class ModCreativeTabs {
                 
                 output.accept(ModItems.CROPRESSED_BEETROOT.get());
                 output.accept(ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get());
-                output.accept(ModBlocks.GIANT_BEETROOT);
-                
+                output.accept(ModBlocks.GIANT_BEETROOT.get());
+                output.accept(ModItems.FLAVORFUL_ROOTS.get());
+                output.accept(ModItems.BEROOT_CAULDRON.get());
+                output.accept(ModItems.BEROOT_COOK_BOOK.get());
+
                 output.accept(ModItems.CROPRESSED_NETHERWART.get());
                 output.accept(ModItems.NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE.get());
                 output.accept(ModBlocks.GIANT_NETHERWART);
@@ -103,6 +121,9 @@ public class ModCreativeTabs {
                 output.accept(ModBlocks.DECAYED_LOG.get());
                 output.accept(ModBlocks.CORRUPTED_GRASS_BLOCK.get());
                 output.accept(ModBlocks.CURED_GRASS_BLOCK.get());
+                output.accept(ModBlocks.CORRUPTED_GRASS.get());
+                output.accept(ModBlocks.CORRUPTED_TALL_GRASS.get());
+                output.accept(ModBlocks.CORRUPTED_WART.get());
 
                 output.accept(ModBlocks.VIVICUS_LOG.get());
                 output.accept(ModBlocks.VIVICUS_WOOD.get());
@@ -147,6 +168,24 @@ public class ModCreativeTabs {
                 output.accept(ModItems.CORRUPTED_HANGING_SIGN);
                 output.accept(ModItems.CORRUPTED_BOAT);
                 output.accept(ModItems.CORRUPTED_CHEST_BOAT);
+
+                output.accept(ModItems.BLOCK_PATTERN_CLOUDS.get());
+                output.accept(ModItems.BLOCK_PATTERN_EYE.get());
+                output.accept(ModItems.BLOCK_PATTERN_COVER.get());
+                output.accept(ModItems.BLOCK_PATTERN_DEEPSLATE.get());
+                output.accept(ModItems.BLOCK_PATTERN_PAWS.get());
+                output.accept(ModItems.BLOCK_PATTERN_HEARTS.get());
+                output.accept(ModItems.BLOCK_PATTERN_HONEYCOMB.get());
+                output.accept(ModItems.BLOCK_PATTERN_STARS.get());
+                output.accept(ModItems.BLOCK_PATTERN_PIPES.get());
+                output.accept(ModItems.BLOCK_PATTERN_SPROUTS.get());
+                output.accept(ModItems.BLOCK_PATTERN_DIAMOND.get());
+                output.accept(ModItems.BLOCK_PATTERN_BUBBLES.get());
+                output.accept(ModItems.BLOCK_PATTERN_PRISMARINE.get());
+                output.accept(ModItems.BLOCK_PATTERN_FOCUS.get());
+                output.accept(ModItems.BLOCK_PATTERN_BRICKS.get());
+                output.accept(ModItems.BLOCK_PATTERN_FLOWERS.get());
+
 
 
             })

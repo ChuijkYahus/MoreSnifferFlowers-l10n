@@ -1,0 +1,6 @@
+{
+  "sources": [
+    { "type": "forge:single","resource": "moresnifferflowers:block/dye_pattern/1" },
+    { "type": "forge:single","resource": "moresnifferflowers:block/dye_pattern/2" }
+  ]
+}

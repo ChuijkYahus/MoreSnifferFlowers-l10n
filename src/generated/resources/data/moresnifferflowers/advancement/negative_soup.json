@@ -1,0 +1,42 @@
+{
+  "parent": "moresnifferflowers:beroot_cauldron",
+  "criteria": {
+    "has_negative_soup_effects": {
+      "conditions": {
+        "effects": {
+          "moresnifferflowers:pants_on_fire": {},
+          "moresnifferflowers:salty": {},
+          "moresnifferflowers:slippery": {},
+          "moresnifferflowers:sticky": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "fallback": "Have 4 negative soup effects at the same time",
+      "translate": "advancements.more_sniffer_flowers.negative_soup.desc"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "item": "minecraft:poisonous_potato"
+    },
+    "show_toast": true,
+    "title": {
+      "fallback": "Pasta Burner",
+      "translate": "advancements.more_sniffer_flowers.negative_soup"
+    }
+  },
+  "requirements": [
+    [
+      "has_negative_soup_effects"
+    ]
+  ],
+  "rewards": {
+    "experience": 53
+  },
+  "sends_telemetry_event": true
+}

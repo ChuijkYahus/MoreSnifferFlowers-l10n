@@ -1,0 +1,40 @@
+{
+  "parent": "moresnifferflowers:cropressor",
+  "criteria": {
+    "has_beroot_cauldron": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "moresnifferflowers:beroot_cauldron"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "fallback": "Craft the Beroot Cauldron",
+      "translate": "advancements.more_sniffer_flowers.beroot_cauldron.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "moresnifferflowers:beroot_cauldron"
+    },
+    "show_toast": true,
+    "title": {
+      "fallback": "Glooby, and never Soupy",
+      "translate": "advancements.more_sniffer_flowers.beroot_cauldron"
+    }
+  },
+  "requirements": [
+    [
+      "has_beroot_cauldron"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

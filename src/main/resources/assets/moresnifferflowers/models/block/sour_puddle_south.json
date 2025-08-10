@@ -1,0 +1,6 @@
+{
+    "parent": "moresnifferflowers:block/sour_puddle_empty",
+    "textures": {
+        "0": "moresnifferflowers:block/sour_puddle_south"
+    }
+}

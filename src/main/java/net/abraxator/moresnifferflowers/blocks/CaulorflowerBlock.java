@@ -1,9 +1,11 @@
 package net.abraxator.moresnifferflowers.blocks;
 
 import com.google.common.collect.Maps;
+import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.ModAdvancementCritters;
+import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -41,7 +43,7 @@ import java.util.Optional;
 
 import static net.abraxator.moresnifferflowers.init.ModStateProperties.*;
 
-public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCropBlock, Colorable {
+public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCropBlock, Colorable, Corruptable {
     public CaulorflowerBlock(Properties pProperties) {
         super(pProperties);
         this.registerDefaultState(defaultBlockState()
@@ -83,7 +85,7 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCr
         BlockState blockState = pLevel.getBlockState(blockPos);
         BlockPos wallPos = pPos.relative(pState.getValue(FACING).getOpposite());
         BlockState wallState = pLevel.getBlockState(wallPos);
-        return (blockState.is(this) && getAge(blockState) > 0) || blockState.isFaceSturdy(pLevel, blockPos, Direction.UP) || wallState.isFaceSturdy(pLevel, wallPos, pState.getValue(FACING));
+        return ((blockState.is(this) || blockState.is(ModBlocks.PATTERNFLOWER.get())) && getAge(blockState) > 0) || blockState.isFaceSturdy(pLevel, blockPos, Direction.UP) || wallState.isFaceSturdy(pLevel, wallPos, pState.getValue(FACING));
     }
 
     @Override
@@ -196,6 +198,10 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCr
             return;
         }
 
+        if (newState.is(ModBlocks.PATTERNFLOWER.get())){
+            return;
+        }
+
         var stateBelow = level.getBlockState(pos.below());
         if(!stateBelow.is(this) && !stateBelow.is(Blocks.AIR)) {
             popResource(level, pos, new ItemStack(ModItems.CAULORFLOWER_SEEDS.get()));
@@ -247,6 +253,23 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCr
     
     @Override
     public void onAddDye(@Nullable ItemStack destinationStack, ItemStack dye, int amount) {
-        
+    }
+
+    @Override
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        onCorruptByEntity(entity, pos, state, this, level);
+    }
+
+    @Override
+    public void onCorrupt(Level level, BlockPos pos, BlockState oldState, Block corruptedBlock) {
+        var corruptedState = corruptedBlock.withPropertiesOf(corruptedBlock.defaultBlockState()
+                .setValue(FACING, oldState.getValue(FACING))
+                .setValue(FLIPPED, oldState.getValue(FLIPPED))
+                .setValue(AGE_2, oldState.getValue(AGE_2))
+                .setValue(BLOCK_PATTERN, oldState.getValue(EMPTY) ? BlockPattern.EMPTY : BlockPattern.fromDyeColor(oldState.getValue(COLOR)))
+                .setValue(EMPTY, oldState.getValue(EMPTY))
+        );
+
+        level.setBlockAndUpdate(pos, corruptedState);
     }
 }

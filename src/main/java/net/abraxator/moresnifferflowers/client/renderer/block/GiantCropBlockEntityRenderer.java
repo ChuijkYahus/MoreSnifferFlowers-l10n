@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
+import net.abraxator.moresnifferflowers.components.PreviewState;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.ModTags;
@@ -15,17 +16,18 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
-public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implements BlockEntityRenderer<T> {
+public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implements BlockEntityRenderer<T>, MultiblockRender {
 	private final Map<Block, ModelPart> modelPartMap = new HashMap<>();
 	private final ModelPart carrot;
 	private final ModelPart potato;
@@ -52,39 +54,40 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 	}
 
 	@Override
-	public void render(GiantCropBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
-		BlockState blockState = pBlockEntity.getBlockState();
+	public void render(GiantCropBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+		BlockState blockState = blockEntity.getBlockState();
 		String path = blockState.getBlock().getDescriptionId().replace("block." + MoreSnifferFlowers.MOD_ID + ".", "");
 		Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/" + path));
-		VertexConsumer vertexConsumer = TEXTURE.buffer(pBufferSource, RenderType::entityCutout);
-		float coolPartialTick = (pBlockEntity.growProgress < 1 && blockState.is(ModTags.ModBlockTags.GIANT_CROPS) && blockState.getValue(ModStateProperties.CENTER)) ? pPartialTick : 0;
-		// float coolGrowProgress = (float)(Math.sin(pBlockEntity.getLevel().getGameTime()))/4;
-		float coolGrowProgress = pBlockEntity.getLevel().getGameTime() - pBlockEntity.staticGameTime;
 
-		if(pBlockEntity.growProgress > 0 && blockState.is(ModTags.ModBlockTags.GIANT_CROPS) && blockState.getValue(ModStateProperties.CENTER)) {
-            double yCord = 0;
-			float yScale = 0;
-            if (pBlockEntity.growProgress > 0 && pBlockEntity.growProgress < 1 && blockState.is(ModTags.ModBlockTags.GIANT_CROPS) && blockState.getValue(ModStateProperties.CENTER)) {
-                yCord = (coolPartialTick + coolGrowProgress)/4 - 2;
-				yScale = Mth.lerp((coolPartialTick + coolGrowProgress)/10, 0, 1);
-            } else {
-				yCord = 0.5;
-				yScale = 1;
-            }
+		PreviewState previewState = blockEntity.previewState;
+		Function<ResourceLocation, RenderType> renderType = getRenderTypeFunction(previewState);
+		VertexConsumer vertexConsumer = TEXTURE.buffer(buffer, renderType);
 
-			pPoseStack.pushPose();
-			pPoseStack.translate(0.5, yCord, 0.5);
-            pPoseStack.mulPose(new Quaternionf().rotateX((float) (Math.PI)));
-			pPoseStack.scale(1, yScale, 1);
-			modelPartMap.get(blockState.getBlock()).render(pPoseStack, vertexConsumer, pPackedLight, pPackedOverlay);
-            pPoseStack.popPose();
-/*            if (pBlockEntity.growProgress < 1 && blockState.is(ModTags.ModBlockTags.GIANT_CROPS) && blockState.getValue(ModStateProperties.CENTER)) {
-                System.out.println("Pticks=" + coolPartialTick + " Growprogress=" + pBlockEntity.growProgress + " Height=" + yCord + " Scale=" + yScale + " coolGrowProgress=" + coolGrowProgress+ " static=" + pBlockEntity.staticGameTime);
-            }*/
-        }
+		double growProgress = previewState.equals(PreviewState.PLACED) ? blockEntity.growProgress : 1;
+		float coolPartialTick = (growProgress < 1 && blockState.is(ModTags.ModBlockTags.GIANT_CROPS) && blockState.getValue(ModStateProperties.CENTER)) ? partialTick : 0;
+		float coolGrowProgress = level().getGameTime() - blockEntity.staticGameTime;
+
+		if(growProgress > 0 && blockState.is(ModTags.ModBlockTags.GIANT_CROPS) && blockState.getValue(ModStateProperties.CENTER)) {
+			float yCord = 0.5F;
+			float yScale = 1;
+
+			if (!previewState.equals(PreviewState.PLACED)) yCord++;
+
+			if(growProgress < 1) {
+				yCord = (coolGrowProgress + coolPartialTick) / 4 - 2;
+				yScale = Mth.lerp((coolGrowProgress + coolPartialTick) / 10, 0, 1);
+			}
+
+			poseStack.pushPose();
+			poseStack.translate(0.5, yCord, 0.5);
+			poseStack.scale(1, yScale, 1);
+			poseStack.mulPose(new Quaternionf().rotateX((float) (Math.PI)));
+			render(modelPartMap.get(blockState.getBlock()), poseStack, vertexConsumer, packedLight, packedOverlay, blockEntity.previewState);
+			poseStack.popPose();
+		}
 	}
 
-	
+
 	@Override
 	public boolean shouldRenderOffScreen(T pBlockEntity) {
 		return true;
@@ -101,6 +104,6 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 
 	@Override
 	public AABB getRenderBoundingBox(T blockEntity) {
-		return AABB.INFINITE;
+		return new AABB(blockEntity.center).inflate(4);
 	}
 }

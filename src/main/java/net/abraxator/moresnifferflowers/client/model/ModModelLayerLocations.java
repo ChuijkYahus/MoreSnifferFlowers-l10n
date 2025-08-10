@@ -13,6 +13,8 @@ public class ModModelLayerLocations {
     public static final ModelLayerLocation CORRUPTED_CHEST_BOAT_LAYER = new ModelLayerLocation(MoreSnifferFlowers.loc("chest_boat/corrupted"), "main");
     public static final ModelLayerLocation VIVICUS_BOAT_LAYER = new ModelLayerLocation(MoreSnifferFlowers.loc("boat/vivicus"), "main");
     public static final ModelLayerLocation VIVICUS_CHEST_BOAT_LAYER = new ModelLayerLocation(MoreSnifferFlowers.loc("chest_boat/vivicus"), "main");
+    public static final ModelLayerLocation SALT_BUBBLE = new ModelLayerLocation(MoreSnifferFlowers.loc("salt_bubble"), "main");
+    public static final ModelLayerLocation GLUING_GUM = new ModelLayerLocation(MoreSnifferFlowers.loc("gluing_gum"), "main");
 
     //BLOCK
     public static final ModelLayerLocation GIANT_CARROT = new ModelLayerLocation(MoreSnifferFlowers.loc("giant_carrot"), "main");
@@ -22,4 +24,9 @@ public class ModModelLayerLocations {
     public static final ModelLayerLocation GIANT_WHEAT = new ModelLayerLocation(MoreSnifferFlowers.loc("giant_wheat"), "main");
     public static final ModelLayerLocation CROPRESSOR = new ModelLayerLocation(MoreSnifferFlowers.loc("cropressor"), "main");
     public static final ModelLayerLocation BONDRIPIA = new ModelLayerLocation(MoreSnifferFlowers.loc("bondripia"), "main");
+    public static final ModelLayerLocation BEROOT_CAULDRON = new ModelLayerLocation(MoreSnifferFlowers.loc("beroot_cauldron"), "main");
+    public static final ModelLayerLocation BEROOT_SPOON = new ModelLayerLocation(MoreSnifferFlowers.loc("beroot_spoon"), "main");
+    public static final ModelLayerLocation SALTEMONE = new ModelLayerLocation(MoreSnifferFlowers.loc("saltemone"), "main");
+    public static final ModelLayerLocation SALTEMONE_TOP = new ModelLayerLocation(MoreSnifferFlowers.loc("saltemone"), "top");
+
 }

@@ -8,7 +8,6 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
@@ -27,7 +26,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 import java.util.Optional;
 
@@ -82,17 +80,19 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult pResult) {
-        super.onHitBlock(pResult);
-        var pos = pResult.getBlockPos();
-        var posRelative = pResult.getBlockPos().relative(pResult.getDirection());
-        var posRelativeBelow = pResult.getBlockPos().relative(pResult.getDirection()).below();
+    protected void onHitBlock(BlockHitResult result) {
+        super.onHitBlock(result);
+        var pos = result.getBlockPos();
+        var posRelative = result.getBlockPos().relative(result.getDirection());
+        var posRelativeBelow = result.getBlockPos().relative(result.getDirection()).below();
 
         var state = this.level().getBlockState(pos);
         var stateRelative = this.level().getBlockState(posRelative);
-        var stateRelativeBelow = this.level().getBlockState(pResult.getBlockPos().relative(pResult.getDirection()).below());
+        var stateRelativeBelow = this.level().getBlockState(result.getBlockPos().relative(result.getDirection()).below());
 
-        if(checkState(this.level().getBlockState(pResult.getBlockPos()))) {
+        if (this.level().getBlockState(pos).is(ModTags.ModBlockTags.NO_CORRUPTED_SLIME_COLLISION)) return;
+
+        if(checkState(this.level().getBlockState(result.getBlockPos()))) {
             var layer = state.getValue(ModStateProperties.LAYER);
             this.level().setBlockAndUpdate(
                     pos,
@@ -101,7 +101,7 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
         } else {
             transformBlock(this.level(), pos);
 
-            if (checkState(this.level().getBlockState(pResult.getBlockPos().relative(pResult.getDirection())))) {
+            if (checkState(this.level().getBlockState(result.getBlockPos().relative(result.getDirection())))) {
                 var layerRelative = stateRelative.getValue(ModStateProperties.LAYER);
                 this.level().setBlockAndUpdate(
                         posRelative,
@@ -110,9 +110,9 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
 
             if (stateRelative.is(Blocks.AIR) || stateRelative.is(BlockTags.FIRE) || (stateRelative.canBeReplaced() && !stateRelative.liquid())) {
 
-                    if(pResult.getDirection() == Direction.UP && !state.is(Blocks.AIR)) {
+                    if(result.getDirection() == Direction.UP && !state.is(Blocks.AIR)) {
                         this.level().setBlockAndUpdate(
-                                pResult.getBlockPos().relative(pResult.getDirection()),
+                                result.getBlockPos().relative(result.getDirection()),
                                 ModBlocks.CORRUPTED_SLIME_LAYER.get().defaultBlockState().setValue(ModStateProperties.LAYER, 1));
                         this.discard();
                     } else {
@@ -142,6 +142,9 @@ public class CorruptedProjectile extends ThrowableItemProjectile {
                     corruptable.onCorrupt(serverLevel, blockPos, level.getBlockState(blockPos), block);
                 } else {
                     level.setBlockAndUpdate(blockPos, block.withPropertiesOf(state));
+
+                    CorruptionCapability.onCorruptionSource(level, blockPos);
+
                 }
 
                 if (level.getNearestPlayer(this, 15) instanceof ServerPlayer serverPlayer) {

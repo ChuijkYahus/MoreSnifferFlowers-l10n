@@ -1,6 +1,9 @@
 package net.abraxator.moresnifferflowers.items;
 
 import net.abraxator.moresnifferflowers.blockentities.DyespriaPlantBlockEntity;
+import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
+import net.abraxator.moresnifferflowers.client.ModColorHandler;
+import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
@@ -13,7 +16,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +29,6 @@ import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-import java.awt.*;
 import java.util.List;
 
 import static net.abraxator.moresnifferflowers.items.DyespriaItem.copyAllBlockStateProperties;
@@ -46,6 +47,22 @@ public class DyescrapiaItem extends BlockItem {
         var stack = pContext.getItemInHand();
         int uses = getDyescrapiaUses(stack) + 1;
 
+
+        if (BlockPatternCapability.hasPattern(pos, level)) {
+            if (!level.isClientSide){
+                if(uses >= 4) {
+                    player.addItem(BlockPattern.fromId(BlockPatternCapability.getPattern(pos, level).patternId()).getItem().getDefaultInstance());
+                    uses = 0;
+                }
+                BlockPatternCapability.removePattern(pos, level);
+
+                CompoundTag tag = stack.getOrCreateTag();
+                tag.putInt("uses", uses);
+                stack.setTag(tag);
+
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
 
         if(state.getBlock() instanceof Colorable colorable) {
             var dye = new Dye(colorable.getDyeFromBlock(state).color(), 1);
@@ -134,26 +151,10 @@ public class DyescrapiaItem extends BlockItem {
 
     @Override
     public int getBarColor(ItemStack stack) {
-        int lowColor = 0x8c1111;
-        int highColor = 0x179529;
         int input = getDyescrapiaUses(stack)-1;
         int maxInput= 4;
 
-        int lowRed = (lowColor >> 16) & 0xFF;
-        int lowGreen = (lowColor >> 8) & 0xFF;
-        int lowBlue = lowColor & 0xFF;
-
-        int highRed = (highColor >> 16) & 0xFF;
-        int highGreen = (highColor >> 8) & 0xFF;
-        int highBlue = highColor & 0xFF;
-        
-        float[] lowHSB =  Color.RGBtoHSB(lowRed, lowGreen, lowBlue, null);
-        float[] highHSB =  Color.RGBtoHSB(highRed, highGreen, highBlue, null);
-
-
-        float finalHue = ((lowHSB[0] * (Math.abs(input - maxInput))) + (highHSB[0] * input)) / maxInput;
-
-        return Mth.hsvToRgb(finalHue, 1.0F, 1.0F);
+        return ModColorHandler.barColorHelper(input, maxInput);
     }
 
     @Override

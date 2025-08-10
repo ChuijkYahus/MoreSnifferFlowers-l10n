@@ -21,7 +21,7 @@ public record CropressingRecipe(Ingredient ingredient, int count, ItemStack resu
 
     @Override
     public boolean matches(SingleRecipeInput pInput, Level pLevel) {
-        ItemStack itemStack = pInput.item();
+        ItemStack itemStack = pInput.getItem(0);
         return itemStack.getCount() >= count && ingredient.test(itemStack.copyWithCount(1));
     }
 

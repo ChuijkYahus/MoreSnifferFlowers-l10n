@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.components;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import oshi.util.tuples.Pair;
 
 import java.util.Map;
@@ -22,6 +24,8 @@ import static net.abraxator.moresnifferflowers.init.ModStateProperties.EMPTY;
 
 public interface Colorable {
     Map<DyeColor, Integer> colorValues();
+    String TAG_HEX = "MSF_Hex";
+    String TAG_ID = "MSF_ID";
 
     default TagKey<Block> matchTag() {
         return null;
@@ -90,12 +94,18 @@ public interface Colorable {
     default void onAddDye(@Nullable ItemStack destinationStack, ItemStack dye, int amount) {}
 
     default void particles(RandomSource randomSource, Level level, Dye dye, BlockPos blockPos) {
+        particles(randomSource, level, dye, blockPos, null);
+    }
+
+    default void particles(RandomSource randomSource, Level level, Dye dye, BlockPos blockPos, @Nullable Direction face) {
+        Vector3f vector3f = blockPos.getCenter().toVector3f();
+        if (face != null) vector3f = vector3f.add(face.step().div(new Vector3f(2,2,2)));
         for(int i = 0; i <= randomSource.nextIntBetweenInclusive(5, 10); i++) {
             level.addParticle(
                     new DustParticleOptions(dye.isEmpty() ? Vec3.fromRGB24(14013909).toVector3f() : Vec3.fromRGB24(Dye.colorForDye(this, dye.color())).toVector3f(), 1.0F),
-                    blockPos.getX() + randomSource.nextDouble(),
-                    blockPos.getY() + randomSource.nextDouble(),
-                    blockPos.getZ() + randomSource.nextDouble(),
+                    vector3f.x + randomSource.nextDouble() - 0.5D,
+                    vector3f.y + randomSource.nextDouble() - 0.5D,
+                    vector3f.z + randomSource.nextDouble() - 0.5D,
                     0, 0, 0);
         }
     }

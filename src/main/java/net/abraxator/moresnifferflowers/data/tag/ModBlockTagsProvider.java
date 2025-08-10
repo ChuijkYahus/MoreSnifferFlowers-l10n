@@ -34,13 +34,13 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
                 ModBlocks.GIANT_POTATO.get(), ModBlocks.GIANT_NETHERWART.get(), ModBlocks.GIANT_BEETROOT.get(), ModBlocks.GIANT_WHEAT.get(), ModBlocks.CAULORFLOWER.get(),
                 ModBlocks.CORRUPTED_LEAVES.get(), ModBlocks.CORRUPTED_LEAVES_BUSH.get(), ModBlocks.VIVICUS_LEAVES.get(), ModBlocks.VIVICUS_LEAVES_SPROUT.get());
         this.tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.GIANT_CARROT.get(), ModBlocks.GIANT_POTATO.get(), ModBlocks.GIANT_NETHERWART.get(), ModBlocks.GIANT_BEETROOT.get(), ModBlocks.GIANT_WHEAT.get(), ModBlocks.CAULORFLOWER.get());
-        this.tag(BlockTags.MINEABLE_WITH_SHOVEL).add(ModBlocks.CORRUPTED_SLUDGE.get(), ModBlocks.CORRUPTED_SLIME_LAYER.get(), ModBlocks.CORRUPTED_GRASS_BLOCK.get(), ModBlocks.CURED_GRASS_BLOCK.get());
+        this.tag(BlockTags.MINEABLE_WITH_SHOVEL).add(ModBlocks.CORRUPTED_SLUDGE.get(), ModBlocks.CORRUPTED_SLIME_LAYER.get(), ModBlocks.CORRUPTED_GRASS_BLOCK.get(), ModBlocks.CURED_GRASS_BLOCK.get(), ModBlocks.SALTY_CLUMP.get(), ModBlocks.SOUR_PUDDLE.get());
 
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(
                 ModBlocks.AMBER_BLOCK.get(), ModBlocks.GARNET_BLOCK.get(), ModBlocks.CROPRESSOR_OUT.get(), ModBlocks.CROPRESSOR_CENTER.get(), ModBlocks.REBREWING_STAND_BOTTOM.get(),
                 ModBlocks.CHISELED_AMBER.get(), ModBlocks.CHISELED_AMBER_SLAB.get(), ModBlocks.CRACKED_AMBER.get(), ModBlocks.AMBER_MOSAIC.get(), ModBlocks.AMBER_MOSAIC_STAIRS.get(), ModBlocks.AMBER_MOSAIC_WALL.get(), ModBlocks.AMBER_MOSAIC_SLAB.get(),
                 ModBlocks.CHISELED_GARNET.get(), ModBlocks.CHISELED_GARNET_SLAB.get(), ModBlocks.CRACKED_GARNET.get(), ModBlocks.GARNET_MOSAIC.get(), ModBlocks.GARNET_MOSAIC_STAIRS.get(), ModBlocks.GARNET_MOSAIC_WALL.get(), ModBlocks.GARNET_MOSAIC_SLAB.get(),
-                ModBlocks.REBREWING_STAND_TOP.get());
+                ModBlocks.REBREWING_STAND_TOP.get(), ModBlocks.BEROOT_CAULDRON.get(), ModBlocks.DRIPSALT.get() );
         this.tag(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.AMBER_BLOCK.get(), ModBlocks.GARNET_BLOCK.get(), ModBlocks.CROPRESSOR_OUT.get(), ModBlocks.CROPRESSOR_CENTER.get(), ModBlocks.REBREWING_STAND_BOTTOM.get(), ModBlocks.REBREWING_STAND_TOP.get());
 
         this.tag(ModTags.ModBlockTags.BONMEELABLE).add(Blocks.WHEAT, Blocks.CARROTS, Blocks.POTATOES, Blocks.BEETROOTS, Blocks.NETHER_WART);
@@ -78,6 +78,14 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         this.tag(ModTags.ModBlockTags.CORRUPTED_SLUDGE).add(ModBlocks.CORRUPTED_LOG.get(), ModBlocks.CORRUPTED_LEAVES.get(), ModBlocks.CORRUPTED_LEAVES_BUSH.get());
         this.tag(ModTags.ModBlockTags.VIVICUS_TREE_REPLACABLE).addTag(BlockTags.REPLACEABLE_BY_TREES).add(ModBlocks.VIVICUS_SAPLING.get());
         this.tag(ModTags.ModBlockTags.CORRUPTION_TRANSFORMABLES).add(ModBlocks.DYESPRIA_PLANT.get(), ModBlocks.DAWNBERRY_VINE.get());
+        this.tag(ModTags.ModBlockTags.UNCORRUPTABLE).add(ModBlocks.CORRUPTED_LOG.get(), ModBlocks.CORRUPTED_LEAVES_BUSH.get(), ModBlocks.CORRUPTED_LEAVES.get(), ModBlocks.STRIPPED_CORRUPTED_LOG.get()
+                , ModBlocks.CORRUPTED_WOOD.get(), ModBlocks.STRIPPED_CORRUPTED_WOOD.get(), ModBlocks.DECAYED_LOG.get());
+        this.tag(ModTags.ModBlockTags.NO_CORRUPTED_SLIME_COLLISION).add(ModBlocks.SALTEMONE.get(), ModBlocks.SOURLEMONE.get());
+
+        this.tag(ModTags.ModBlockTags.STICKABLE).add(Blocks.GRASS).add(Blocks.STONE)
+                .add(Blocks.SAND).add(Blocks.GRAVEL).add(Blocks.TALL_GRASS).addTags(BlockTags.LEAVES, BlockTags.DIRT, BlockTags.REPLACEABLE);
+
+        this.tag(ModTags.ModBlockTags.CORRUPTION_SHIELDING).add(Blocks.OXEYE_DAISY, Blocks.SUNFLOWER, Blocks.PITCHER_PLANT);
 
         this.tag(BlockTags.CAULDRONS).add(ModBlocks.ACID_FILLED_CAULDRON.get(), ModBlocks.BONMEEL_FILLED_CAULDRON.get());
         this.tag(BlockTags.DIRT).add(ModBlocks.CORRUPTED_GRASS_BLOCK.get(), ModBlocks.CURED_GRASS_BLOCK.get());

@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.blockentities;
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -12,4 +13,6 @@ public abstract class ModBlockEntity extends BlockEntity {
     }
 
     public void tick(Level level) {}
+    
+    public void clientTick(ClientLevel level) {}
 }

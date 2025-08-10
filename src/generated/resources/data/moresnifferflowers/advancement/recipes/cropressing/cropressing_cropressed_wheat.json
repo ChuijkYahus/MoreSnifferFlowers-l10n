@@ -1,0 +1,40 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cropressor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "moresnifferflowers:cropressor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+<<<<<<<< HEAD:src/generated/resources/data/moresnifferflowers/advancement/cropressed_nether_wart_from_cropressing.json
+        "recipe": "moresnifferflowers:cropressed_nether_wart_from_cropressing"
+========
+        "recipe": "moresnifferflowers:cropressing_cropressed_wheat"
+>>>>>>>> ba862e95 (MSF 6.0-Beta3 Squash):src/generated/resources/data/moresnifferflowers/advancement/recipes/cropressing/cropressing_cropressed_wheat.json
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_cropressor"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+<<<<<<<< HEAD:src/generated/resources/data/moresnifferflowers/advancement/cropressed_nether_wart_from_cropressing.json
+      "moresnifferflowers:cropressed_nether_wart_from_cropressing"
+========
+      "moresnifferflowers:cropressing_cropressed_wheat"
+>>>>>>>> ba862e95 (MSF 6.0-Beta3 Squash):src/generated/resources/data/moresnifferflowers/advancement/recipes/cropressing/cropressing_cropressed_wheat.json
+    ]
+  }
+}

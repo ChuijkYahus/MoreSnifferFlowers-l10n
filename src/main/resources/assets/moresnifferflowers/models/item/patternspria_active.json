@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "moresnifferflowers:item/patternspria_0",
+    "layer1": "moresnifferflowers:item/patternspria_1"
+  }
+}

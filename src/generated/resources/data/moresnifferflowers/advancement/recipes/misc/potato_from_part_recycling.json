@@ -5,7 +5,9 @@
       "conditions": {
         "items": [
           {
-            "items": "moresnifferflowers:cropressed_potato"
+            "items": [
+              "moresnifferflowers:cropressed_potato"
+            ]
           }
         ]
       },
@@ -20,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_cropressed_potato"
+      "has_cropressed_potato",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "moresnifferflowers:potato_from_part_recycling"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

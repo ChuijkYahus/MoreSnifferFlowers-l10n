@@ -22,6 +22,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.lighting.LightEngine;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +50,11 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
     }
 
     @Override
+    public void performBonemeal(ServerLevel serverLevel, RandomSource randomSource, BlockPos blockPos, BlockState blockState) {
+
+    }
+
+    @Override
     public void stepOn(Level pLevel, BlockPos pPos, BlockState pState, Entity pEntity) {
         double d0 = Math.abs(pEntity.getDeltaMovement().y);
         if (d0 < 0.1 && !pEntity.isSteppingCarefully()) {
@@ -56,6 +62,13 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
             pEntity.setDeltaMovement(pEntity.getDeltaMovement().multiply(d1, 1.0, d1));
         }
     }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(ModStateProperties.CROWDED);
+    }
+
 
 
     @Override
@@ -129,24 +142,140 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
     }
 
     @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        super.onRemove(state, level, pos, newState, movedByPiston);
+        LevelChunk chunk = level.getChunkAt(pos);
+
+        chunk.getCapability(CapabilityList.CORRUPTION).ifPresent(cap -> {
+            if (cap.count > 0) cap.count--;
+        });
+    }
+
+    @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (!canBeGrass(state, level, pos)) {
             if (!level.isAreaLoaded(pos, 1)) return; // Forge: prevent loading unloaded chunks when checking neighbor's light and spreading
             level.setBlockAndUpdate(pos, Blocks.COARSE_DIRT.defaultBlockState());
         } else {
             if (!level.isAreaLoaded(pos, 3)) return;
+            if (state.getValue(ModStateProperties.CROWDED)) return;
             if (level.getMaxLocalRawBrightness(pos.above()) <=6 && random.nextDouble() < 0.2D *  ModServerConfig.CORRUPTION_SPREAD_SPEED.get()) {
                 BlockState blockstate = this.defaultBlockState();
+                boolean spreadSuccess = false;
 
-                for (int i = 0; i < 4; i++) {
-                    BlockPos blockpos = pos.offset(random.nextIntBetweenInclusive(-2,2), random.nextIntBetweenInclusive(-2,2), random.nextIntBetweenInclusive(-2,2));
-                    if (level.getBlockState(blockpos).is(BlockTags.DIRT) && canPropagate(blockstate, level, blockpos) && !level.getBlockState(blockpos).is(ModBlocks.CURED_GRASS_BLOCK.get()) ) {
-                        level.setBlockAndUpdate(
-                                blockpos, blockstate.setValue(SNOWY, Boolean.valueOf(level.getBlockState(blockpos.above()).is(Blocks.SNOW)))
-                        );
-                    }
+                for (int i = 0; i < 4 && !spreadSuccess; i++) {
+                    spreadSuccess = spread(level, pos, random, blockstate);
                 }
+
+                placeCorruptedLeaves(level, pos, random);
+                placeTallGrass(level, pos);
             }
+        }
+    }
+
+    private static void placeCorruptedLeaves(ServerLevel level, BlockPos pos, RandomSource random) {
+        BlockPos blockPos1 = pos.above(random.nextInt(6));
+        BlockState state2 = level.getBlockState(blockPos1);
+
+        if (state2.getOptionalValue(ModStatePropertiesUnsafe.NOT_CORRUPTED).isPresent() && state2.getValue(ModStatePropertiesUnsafe.NOT_CORRUPTED)){
+            level.setBlock(blockPos1, state2.setValue(ModStatePropertiesUnsafe.NOT_CORRUPTED, false), 3);
+        }
+    }
+
+    private static boolean spread(ServerLevel level, BlockPos pos, RandomSource random, BlockState blockstate) {
+        BlockPos pos1 = pos.offset(random.nextIntBetweenInclusive(-2,2), random.nextIntBetweenInclusive(-2,2), random.nextIntBetweenInclusive(-2,2));
+        BlockState state1 = level.getBlockState(pos1);
+
+        boolean canSpread = state1.is(BlockTags.DIRT) && canPropagate(blockstate, level, pos1) && !state1.is(ModBlocks.CURED_GRASS_BLOCK.get()) && !state1.is(ModBlocks.CORRUPTED_GRASS_BLOCK.get());
+
+        if (canSpread) {
+
+            if (level.isClientSide) return false;
+
+            if (checkChunks(level, pos, random, blockstate, pos1)) return false;
+
+            level.setBlockAndUpdate(pos1, blockstate.setValue(SNOWY, level.getBlockState(pos1.above()).is(Blocks.SNOW)));
+
+            BlockPos posAbove = pos1.above();
+            if (random.nextFloat() < 0.10F && level.getBlockState(posAbove).isAir()){
+                level.setBlock(posAbove, ModBlocks.CORRUPTED_WART.get().defaultBlockState(), 3);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private static boolean checkChunks(ServerLevel level, BlockPos pos, RandomSource random, BlockState blockstate, BlockPos pos1) {
+        LevelChunk chunkNew = level.getChunkAt(pos1);
+        LevelChunk chunkOriginal = level.getChunkAt(pos);
+
+        CorruptionCapability capNew = CorruptionCapability.get(chunkNew);
+        CorruptionCapability capOriginal = CorruptionCapability.get(chunkOriginal);
+
+        boolean differentChunk = CorruptionCapability.areDifferentChunks(level, pos1, pos);
+
+        boolean isSourceOriginal = capOriginal.isSource;
+        boolean isSourceNew = capNew.isSource;
+        boolean isNeighborNew = capNew.isNeighbor;
+
+        int count = capNew.count;
+        int resistance = capNew.resistance;
+
+        if (differentChunk) {
+           if (isSourceOriginal) {
+               chunkNew.getCapability(CapabilityList.CORRUPTION).ifPresent(capability -> capability.isNeighbor = true);
+
+           } else if (isNeighborNew) {
+               return true;
+           }
+
+        }
+
+        if (!isNeighborNew && !isSourceNew) {
+            setCrowded(level, pos, blockstate, resistance, chunkOriginal);
+            return true;
+        }
+
+        if (isNeighborNew && !isSourceNew) {
+            int maxResistance = CorruptionCapability.MAX_RESISTANCE;
+            int maxCorruption = CorruptionCapability.MAX_CORRUPTION;
+
+            double chance = 1 - (double) count / Math.max(maxCorruption - resistance*(maxCorruption / maxResistance), 1);
+
+            if (chance <= 0.01) {
+                setCrowded(level, pos, blockstate, resistance, chunkOriginal);
+                return true;
+            }
+
+            if (random.nextDouble() > chance) {
+                return true;
+            }
+        }
+
+        capNew.count++;
+        return false;
+    }
+
+    private static void setCrowded(ServerLevel level, BlockPos pos, BlockState blockstate, int resistance, LevelChunk chunkOriginal) {
+        level.setBlock(pos, blockstate.setValue(ModStateProperties.CROWDED, true), 3);
+
+        boolean isPositive = resistance > 0;
+        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(),new CorruptionParticlePacket(pos, isPositive, false));
+
+        if (isPositive){
+            CorruptionCapability.sendFlowerParticles(chunkOriginal);
+        }
+    }
+
+    private static void placeTallGrass(ServerLevel level, BlockPos pos) {
+        if (level.getBlockState(pos.above()).is(Blocks.GRASS))
+            level.setBlock(pos.above(), ModBlocks.CORRUPTED_GRASS.get().defaultBlockState(), 18);
+
+        if (level.getBlockState(pos.above()).is(Blocks.TALL_GRASS)) {
+            level.setBlock(pos.above(), ModBlocks.CORRUPTED_TALL_GRASS.get().defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER), 18);
+            level.setBlock(pos.above(2), ModBlocks.CORRUPTED_TALL_GRASS.get().defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER), 18);
         }
     }
 }

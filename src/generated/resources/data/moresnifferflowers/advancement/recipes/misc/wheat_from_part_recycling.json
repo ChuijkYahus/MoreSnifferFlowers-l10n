@@ -5,7 +5,9 @@
       "conditions": {
         "items": [
           {
-            "items": "moresnifferflowers:cropressed_wheat"
+            "items": [
+              "moresnifferflowers:cropressed_wheat"
+            ]
           }
         ]
       },
@@ -20,13 +22,14 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
-      "has_cropressed_wheat"
+      "has_cropressed_wheat",
+      "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
       "moresnifferflowers:wheat_from_part_recycling"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -1,5 +1,5 @@
 {
-  "parent": "moresnifferflowers:root",
+  "parent": "moresnifferflowers:cropressor",
   "criteria": {
     "has_rebrewed_potion": {
       "conditions": {

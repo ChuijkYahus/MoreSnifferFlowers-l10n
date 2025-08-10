@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "moresnifferflowers:item/patternspria_inactive"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "moresnifferflowers:patternspria": 1.0
+      },
+      "model": "moresnifferflowers:item/patternspria_active"
+    }
+  ]
+}

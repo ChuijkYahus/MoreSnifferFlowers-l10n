@@ -3,8 +3,10 @@ package net.abraxator.moresnifferflowers.blocks.giantcrops;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.blocks.Bonmeelable;
 import net.abraxator.moresnifferflowers.blocks.ModEntityBlock;
+import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -13,6 +15,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -30,9 +34,16 @@ import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 
 import java.util.Map;
-import java.util.stream.StreamSupport;
+import java.util.stream.Stream;
 
-public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable {
+
+public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable, MultiBlock {
+    public static final VoxelShape SHAPE_POTATO = makeShapePotato();
+    public static final VoxelShape SHAPE_CARROT = makeShapeCarrot();
+    public static final VoxelShape SHAPE_BEET = makeShapeBeet();
+    public static final VoxelShape SHAPE_NETHERWART = makeShapeWart();
+    public static final VoxelShape SHAPE_WHEAT = makeShapeWheat();
+
     public GiantCropBlock(Properties pProperties) {
         super(pProperties);
         registerDefaultState(defaultBlockState().setValue(ModStateProperties.CENTER, false));
@@ -40,6 +51,22 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     private static final VoxelShape SHAPE = Block.box(0, 0,  0, 16, 16, 16);
     private static final VoxelShape SHAPE_TEST = Block.box(0, 0,  0, 5, 6, 6);
 
+    @Override
+    public Stream<BlockPos> fullBlockShape(@Nullable Direction direction, BlockPos center) {
+        return BlockPos.betweenClosedStream(
+                center.getX() - 1,
+                center.getY() - 1,
+                center.getZ() - 1,
+                center.getX() + 1,
+                center.getY() + 1,
+                center.getZ() + 1
+        );
+    }
+
+    @Override
+    public boolean directional() {
+        return false;
+    }
 
     @Override
     public float getShadeBrightness(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
@@ -53,6 +80,21 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
                 entity.canGrow = true;
             }
         }
+    }
+
+    @Override
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        return canSurviveHelper(state, level, pos, this, null);
+    }
+
+    @Override
+    public boolean canPlace(LevelReader level, BlockPos center, BlockState state) {
+        return true;
+    }
+
+    @Override
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        return updateShapeHelper(state, level, pos);
     }
 
     @Override
@@ -89,12 +131,12 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
     @Override
     public void performBonmeel(BlockPos blockPos, BlockState blockState, Level level, Player player) {
-        this.blockPosList(blockPos).forEach(pos -> {
+        this.fullBlockShape(null, blockPos.above()).forEach(pos -> {
             pos = pos.immutable();
             level.destroyBlock(pos, false);
             level.setBlockAndUpdate(pos, this.cropMap().get(blockState.getBlock()).getA().defaultBlockState().setValue(ModStateProperties.CENTER, pos.equals(blockPos.above())));
-            if(level.getBlockEntity(pos) instanceof GiantCropBlockEntity entity) {
-                entity.center = blockPos.above();
+            if(level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+                entity.setCenter(blockPos.above());
             }
         });
 
@@ -112,7 +154,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     public boolean canBonmeel(BlockPos blockPos, BlockState blockState, Level level) {
         Block crop = blockState.getBlock();
 
-        return StreamSupport.stream(this.blockPosList(blockPos).spliterator(), false).allMatch(pos -> {
+        return fullBlockShape(null, blockPos.above()).allMatch(pos -> {
             BlockState state = level.getBlockState(pos);
             int cropY = blockPos.getY();
             var PROPERTY = this.cropMap().get(crop).getB().getA();
@@ -137,18 +179,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         );
     }
 
-    private Iterable<BlockPos> blockPosList(BlockPos blockPos) {
-        return BlockPos.betweenClosed(
-                blockPos.getX() - 1,
-                blockPos.getY() - 0,
-                blockPos.getZ() - 1,
-                blockPos.getX() + 1,
-                blockPos.getY() + 2,
-                blockPos.getZ() + 1
-        );
-    }
-
-    public static BlockBehaviour.StatePredicate statePredicate = (p_152641_, p_152642_, p_152643_) -> p_152641_.getValue(ModStateProperties.CENTER);
+    public static final BlockBehaviour.StatePredicate STATE_PREDICATE = (p_152641_, p_152642_, p_152643_) -> p_152641_.getValue(ModStateProperties.CENTER);
 
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
         if(getter.getBlockEntity(pos) instanceof GiantCropBlockEntity entity) {
@@ -159,18 +190,18 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
             if (x == 0 && z == 0){
                 return SHAPE;
             } else {
-                if (this.equals(ModBlocks.GIANT_POTATO.get())) return makeShapePotato().move(x, y, z);
-                if (this.equals(ModBlocks.GIANT_CARROT.get())) return makeShapeCarrot().move(x, y, z);
-                if (this.equals(ModBlocks.GIANT_BEETROOT.get())) return makeShapeBeet().move(x, y, z);
-                if (this.equals(ModBlocks.GIANT_NETHERWART.get())) return makeShapeWart().move(x, y, z);
-                if (this.equals(ModBlocks.GIANT_WHEAT.get())) return makeShapeWheat().move(x, y, z);
+                if (this.equals(ModBlocks.GIANT_POTATO.get())) return SHAPE_POTATO.move(x, y, z);
+                if (this.equals(ModBlocks.GIANT_CARROT.get())) return SHAPE_CARROT.move(x, y, z);
+                if (this.equals(ModBlocks.GIANT_BEETROOT.get())) return SHAPE_BEET.move(x, y, z);
+                if (this.equals(ModBlocks.GIANT_NETHERWART.get())) return SHAPE_NETHERWART.move(x, y, z);
+                if (this.equals(ModBlocks.GIANT_WHEAT.get())) return SHAPE_WHEAT.move(x, y, z);
             }
 
         }
         return SHAPE;
     }
 
-    public VoxelShape makeShapePotato(){
+    public static VoxelShape makeShapePotato(){
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(-0.4375, -0.0625, -0.4375, 1.4375, 2.125, 1.4375), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(-0.3125, 2.125, -0.3125, 1.3125, 2.375, 1.3125), BooleanOp.OR);
@@ -178,14 +209,14 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         return shape;
     }
 
-    public VoxelShape makeShapeWheat(){
+    public static VoxelShape makeShapeWheat(){
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(-0.5625, -0.0625, -0.5625, 1.5625, 2.9375, 1.5625), BooleanOp.OR);
 
         return shape;
     }
 
-    public VoxelShape makeShapeCarrot(){
+    public static VoxelShape makeShapeCarrot(){
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(-0.6875, -0.0625, -0.6875, 1.6875, 0.4375, 1.6875), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(-0.4375, 0.375, -0.4375, 1.4375, 1.875, 1.4375), BooleanOp.OR);
@@ -193,7 +224,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         return shape;
     }
 
-    public VoxelShape makeShapeWart(){
+    public static VoxelShape makeShapeWart(){
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(-0.5625, 1.25, -0.5625, 1.5625, 3, 1.5625), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(-0.125, 0, -0.125, 1.125, 1.25, 1.125), BooleanOp.OR);
@@ -201,11 +232,10 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         return shape;
     }
 
-    public VoxelShape makeShapeBeet(){
+    public static VoxelShape makeShapeBeet(){
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(-0.375, -0.0625, -0.375, 1.375, 1.75, 1.375), BooleanOp.OR);
 
         return shape;
     }
-
 }

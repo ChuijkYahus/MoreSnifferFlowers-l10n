@@ -1,0 +1,55 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+<<<<<<<< HEAD:src/generated/resources/data/moresnifferflowers/advancement/recipes/misc/nether_wart_from_part_recycling.json
+    "has_cropressed_nether_wart": {
+      "conditions": {
+        "items": [
+          {
+            "items": "moresnifferflowers:cropressed_nether_wart"
+========
+    "has_salty_spice": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "moresnifferflowers:salty_spice"
+            ]
+>>>>>>>> ba862e95 (MSF 6.0-Beta3 Squash):src/generated/resources/data/moresnifferflowers/advancement/recipes/misc/dripsalt.json
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+<<<<<<<< HEAD:src/generated/resources/data/moresnifferflowers/advancement/recipes/misc/nether_wart_from_part_recycling.json
+        "recipe": "moresnifferflowers:nether_wart_from_part_recycling"
+========
+        "recipe": "moresnifferflowers:dripsalt"
+>>>>>>>> ba862e95 (MSF 6.0-Beta3 Squash):src/generated/resources/data/moresnifferflowers/advancement/recipes/misc/dripsalt.json
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+<<<<<<<< HEAD:src/generated/resources/data/moresnifferflowers/advancement/recipes/misc/nether_wart_from_part_recycling.json
+      "has_the_recipe",
+      "has_cropressed_nether_wart"
+========
+      "has_salty_spice",
+      "has_the_recipe"
+>>>>>>>> ba862e95 (MSF 6.0-Beta3 Squash):src/generated/resources/data/moresnifferflowers/advancement/recipes/misc/dripsalt.json
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+<<<<<<<< HEAD:src/generated/resources/data/moresnifferflowers/advancement/recipes/misc/nether_wart_from_part_recycling.json
+      "moresnifferflowers:nether_wart_from_part_recycling"
+========
+      "moresnifferflowers:dripsalt"
+>>>>>>>> ba862e95 (MSF 6.0-Beta3 Squash):src/generated/resources/data/moresnifferflowers/advancement/recipes/misc/dripsalt.json
+    ]
+  }
+}

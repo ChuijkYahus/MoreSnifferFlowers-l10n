@@ -11,10 +11,7 @@
             "Properties": {
               "age": "0",
               "color": "white",
-              "distance": "7",
-              "persistent": "false",
-              "vivicus_cured": "true",
-              "waterlogged": "false"
+              "vivicus_cured": "true"
             }
           }
         },
@@ -46,6 +43,8 @@
         "Properties": {
           "color": "white",
           "distance": "7",
+          "not_corrupted": "true",
+          "not_cured": "true",
           "persistent": "false",
           "waterlogged": "false"
         }

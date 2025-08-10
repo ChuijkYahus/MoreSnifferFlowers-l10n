@@ -1,0 +1,56 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "full": "false"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/sour_puddle_empty"
+      }
+    },
+    {
+      "when": {
+        "north": "true",
+        "full": "false"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/sour_puddle_north"
+      }
+    },
+    {
+      "when": {
+        "south": "true",
+        "full": "false"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/sour_puddle_south"
+      }
+    },
+    {
+      "when": {
+        "full": "false",
+        "east": "true"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/sour_puddle_east"
+      }
+    },
+    {
+      "when": {
+        "full": "false",
+        "west": "true"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/sour_puddle_west"
+      }
+    },
+    {
+      "when": {
+        "full": "true"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/sour_puddle_full"
+      }
+    }
+  ]
+}

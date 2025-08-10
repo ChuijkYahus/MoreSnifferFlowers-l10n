@@ -25,6 +25,8 @@ public class ModServerConfig {
     public static final ModConfigSpec.ConfigValue<String> REBREWING_SPLASH;
     public static final ModConfigSpec.ConfigValue<String> REBREWING_LINGERING;
 
+    public static final ModConfigSpec.BooleanValue SALTEMONE_GRIEFING;
+    public static final ModConfigSpec.IntValue THROWABLES_COOLDOWN;
 
 
     static {
@@ -81,6 +83,18 @@ public class ModServerConfig {
                 .translation("moresnifferflowers.configuration.rebrew_lingering")
                 .define("Rebrewing Lingering", itemToString(Items.DRAGON_BREATH));
 
+        builder.pop();
+
+        builder.push("misc");
+        SALTEMONE_GRIEFING = builder
+                .comment("Should Saltemone Bubbles drop loot, even when nobody popped them? Default = true")
+                .translation("moresnifferflowers.configuration.saltemone_lingering")
+                .define("Saltemone Griefing", true);
+
+        THROWABLES_COOLDOWN = builder
+                .comment("Cooldown for all throwable items, which drop blocks. Input in ticks")
+                .translation("moresnifferflowers.configuration.throwables_cooldown")
+                .defineInRange("Throwables Cooldown", 0, 0, 10000);
 
         builder.pop();
 

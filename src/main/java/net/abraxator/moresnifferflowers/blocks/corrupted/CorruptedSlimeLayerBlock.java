@@ -34,8 +34,10 @@ public class CorruptedSlimeLayerBlock extends SnowLayerBlock {
     }
 
     @Override
-    protected void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
-        pLevel.scheduleTick(pPos, this, this.getDelayAfterPlace());
+    public void onPlace(BlockState pState, Level pLevel, BlockPos pos, BlockState pOldState, boolean pIsMoving) {
+        if (isFree(pLevel.getBlockState(pos.below())) && pos.getY() >= pLevel.getMinBuildHeight()) {
+            spawnProjectile(pState, pLevel, pos);
+        }
     }
 
     @Override
@@ -45,9 +47,22 @@ public class CorruptedSlimeLayerBlock extends SnowLayerBlock {
     }
 
     @Override
-    protected BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        pLevel.scheduleTick(pCurrentPos, this, this.getDelayAfterPlace());
-        return super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
+    public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pos, BlockPos pFacingPos) {
+        if (isFree(pLevel.getBlockState(pos.below())) && pos.getY() >= pLevel.getMinBuildHeight()) {
+            spawnProjectile(pState, pLevel, pos);
+            return Blocks.AIR.defaultBlockState();
+        }
+        return super.updateShape(pState, pFacing, pFacingState, pLevel, pos, pFacingPos);
+    }
+
+    private static void spawnProjectile(BlockState pState, LevelAccessor pLevel, BlockPos pos) {
+        for (int i = 0; i < pState.getValue(LAYERS); i++) {
+            pLevel.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+            CorruptedProjectile projectile = new CorruptedProjectile((Level) pLevel);
+            projectile.setPos(pos.below().getCenter());
+            projectile.setXRot(Mth.PI / 90.0F);
+            pLevel.addFreshEntity(projectile);
+        }
     }
 
     @Override
@@ -89,19 +104,6 @@ public class CorruptedSlimeLayerBlock extends SnowLayerBlock {
             level.destroyBlock(pos, false);
         } else {
             level.setBlock(pos, state.setValue(LAYERS, layers - 1), 3);
-        }
-    }
-
-    @Override
-    protected void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
-        if (isFree(pLevel.getBlockState(pPos.below())) && pPos.getY() >= pLevel.getMinBuildHeight()) {
-            for (int i = 0; i < pState.getValue(LAYERS); i++) {
-                pLevel.setBlock(pPos, Blocks.AIR.defaultBlockState(), 3);
-                CorruptedProjectile projectile = new CorruptedProjectile(pLevel);
-                projectile.setPos(pPos.getBottomCenter());
-                projectile.setXRot(Mth.PI / 90.0F);
-                pLevel.addFreshEntity(projectile);   
-            }
         }
     }
     

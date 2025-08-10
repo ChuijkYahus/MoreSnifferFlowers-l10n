@@ -45,7 +45,7 @@ public class MoreSnifferFlowers {
         ModLoot.CONDITIONS.register(modEventBus);
         ModFeatures.FEATURES.register(modEventBus);
         ModCreativeTabs.TABS.register(modEventBus);
-        ModMobEffects.EFFECTS.register(modEventBus);
+        ModEffects.EFFECTS.register(modEventBus);
         ModSoundEvents.SOUNDS.register(modEventBus);
         ModPaintings.PAINTINGS.register(modEventBus);
         ModParticles.PARTICLES.register(modEventBus);
@@ -62,6 +62,12 @@ public class MoreSnifferFlowers {
         ModDataComponents.DATA_COMPONENTS.register(modEventBus);
         ModEntityDataSerializers.SERIALIZERS.register(modEventBus);
         ModRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
+
+        modEventBus.addListener(CapabilityList::registerCapabilities);
+
+        if(ModList.get().isLoaded("quark")) {
+            MinecraftForge.EVENT_BUS.addListener(OtherModEvents::onSimpleHarvest);
+        }
         
         ModPacketHandler.register(modEventBus, 1);
     }
@@ -108,7 +114,7 @@ public class MoreSnifferFlowers {
         fireBlock.setFlammable(ModBlocks.VIVICUS_LEAVES.get(), 5, 20);
         fireBlock.setFlammable(ModBlocks.VIVICUS_SAPLING.get(), 5, 20);
         fireBlock.setFlammable(ModBlocks.VIVICUS_LEAVES_SPROUT.get(), 5, 20);
-        
+
         ModCauldronInteractions.bootstrap();
     }
     
@@ -127,6 +133,14 @@ public class MoreSnifferFlowers {
 
     public static ResourceLocation ofLoc(String path) {
         return ResourceLocation.bySeparator(path, ':');
+    }
+
+    public static ResourceLocation vanillaLoc(String path) {
+        return new ResourceLocation("minecraft", path);
+    }
+
+    public static ResourceLocation ofLoc(String path) {
+        return ResourceLocation.of(path, ':');
     }
 
     public static String sLoc(String path) {

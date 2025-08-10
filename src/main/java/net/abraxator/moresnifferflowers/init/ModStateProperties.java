@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.init;
 
+import net.abraxator.moresnifferflowers.blockentities.CropressorBlockEntity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.properties.*;
 
@@ -19,4 +20,14 @@ public class ModStateProperties {
     public static final IntegerProperty FULLNESS = IntegerProperty.create("fullness", 0, 8);
     public static final IntegerProperty USES_4 = IntegerProperty.create("uses", 0, 3);
     public static final BooleanProperty CURED = BooleanProperty.create("cured");
+    public static final IntegerProperty AMOUNT_4 = IntegerProperty.create("amount", 1, 4);
+    public static final BooleanProperty FULL = BooleanProperty.create("full");
+    public static final BooleanProperty NATURAL = BooleanProperty.create("natural");
+    public static final BooleanProperty HYDRATED = BooleanProperty.create("hydrated");
+    public static final EnumProperty<BlockPattern> BLOCK_PATTERN = EnumProperty.create("block_pattern", BlockPattern.class);
+    public static final IntegerProperty FIRE_TICKS = IntegerProperty.create("fire_ticks", 0, 5);
+    public static final BooleanProperty CROWDED = BooleanProperty.create("crowded");
+
+
+
 }

@@ -87,7 +87,7 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
                 return ItemInteractionResult.sidedSuccess(pLevel.isClientSide());
             }
         }
-        
+
         return super.useItemOn(pStack, pState, pLevel, pPos, pPlayer, pHand, pHitResult);
     }
 
@@ -98,7 +98,7 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
 
             return InteractionResult.sidedSuccess(pLevel.isClientSide());
         }
-        
+
         return super.useWithoutItem(pState, pLevel, pPos, pPlayer, pHitResult);
     }
 
@@ -125,12 +125,13 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
     
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
-        if(!pNewState.is(ModBlocks.DYESCRAPIA_PLANT) && !pState.is(pNewState.getBlock()) && pLevel.getBlockEntity(pPos) instanceof DyespriaPlantBlockEntity entity && isMaxAge(pState)) {
-            var dyespria = ModItems.DYESPRIA.get().getDefaultInstance();
-            var dye = new ItemStack(DyeItem.byColor(entity.dye.color()), entity.dye.amount());
+        if(!pNewState.is(ModBlocks.DYESCRAPIA_PLANT.get()) && !pState.is(pNewState.getBlock()) && pLevel.getBlockEntity(pPos) instanceof DyespriaPlantBlockEntity entity && isMaxAge(pState)) {
+            ItemStack dyespria = ModItems.DYESPRIA.get().getDefaultInstance();
+
+            dyespria.getOrCreateTag().putInt("amount", entity.dye.amount());
+            dyespria.getOrCreateTag().putInt("color", entity.dye.colorId());
 
             Containers.dropItemStack(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), dyespria);
-            Containers.dropItemStack(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), dye);
         }
 
         super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);

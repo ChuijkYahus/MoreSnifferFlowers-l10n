@@ -1,7 +1,7 @@
 package net.abraxator.moresnifferflowers.components;
 
 import com.mojang.serialization.Codec;
-import io.netty.buffer.ByteBuf;
+import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.items.DyespriaItem;
 import net.minecraft.ChatFormatting;
@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
@@ -69,7 +68,7 @@ public enum DyespriaMode implements StringRepresentable {
         return textColor;
     }
 
-    public static record DyespriaSelector(BlockPos originalPos, BlockState blockState, @Nullable TagKey<Block> tag, Level level, Direction clickedDir) {
+    public static record DyespriaSelector(BlockPos originalPos, BlockState blockState, @Nullable TagKey<Block> tag, Level level, Direction clickedDir, boolean isCrouching) {
         public Set<BlockPos> single() {
             return Set.of(originalPos());
         }
@@ -130,6 +129,14 @@ public enum DyespriaMode implements StringRepresentable {
             boolean isColorableAndColored = state.is(blockState.getBlock()) 
                     && state.hasProperty(ModStateProperties.COLOR) 
                     && state.getValue(ModStateProperties.COLOR).equals(blockState.getValue(ModStateProperties.COLOR));
+
+            if (BlockPatternCapability.hasPattern(originalPos, level)){
+                if (!BlockPatternCapability.hasPattern(pos, level) || isCrouching) return false;
+                int originalId = BlockPatternCapability.getPattern(originalPos, level).patternId();
+                int thisId = BlockPatternCapability.getPattern(pos, level).patternId();
+                return originalId == thisId;
+            }
+
             return isVanilla || isColorableAndColored || (tag != null && level.getBlockState(pos).is(tag));
         }
     }

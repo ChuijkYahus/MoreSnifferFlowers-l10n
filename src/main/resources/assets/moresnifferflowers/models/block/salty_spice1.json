@@ -1,0 +1,7 @@
+{
+    "parent": "moresnifferflowers:block/salty_spice0",
+    "textures": {
+        "0": "moresnifferflowers:block/salty_spice1",
+        "particle": "moresnifferflowers:block/salty_spice1"
+    }
+}

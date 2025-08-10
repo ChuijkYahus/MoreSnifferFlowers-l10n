@@ -18,6 +18,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -157,11 +158,12 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.GARBUSH_BOTTOM.get());
 
         add(ModBlocks.CAULORFLOWER.get(), noDrop());
+        add(ModBlocks.PATTERNFLOWER.get(), noDrop());
 
         add(ModBlocks.GIANT_CARROT.get(), giantCropLoot(Items.CARROT, ModItems.CROPRESSED_CARROT.get(), Items.AIR, ModItems.BELT_PIECE.get(), ModItems.CAROTENE_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
         add(ModBlocks.GIANT_POTATO.get(), giantCropLoot(Items.POTATO, ModItems.CROPRESSED_POTATO.get(), Items.AIR, ModItems.TUBE_PIECE.get(), ModItems.TATER_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
         add(ModBlocks.GIANT_NETHERWART.get(), giantCropLoot(Items.NETHER_WART, ModItems.CROPRESSED_NETHERWART.get(), ModItems.BROKEN_REBREWING_STAND.get(), ModItems.PRESS_PIECE.get(), ModItems.NETHER_WART_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
-        add(ModBlocks.GIANT_BEETROOT.get(), giantCropLoot(Items.BEETROOT, ModItems.CROPRESSED_BEETROOT.get(), Items.AIR, ModItems.ENGINE_PIECE.get(), ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
+        add(ModBlocks.GIANT_BEETROOT.get(), giantCropLoot(Items.BEETROOT, ModItems.CROPRESSED_BEETROOT.get(), ModItems.FLAVORFUL_ROOTS.get(), ModItems.ENGINE_PIECE.get(), ModItems.BEAT_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
         add(ModBlocks.GIANT_WHEAT.get(), giantCropLoot(Items.WHEAT, ModItems.CROPRESSED_WHEAT.get(), Items.AIR, ModItems.SCRAP_PIECE.get(), ModItems.GRAIN_ARMOR_TRIM_SMITHING_TEMPLATE.get()));
 
         add(ModBlocks.BONMEELIA.get(), LootTable.lootTable()
@@ -232,21 +234,24 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         dropWhenSilkTouch(ModBlocks.CORRUPTED_LEAVES_BUSH.get());
 
         dropSelf(ModBlocks.CORRUPTED_SAPLING.get());
-        add(ModBlocks.CORRUPTED_SLUDGE.get(), block -> this.createSilkTouchDispatchTable(
+        add(ModBlocks.CORRUPTED_SLUDGE.get(), block -> createSilkTouchDispatchTable(
                 block, this.applyExplosionCondition(
                         block, LootItem.lootTableItem(ModItems.CORRUPTED_SLIME_BALL)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(8.0F, 12.0F)))
                 )
         ));
 
-        add(ModBlocks.DECAYED_LOG.get(), block -> this.createSilkTouchDispatchTable(
+        add(ModBlocks.DECAYED_LOG.get(), block -> createSilkTouchDispatchTable(
                 block, this.applyExplosionCondition(
                         block, LootItem.lootTableItem(Items.STICK)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 4.0F)))
                 )
         ));
         add(ModBlocks.CORRUPTED_GRASS_BLOCK.get(), block -> this.createSingleItemTableWithSilkTouch(block, Blocks.COARSE_DIRT));
+        add(ModBlocks.CORRUPTED_TALL_GRASS.get(), block -> this.createDoublePlantWithSeedDrops(block, ModBlocks.CORRUPTED_GRASS.get()));
+        add(ModBlocks.CORRUPTED_GRASS.get(), block -> createShearsDispatchTable(block, this.applyExplosionDecay(block, LootItem.lootTableItem(ModItems.CORRUPTED_SLIME_BALL.get()).when(LootItemRandomChanceCondition.randomChance(0.125F)).apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE, 2)))));
         add(ModBlocks.CURED_GRASS_BLOCK.get(), block -> this.createSingleItemTableWithSilkTouch(block, Blocks.DIRT));
+        add(ModBlocks.CORRUPTED_WART.get(), block -> this.createSingleItemTableWithSilkTouch(block, ModItems.CORRUPTED_SLIME_BALL.get(), UniformGenerator.between(0F, 1F)));
 
         dropSelf(ModBlocks.VIVICUS_LOG.get());
         dropSelf(ModBlocks.VIVICUS_WOOD.get());
@@ -301,24 +306,48 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         add(ModBlocks.BONMEEL_FILLED_CAULDRON.get(), createSingleItemTable(Blocks.CAULDRON));
         add(ModBlocks.ACID_FILLED_CAULDRON.get(), createSingleItemTable(Blocks.CAULDRON));
 
+        add(ModBlocks.BONDRIPIA.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.BONDRIPIA.get(), ModItems.BONDRIPIA_SEEDS.get()));
+        add(ModBlocks.ACIDRIPIA.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.ACIDRIPIA.get(), ModItems.ACIDRIPIA_SEEDS.get()));
+        add(ModBlocks.BEROOT_CAULDRON.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.BEROOT_CAULDRON.get(), ModItems.BEROOT_CAULDRON.get()));
+        add(ModBlocks.SALTEMONE.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.SALTEMONE.get(), ModItems.SALTEMONE_SEEDS.get()));
+        add(ModBlocks.SOURLEMONE.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.SOURLEMONE.get(), ModItems.SOURLEMONE_SEEDS.get()));
 
-        add(ModBlocks.BONDRIPIA.get(),
-                LootTable.lootTable()
-                        .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-                                .add(LootItem.lootTableItem(ModItems.BONDRIPIA_SEEDS.get()))
-                                .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.BONDRIPIA.get())
-                                        .setProperties(StatePropertiesPredicate.Builder.properties()
-                                                .hasProperty(ModStateProperties.CENTER, true)))
-                        ));
+        add(ModBlocks.SALTY_CLUMP.get(), simpleIncreasingConditional(ModStateProperties.AMOUNT_4, ModBlocks.SALTY_CLUMP.get(), ModItems.SALTY_SPICE.get()));
+        add(ModBlocks.SOUR_PUDDLE.get(), createSingleItemTable(ModItems.SOUR_SPICE.get()));
 
-        add(ModBlocks.ACIDRIPIA.get(),
-                LootTable.lootTable()
+
+        add(ModBlocks.DRIPSALT.get(), createSingleItemTable(ModBlocks.DRIPSALT.get().asItem()));
+
+        dropSelf(ModBlocks.TORCHFLOWER_AFLAME.get());
+        dropSelf(ModBlocks.TORCHFLAME.get());
+        dropSelf(ModBlocks.TORCHEWFLOWER.get());
+    }
+
+    private LootTable.Builder simpleIncreasingConditional(Property<Integer> property, Block block, Item item){
+        return LootTable.lootTable()
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1.0F))
+                        .when(LootItemEntityPropertyCondition.entityPresent(LootContext.EntityTarget.THIS))
+                        .add(AlternativesEntry.alternatives(
+                                property.getPossibleValues(),
+                                        integer -> LootItem.lootTableItem(item)
+                                                .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+                                                        .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, integer)))
+                                                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(integer))
+                                )
+
+                        ))
+                );
+    }
+
+
+    private LootTable.Builder simpleConditional(Property<Boolean> property, Block block, Item item){
+        return LootTable.lootTable()
                 .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-                        .add(LootItem.lootTableItem(ModItems.ACIDRIPIA_SEEDS.get()))
-                        .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.ACIDRIPIA.get())
+                        .add(LootItem.lootTableItem(item)
+                        .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
                                 .setProperties(StatePropertiesPredicate.Builder.properties()
-                                        .hasProperty(ModStateProperties.CENTER, true)))
-                ));
+                                        .hasProperty(property, true)))));
     }
 
     private LootTable.Builder giantCropLoot(Item crop, Item cropressed, Item special, Item piece, Item trim) {

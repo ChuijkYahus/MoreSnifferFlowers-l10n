@@ -5,6 +5,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -20,6 +22,7 @@ public class ModTags {
         public static final TagKey<Item> REBREWED_POTIONS = create(Registries.ITEM ,"rebrewed_potions");
         public static final TagKey<Item> VIVICUS_LOGS = create(Registries.ITEM ,"vivicus_logs");
         public static final TagKey<Item> CORRUPTED_LOGS = create(Registries.ITEM ,"corrupted_logs");
+        public static final TagKey<Item> BLOCK_PATTERNS = create(Registries.ITEM ,"block_patterns");
 
     }
 
@@ -33,6 +36,10 @@ public class ModTags {
         public static final TagKey<Block> VIVICUS_TREE_REPLACABLE = create(Registries.BLOCK, "vivicus_tree_replacable");
         public static final TagKey<Block> CORRUPTION_TRANSFORMABLES = create(Registries.BLOCK, "corruption_transformables");
         public static final TagKey<Block> DYED = create(Registries.BLOCK, "dyed");
+        public static final TagKey<Block> NO_CORRUPTED_SLIME_COLLISION = create(Registries.BLOCK, "no_corrupted_slime_collision");
+        public static final TagKey<Block> UNCORRUPTABLE = create(Registries.BLOCK, "uncorruptable");
+        public static final TagKey<Block> STICKABLE = create(Registries.BLOCK, "stickable");
+        public static final TagKey<Block> CORRUPTION_SHIELDING = create(Registries.BLOCK, "corruption_shielding");
 
     }
 

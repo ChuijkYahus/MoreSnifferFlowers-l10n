@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "moresnifferflowers:beroot_cauldron",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "center": "true"
+              }
+            }
+          ],
+          "name": "moresnifferflowers:beroot_cauldron"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "moresnifferflowers:blocks/beroot_cauldron"
+}

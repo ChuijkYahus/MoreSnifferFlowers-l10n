@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "moresnifferflowers:salty_spice"
+    },
+    {
+      "item": "moresnifferflowers:salty_spice"
+    },
+    {
+      "item": "moresnifferflowers:salty_spice"
+    },
+    {
+      "item": "moresnifferflowers:salty_spice"
+    },
+    {
+      "item": "moresnifferflowers:salty_spice"
+    }
+  ],
+  "result": {
+    "item": "moresnifferflowers:dripsalt"
+  }
+}

@@ -2,6 +2,7 @@ package net.abraxator.moresnifferflowers.client;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blocks.ColorableVivicusBlock;
+import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
@@ -29,10 +30,7 @@ public class ModColorHandler {
             int color = Dye.colorForDye(colorable, dye.color());
             if(!dye.isEmpty()) {
                 if (pTintIndex == 0) {
-                    int startRed = (color >> 16) & 0xFF;
-                    int startGreen = (color >> 8) & 0xFF;
-                    int startBlue = color & 0xFF;
-                    float[] colorHSB = Color.RGBtoHSB(startRed, startGreen, startBlue, null);
+                    float[] colorHSB = getColorHSB(color);
 
                     return Color.HSBtoRGB(colorHSB[0], Math.max(colorHSB[1] / 1.7F, 0), Math.max(colorHSB[2], 0));
                 }
@@ -43,16 +41,27 @@ public class ModColorHandler {
             return -1;
         }, ModBlocks.CAULORFLOWER.get());
         event.register((pState, pLevel, pPos, pTintIndex) -> {
+            int color = pState.getValue(ModStateProperties.BLOCK_PATTERN).getColor();
+            if (pState.getValue(ModStateProperties.EMPTY)) color = 0xFFFFFF;
+            if (pTintIndex == 0) {
+                float[] colorHSB = getColorHSB(color);
+                return Color.HSBtoRGB(colorHSB[0], Math.max(colorHSB[1] / 1.7F, 0), Math.max(colorHSB[2], 0));
+            }
+            if (pTintIndex == 1) {
+                float[] colorHSB = getColorHSB(color);
+                return Color.HSBtoRGB(colorHSB[0], Math.min(colorHSB[1] * 1.1F, 1), Math.min(colorHSB[2] * 1.2F, 1));
+            }
+
+            return -1;
+        }, ModBlocks.PATTERNFLOWER.get());
+        event.register((pState, pLevel, pPos, pTintIndex) -> {
                     var colorable = ((ColorableVivicusBlock) pState.getBlock());
                     if(pTintIndex == 0) {
                         var dyedValue = Dye.colorForDye(colorable, pState.getValue(colorable.getColorProperty()));
                         var color = colorable.getDyeFromBlock(pState).color();
 
                         if(pState.is(ModBlocks.VIVICUS_LEAVES.get()) || pState.is(ModBlocks.VIVICUS_LEAVES_SPROUT.get())) {
-                            int startRed = (dyedValue >> 16) & 0xFF;
-                            int startGreen = (dyedValue >> 8) & 0xFF;
-                            int startBlue = dyedValue & 0xFF;
-                            float[] colorHSB =  Color.RGBtoHSB(startRed, startGreen, startBlue, null);
+                            float[] colorHSB = getColorHSB(dyedValue);
 
                             assert pPos != null;
                             float hue = colorHSB[0] + ((1+ Mth.sin((float)pPos.getX() + (float)pPos.getY() + (float)pPos.getZ())) / 15);
@@ -78,7 +87,8 @@ public class ModColorHandler {
                 ModBlocks.VIVICUS_SLAB.get(), ModBlocks.VIVICUS_FENCE.get(), ModBlocks.VIVICUS_FENCE_GATE.get(),
                 ModBlocks.VIVICUS_DOOR.get(), ModBlocks.VIVICUS_TRAPDOOR.get(), ModBlocks.VIVICUS_PRESSURE_PLATE.get(),
                 ModBlocks.VIVICUS_BUTTON.get(), ModBlocks.VIVICUS_LEAVES.get(), ModBlocks.VIVICUS_SAPLING.get(),
-                ModBlocks.VIVICUS_LEAVES_SPROUT.get(), ModBlocks.VIVICUS_SIGN.get(), ModBlocks.VIVICUS_HANGING_SIGN.get());
+                ModBlocks.VIVICUS_LEAVES_SPROUT.get(), ModBlocks.VIVICUS_SIGN.get(), ModBlocks.VIVICUS_HANGING_SIGN.get(),
+                ModBlocks.VIVICUS_SAPLING.get());
     }
 
     @SubscribeEvent
@@ -91,9 +101,37 @@ public class ModColorHandler {
                 return Dye.colorForDye(((DyespriaItem) pStack.getItem()), dye.color());
             }
         }, ModItems.DYESPRIA.get());
-        event.register((pStack, pTintIndex) -> {
-            return pTintIndex > 0 ? -1 : pStack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getColor();
-        }, ModItems.EXTRACTED_BOTTLE.get(), ModItems.REBREWED_POTION.get(), ModItems.REBREWED_SPLASH_POTION.get(), ModItems.REBREWED_LINGERING_POTION.get());
+
+        event.register((pStack, pTintIndex) -> pTintIndex > 0 ? -1 : PotionUtils.getColor(pStack),
+                ModItems.EXTRACTED_BOTTLE.get(), ModItems.REBREWED_POTION.get(), ModItems.REBREWED_SPLASH_POTION.get(), ModItems.REBREWED_LINGERING_POTION.get());
+
+        event.register(((stack, tintIndex) ->{
+           BlockPattern pattern = BlockPattern.fromPatternspria(stack);
+           if(tintIndex != 0 || pattern == BlockPattern.EMPTY) return -1;
+           if (stack.getOrCreateTag().contains("color")) {
+               return stack.getOrCreateTag().getInt("color");
+           }
+           return pattern.getColor();
+        }), ModItems.PATTERNSPRIA.get());
+
+        event.register(((stack, tintIndex) ->{
+            if (stack.getOrCreateTag().contains("color") && tintIndex != 0) {
+                return stack.getOrCreateTag().getInt("color");
+            }
+            return 0xffffff;
+        }), ModItems.ROOTED_SOUP.get());
+
+
+        event.register(((stack, tintIndex) ->{
+            if (stack.getOrCreateTag().contains(Colorable.TAG_HEX)) {
+                return stack.getOrCreateTag().getInt(Colorable.TAG_HEX);
+            }
+            return 0xffffff;
+        }), ModBlocks.VIVICUS_LOG.get(),  ModBlocks.VIVICUS_WOOD.get(), ModBlocks.STRIPPED_VIVICUS_LOG.get(),  ModBlocks.STRIPPED_VIVICUS_WOOD.get(), ModBlocks.VIVICUS_PLANKS.get(),
+                ModBlocks.VIVICUS_STAIRS.get(), ModBlocks.VIVICUS_SLAB.get(), ModBlocks.VIVICUS_FENCE.get(), ModBlocks.VIVICUS_FENCE_GATE.get(), ModBlocks.VIVICUS_DOOR.get(),
+                ModBlocks.VIVICUS_TRAPDOOR.get(), ModBlocks.VIVICUS_PRESSURE_PLATE.get(), ModBlocks.VIVICUS_BUTTON.get(), ModBlocks.VIVICUS_LEAVES.get(), ModBlocks.VIVICUS_SAPLING.get(),
+                ModBlocks.VIVICUS_LEAVES_SPROUT.get(), ModItems.VIVICUS_SIGN.get(), ModItems.VIVICUS_HANGING_SIGN.get(), ModItems.VIVICUS_BOAT.get(), ModItems.VIVICUS_CHEST_BOAT.get());
+
     }
 
     public static float @NotNull [] getColorHSB(int originalColor) {
@@ -103,9 +141,17 @@ public class ModColorHandler {
         return Color.RGBtoHSB(startRed, startGreen, startBlue, null);
     }
 
-    public static float[] hexToRGB(int hex) {
+    public static float[] hexToRGBLarge(int hex) {
         return new float[] {(hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF};
     }
+
+    public static float[] hexToRGB(int hex) {
+        int r = (hex >> 16) & 0xFF;
+        int g = (hex >> 8) & 0xFF;
+        int b = hex & 0xFF;
+        return new float[] {r / 255f, g/ 255f, b/ 255f};
+    }
+
 
     public static int RGBtoInt(Vec3 color) {
         int r = (int) color.x;

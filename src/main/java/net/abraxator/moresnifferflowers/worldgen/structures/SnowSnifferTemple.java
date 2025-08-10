@@ -81,9 +81,9 @@ public class SnowSnifferTemple extends Structure {
      *
      * If you are doing Nether structures, you'll probably want to spawn your structure on top of ledges.
      * Best way to do that is to use getBaseColumn to grab a column of blocks at the structure's x/z position.
-     * Then loop through it and look for land with air above it and set blockpos's Y value to it.
+     * Then loop through it and look for land with air above it and set blockpos's Y speed to it.
      * Make sure to set the final boolean in JigsawPlacement.addPieces to false so
-     * that the structure spawns at blockpos's y value instead of placing the structure on the Bedrock roof!
+     * that the structure spawns at blockpos's y speed instead of placing the structure on the Bedrock roof!
      *
      * Also, please for the love of god, do not do dimension checking here.
      * If you do and another mod's dimension is trying to spawn your structure,
@@ -116,7 +116,7 @@ public class SnowSnifferTemple extends Structure {
 
         // Set's our spawning blockpos's y offset to be 60 blocks up.
         // Since we are going to have heightmap/terrain height spawning set to true further down, this will make it so we spawn 60 blocks above terrain.
-        // If we wanted to spawn on ocean floor, we would set heightmap/terrain height spawning to false and the grab the y value of the terrain with OCEAN_FLOOR_WG heightmap.
+        // If we wanted to spawn on ocean floor, we would set heightmap/terrain height spawning to false and the grab the y speed of the terrain with OCEAN_FLOOR_WG heightmap.
         int startY = this.startHeight.sample(context.random(), new WorldGenerationContext(context.chunkGenerator(), context.heightAccessor()));
 
         // Turns the chunk coordinates into actual coordinates we can use. (Gets corner of that chunk)
@@ -131,9 +131,9 @@ public class SnowSnifferTemple extends Structure {
                         this.size, // How deep a branch of pieces can go away from center piece. (5 means branches cannot be longer than 5 pieces from center piece)
                         blockPos, // Where to spawn the structure.
                         false, // "useExpansionHack" This is for legacy villages to generate properly. You should keep this false always.
-                        this.projectStartToHeightmap, // Adds the terrain height's y value to the passed in blockpos's y value. (This uses WORLD_SURFACE_WG heightmap which stops at top water too)
-                        // Here, blockpos's y value is 60 which means the structure spawn 60 blocks above terrain height.
-                        // Set this to false for structure to be place only at the passed in blockpos's Y value instead.
+                        this.projectStartToHeightmap, // Adds the terrain height's y speed to the passed in blockpos's y speed. (This uses WORLD_SURFACE_WG heightmap which stops at top water too)
+                        // Here, blockpos's y speed is 60 which means the structure spawn 60 blocks above terrain height.
+                        // Set this to false for structure to be place only at the passed in blockpos's Y speed instead.
                         // Definitely keep this false when placing structures in the nether as otherwise, heightmap placing will put the structure on the Bedrock roof.
                         this.maxDistanceFromCenter, // Maximum limit for how far pieces can spawn from center. You cannot set this bigger than 128 or else pieces gets cutoff.
                         PoolAliasLookup.EMPTY, // Optional thing that allows swapping a template pool with another per structure json instance. We don't need this but see vanilla JigsawStructure class for how to wire it up if you want it.

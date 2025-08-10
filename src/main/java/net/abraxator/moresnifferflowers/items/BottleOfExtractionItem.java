@@ -1,7 +1,7 @@
 package net.abraxator.moresnifferflowers.items;
 
 import net.abraxator.moresnifferflowers.init.ModItems;
-import net.abraxator.moresnifferflowers.init.ModMobEffects;
+import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.component.DataComponents;
@@ -39,7 +39,7 @@ public class BottleOfExtractionItem extends Item {
                 serverplayer.awardStat(Stats.ITEM_USED.get(this));
             }
 
-            if (player.hasEffect(ModMobEffects.EXTRACTED)) {
+            if (player.hasEffect(ModEffects.EXTRACTED)) {
                 doCheaterEasterEgg(pLevel, player);
                 return new ItemStack(Items.POISONOUS_POTATO);
             }

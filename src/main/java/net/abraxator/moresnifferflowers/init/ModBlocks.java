@@ -37,9 +37,13 @@ public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS =
             DeferredRegister.createBlocks(MoreSnifferFlowers.MOD_ID);
 
+    public static final RegistryObject<Block> TORCHFLOWER_AFLAME = registerBlockWithItem("torchflower_aflame", () -> new TorchflowerAflameBlock(BlockBehaviour.Properties.copy(Blocks.TORCHFLOWER).noCollission().randomTicks().lightLevel(value -> value.getValue(ModStateProperties.AGE_2) == 1 ? 12 : 0)));
+    public static final RegistryObject<Block> TORCHFLAME = registerBlockWithItem("torchflame", () -> new TorchflameBlock(BlockBehaviour.Properties.of().sound(SoundType.EMPTY).lightLevel(value -> 12).instabreak().noOcclusion().pushReaction(PushReaction.DESTROY).noCollission()));
+    public static final RegistryObject<Block> TORCHEWFLOWER = registerBlockWithItem("torchewflower", () -> new TorchewflowerBlock(BlockBehaviour.Properties.copy(Blocks.TORCHFLOWER).noCollission().randomTicks()));
+
     public static final DeferredBlock<Block> DAWNBERRY_VINE = registerBlockNoItem("dawnberry_vine", () -> new DawnberryVineBlock(BlockBehaviour.Properties.of().mapColor(MapColor.GLOW_LICHEN).noCollission().strength(0.2F).sound(SoundType.GLOW_LICHEN).lightLevel(value -> value.getValue(DawnberryVineBlock.AGE) >= 3 ? 3 : 0).ignitedByLava().pushReaction(PushReaction.DESTROY).randomTicks().noOcclusion(), false));
     public static final DeferredBlock<Block> GLOOMBERRY_VINE = registerBlockNoItem("gloomberry_vine", () -> new GloomberryVineBlock(BlockBehaviour.Properties.of().mapColor(MapColor.GLOW_LICHEN).noCollission().strength(0.2F).sound(SoundType.GLOW_LICHEN).ignitedByLava().pushReaction(PushReaction.DESTROY).randomTicks().noOcclusion()));
-    
+
     public static final DeferredBlock<Block> AMBUSH_BOTTOM = registerBlockNoItem("ambush_bottom", () -> new AmbushBlockLower(BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT).strength(0.2F)));
     public static final DeferredBlock<Block> AMBUSH_TOP = registerBlockNoItem("ambush_top", () -> new AmbushBlockUpper(BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT).strength(0.2F)));
     public static final DeferredBlock<Block> GARBUSH_BOTTOM = registerBlockNoItem("garbush_bottom", () -> new GarbushBlockLower(BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT).strength(0.2F)));
@@ -63,7 +67,8 @@ public class ModBlocks {
     public static final DeferredBlock<Block> GARNET_MOSAIC_WALL = registerBlockWithItem("garnet_mosaic_wall", () -> new WallBlock(BlockBehaviour.Properties.ofFullCopy(ModBlocks.GARNET_MOSAIC.get())));
 
     public static final DeferredBlock<Block> CAULORFLOWER = registerBlockNoItem("caulorflower", () ->  new CaulorflowerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).sound(SoundType.GRASS).strength(2.0F).noCollission().noOcclusion().randomTicks()));
-    
+    public static final RegistryObject<Block> PATTERNFLOWER = registerBlockNoItem("patternflower", () ->  new PatternflowerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).sound(SoundType.GRASS).strength(2.0F).noCollission().noOcclusion().randomTicks()));
+
     public static final DeferredBlock<Block> GIANT_CARROT = registerGiantCrop("giant_carrot", () ->  new GiantCropBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).instrument(NoteBlockInstrument.BANJO).strength(3.0F).sound(SoundType.MOSS_CARPET).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(GiantCropBlock.statePredicate)));
     public static final DeferredBlock<Block> GIANT_POTATO = registerGiantCrop("giant_potato", () ->  new GiantCropBlock(BlockBehaviour.Properties.ofFullCopy(ModBlocks.GIANT_CARROT.get())));
     public static final DeferredBlock<Block> GIANT_NETHERWART = registerGiantCrop("giant_netherwart", () ->  new GiantCropBlock(BlockBehaviour.Properties.ofFullCopy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.statePredicate).dynamicShape()));
@@ -109,9 +114,12 @@ public class ModBlocks {
     public static final DeferredBlock<Block> CORRUPTED_WALL_HANGING_SIGN = registerBlockNoItem("corrupted_wall_hanging_sign", () -> new ModWallHangingSign(ModWoodTypes.CORRUPTED, BlockBehaviour.Properties.ofFullCopy(Blocks.WARPED_WALL_HANGING_SIGN)));
     public static final DeferredBlock<Block> CORRUPTED_LEAVES_BUSH = registerBlockWithItem("corrupted_leaves_bush", () -> new CorruptedLeavesBlock(BlockBehaviour.Properties.ofFullCopy(ModBlocks.CORRUPTED_LEAVES.get()).noOcclusion()));
 
+    public static final RegistryObject<Block> CORRUPTED_GRASS = registerBlockWithItem("corrupted_grass", () -> new TallGrassBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).replaceable().noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XYZ).ignitedByLava().pushReaction(PushReaction.DESTROY)));
+    public static final RegistryObject<Block> CORRUPTED_TALL_GRASS = registerBlockWithItem("corrupted_tall_grass", () -> new DoublePlantBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).replaceable().noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).ignitedByLava().pushReaction(PushReaction.DESTROY)));
     public static final DeferredBlock<Block> DECAYED_LOG = registerBlockWithItem("decayed_log", () -> new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LOG)));
     public static final DeferredBlock<Block> CORRUPTED_GRASS_BLOCK = registerBlockWithItem("corrupted_grass_block", () -> new CorruptedGrassBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).randomTicks().strength(0.6F).sound(SoundType.WET_GRASS)));
     public static final DeferredBlock<Block> CURED_GRASS_BLOCK = registerBlockWithItem("cured_grass_block", () -> new CuredGrassBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).randomTicks().strength(0.6F).sound(SoundType.WET_GRASS)));
+    public static final RegistryObject<Block> CORRUPTED_WART = registerBlockWithItem("corrupted_wart", () -> new CorruptedWartBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).replaceable().instabreak().dynamicShape().sound(SoundType.WET_GRASS).offsetType(BlockBehaviour.OffsetType.XYZ).pushReaction(PushReaction.DESTROY)));
 
     public static final DeferredBlock<Block> VIVICUS_LOG = registerBlockWithItem("vivicus_log", () -> new VivicusRotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CHERRY_LOG)));
     public static final DeferredBlock<Block> VIVICUS_WOOD = registerBlockWithItem("vivicus_wood", () -> new VivicusRotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CHERRY_WOOD)));
@@ -139,8 +147,23 @@ public class ModBlocks {
     public static final DeferredBlock<Block> POTTED_DYESPRIA = registerBlockNoItem("potted_dyespria", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, DYESPRIA_PLANT, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<Block> POTTED_CORRUPTED_SAPLING = registerBlockNoItem("potted_corrupted_sapling", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, CORRUPTED_SAPLING, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<Block> POTTED_VIVICUS_SAPLING = registerBlockNoItem("potted_vivicus_sapling", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, VIVICUS_SAPLING, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
-    
+    public static final RegistryObject<Block> POTTED_DYESPRIA = registerBlockNoItem("potted_dyespria", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, DYESPRIA_PLANT, BlockBehaviour.Properties.copy(Blocks.FLOWER_POT)));
+    public static final RegistryObject<Block> POTTED_CORRUPTED_SAPLING = registerBlockNoItem("potted_corrupted_sapling", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, CORRUPTED_SAPLING, BlockBehaviour.Properties.copy(Blocks.FLOWER_POT)));
+    public static final RegistryObject<Block> POTTED_VIVICUS_SAPLING = registerBlockNoItem("potted_vivicus_sapling", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, VIVICUS_SAPLING, BlockBehaviour.Properties.copy(Blocks.FLOWER_POT)));
+
+    public static final RegistryObject<Block> BEROOT_CAULDRON = registerBlockNoItem("beroot_cauldron", () -> new BerootCauldronBlock(BlockBehaviour.Properties.copy(Blocks.ANVIL).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
+
+    public static final RegistryObject<Block> SALTEMONE = registerBlockNoItem("saltemone", () -> new SaltemoneBlock(BlockBehaviour.Properties.of().noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never).strength(0.3F).sound(SoundType.WET_GRASS).randomTicks()));
+    public static final RegistryObject<Block> SOURLEMONE = registerBlockNoItem("sourlemone", () -> new SourlemonBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTEMONE.get()).noOcclusion().pushReaction(PushReaction.BLOCK).isSuffocating(ModBlocks::never)));
+    public static final RegistryObject<Block> SALTY_CLUMP = registerBlockNoItem("salty_clump", () -> new SaltyClumpBlock(BlockBehaviour.Properties.copy(Blocks.SMALL_AMETHYST_BUD).noOcclusion().sound(SoundType.SAND).pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never).noCollission()));
+    public static final RegistryObject<Block> DRIPSALT = registerBlockNoItem("dripsalt", () -> new DripsaltBlock(BlockBehaviour.Properties.copy(Blocks.POINTED_DRIPSTONE)));
+    public static final RegistryObject<Block> SOUR_PUDDLE = registerBlockNoItem("sour_puddle", () -> new SourPuddleBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTY_CLUMP.get()).sound(SoundType.MUD).requiresCorrectToolForDrops().friction(0.98F).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never)));
+
     private static <T extends Block> DeferredBlock<T> registerBlockNoItem(String name, Supplier<T> block) {
+        return BLOCKS.register(name, block);
+    }
+
+    private static <T extends Block> RegistryObject<T> registerBlockNoItem(String name, Supplier<T> block) {
         return BLOCKS.register(name, block);
     }
 

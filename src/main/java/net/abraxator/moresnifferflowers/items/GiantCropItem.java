@@ -1,6 +1,6 @@
 package net.abraxator.moresnifferflowers.items;
 
-import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
+import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -27,8 +27,8 @@ public class GiantCropItem extends BlockItem {
         var aabb = AABB.ofSize(clickPos.getCenter(), 2, 2, 2);
         BlockPos.betweenClosedStream(aabb).forEach(pos -> {
             level.setBlockAndUpdate(pos, this.getBlock().defaultBlockState().setValue(ModStateProperties.CENTER, pos.equals(clickPos)));
-            if (level.getBlockEntity(pos) instanceof GiantCropBlockEntity entity) {
-                entity.center = clickPos;
+            if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+                entity.setCenter(clickPos);
             }
         });
 

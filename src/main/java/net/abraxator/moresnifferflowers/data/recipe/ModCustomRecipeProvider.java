@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.data.recipe;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.data.recipe.builder.CropressingRecipeBuilder;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
@@ -32,6 +33,6 @@ public class ModCustomRecipeProvider extends RecipeProvider {
     }
 
     public static void createCropressing(RecipeOutput recipeOutput, ItemLike result, ItemLike crop) {
-        new CropressingRecipeBuilder(result).requiresCrop(crop.asItem()).unlockedBy("has_cropressor", has(ModBlocks.CROPRESSOR_OUT.get())).save(recipeOutput, result.asItem().toString() + "_from_cropressing");
+        new CropressingRecipeBuilder(result).requiresCrop(crop.asItem()).unlockedBy("has_cropressor", has(ModBlocks.CROPRESSOR_OUT.get())).save(recipeOutput, MoreSnifferFlowers.loc("cropressing_" + result.asItem()));
     }
 }

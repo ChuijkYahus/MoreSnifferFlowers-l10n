@@ -34,6 +34,12 @@ public class AddItemsModifier extends LootModifier {
     public static final List<ResourceLocation> HELLIONS_ITEMS_LOC = List.of(hellionsLoc("stone_pine_sapling"), hellionsLoc("fiddlefern"), hellionsLoc("ivy"));
     public static final List<ResourceLocation> QUARK_ITEMS_LOC = List.of(ResourceLocation.fromNamespaceAndPath("quark", "ancient_sapling"));
     public static final List<ResourceLocation> ARTS_AND_CRAFTS_ITEMS_LOC = List.of(ResourceLocation.fromNamespaceAndPath("arts_and_crafts", "lotus_pistils"));
+    public static final List<ResourceLocation> PEARFECTION_ITEMS_LOC = List.of(ResourceLocation.fromNamespaceAndPath("pearfection", "callery_twig"));
+    public static final List<ResourceLocation> TRAIL_AND_TALES_DELIGHT_ITEMS_LOC = List.of(ResourceLocation.fromNamespaceAndPath("trailandtales_delight", "lantern_fruit_seeds"));
+    public static final List<ResourceLocation> BOUNTIFUL_FARES_ITEMS_LOC = List.of(ResourceLocation.fromNamespaceAndPath("bountifulfares", "lapisberry_seeds"), ResourceLocation.fromNamespaceAndPath("bountifulfares", "hoary_seeds"));
+
+
+
 
 
     private final List<Item> items;
@@ -60,6 +66,10 @@ public class AddItemsModifier extends LootModifier {
         modSupport(HELLIONS_ITEMS_LOC, generatedLoot);
         modSupport(QUARK_ITEMS_LOC, generatedLoot);
         modSupport(ARTS_AND_CRAFTS_ITEMS_LOC, generatedLoot);
+        modSupport(PEARFECTION_ITEMS_LOC, generatedLoot);
+        modSupport(TRAIL_AND_TALES_DELIGHT_ITEMS_LOC, generatedLoot);
+        modSupport(BOUNTIFUL_FARES_ITEMS_LOC, generatedLoot);
+
 
         items.forEach(item -> generatedLoot.add(item.getDefaultInstance()));
         newLoot.add(Util.getRandom(generatedLoot, context.getRandom()));

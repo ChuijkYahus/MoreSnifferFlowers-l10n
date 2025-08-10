@@ -1,0 +1,98 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "age": "0",
+        "facing": "north",
+        "center": "true"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/saltemone0"
+      }
+    },
+    {
+      "when": {
+        "age": "0",
+        "facing": "east",
+        "center": "true"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/saltemone0",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "age": "0",
+        "facing": "south",
+        "center": "true"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/saltemone0",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "age": "0",
+        "facing": "west",
+        "center": "true"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/saltemone0",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "age": "1",
+        "facing": "north",
+        "center": "true"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/saltemone1"
+      }
+    },
+    {
+      "when": {
+        "age": "1",
+        "facing": "east",
+        "center": "true"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/saltemone1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "age": "1",
+        "facing": "south",
+        "center": "true"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/saltemone1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "age": "1",
+        "facing": "west",
+        "center": "true"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/saltemone1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "center": "false"
+      },
+      "apply": {
+        "model": "moresnifferflowers:block/saltemone2"
+      }
+    }
+  ]
+}
