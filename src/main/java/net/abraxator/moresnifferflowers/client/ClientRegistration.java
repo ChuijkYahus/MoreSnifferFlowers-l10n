@@ -3,12 +3,8 @@ package net.abraxator.moresnifferflowers.client;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.client.gui.screen.RebrewingStandScreen;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
-import net.abraxator.moresnifferflowers.client.model.block.BondripiaModel;
-import net.abraxator.moresnifferflowers.client.model.block.CropressorModel;
-import net.abraxator.moresnifferflowers.client.model.block.GiantCropModels;
-import net.abraxator.moresnifferflowers.client.model.entity.BoblingModel;
-import net.abraxator.moresnifferflowers.client.model.entity.CorruptedProjectileModel;
-import net.abraxator.moresnifferflowers.client.model.entity.DragonflyModel;
+import net.abraxator.moresnifferflowers.client.model.block.*;
+import net.abraxator.moresnifferflowers.client.model.entity.*;
 import net.abraxator.moresnifferflowers.client.particle.*;
 import net.abraxator.moresnifferflowers.client.renderer.block.*;
 import net.abraxator.moresnifferflowers.client.renderer.custom.BlockPatternRenderer;
@@ -37,7 +33,7 @@ import net.neoforged.neoforgespi.locating.IModFile;
 
 import java.util.Optional;
 
-@EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, value = Dist.CLIENT)
 public class ClientRegistration {
     @SubscribeEvent
     public static void clientSetup(final FMLClientSetupEvent event) {

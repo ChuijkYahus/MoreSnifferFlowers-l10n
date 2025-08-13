@@ -20,8 +20,8 @@ public class EntityMixin {
     public void clearGlued(CallbackInfo ci){
         Entity entity = (Entity)(Object)this;
 
-        if(entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(ModEffects.GLUED.get()) && !level.isClientSide){
-            livingEntity.removeEffect(ModEffects.GLUED.get());
+        if(entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(ModEffects.GLUED) && !level.isClientSide){
+            livingEntity.removeEffect(ModEffects.GLUED);
             GluedCapability.setAndSync(livingEntity,false, true);
         }
     }

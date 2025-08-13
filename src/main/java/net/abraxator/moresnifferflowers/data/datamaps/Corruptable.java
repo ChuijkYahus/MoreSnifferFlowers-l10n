@@ -10,6 +10,7 @@ import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.jarjar.nio.pathfs.PathFileSystem;
@@ -38,7 +39,12 @@ public record Corruptable(List<Pair<Block, Integer>> list) {
     public Corruptable(Block block) {
         this(List.of(Pair.of(block, 100)));
     }
-    
+
+    public static Optional<Block> getCorruptedBlock(Block block, Level level) {
+        return getCorruptedBlock(block, level.random);
+    }
+
+
     public static Optional<Block> getCorruptedBlock(Block block, RandomSource random) {
         Holder<Block> holder = block.builtInRegistryHolder();
         Corruptable corruptable = holder.getData(ModDataMaps.CORRUPTABLE);
@@ -64,7 +70,12 @@ public record Corruptable(List<Pair<Block, Integer>> list) {
 
         return Optional.empty();
     }
-    
+
+    public static boolean canBeCorrupted(Block block, Level level) {
+        return canBeCorrupted(block, level.random);
+    }
+
+
     public static boolean canBeCorrupted(Block block, RandomSource random) {
         if(block == null) {
             return false;

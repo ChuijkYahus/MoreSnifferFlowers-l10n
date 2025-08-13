@@ -1,21 +1,21 @@
 package net.abraxator.moresnifferflowers.init.config;
 
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ModClientConfig {
-    public static final ForgeConfigSpec CLIENT_CONFIG;
-    public static final ForgeConfigSpec.IntValue HARDENED_MOUTH_X;
-    public static final ForgeConfigSpec.IntValue HARDENED_MOUTH_Y;
-    public static final ForgeConfigSpec.IntValue BLOCK_PATTERN_RENDER_DISTANCE;
-    public static final ForgeConfigSpec.BooleanValue BLOCK_PATTERN_SMOOTH_LIGHTING;
-    public static final ForgeConfigSpec.BooleanValue BLOCK_PATTERN_TRANSPARENCY;
+    public static final ModConfigSpec CLIENT_CONFIG;
+    public static final ModConfigSpec.IntValue HARDENED_MOUTH_X;
+    public static final ModConfigSpec.IntValue HARDENED_MOUTH_Y;
+    public static final ModConfigSpec.IntValue BLOCK_PATTERN_RENDER_DISTANCE;
+    public static final ModConfigSpec.BooleanValue BLOCK_PATTERN_SMOOTH_LIGHTING;
+    public static final ModConfigSpec.BooleanValue BLOCK_PATTERN_TRANSPARENCY;
 
 
 
 
     static {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
         builder.comment("A lot of these require a game restart seemingly at random. Restart your game before reporting it as a bug!");
         builder.translation("moresnifferflowers.configuration.restart_required");

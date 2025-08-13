@@ -2,9 +2,10 @@ package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
+import net.abraxator.moresnifferflowers.compat.jei.corruption.CorruptionRecipe;
+import net.abraxator.moresnifferflowers.data.datamaps.Corruptable;
 import net.abraxator.moresnifferflowers.entities.CorruptedProjectile;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
-import net.abraxator.moresnifferflowers.recipes.CorruptionRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
@@ -166,7 +167,7 @@ public interface MultiBlock {
     }
 
     default void corruptionHelper(BlockState state, Level level, BlockPos pos, Entity entityInside){
-        if(entityInside instanceof CorruptedProjectile corruptedProjectile && CorruptionRecipe.canBeCorrupted(state.getBlock(), level)) {
+        if(entityInside instanceof CorruptedProjectile corruptedProjectile && Corruptable.canBeCorrupted(state.getBlock(), level.random)) {
             if(level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
                 corruptedProjectile.discard();
                 BlockPos centrePos = entity.getCenter();
@@ -179,9 +180,9 @@ public interface MultiBlock {
     }
 
     default void afterCorruption(BlockPos centrePos, Level level, BlockPos pos){
-        if (!CorruptionRecipe.canBeCorrupted(level.getBlockState(pos).getBlock(), level)) return;
+        if (!Corruptable.canBeCorrupted(level.getBlockState(pos).getBlock(), level.random)) return;
 
-        Block corruptedBlock = CorruptionRecipe.getCorruptedBlock(level.getBlockState(pos).getBlock(), level).get();
+        Block corruptedBlock = Corruptable.getCorruptedBlock(level.getBlockState(pos).getBlock(), level.getRandom()).get();
         level.setBlockAndUpdate(pos, corruptedBlock.withPropertiesOf(level.getBlockState(pos)));
 
         if(level.getBlockEntity(pos) instanceof MultiBlockEntity entity){

@@ -1,13 +1,16 @@
 package net.abraxator.moresnifferflowers.networking;
 
+import net.abraxator.moresnifferflowers.networking.toClient.BerootCauldronSuckPacket;
+import net.abraxator.moresnifferflowers.networking.toClient.BerootCookbookScreenPacket;
+import net.abraxator.moresnifferflowers.networking.toClient.CorruptedSludgePacket;
+import net.abraxator.moresnifferflowers.networking.toClient.DyespriaDisplayModeChangePacket;
+import net.abraxator.moresnifferflowers.networking.toServer.DyespriaModePacket;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-
-import java.net.http.HttpResponse;
 
 public class ModPacketHandler {
     public ModPacketHandler(IEventBus modEventBus, int version) {
@@ -20,6 +23,8 @@ public class ModPacketHandler {
     
     protected void registerClientToServer(ModPacketRegistrar registrar) {
         registrar.play(DyespriaModePacket.TYPE, DyespriaModePacket.STREAM_CODEC);
+        registrar.play(BerootCauldronSuckPacket.TYPE, BerootCauldronSuckPacket.STREAM_CODEC);
+        registrar.play(BerootCookbookScreenPacket.TYPE, BerootCookbookScreenPacket.STREAM_CODEC);
     }
     
     protected void registerServerToClient(ModPacketRegistrar registrar) {

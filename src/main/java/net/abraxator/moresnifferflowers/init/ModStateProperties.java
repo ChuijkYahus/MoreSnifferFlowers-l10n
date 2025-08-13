@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.init;
 
 import net.abraxator.moresnifferflowers.blockentities.CropressorBlockEntity;
+import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.properties.*;
 

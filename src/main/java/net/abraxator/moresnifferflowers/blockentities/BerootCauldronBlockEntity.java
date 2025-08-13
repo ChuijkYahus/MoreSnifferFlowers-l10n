@@ -3,7 +3,9 @@ package net.abraxator.moresnifferflowers.blockentities;
 import net.abraxator.moresnifferflowers.blocks.BerootCauldronBlock;
 import net.abraxator.moresnifferflowers.client.ModColorHandler;
 import net.abraxator.moresnifferflowers.components.BetterNonNullList;
+import net.abraxator.moresnifferflowers.components.RootedSoup;
 import net.abraxator.moresnifferflowers.init.ModBlockEntities;
+import net.abraxator.moresnifferflowers.init.ModDataComponents;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.networking.toServer.BerootCauldronCraftPacket;
 import net.abraxator.moresnifferflowers.networking.toClient.BerootCauldronSuckPacket;
@@ -13,6 +15,7 @@ import net.abraxator.moresnifferflowers.nutrition.NutritionEntry;
 import net.abraxator.moresnifferflowers.nutrition.NutritionType;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +26,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -35,7 +39,7 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -62,7 +66,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         super(ModBlockEntities.BEROOT_CAULDRON.get(), pPos, pBlockState);
     }
 
-    public InteractionResult addItem(ItemStack itemStack, Player player) {
+    public ItemInteractionResult addItem(ItemStack itemStack, Player player) {
         if(itemStack.is(ModItems.CROPRESSED_BEETROOT.get()) && this.beetroots < beetrootLimit && !this.isCrafted) {
             addBeetroot(itemStack, player);
             this.redSoup = true;
@@ -73,9 +77,9 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
            return giveSoup(itemStack, player);
         } else if (!ingredients.isFullyDefault() && !this.isCrafted && player != null) {
             this.crafting = true;
-        } else return InteractionResult.PASS;
+        } else return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
     
     public void craft() {
@@ -104,10 +108,10 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
                 .toList());
         int sat = ingredients.validStream()
                 .filter(itemStack -> itemStack.getFoodProperties(null) != null)
-                .mapToInt(value -> (int) value.getFoodProperties(null).getSaturationModifier()).sum();
+                .mapToInt(value -> (int) value.getFoodProperties(null).saturation()).sum();
         int food = ingredients.validStream()
                 .filter(itemStack -> itemStack.getFoodProperties(null) != null)
-                .mapToInt(value -> value.getFoodProperties(null).getNutrition()).sum();
+                .mapToInt(value -> value.getFoodProperties(null).nutrition()).sum();
         int ingredients = this.ingredients.getValidSize();
         this.soupCount = this.beetroots + (ingredients / 4);
         int soupFood = 6 + (food / ingredients);
@@ -124,21 +128,8 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         int soupUses = Math.min(Math.max(Math.round(food / 3f) + (ingredients - foodLimit / 2) / 2, 1), maxSoupUses);
 
 
-        //For Cookbook unlocking
-        ListTag ingredientListTag = new ListTag();
-        for (ItemStack stack : this.ingredients.validStream().toList() ){
-            CompoundTag ingredientTag = new CompoundTag();
-            stack.save(ingredientTag);
-            ingredientListTag.add(ingredientTag);
-        }
-        tag.put("ingredients", ingredientListTag);
-
-        //values into tag
-        tag.putInt("soupFood", soupFood);
-        tag.putFloat("soupSat", soupSat);
-        tag.putInt("soupCount", soupUses);
-        tag.putInt("soupCountMax", soupUses);
-        tag.putInt("color", ModColorHandler.RGBtoInt(color()));
+        soup.set(ModDataComponents.ROOTED_INGREDIENTS, this.ingredients.validStream().toList()); //For Cookbook unlocking
+        soup.set(ModDataComponents.ROOTED_SOUP, new RootedSoup(soupFood, soupSat, soupUses, soupUses));
 
         float positiveThreshold = 0.5f;
         float negativeThreshold = 0.75f;
@@ -153,8 +144,10 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         int blandThreshold = 120;
         int minFlavour = 50;
 
+
         //effect init
-        ListTag effectTag = new ListTag();
+        List<RootedSoup.RootedEffect> effects = new ArrayList<>();
+
         for (NutritionEntry nutritionEntry : entryList) {
             if (!nutritionEntry.nutrition().equals(NutritionType.NEUTRAL)) {
                 totalFlavour += nutritionEntry.weight();
@@ -177,41 +170,21 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
                 amplifier = Math.max(Math.min(amplifier, maxAmp), 1);
 
                 if (positive != null && nutritionEntry.weight() >= minFlavour) {
-                    CompoundTag compoundTag = new CompoundTag();
-                    compoundTag.putInt("nutritionType", nutritionEntry.nutrition().ordinal());
-                    compoundTag.putBoolean("positive", positive);
-                    compoundTag.putInt("dur", duration);
-                    compoundTag.putInt("amp", amplifier);
-                    effectTag.add(compoundTag);
+                    effects.add(new RootedSoup.RootedEffect(nutritionEntry.nutrition().ordinal(), positive, duration, amplifier ));
                 }
             }
         }
 
         //Neutral effects
-        if (effectTag.isEmpty()){
-            if (totalFlavour < blandThreshold){
-                CompoundTag compoundTag = new CompoundTag();
-                compoundTag.putInt("nutritionType", NutritionType.NEUTRAL.ordinal());
-                compoundTag.putBoolean("positive", false);
-                compoundTag.putInt("dur", duration);
-                compoundTag.putInt("amp", 1);
-                effectTag.add(compoundTag);
+        if (effects.isEmpty()){
+            boolean positive = totalFlavour > blandThreshold;
+            int amplifier = totalFlavour < blandThreshold ? 1 : Math.min(Mth.floor((float) (totalFlavour - blandThreshold) / 100 + 1), 3);
 
-            }else {
-                CompoundTag compoundTag = new CompoundTag();
-                compoundTag.putInt("nutritionType", NutritionType.NEUTRAL.ordinal());
-                compoundTag.putBoolean("positive", true);
-                compoundTag.putInt("dur", duration);
-                compoundTag.putInt("amp", Math.min(Mth.floor((float) (totalFlavour - blandThreshold) / 100 + 1), 3));
-                effectTag.add(compoundTag);
-
-            }
-
+            effects.add(new RootedSoup.RootedEffect(NutritionType.NEUTRAL.ordinal(), positive, duration, amplifier ));
         }
 
-        tag.put("effects", effectTag);
+        soup.set(ModDataComponents.ROOTED_EFFECTS, effects);
 
-        soup.setTag(tag);
         this.soup = soup;
         setChanged();
     }
@@ -233,7 +206,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
             this.craftingTimeRemaining++;
             this.itemRot += 10;
             if(this.spoonRotation * spoonSpeed >= this.soupCount * 180 && soupCount != 0) {
-                 ModPacketHandler.CHANNEL.sendToServer(new BerootCauldronCraftPacket(this.center));
+                 PacketDistributor.sendToServer(new BerootCauldronCraftPacket(this.center));
                  craft();
                 this.crafting = false;
                 this.isCrafted = true;
@@ -269,13 +242,13 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
     }
 
 
-    private InteractionResult giveSoup(ItemStack itemStack, Player player) {
+    private ItemInteractionResult giveSoup(ItemStack itemStack, Player player) {
         boolean b = !hasSoup();
         boolean b1 = !this.isCrafted;
         boolean isServer = !level.isClientSide;
 
         if (b || b1){
-            return InteractionResult.FAIL;
+            return ItemInteractionResult.FAIL;
         }
         itemStack.shrink(1);
 
@@ -288,7 +261,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         }
 
         setChanged();
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     private void addIngredient(ItemStack itemStack, Player player) {
@@ -355,7 +328,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
             ItemStack itemStack1 = itemStack.copy();
 
             if (addItem(itemStack, null).equals(InteractionResult.SUCCESS)) {
-                ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new BerootCauldronSuckPacket(itemStack1,this.getBlockPos()));
+                PacketDistributor.sendToAllPlayers(new BerootCauldronSuckPacket(itemStack1,this.getBlockPos()));
                 itementity.setItem(itemStack);
             }
         }
@@ -404,8 +377,8 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
 
     
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
         tag.putBoolean("isCenter", isCenter);
         if (!isCenter) return;
 
@@ -413,7 +386,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         ListTag items = new ListTag();
         for (ItemStack stack : ingredients) {
             CompoundTag itemTag = new CompoundTag();
-            stack.save(itemTag);
+            stack.save(registries, itemTag);
             items.add(itemTag);
         }
         tag.put("ingredients", items);
@@ -426,14 +399,14 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
 
         if(!this.soup.isEmpty()) {
             CompoundTag soupTag = new CompoundTag();
-            this.soup.save(soupTag);
+            this.soup.save(registries ,soupTag);
             tag.put("soup", soupTag);
         }
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         isCenter = tag.getBoolean("isCenter");
         if (!isCenter) return;
 
@@ -444,7 +417,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         for (int i = 0; i < this.ingredients.size(); i++) {
             if (i < ingredientsTag.size()) {
                 CompoundTag itemTag = ingredientsTag.getCompound(i);
-                ItemStack stack = ItemStack.of(itemTag);
+                ItemStack stack = ItemStack.parseOptional(registries, itemTag);
                 this.ingredients.set(i, stack);
             } else {
                 this.ingredients.set(i, ItemStack.EMPTY);
@@ -462,23 +435,17 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         boolean soup1 = tag.contains("soup");
 
         if(soup1) {
-            this.soup = ItemStack.of(tag.getCompound("soup"));
+            this.soup = ItemStack.parseOptional(registries ,tag.getCompound("soup"));
         } else {
         }
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         var tag = new CompoundTag();
-        saveAdditional(tag);
+        saveAdditional(tag, registries);
         return tag;
     }
-
-/*    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        this.load(tag);
-    }*/
-
 
     public Vec3 color() {
         return color(Items.AIR);
@@ -557,10 +524,4 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
-    
-    @Override
-    public AABB getRenderBoundingBox() {
-        return AABB.ofSize(this.center.getCenter(), 4, 4, 4);
-    }
-
 }

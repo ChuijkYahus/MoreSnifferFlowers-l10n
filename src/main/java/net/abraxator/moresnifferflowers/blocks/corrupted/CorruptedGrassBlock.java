@@ -1,8 +1,13 @@
 package net.abraxator.moresnifferflowers.blocks.corrupted;
 
 import com.mojang.serialization.MapCodec;
+import net.abraxator.moresnifferflowers.capability.CorruptionCapability;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
+import net.abraxator.moresnifferflowers.init.ModDataAttachments;
+import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.abraxator.moresnifferflowers.init.ModStatePropertiesUnsafe;
 import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
+import net.abraxator.moresnifferflowers.networking.toClient.CorruptionParticlePacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -12,17 +17,21 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.lighting.LightEngine;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,11 +56,6 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
     @Override
     public boolean isBonemealSuccess(Level p_221275_, RandomSource p_221276_, BlockPos p_221277_, BlockState p_221278_) {
         return true;
-    }
-
-    @Override
-    public void performBonemeal(ServerLevel serverLevel, RandomSource randomSource, BlockPos blockPos, BlockState blockState) {
-
     }
 
     @Override
@@ -146,9 +150,8 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
         super.onRemove(state, level, pos, newState, movedByPiston);
         LevelChunk chunk = level.getChunkAt(pos);
 
-        chunk.getCapability(CapabilityList.CORRUPTION).ifPresent(cap -> {
-            if (cap.count > 0) cap.count--;
-        });
+        CorruptionCapability cap = chunk.getData(ModDataAttachments.CHUNK_CORRUPTION);
+        if (cap.count > 0) cap.count--;
     }
 
     @Override
@@ -225,7 +228,7 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
 
         if (differentChunk) {
            if (isSourceOriginal) {
-               chunkNew.getCapability(CapabilityList.CORRUPTION).ifPresent(capability -> capability.isNeighbor = true);
+               chunkNew.getData(ModDataAttachments.CHUNK_CORRUPTION).isNeighbor = true;
 
            } else if (isNeighborNew) {
                return true;
@@ -262,7 +265,7 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
         level.setBlock(pos, blockstate.setValue(ModStateProperties.CROWDED, true), 3);
 
         boolean isPositive = resistance > 0;
-        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(),new CorruptionParticlePacket(pos, isPositive, false));
+        PacketDistributor.sendToAllPlayers(new CorruptionParticlePacket(pos, isPositive, false));
 
         if (isPositive){
             CorruptionCapability.sendFlowerParticles(chunkOriginal);
@@ -270,7 +273,7 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
     }
 
     private static void placeTallGrass(ServerLevel level, BlockPos pos) {
-        if (level.getBlockState(pos.above()).is(Blocks.GRASS))
+        if (level.getBlockState(pos.above()).is(Blocks.SHORT_GRASS))
             level.setBlock(pos.above(), ModBlocks.CORRUPTED_GRASS.get().defaultBlockState(), 18);
 
         if (level.getBlockState(pos.above()).is(Blocks.TALL_GRASS)) {

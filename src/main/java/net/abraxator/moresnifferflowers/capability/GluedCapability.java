@@ -1,28 +1,26 @@
 package net.abraxator.moresnifferflowers.capability;
 
-import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.abraxator.moresnifferflowers.networking.toClient.SyncGluedPacket;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.network.PacketDistributor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.network.PacketDistributor;
 
-public class GluedCapability implements ICapabilityProvider, INBTSerializable<CompoundTag> {
+public class GluedCapability {
+    public static final Codec<GluedCapability> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.BOOL.fieldOf("is_glued").forGetter(data -> data.isGlued)
+            ).apply(instance, (glued) -> {
+                GluedCapability data = new GluedCapability();
+                data.isGlued = glued;
+                return data;
+            }));
+
     public boolean isGlued;
-    private final LazyOptional<GluedCapability> optional = LazyOptional.of(() -> this);
-    public static final ResourceLocation ID = MoreSnifferFlowers.loc("is_glued");
 
     public static void setAndSync(LivingEntity entity, boolean isGlued, boolean playSound) {
         Level level = entity.level();
@@ -30,10 +28,10 @@ public class GluedCapability implements ICapabilityProvider, INBTSerializable<Co
 
         if (playSound) playSound(level, entity);
 
-        entity.getCapability(CapabilityList.GLUED).ifPresent(cap -> {
-            cap.isGlued = isGlued;
-            cap.sync(entity);
-        });
+        GluedCapability cap = entity.getData(ModDataAttachments.GLUED.get());
+
+        cap.isGlued = isGlued;
+        cap.sync(entity);
     }
 
     public void sync(LivingEntity entity){
@@ -41,27 +39,11 @@ public class GluedCapability implements ICapabilityProvider, INBTSerializable<Co
     }
 
     public static void sync(LivingEntity entity, boolean isGlued) {
-        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(),new SyncGluedPacket(isGlued, entity.getId()));
+        PacketDistributor.sendToAllPlayers(new SyncGluedPacket(isGlued, entity.getId()));
     }
 
     public static void playSound(Level level, Entity entity){
         level.playSound(null, entity.getOnPos(), SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, SoundSource.PLAYERS, 5.0F, 0.02F + level.random.nextFloat() * 0.01F);
     }
 
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        return CapabilityList.GLUED.orEmpty(cap, optional.cast());
-    }
-
-    @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        tag.putBoolean("isGlued", isGlued);
-        return tag;
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag tag) {
-      isGlued = tag.getBoolean("isGlued");
-    }
 }

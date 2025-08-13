@@ -1,9 +1,11 @@
 package net.abraxator.moresnifferflowers.effects;
 
 import net.abraxator.moresnifferflowers.capability.GluedCapability;
+import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public class GluedEffect extends MobEffect {
@@ -12,7 +14,7 @@ public class GluedEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
         double y = Math.min(entity.getDeltaMovement().y, 0);
         entity.setDeltaMovement(new Vec3(0, y ,0));
         entity.setJumping(false);
@@ -21,10 +23,11 @@ public class GluedEffect extends MobEffect {
         if (entity.level().getGameTime() % 41 == 0) {
             GluedCapability.setAndSync(entity, true, false);
         }
+        return true;
     }
 
     @Override
-    public boolean isDurationEffectTick(int duration, int amplifier) {
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return true;
     }
 

@@ -50,7 +50,7 @@ public class CookbookScreen extends Screen {
         int x = (this.width - 272) / 2;
         int y = (this.height - 180) / 2;
         guiGraphics.pose().scale(2,1,1);
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.blit(TEXTURE, x/2, y, 0, 0, 272/2, 180);
         guiGraphics.pose().scale(0.5F,1,1);
 
@@ -166,13 +166,13 @@ public class CookbookScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         int totalItems = this.nutritions.size();
         int maxRows = Math.max(1, (int) Math.ceil((double) totalItems / COLUMNS));
         int scrollableRows = Math.max(0, maxRows - ROWS);
 
         if (scrollableRows > 0) {
-            float f = (float) delta / (float) scrollableRows;
+            float f = (float) scrollY / (float) scrollableRows;
             this.scrollOffs = Mth.clamp(this.scrollOffs - f, 0.0F, 1.0F);
             
             int maxStartIndex = (maxRows - ROWS) * COLUMNS;
@@ -183,7 +183,7 @@ public class CookbookScreen extends Screen {
 
         return true;
     }
-    
+
     private int getTotalRowCount() {
         return Mth.positiveCeilDiv(this.nutritions.size(), 5);
     }

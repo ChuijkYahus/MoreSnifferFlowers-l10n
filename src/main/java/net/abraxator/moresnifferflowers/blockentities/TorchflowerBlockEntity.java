@@ -16,10 +16,10 @@ public class TorchflowerBlockEntity extends ModBlockEntity{
     @Override
     public void tick(Level level) {
         if (getBlockState().getValue(ModStateProperties.AGE_2) != 1) return;
-        AABB area = new AABB(getBlockPos().below().east(), getBlockPos().above(4).south());
+        AABB area = new AABB(getBlockPos().below().east().getCenter(), getBlockPos().above(4).south().getCenter());
         for (Entity entity : level.getEntities(null, area)) {
             int distance = getBlockPos().getY() + 4 - entity.getBlockY();
-            entity.setSecondsOnFire(distance*2);
+            entity.setRemainingFireTicks(distance*2);
         }
     }
 }

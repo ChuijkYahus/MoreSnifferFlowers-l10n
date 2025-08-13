@@ -8,6 +8,7 @@ import net.abraxator.moresnifferflowers.components.DyespriaMode;
 import net.abraxator.moresnifferflowers.components.EntityDistanceComparator;
 import net.abraxator.moresnifferflowers.components.PatternspriaMode;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
+import net.abraxator.moresnifferflowers.init.ModDataComponents;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -371,8 +372,8 @@ public class PatternspriaItem extends Item {
 
     public void changeMode(ServerPlayer player, ItemStack stack, int amount) {
         var currentMode = getMode(stack);
-        var newMode = PatternspriaMode.shift(currentMode, amount);
-        stack.getOrCreateTag().putByte("mode", (byte) newMode.ordinal());
+        PatternspriaMode newMode = PatternspriaMode.shift(currentMode, amount);
+        stack.set(ModDataComponents.PATTERNSPRIA_MODE, newMode);
         player.displayClientMessage(DyespriaItem.getCurrentModeComponent(DyespriaMode.byIndex(newMode.ordinal())), true);
 
     }

@@ -1,22 +1,15 @@
 package net.abraxator.moresnifferflowers.networking.toClient;
 
-import net.abraxator.moresnifferflowers.capability.CapabilityList;
-import net.minecraft.client.Minecraft;
+import net.abraxator.moresnifferflowers.networking.IMSFPacket;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Supplier;
 
-public record SyncNutritionPacket(Set<Item> nutritionItems) {
+public record SyncNutritionPacket(Set<Item> nutritionItems) implements IMSFPacket {
 
     public static void encode(SyncNutritionPacket msg, FriendlyByteBuf buffer) {
         buffer.writeInt(msg.nutritionItems.size());
@@ -25,35 +18,20 @@ public record SyncNutritionPacket(Set<Item> nutritionItems) {
         }
     }
 
-    public static SyncNutritionPacket decode(FriendlyByteBuf buffer) {
-        int size = buffer.readInt();
-        Set<Item> nutritionItems = new HashSet<>();
-
-        for (int i = 0; i < size; i++) {
-            ResourceLocation itemId = buffer.readResourceLocation();
-            Item item = BuiltInRegistries.ITEM.get(itemId);
-            if (item != Items.AIR) {
-                nutritionItems.add(item);
-            }
-        }
-
-        return new SyncNutritionPacket(nutritionItems);
+    @Override
+    public void handle(IPayloadContext context) {
+        context.enqueueWork(() ->{
+/*            Player player = Minecraft.getInstance().player;
+            if (player != null) {
+                player.getCapability(CapabilityList.UNLOCKED_NUTRITIONS).ifPresent(cap -> {
+                    cap.setItems(msg.nutritionItems);
+                });
+            }*/
+        });
     }
 
-    public static void handle(SyncNutritionPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        NetworkEvent.Context context = ctx.get();
-        context.enqueueWork(() -> handlePacket(msg, context));
-        context.setPacketHandled(true);
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return null;
     }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void handlePacket(SyncNutritionPacket msg, NetworkEvent.Context context) {
-        Player player = Minecraft.getInstance().player;
-        if (player != null) {
-            player.getCapability(CapabilityList.UNLOCKED_NUTRITIONS).ifPresent(cap -> {
-                cap.setItems(msg.nutritionItems);
-            });
-        }
-    }
-
 }

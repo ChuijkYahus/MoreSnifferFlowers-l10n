@@ -1,46 +1,44 @@
 package net.abraxator.moresnifferflowers.networking.toClient;
 
-import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import io.netty.buffer.ByteBuf;
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.GluedCapability;
+import net.abraxator.moresnifferflowers.networking.IMSFPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
+public record SyncGluedPacket(boolean isGlued, int entityId) implements IMSFPacket {
+    public static final CustomPacketPayload.Type<SyncGluedPacket> TYPE = new CustomPacketPayload.Type<>(MoreSnifferFlowers.loc("send_sludge_particle"));
+    public static final StreamCodec<ByteBuf, SyncGluedPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.BOOL, SyncGluedPacket::isGlued,
+            ByteBufCodecs.INT, SyncGluedPacket::entityId,
+            SyncGluedPacket::new
+    );
 
-public record SyncGluedPacket(boolean isGlued, int entityId) {
-    public SyncGluedPacket(FriendlyByteBuf buf) {
-        this(buf.readBoolean(), buf.readInt());
+    @Override
+    public void handle(IPayloadContext context) {
+        context.enqueueWork(() ->{
+            Level level = Minecraft.getInstance().level;
+            if (level == null) return;
+
+            Entity entity = level.getEntity(entityId);
+
+            if (entity instanceof LivingEntity living) {
+                GluedCapability.playSound(level, entity);
+                living.getCapability(CapabilityList.GLUED).ifPresent(cap -> {
+                    cap.isGlued = isGlued;
+                });
+            }
+        });
     }
-
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeBoolean(isGlued);
-        buf.writeInt(entityId);
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
-
-    public static void handle(SyncGluedPacket packet, Supplier<NetworkEvent.Context> context) {
-        context.get().enqueueWork(() -> handlePacket(packet));
-        context.get().setPacketHandled(true);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static void handlePacket(SyncGluedPacket packet) {
-        Level level = Minecraft.getInstance().level;
-        if (level == null) return;
-
-        Entity entity = level.getEntity(packet.entityId);
-
-        if (entity instanceof LivingEntity living) {
-            GluedCapability.playSound(level, entity);
-            living.getCapability(CapabilityList.GLUED).ifPresent(cap -> {
-                cap.isGlued = packet.isGlued;
-            });
-        }
-    }
-
 }

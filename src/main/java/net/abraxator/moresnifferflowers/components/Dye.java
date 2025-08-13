@@ -3,12 +3,9 @@ package net.abraxator.moresnifferflowers.components;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.abraxator.moresnifferflowers.init.ModDataComponents;
-import net.abraxator.moresnifferflowers.items.DyespriaItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import org.lwjgl.opengl.INTELMapTexture;
 
 public record Dye(DyeColor color, int amount) {
     public static final Codec<Dye> CODEC = RecordCodecBuilder.create(
@@ -53,7 +50,7 @@ public record Dye(DyeColor color, int amount) {
     public static void setDyeToDyeHolderStack(ItemStack dyespria, ItemStack dyeToInsert, int amount, int uses) {
         var dyeColor = dyeToInsert.getItem() instanceof DyeItem ? ((DyeItem) dyeToInsert.getItem()).getDyeColor() : DyeColor.WHITE;
         dyespria.set(ModDataComponents.DYE, new Dye(dyeColor, amount));
-        dyespria.set(ModDataComponents.DYESPRIA_USES, uses);
+        dyespria.set(ModDataComponents.COLOR, uses);
     }
     
     public static void setDyeColorToStack(ItemStack stack, DyeColor color, int amount) {

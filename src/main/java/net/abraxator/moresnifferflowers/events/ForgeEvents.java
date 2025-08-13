@@ -1,15 +1,16 @@
 package net.abraxator.moresnifferflowers.events;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
-import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
-import net.abraxator.moresnifferflowers.init.ModBlocks;
-import net.abraxator.moresnifferflowers.init.ModItems;
-import net.abraxator.moresnifferflowers.init.ModStateProperties;
-import net.abraxator.moresnifferflowers.init.ModTags;
+import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
+import net.abraxator.moresnifferflowers.capability.CorruptionCapability;
+import net.abraxator.moresnifferflowers.capability.GluedCapability;
+import net.abraxator.moresnifferflowers.capability.UntouchableCapability;
+import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
+import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -17,13 +18,19 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -33,11 +40,21 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.util.TriState;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.entity.item.ItemEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.event.entity.player.UseItemOnBlockEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
-@EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+import java.util.Objects;
+
+@EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID)
 public class ForgeEvents {
 
     @SubscribeEvent
@@ -47,7 +64,7 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void onEffectAdded(MobEffectEvent.Added event){
-        MobEffect effect = event.getEffectInstance().getEffect();
+        Holder<MobEffect> effect = event.getEffectInstance().getEffect();
         LivingEntity entity = event.getEntity();
 
         if (effect.equals(ModEffects.GLUED.get())){
@@ -73,20 +90,20 @@ public class ForgeEvents {
         onEffectEnd(effect.getEffect(), entity);
     }
 
-    public static void onEffectEnd(MobEffect effect, LivingEntity entity) {
+    public static void onEffectEnd(Holder<MobEffect> effect, LivingEntity entity) {
 
         if (entity instanceof Player player) {
             if (effect.equals(ModEffects.HARDENED_MOUTH.get()))
-                player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> cap.onEffectEnd(player));
+                player.getData(ModDataAttachments.HARDENED_MOUTH).onEffectEnd(player);
 
             if (effect.equals(ModEffects.SLIPPERY.get()))
-                player.getCapability(CapabilityList.SLIPPERY).ifPresent(cap -> cap.onEffectEnd(player));
+                player.getData(ModDataAttachments.SLIPPERY).onEffectEnd(player);
 
             if (effect.equals(ModEffects.COMBO_MEAL.get()))
-                player.getCapability(CapabilityList.COMBO_MEAL).ifPresent(cap -> cap.onEffectEnd(player));
+                player.getData(ModDataAttachments.COMBO_MEAL).onEffectEnd(player);
 
             if (effect.equals(ModEffects.UNTOUCHABLE.get()))
-                player.getCapability(CapabilityList.UNTOUCHABLE).ifPresent(cap -> cap.onEffectEnd(player));
+                player.getData(ModDataAttachments.UNTOUCHABLE).onEffectEnd(player);
 
         }
 
@@ -115,50 +132,40 @@ public class ForgeEvents {
         Entity entity = event.getTarget();
         Level level = player.level();
 
-        if (player.hasEffect(ModEffects.COMBO_MEAL.get()) && stack.is(ItemTags.TOOLS))
-            player.getCapability(CapabilityList.COMBO_MEAL).ifPresent(cap -> cap.onAttack(player, isCharged));
+        if (player.hasEffect(ModEffects.COMBO_MEAL) && stack.is(Tags.Items.MELEE_WEAPON_TOOLS))
+            player.getData(ModDataAttachments.COMBO_MEAL).onAttack(player, isCharged);
 
 
-        if(player.hasEffect(ModEffects.GLUING_TOUCH.get()) && isCharged && entity instanceof LivingEntity livingEntity && !level.isClientSide) {
-            int amplifier = Objects.requireNonNull(player.getEffect(ModEffects.GLUING_TOUCH.get())).getAmplifier();
+        if(player.hasEffect(ModEffects.GLUING_TOUCH) && isCharged && entity instanceof LivingEntity livingEntity && !level.isClientSide) {
+            int amplifier = Objects.requireNonNull(player.getEffect(ModEffects.GLUING_TOUCH)).getAmplifier();
 
             if (level.random.nextFloat() < ((amplifier + 2) / 12f)) {
-                livingEntity.addEffect(new MobEffectInstance(ModEffects.GLUED.get(), (5 + amplifier*2) * 20, 0));
+                livingEntity.addEffect(new MobEffectInstance(ModEffects.GLUED, (5 + amplifier*2) * 20, 0));
             }
 
         }
     }
 
     @SubscribeEvent
-    public static void onAttacked(LivingAttackEvent event) {
-        if (event.getEntity() instanceof Player player && player.hasEffect(ModEffects.UNTOUCHABLE.get())){
-            player.getCapability(CapabilityList.UNTOUCHABLE).ifPresent(UntouchableCapability::onAttacked);
+    public static void onAttacked(LivingDamageEvent.Post event) {
+        if (event.getEntity() instanceof Player player && player.hasEffect(ModEffects.UNTOUCHABLE)){
+            player.getData(ModDataAttachments.UNTOUCHABLE).onAttacked();
         }
     }
-
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        Player player = event.player;
-        Level level = player.level();
+    public static void onItemPickup(ItemEntityPickupEvent.Pre event) {
+        Player player = event.getPlayer();
+        ItemEntity itemEntity = event.getItemEntity();
 
-        // if (event.phase == TickEvent.Phase.END || event.player.level().isClientSide) return;
-
-    }
-
-    @SubscribeEvent
-    public static void onItemPickup(EntityItemPickupEvent event) {
-        Player player = event.getEntity();
-        ItemEntity itemEntity = event.getItem();
-
-        if (player.hasEffect(ModEffects.STICKY.get())) {
+        if (player.hasEffect(ModEffects.STICKY)) {
            if (!player.isCrouching()) {
-               event.setCanceled(true);
+               event.setCanPickup(TriState.FALSE);
            } else {
-               int amplifier = player.getEffect(ModEffects.STICKY.get()).getAmplifier();
+               int amplifier = player.getEffect(ModEffects.STICKY).getAmplifier();
                int slowdown = 5 + amplifier*2;
 
-               if (event.getEntity().level().getGameTime() % slowdown != 0) {
-                   event.setCanceled(true);
+               if (player.level().getGameTime() % slowdown != 0) {
+                   event.setCanPickup(TriState.FALSE);
                    return;
                }
                 ItemStack stack = itemEntity.getItem();
@@ -167,7 +174,7 @@ public class ForgeEvents {
                 player.addItem(retStack);
 
                 itemEntity.setItem(stack);
-                event.setCanceled(true);
+               event.setCanPickup(TriState.FALSE);
            }
 
         }
@@ -193,11 +200,11 @@ public class ForgeEvents {
 
        if (state.is(ModTags.ModBlockTags.CORRUPTION_SHIELDING) && badLevel instanceof Level level){
            LevelChunk chunk = level.getChunkAt(event.getPos());
-           chunk.getCapability(CapabilityList.CORRUPTION).ifPresent(cap ->{
-               cap.resistance++;
-               cap.isSource = false;
-               cap.flowers.add(event.getPos());
-           });
+           CorruptionCapability cap = chunk.getData(ModDataAttachments.CHUNK_CORRUPTION);
+
+           cap.resistance++;
+           cap.isSource = false;
+           cap.flowers.add(event.getPos());
        }
     }
 
@@ -221,12 +228,13 @@ public class ForgeEvents {
 
         if(item.getItem() instanceof JarOfBonmeelItem jar && state.is(ModTags.ModBlockTags.BONMEELABLE)) {
             event.setCanceled(true);
-            event.setCancellationResult(jar.useOn(new UseOnContext(player, hand, event.getHitVec())));
+            if (jar.useOn(event.getUseOnContext()).equals(InteractionResult.SUCCESS))
+                event.setCancellationResult(ItemInteractionResult.SUCCESS);
 
         }
 
         if((item.is(ModItems.REBREWED_POTION.get()) || item.is(ModItems.EXTRACTED_BOTTLE.get())) && state.is(Blocks.DIRT)) {
-            event.setCancellationResult(InteractionResult.FAIL);
+            event.setCancellationResult(ItemInteractionResult.FAIL);
             event.setCanceled(true);
 
         }
@@ -243,11 +251,9 @@ public class ForgeEvents {
             level.playSound(player, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
             level.setBlock(pos, state1, 3);
             level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, state1));
-            itemStack.hurtAndBreak(1, player, player1 -> {
-                player1.broadcastBreakEvent(player1.getUsedItemHand());
-            });
+            itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
 
-            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCancellationResult(ItemInteractionResult.SUCCESS);
             event.setCanceled(true);
 
         }
@@ -261,7 +267,7 @@ public class ForgeEvents {
 
             if (!player.isCreative()) player.setItemInHand(hand, ItemUtils.createFilledResult(itemStack, player, new ItemStack(Items.GLASS_BOTTLE)));
 
-            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCancellationResult(ItemInteractionResult.SUCCESS);
             event.setCanceled(true);
 
         }
@@ -271,17 +277,17 @@ public class ForgeEvents {
             if (!data.isGlowing()){
                 BlockPatternCapability.enableGlowing(level, pos);
                 if (!player.isCreative()) itemStack.shrink(1);
-                event.setCancellationResult(InteractionResult.SUCCESS);
+                event.setCancellationResult(ItemInteractionResult.SUCCESS);
                 event.setCanceled(true);
             }
 
         }
 
         if (itemStack.is(Items.FLINT_AND_STEEL) && state.is(Blocks.TORCHFLOWER)){
-            itemStack.hurtAndBreak(1, player, player1 -> {});
+            itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
             player.setItemInHand(hand, itemStack);
             level.setBlock(pos, ModBlocks.TORCHFLOWER_AFLAME.get().defaultBlockState().setValue(ModStateProperties.AGE_2, 1), 3);
-            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCancellationResult(ItemInteractionResult.SUCCESS);
             event.setCanceled(true);
 
         }

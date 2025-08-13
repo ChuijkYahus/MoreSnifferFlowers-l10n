@@ -12,6 +12,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -90,18 +91,17 @@ public class DripsaltBlock extends PointedDripstoneBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        ItemStack itemStack = pPlayer.getItemInHand(pHand);
-        if (itemStack.is(ModItems.SALTY_SPICE.get()) && itemStack.getCount() >= 5){
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (stack.is(ModItems.SALTY_SPICE.get()) && stack.getCount() >= 5){
             for (int i = 0; i < 5; i++){
-                if (pLevel.getBlockState(pPos.above(i + 1)).isAir() && pLevel.getBlockState(pPos.above(i)).is(this)) {
-                    pLevel.setBlock(pPos.above(i + 1), this.defaultBlockState(), 3);
-                    if (!pPlayer.isCreative()) itemStack.shrink(5);
-                    return InteractionResult.SUCCESS;
+                if (level.getBlockState(pos.above(i + 1)).isAir() && level.getBlockState(pos.above(i)).is(this)) {
+                    level.setBlock(pos.above(i + 1), this.defaultBlockState(), 3);
+                    if (!player.isCreative()) stack.shrink(5);
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
         }
-        return InteractionResult.PASS;
+        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {

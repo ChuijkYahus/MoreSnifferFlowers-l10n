@@ -3,6 +3,8 @@ package net.abraxator.moresnifferflowers.blocks;
 import com.google.common.collect.Maps;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
+import net.abraxator.moresnifferflowers.init.ModDataAttachments;
+import net.abraxator.moresnifferflowers.init.ModDataComponents;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -48,7 +50,7 @@ public interface ColorableVivicusBlock extends Colorable {
     }
 
     default int getColorId(BlockPlaceContext context){
-       return context.getItemInHand().getOrCreateTag().getInt(TAG_ID);
+       return context.getItemInHand().getOrDefault(ModDataComponents.COLOR_ID, 0);
     }
 
     default @Nullable BlockState stateForPlacementHelper(BlockState state, BlockPlaceContext context) {
@@ -62,8 +64,8 @@ public interface ColorableVivicusBlock extends Colorable {
         int colorId = state.getValue(ModStateProperties.COLOR).getId();
         int color = colorValues().get(DyeColor.byId(colorId));
 
-        stack.getOrCreateTag().putInt(Colorable.TAG_HEX, color);
-        stack.getOrCreateTag().putInt(Colorable.TAG_ID, colorId);
+        stack.set(ModDataComponents.COLOR, color);
+        stack.set(ModDataComponents.COLOR_ID, colorId);
 
         return stack;
     }

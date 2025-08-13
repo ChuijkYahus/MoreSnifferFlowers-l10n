@@ -4,6 +4,7 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
@@ -20,7 +21,7 @@ import java.util.function.Consumer;
 public class ModAdvancementGenerator implements AdvancementProvider.AdvancementGenerator {
 
     @Override
-    public void generate(HolderLookup.@NotNull Provider registries, @NotNull Consumer<AdvancementHolder> saver, @NotNull ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.@NotNull Provider registries, @NotNull Consumer<AdvancementHolder> consumer, @NotNull ExistingFileHelper existingFileHelper) {
         var root = Advancement.Builder.advancement()
                 .display(
                         Items.SNIFFER_EGG.getDefaultInstance(),
@@ -32,7 +33,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         false,
                         false)
                 .addCriterion("has_advancement", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(Blocks.SNIFFER_EGG).build()))
-                .save(saver, MoreSnifferFlowers.loc("root").toString());
+                .save(consumer, MoreSnifferFlowers.loc("root").toString());
 
         var dyespria_plant = Advancement.Builder.advancement()
                 .parent(root)
@@ -46,7 +47,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false)
                 .addCriterion("planted_dyespria_plant", SimpleAdvancementTrigger.TriggerInstance.placedDyespriaPlant())
-                .save(saver, MoreSnifferFlowers.loc("dyespria_plant").toString());
+                .save(consumer, MoreSnifferFlowers.loc("dyespria_plant").toString());
 
         Advancement.Builder.advancement()
                 .parent(dyespria_plant)
@@ -60,7 +61,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         true,
                         false)
                 .addCriterion("used_dyespria", SimpleAdvancementTrigger.TriggerInstance.usedDyespria())
-                .save(saver, MoreSnifferFlowers.loc("dyespria").toString());
+                .save(consumer, MoreSnifferFlowers.loc("dyespria").toString());
 
         var bonmeel = Advancement.Builder.advancement()
                 .parent(root)
@@ -75,7 +76,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         false
                 )
                 .addCriterion("used_bonmeel", SimpleAdvancementTrigger.TriggerInstance.usedBonmeel())
-                .save(saver, MoreSnifferFlowers.loc("bonmeel").toString());
+                .save(consumer, MoreSnifferFlowers.loc("bonmeel").toString());
 
        var cropressing = Advancement.Builder.advancement()
                 .parent(bonmeel)
@@ -90,7 +91,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         false
                 )
                 .addCriterion("has_cropressed_crop", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(ModTags.ModItemTags.CROPRESSED_CROPS).build()))
-                .save(saver, MoreSnifferFlowers.loc("cropressor").toString());
+                .save(consumer, MoreSnifferFlowers.loc("cropressor").toString());
 
        var cauldron = Advancement.Builder.advancement()
                 .parent(cropressing)
@@ -99,7 +100,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.beroot_cauldron", "Glooby, and never Soupy"),
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.beroot_cauldron.desc", "Craft the Beroot Cauldron"),
                         null,
-                        FrameType.TASK,
+                        AdvancementType.TASK,
                         true,
                         true,
                         false
@@ -108,7 +109,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                 .save(consumer, MoreSnifferFlowers.loc("beroot_cauldron").toString());
 
         ItemStack rootedSoup = ModItems.ROOTED_SOUP.get().getDefaultInstance();
-        rootedSoup.getOrCreateTag().putInt("color", 0xFFBC51);
+        rootedSoup.set(ModDataComponents.COLOR, 0xFFBC51);
 
         Advancement.Builder.advancement()
                 .parent(cauldron)
@@ -117,12 +118,12 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.positive_soup", "Michelin Star Chef"),
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.positive_soup.desc", "Have 4 positive soup effects at the same time"),
                         null,
-                        FrameType.CHALLENGE,
+                        AdvancementType.CHALLENGE,
                         true,
                         true,
                         false
                 )
-                .addCriterion("has_positive_soup_effects",EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.effects().and(ModEffects.GLUING_TOUCH.get()).and(ModEffects.UNTOUCHABLE.get()).and(ModEffects.COMBO_MEAL.get()).and(ModEffects.HARDENED_MOUTH.get())))
+                .addCriterion("has_positive_soup_effects",EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.Builder.effects().and(ModEffects.GLUING_TOUCH).and(ModEffects.UNTOUCHABLE).and(ModEffects.COMBO_MEAL).and(ModEffects.HARDENED_MOUTH)))
                 .rewards(AdvancementRewards.Builder.experience(100))
                 .save(consumer, MoreSnifferFlowers.loc("positive_soup").toString());
 
@@ -133,12 +134,12 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.negative_soup", "Pasta Burner"),
                         Component.translatableWithFallback("advancements.more_sniffer_flowers.negative_soup.desc", "Have 4 negative soup effects at the same time"),
                         null,
-                        FrameType.CHALLENGE,
+                        AdvancementType.CHALLENGE,
                         true,
                         true,
                         true
                 )
-                .addCriterion("has_negative_soup_effects", EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.effects().and(ModEffects.STICKY.get()).and(ModEffects.SLIPPERY.get()).and(ModEffects.SALTY.get()).and(ModEffects.PANTS_ON_FIRE.get())))
+                .addCriterion("has_negative_soup_effects", EffectsChangedTrigger.TriggerInstance.hasEffects(MobEffectsPredicate.Builder.effects().and(ModEffects.STICKY).and(ModEffects.SLIPPERY).and(ModEffects.SALTY).and(ModEffects.PANTS_ON_FIRE)))
                 .rewards(AdvancementRewards.Builder.experience(53))
                 .save(consumer, MoreSnifferFlowers.loc("negative_soup").toString());
 
@@ -158,7 +159,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         false
                 )
                 .addCriterion("has_rebrewed_potion", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(ModTags.ModItemTags.REBREWED_POTIONS).build()))
-                .save(saver, MoreSnifferFlowers.loc("rebrew").toString());
+                .save(consumer, MoreSnifferFlowers.loc("rebrew").toString());
 
         var bobling = Advancement.Builder.advancement()
                 .parent(root)
@@ -173,7 +174,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         false
                 )
                 .addCriterion("bobling_attacked", SimpleAdvancementTrigger.TriggerInstance.boblingAttack())
-                .save(saver, MoreSnifferFlowers.loc("bobling").toString());
+                .save(consumer, MoreSnifferFlowers.loc("bobling").toString());
 
         Advancement.Builder.advancement()
                 .parent(bobling)
@@ -188,7 +189,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         false
                 )
                 .addCriterion("has_corrupted_slime_ball", SimpleAdvancementTrigger.TriggerInstance.corruptedBlock())
-                .save(saver, MoreSnifferFlowers.loc("corruption").toString());
+                .save(consumer, MoreSnifferFlowers.loc("corruption").toString());
 
         Advancement.Builder.advancement()
                 .parent(bobling)
@@ -203,7 +204,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         false
                 )
                 .addCriterion("used_antidote", SimpleAdvancementTrigger.TriggerInstance.usedCure())
-                .save(saver, MoreSnifferFlowers.loc("cure").toString());
+                .save(consumer, MoreSnifferFlowers.loc("cure").toString());
 
         var ambush = Advancement.Builder.advancement()
                 .parent(root)
@@ -218,7 +219,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         false
                 )
                 .addCriterion("has_ambush", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.AMBER_SHARD.get()))
-                .save(saver, MoreSnifferFlowers.loc("ambush").toString());
+                .save(consumer, MoreSnifferFlowers.loc("ambush").toString());
 
         Advancement.Builder.advancement()
                 .parent(ambush)
@@ -233,7 +234,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         false
                 )
                 .addCriterion("has_garbush", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.GARNET_SHARD.get()))
-                .save(saver, MoreSnifferFlowers.loc("garbush").toString());
+                .save(consumer, MoreSnifferFlowers.loc("garbush").toString());
 
         Advancement.Builder.advancement()
                 .parent(dyespria_plant)
@@ -248,7 +249,7 @@ public class ModAdvancementGenerator implements AdvancementProvider.AdvancementG
                         false
                 )
                 .addCriterion("dye_boat", SimpleAdvancementTrigger.TriggerInstance.dyeBoat())
-                .save(saver, MoreSnifferFlowers.loc("dye_boat").toString());
+                .save(consumer, MoreSnifferFlowers.loc("dye_boat").toString());
     }
 
     private String id(String name) {

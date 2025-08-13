@@ -33,7 +33,7 @@ public class GluingGumRenderer extends EntityRenderer<GluingGumEntity> {
 
         poseStack.mulPose(Axis.XN.rotationDegrees(180F));
         poseStack.translate(0.0f, -1.51f, 0.0f);
-        model.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(GLUING_GUM_TEXTURE)), packedLight, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1 );
+        model.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(GLUING_GUM_TEXTURE)), packedLight, OverlayTexture.NO_OVERLAY);
 
         poseStack.popPose();
 

@@ -7,17 +7,17 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
 import net.abraxator.moresnifferflowers.blocks.ModCropBlock;
 import net.abraxator.moresnifferflowers.blocks.MultiBlock;
-import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.abraxator.moresnifferflowers.capability.GluedCapability;
+import net.abraxator.moresnifferflowers.capability.SlipperyCapability;
 import net.abraxator.moresnifferflowers.client.ClientRegistration;
 import net.abraxator.moresnifferflowers.client.renderer.custom.BlockPatternRenderer;
-import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.PreviewState;
 import net.abraxator.moresnifferflowers.entities.GluingGumEntity;
+import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
-import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.networking.toServer.DyespriaModePacket;
 import net.abraxator.moresnifferflowers.networking.toServer.PatternspriaModePacket;
 import net.minecraft.client.Camera;
@@ -47,33 +47,30 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputEvent.MouseScrollingEvent;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+@EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, value = Dist.CLIENT)
 public class ClientEvents {
     @SubscribeEvent
-    public static void onInputMouseScrolling(MouseScrollingEvent event) {
+    public static void onInputMouseScrolling(InputEvent.MouseScrollingEvent event) {
         LocalPlayer player = Minecraft.getInstance().player;
         if(player.isCrouching() && player.getMainHandItem().is(ModItems.DYESPRIA.get())) {
             event.setCanceled(true);
-            ModPacketHandler.CHANNEL.sendToServer(new DyespriaModePacket((int) event.getScrollDelta()));
+            PacketDistributor.sendToServer(new DyespriaModePacket((int) event.getScrollDeltaY()));
         }
         if(player.isCrouching() && player.getMainHandItem().is(ModItems.PATTERNSPRIA.get())) {
             event.setCanceled(true);
-            ModPacketHandler.CHANNEL.sendToServer(new PatternspriaModePacket((int) event.getScrollDelta()));
+            PacketDistributor.sendToServer(new PatternspriaModePacket((int) event.getScrollDeltaY()));
         }
     }
 
@@ -136,7 +133,7 @@ public class ClientEvents {
                        BlockEntityRenderer<BlockEntity> entityRender = minecraft.getBlockEntityRenderDispatcher().getRenderer(entity);
 
                        if (entityRender != null)
-                           entityRender.render(entity, event.getPartialTick(), poseStack, buffer, 0xFFFFFF, OverlayTexture.NO_OVERLAY);
+                           entityRender.render(entity, event.getPartialTick().getRealtimeDeltaTicks(), poseStack, buffer, 0xFFFFFF, OverlayTexture.NO_OVERLAY);
 
                        poseStack.popPose();
 
@@ -185,8 +182,8 @@ public class ClientEvents {
     public static void renderLiving(RenderLivingEvent.Post<?, ?> event) {
         LivingEntity entity = event.getEntity();
 
-        entity.getCapability(CapabilityList.GLUED).ifPresent(cap -> {
-            if (!cap.isGlued) return;
+        GluedCapability cap = entity.getData(ModDataAttachments.GLUED);
+        if (cap.isGlued) {
             Vec3 pos = entity.position();
             Minecraft minecraft = Minecraft.getInstance();
             PoseStack poseStack = event.getPoseStack();
@@ -199,17 +196,16 @@ public class ClientEvents {
             if (entity instanceof Player player && player.isCrouching()) {
                 yOff += 0.13f;
             }
-            minecraft.getEntityRenderDispatcher().render(gum, 0, yOff ,0, entity.yBodyRot, event.getPartialTick(), poseStack, event.getMultiBufferSource(), event.getPackedLight());
+            minecraft.getEntityRenderDispatcher().render(gum, 0, yOff, 0, entity.yBodyRot, event.getPartialTick(), poseStack, event.getMultiBufferSource(), event.getPackedLight());
             poseStack.popPose();
-        });
-
+        }
     }
 
     @SubscribeEvent
-    public static void renderGuiOverlay(RenderGuiOverlayEvent.Pre event) {
+    public static void renderGuiOverlay(RenderGuiLayerEvent.Pre event) {
         // ChatGPT code that worked first time???
         LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null || !player.hasEffect(ModEffects.GLUED.get())) return;
+        if (player == null || !player.hasEffect(ModEffects.GLUED)) return;
 
         GuiGraphics guiGraphics = event.getGuiGraphics();
         Minecraft mc = Minecraft.getInstance();
@@ -232,21 +228,20 @@ public class ClientEvents {
         Player player = event.getEntity();
         PoseStack pose = event.getPoseStack();
 
-        if (player.hasEffect(ModEffects.SLIPPERY.get())){
-            player.getCapability(CapabilityList.SLIPPERY).ifPresent(cap -> {
-                if (cap.isFallen){
+        if (player.hasEffect(ModEffects.SLIPPERY)){
+            SlipperyCapability cap = player.getData(ModDataAttachments.SLIPPERY);
 
-                    pose.mulPose(Axis.ZP.rotationDegrees(180.0F));
-                    pose.translate(0.0D, -0.5D, 0.0D);
+            if (cap.isFallen){
+                pose.mulPose(Axis.ZP.rotationDegrees(180.0F));
+                pose.translate(0.0D, -0.5D, 0.0D);
+            }
 
-                }
-            });
         }
     }
 
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        Player player = event.player;
+    public static void onPlayerTick(PlayerTickEvent event) {
+        Player player = event.getEntity();
         if (player.getDeltaMovement() != Vec3.ZERO && player.level().getGameTime() % 10 == 0){
             ClientRegistration.getBlockPatternRenderer().markDirty();
         }

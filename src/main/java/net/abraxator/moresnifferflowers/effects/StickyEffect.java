@@ -22,7 +22,7 @@ public class StickyEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
         Level level = livingEntity.level();
         double pullRange = 8.0D;
         List<ItemEntity> nearbyItems = level.getEntitiesOfClass(ItemEntity.class, livingEntity.getBoundingBox().inflate(pullRange), item -> !item.hasPickUpDelay());
@@ -46,13 +46,14 @@ public class StickyEffect extends MobEffect {
                 ItemEntity itemEntity = new ItemEntity(level, vec3.x, vec3.y + 0.6F, vec3.z, state.getBlock().asItem().getDefaultInstance());
                 level.addFreshEntity(itemEntity);
                 if (level.random.nextFloat() < 0.3f)
-                    livingEntity.addEffect(new MobEffectInstance(ModEffects.GLUED.get(), 40 * amplifier, 0));
+                    livingEntity.addEffect(new MobEffectInstance(ModEffects.GLUED, 40 * amplifier, 0));
             }
         }
+        return true;
     }
 
     @Override
-    public boolean isDurationEffectTick(int duration, int amplifier) {
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return true;
     }
 

@@ -6,7 +6,9 @@ import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
+import net.abraxator.moresnifferflowers.init.ModDataComponents;
 import net.abraxator.moresnifferflowers.init.ModItems;
+import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.items.DyespriaItem;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Mth;
@@ -20,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
-@EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, value = Dist.CLIENT)
 public class ModColorHandler {
     @SubscribeEvent
     public static void onRegisterBlockColorHandlers(net.neoforged.neoforge.client.event.RegisterColorHandlersEvent.Block event) {
@@ -102,35 +104,21 @@ public class ModColorHandler {
             }
         }, ModItems.DYESPRIA.get());
 
-        event.register((pStack, pTintIndex) -> pTintIndex > 0 ? -1 : PotionUtils.getColor(pStack),
+        event.register((pStack, pTintIndex) -> pTintIndex > 0 ? -1 : pStack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getColor(),
                 ModItems.EXTRACTED_BOTTLE.get(), ModItems.REBREWED_POTION.get(), ModItems.REBREWED_SPLASH_POTION.get(), ModItems.REBREWED_LINGERING_POTION.get());
 
         event.register(((stack, tintIndex) ->{
            BlockPattern pattern = BlockPattern.fromPatternspria(stack);
            if(tintIndex != 0 || pattern == BlockPattern.EMPTY) return -1;
-           if (stack.getOrCreateTag().contains("color")) {
-               return stack.getOrCreateTag().getInt("color");
-           }
-           return pattern.getColor();
+           return stack.getOrDefault(ModDataComponents.COLOR.get(), pattern.getColor());
         }), ModItems.PATTERNSPRIA.get());
 
-        event.register(((stack, tintIndex) ->{
-            if (stack.getOrCreateTag().contains("color") && tintIndex != 0) {
-                return stack.getOrCreateTag().getInt("color");
-            }
-            return 0xffffff;
-        }), ModItems.ROOTED_SOUP.get());
-
-
-        event.register(((stack, tintIndex) ->{
-            if (stack.getOrCreateTag().contains(Colorable.TAG_HEX)) {
-                return stack.getOrCreateTag().getInt(Colorable.TAG_HEX);
-            }
-            return 0xffffff;
-        }), ModBlocks.VIVICUS_LOG.get(),  ModBlocks.VIVICUS_WOOD.get(), ModBlocks.STRIPPED_VIVICUS_LOG.get(),  ModBlocks.STRIPPED_VIVICUS_WOOD.get(), ModBlocks.VIVICUS_PLANKS.get(),
+        event.register(((stack, tintIndex) -> stack.getOrDefault(ModDataComponents.COLOR.get(), 0xffffff)
+        ), ModBlocks.VIVICUS_LOG.get(),  ModBlocks.VIVICUS_WOOD.get(), ModBlocks.STRIPPED_VIVICUS_LOG.get(),  ModBlocks.STRIPPED_VIVICUS_WOOD.get(), ModBlocks.VIVICUS_PLANKS.get(),
                 ModBlocks.VIVICUS_STAIRS.get(), ModBlocks.VIVICUS_SLAB.get(), ModBlocks.VIVICUS_FENCE.get(), ModBlocks.VIVICUS_FENCE_GATE.get(), ModBlocks.VIVICUS_DOOR.get(),
                 ModBlocks.VIVICUS_TRAPDOOR.get(), ModBlocks.VIVICUS_PRESSURE_PLATE.get(), ModBlocks.VIVICUS_BUTTON.get(), ModBlocks.VIVICUS_LEAVES.get(), ModBlocks.VIVICUS_SAPLING.get(),
-                ModBlocks.VIVICUS_LEAVES_SPROUT.get(), ModItems.VIVICUS_SIGN.get(), ModItems.VIVICUS_HANGING_SIGN.get(), ModItems.VIVICUS_BOAT.get(), ModItems.VIVICUS_CHEST_BOAT.get());
+                ModBlocks.VIVICUS_LEAVES_SPROUT.get(), ModItems.VIVICUS_SIGN.get(), ModItems.VIVICUS_HANGING_SIGN.get(), ModItems.VIVICUS_BOAT.get(), ModItems.VIVICUS_CHEST_BOAT.get(),
+                ModItems.ROOTED_SOUP.get());
 
     }
 

@@ -82,8 +82,9 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
                 , ModBlocks.CORRUPTED_WOOD.get(), ModBlocks.STRIPPED_CORRUPTED_WOOD.get(), ModBlocks.DECAYED_LOG.get());
         this.tag(ModTags.ModBlockTags.NO_CORRUPTED_SLIME_COLLISION).add(ModBlocks.SALTEMONE.get(), ModBlocks.SOURLEMONE.get());
 
-        this.tag(ModTags.ModBlockTags.STICKABLE).add(Blocks.GRASS).add(Blocks.STONE)
-                .add(Blocks.SAND).add(Blocks.GRAVEL).add(Blocks.TALL_GRASS).addTags(BlockTags.LEAVES, BlockTags.DIRT, BlockTags.REPLACEABLE);
+        this.tag(ModTags.ModBlockTags.STICKABLE)
+                .add(Blocks.SHORT_GRASS, Blocks.STONE, Blocks.SAND, Blocks.GRAVEL, Blocks.TALL_GRASS)
+                .addTag(BlockTags.LEAVES).addTag(BlockTags.DIRT).addTag(net.minecraft.tags.BlockTags.REPLACEABLE);
 
         this.tag(ModTags.ModBlockTags.CORRUPTION_SHIELDING).add(Blocks.OXEYE_DAISY, Blocks.SUNFLOWER, Blocks.PITCHER_PLANT);
 

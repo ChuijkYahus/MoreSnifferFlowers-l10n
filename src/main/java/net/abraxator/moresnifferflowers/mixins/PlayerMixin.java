@@ -29,11 +29,11 @@ public abstract class PlayerMixin {
     @Shadow protected FoodData foodData;
 
     @Inject(method = "eat", at = @At(value = "HEAD"))
-    public void blandEffectInject(Level level, ItemStack food, CallbackInfoReturnable<ItemStack> cir){
+    public void blandEffectInject(Level level, ItemStack food, FoodProperties foodProperties, CallbackInfoReturnable<ItemStack> cir){
         Player player = (Player)(Object)this;
 
-        if (player.hasEffect(ModEffects.BLAND.get())) {
-            int amplifier = Objects.requireNonNull(player.getEffect(ModEffects.BLAND.get())).getAmplifier() + 1;
+        if (player.hasEffect(ModEffects.BLAND)) {
+            int amplifier = Objects.requireNonNull(player.getEffect(ModEffects.BLAND)).getAmplifier() + 1;
             float division =  1f + amplifier / 2f;
             float hungerChance = 0.2f + amplifier / 10f;
 
@@ -41,14 +41,12 @@ public abstract class PlayerMixin {
                 player.addEffect( new MobEffectInstance(MobEffects.HUNGER, Math.round(10 * division) * 20, amplifier - 1));
             }
 
-            if (food.getItem().isEdible()) { //Original logic from FoodData cuz fabric SUCKS
-                FoodProperties foodproperties = food.getFoodProperties(player);
+             //Original logic from FoodData cuz fabric SUCKS
+            FoodProperties foodproperties = food.getFoodProperties(player);
+            int foodValue = Math.round(foodproperties.nutrition() / division);
+            float satValue = foodproperties.saturation() / division;
+            foodData.eat( - (foodproperties.nutrition() - foodValue), -(foodproperties.saturation() - satValue));
 
-                int foodValue = Math.round(foodproperties.getNutrition() / division);
-                float satValue = foodproperties.getSaturationModifier() / division;
-
-                foodData.eat( - (foodproperties.getNutrition() - foodValue), -(foodproperties.getSaturationModifier() - satValue));
-            }
         }
     }
 }

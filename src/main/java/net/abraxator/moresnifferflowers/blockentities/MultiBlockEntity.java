@@ -2,6 +2,7 @@ package net.abraxator.moresnifferflowers.blockentities;
 
 import net.abraxator.moresnifferflowers.components.PreviewState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.LevelReader;
@@ -21,29 +22,24 @@ public class MultiBlockEntity extends ModBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag) {
-        super.saveAdditional(pTag);
-        pTag.put("center", NbtUtils.writeBlockPos(this.center));
-        pTag.putBoolean("placed", this.isPlaced);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        tag.put("center", NbtUtils.writeBlockPos(this.center));
+        tag.putBoolean("placed", this.isPlaced);
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveAdditional(tag);
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = super.getUpdateTag(registries);
+        saveAdditional(tag, registries);
         return tag;
     }
 
     @Override
-    public void load(CompoundTag pTag) {
-        super.load(pTag);
-        this.center = NbtUtils.readBlockPos(pTag.getCompound("center"));
-        this.isPlaced = pTag.getBoolean("placed");
-    }
-
-    @Override
-    public AABB getRenderBoundingBox() {
-        return AABB.ofSize(this.center.getCenter(), 3, 3, 3);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        this.center = NbtUtils.readBlockPos(tag, "center").get();
+        this.isPlaced = tag.getBoolean("placed");
     }
 
     public BlockPos getCenter() {

@@ -61,7 +61,7 @@ public class GiantCropBlockEntity extends MultiBlockEntity {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+    public void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
         this.canGrow = pTag.getBoolean("canGrow");
         this.growProgress = pTag.getDouble("growProgress");

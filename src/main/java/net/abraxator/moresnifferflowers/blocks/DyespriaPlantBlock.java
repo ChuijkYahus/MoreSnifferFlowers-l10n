@@ -128,8 +128,8 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
         if(!pNewState.is(ModBlocks.DYESCRAPIA_PLANT.get()) && !pState.is(pNewState.getBlock()) && pLevel.getBlockEntity(pPos) instanceof DyespriaPlantBlockEntity entity && isMaxAge(pState)) {
             ItemStack dyespria = ModItems.DYESPRIA.get().getDefaultInstance();
 
-            dyespria.getOrCreateTag().putInt("amount", entity.dye.amount());
-            dyespria.getOrCreateTag().putInt("color", entity.dye.colorId());
+            dyespria.set(ModDataComponents.AMOUNT, entity.dye.amount());
+            dyespria.set(ModDataComponents.COLOR_ID, entity.dye.colorId());
 
             Containers.dropItemStack(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), dyespria);
         }

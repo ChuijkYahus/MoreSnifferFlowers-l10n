@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.blocks;
 
+import com.mojang.serialization.MapCodec;
 import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
@@ -27,10 +28,17 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class TorchewflowerBlock extends BushBlock implements ModCropBlock {
+    public static final MapCodec<TorchewflowerBlock> CODEC = simpleCodec(TorchewflowerBlock::new);
     public TorchewflowerBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(defaultBlockState().setValue(getAgeProperty(), 0));
     }
+
+    @Override
+    protected MapCodec<? extends BushBlock> codec() {
+        return CODEC;
+    }
+
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(getAgeProperty());
@@ -59,19 +67,19 @@ public class TorchewflowerBlock extends BushBlock implements ModCropBlock {
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         super.entityInside(state, level, pos, entity);
         if (getAge(state) == 2 && entity instanceof LivingEntity livingEntity) {
-            livingEntity.addEffect(new MobEffectInstance(ModEffects.GLUED.get(), 100, 0));
+            livingEntity.addEffect(new MobEffectInstance(ModEffects.GLUED, 100, 0));
             level.setBlock(pos, state.setValue(getAgeProperty(), getMaxAge()), 3);
         }
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (isMaxAge(state)){
             popResource(level, pos, ModItems.SWEET_SPICE.get().getDefaultInstance());
             level.setBlock(pos, state.setValue(getAgeProperty(), 0), 3);
             return InteractionResult.SUCCESS;
         }
-        return super.use(state, level, pos, player, hand, hit);
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override
@@ -81,7 +89,7 @@ public class TorchewflowerBlock extends BushBlock implements ModCropBlock {
     }
 
     @Override
-    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, boolean isClient) {
+    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state) {
         int age = getAge(state);
         return age < 2;
     }

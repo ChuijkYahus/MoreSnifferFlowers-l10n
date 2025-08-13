@@ -1,44 +1,46 @@
 package net.abraxator.moresnifferflowers.networking.toClient;
 
-import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import io.netty.buffer.ByteBuf;
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.client.ClientRegistration;
+import net.abraxator.moresnifferflowers.networking.IMSFPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.ChunkPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
+import java.util.Map;
 
-public record SyncBlockPatternsPacket(CompoundTag tag, ChunkPos pos) {
+public record SyncBlockPatternsPacket(BlockPatternCapability patterns, BlockPos pos) implements IMSFPacket {
+    public static final CustomPacketPayload.Type<SyncBlockPatternsPacket> TYPE = new CustomPacketPayload.Type<>(MoreSnifferFlowers.loc("block_patterns"));
+    public static final StreamCodec<ByteBuf, SyncBlockPatternsPacket> STREAM_CODEC = StreamCodec.composite(
+            BlockPatternCapability.STREAM_CODEC, SyncBlockPatternsPacket::patterns,
+            BlockPos.STREAM_CODEC, SyncBlockPatternsPacket::pos,
+            SyncBlockPatternsPacket::new
+    );
 
-    public static void encode(SyncBlockPatternsPacket msg, FriendlyByteBuf buf) {
-        buf.writeNbt(msg.tag);
-        buf.writeChunkPos(msg.pos);
+
+    @Override
+    public void handle(IPayloadContext context) {
+        context.enqueueWork(() ->{
+/*
+            Level level = Minecraft.getInstance().level;
+            LevelChunk chunk = level.getChunkSource().getChunk(pos.x, pos.z, false);
+            if(chunk != null) {
+                chunk.getCapability(CapabilityList.BLOCK_PATTERNS).ifPresent(blockPatternCapability -> blockPatternCapability.load(tag));
+                ClientRegistration.getBlockPatternRenderer().markDirty();
+            }
+*/
+
+        });
     }
 
-    public static SyncBlockPatternsPacket decode(FriendlyByteBuf buf) {
-        return new SyncBlockPatternsPacket(buf.readNbt(), buf.readChunkPos());
-    }
-
-    public static void handle(SyncBlockPatternsPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        NetworkEvent.Context context = ctx.get();
-        context.enqueueWork(() -> handlePacket(msg));
-        context.setPacketHandled(true);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void handlePacket(SyncBlockPatternsPacket msg) {
-        Level level = Minecraft.getInstance().level;
-        ChunkPos chunkPos = msg.pos;
-        LevelChunk chunk = level.getChunkSource().getChunk(chunkPos.x, chunkPos.z, false);
-        if(chunk != null) {
-            chunk.getCapability(CapabilityList.BLOCK_PATTERNS).ifPresent(blockPatternCapability -> blockPatternCapability.load(msg.tag));
-            ClientRegistration.getBlockPatternRenderer().markDirty();
-        }
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

@@ -1,10 +1,13 @@
 package net.abraxator.moresnifferflowers.components;
 
 import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.Level;
@@ -24,6 +27,7 @@ public enum PatternspriaMode implements StringRepresentable {
 
     public static final Codec<PatternspriaMode> CODEC = StringRepresentable.fromEnum(PatternspriaMode::values);
     public static final IntFunction<PatternspriaMode> BY_ID = ByIdMap.continuous(PatternspriaMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    public static final StreamCodec<ByteBuf, PatternspriaMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, Enum::ordinal);
 
     private final String name;
     private final Function<PatternspriaMode.DyespriaSelector, Set<BlockPos>> selector;

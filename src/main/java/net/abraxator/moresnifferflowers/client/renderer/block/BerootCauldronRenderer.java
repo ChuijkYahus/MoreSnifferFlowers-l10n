@@ -84,7 +84,7 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> impleme
             if (soupCount > 0) {
                 poseStack.scale(1 + soupScale, 1, 1 + soupScale);
                 poseStack.translate(-soupScale * 0.565, 0, soupScale * 0.565);
-                renderFace(matrix4f, matrix3f, buffer.getBuffer(RenderType.cutoutMipped()),
+                renderFace(matrix4f, pose, buffer.getBuffer(RenderType.cutoutMipped()),
                         r, g, b, 1F,
                         minX, maxX, y, minZ, maxZ, packedLight, blockEntity.isCrafted);
             }
@@ -142,16 +142,16 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> impleme
         if (!isItems) poseStack.mulPose(Axis.XN.rotationDegrees(90));
     }
 
-    private void renderFace(Matrix4f pose, Matrix3f normal, VertexConsumer consumer, float red, float green, float blue, float alpha, float x0, float x1, float y, float z0, float z1, int light, boolean isCrafted) {
+    private void renderFace(Matrix4f pose, PoseStack.Pose normal, VertexConsumer consumer, float red, float green, float blue, float alpha, float x0, float x1, float y, float z0, float z1, int light, boolean isCrafted) {
 
         String name = isCrafted ? "beroot_soup1" : "beroot_soup";
         ResourceLocation resourceLocation = MoreSnifferFlowers.loc("block/" + name);
         TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(resourceLocation);
 
-        consumer.vertex(pose, x1, y, z0).color(red, green, blue, alpha).uv(sprite.getU0(), sprite.getV0()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-        consumer.vertex(pose, x1, y, z1).color(red, green, blue, alpha).uv(sprite.getU0(), sprite.getV1()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-        consumer.vertex(pose, x0, y, z1).color(red, green, blue, alpha).uv(sprite.getU1(), sprite.getV1()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-        consumer.vertex(pose, x0, y, z0).color(red, green, blue, alpha).uv(sprite.getU1(), sprite.getV0()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+        consumer.addVertex(pose, x1, y, z0).setColor(red, green, blue, alpha).setUv(sprite.getU0(), sprite.getV0()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal, 0.0F, 1.0F, 0.0F);
+        consumer.addVertex(pose, x1, y, z1).setColor(red, green, blue, alpha).setUv(sprite.getU0(), sprite.getV1()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal, 0.0F, 1.0F, 0.0F);
+        consumer.addVertex(pose, x0, y, z1).setColor(red, green, blue, alpha).setUv(sprite.getU1(), sprite.getV1()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal, 0.0F, 1.0F, 0.0F);
+        consumer.addVertex(pose, x0, y, z0).setColor(red, green, blue, alpha).setUv(sprite.getU1(), sprite.getV0()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal, 0.0F, 1.0F, 0.0F);
     }
 
     @Override

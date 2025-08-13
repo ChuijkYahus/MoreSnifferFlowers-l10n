@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @Mixin(ServerGamePacketListenerImpl.class)
 public abstract class ShutUpWarnsMixin implements ServerPlayerConnection, TickablePacketListener, ServerGamePacketListener {
 
-    @ModifyVariable(method = "handleUseItemOn", at = @At(value = "STORE"), ordinal = 2)
+    @ModifyVariable(method = "handleUseItemOn", at = @At(value = "STORE"), ordinal = 1)
     public Vec3 useAllower(Vec3 vec3, @Local ServerLevel level, @Local BlockPos pos) {
         if(level.getBlockEntity(pos) instanceof MultiBlockEntity){
             return new Vec3(0, 0 , 0);

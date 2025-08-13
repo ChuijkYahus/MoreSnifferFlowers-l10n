@@ -144,7 +144,7 @@ public class VivicusSproutingBlock extends Block implements ModCropBlock, Colora
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         return cloneItemStackHelper(state, super.getCloneItemStack(level, pos, state));
     }
 }

@@ -87,19 +87,9 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 		}
 	}
 
-
-	@Override
-	public boolean shouldRenderOffScreen(T pBlockEntity) {
-		return true;
-	}
-
 	@Override
 	public int getViewDistance() {
 		return 256;
-	}
-
-	public boolean shouldRender(T pBlockEntity, Vec3 pCameraPos) {
-		return true;
 	}
 
 	@Override

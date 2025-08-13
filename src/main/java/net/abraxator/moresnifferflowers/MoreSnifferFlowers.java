@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.FlowerPotBlock;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -60,15 +61,10 @@ public class MoreSnifferFlowers {
         ModTreeDecoratorTypes.DECORATORS.register(modEventBus);
         ModStructureTypes.STRUCTURE_PIECE.register(modEventBus);
         ModDataComponents.DATA_COMPONENTS.register(modEventBus);
+        ModDataAttachments.ATTACHMENT_TYPES.register(modEventBus);
         ModEntityDataSerializers.SERIALIZERS.register(modEventBus);
         ModRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
 
-        modEventBus.addListener(CapabilityList::registerCapabilities);
-
-        if(ModList.get().isLoaded("quark")) {
-            MinecraftForge.EVENT_BUS.addListener(OtherModEvents::onSimpleHarvest);
-        }
-        
         ModPacketHandler.register(modEventBus, 1);
     }
     
@@ -126,21 +122,12 @@ public class MoreSnifferFlowers {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 
-
     public static ResourceLocation vanillaLoc(String path) {
         return ResourceLocation.withDefaultNamespace(path);
     }
 
     public static ResourceLocation ofLoc(String path) {
         return ResourceLocation.bySeparator(path, ':');
-    }
-
-    public static ResourceLocation vanillaLoc(String path) {
-        return new ResourceLocation("minecraft", path);
-    }
-
-    public static ResourceLocation ofLoc(String path) {
-        return ResourceLocation.of(path, ':');
     }
 
     public static String sLoc(String path) {

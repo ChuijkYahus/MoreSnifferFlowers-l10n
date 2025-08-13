@@ -1,6 +1,9 @@
 package net.abraxator.moresnifferflowers.capability;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.networking.toClient.SyncSlipperyPacket;
 import net.minecraft.core.Direction;
@@ -14,25 +17,39 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class SlipperyCapability implements ICapabilityProvider, INBTSerializable<CompoundTag> {
-    public static final UUID ATTRIBUTE_ID = UUID.fromString("41DD0153-E92A-B00B-9800-EFFEC5511BB1");
-    private final LazyOptional<SlipperyCapability> optional = LazyOptional.of(() -> this);
+public class SlipperyCapability{
     public static final ResourceLocation ID = MoreSnifferFlowers.loc("slippery");
+
     public float lastYaw = 0;
     public float lastSpeed = 0;
     public boolean isFallen = false;
     public int fallenTicks = 0;
     public int maxFallenTicks = 0;
+
+    public static final Codec<SlipperyCapability> CODEC =
+            RecordCodecBuilder.create(instance -> instance.group(
+                    Codec.FLOAT.fieldOf("lastYaw").forGetter(data -> data.lastYaw),
+                    Codec.FLOAT.fieldOf("lastSpeed").forGetter(data -> data.lastSpeed),
+                    Codec.BOOL.fieldOf("isFallen").forGetter(data -> data.isFallen),
+                    Codec.INT.fieldOf("fallenTicks").forGetter(data -> data.fallenTicks),
+                    Codec.INT.fieldOf("maxFallenTicks").forGetter(data -> data.maxFallenTicks)
+            ).apply(instance, (a,b,c,d,e) -> {
+                SlipperyCapability cap =  new SlipperyCapability();
+                cap.lastYaw = a;
+                cap.lastSpeed = b;
+                cap.isFallen = c;
+                cap.fallenTicks = d;
+                cap.maxFallenTicks = e;
+                return cap;
+            }));
 
 
     public void onEffectEnd(Player player) {
@@ -79,8 +96,8 @@ public class SlipperyCapability implements ICapabilityProvider, INBTSerializable
         maxFallenTicks = 30 + amplifier * 10;
         fallenTicks = maxFallenTicks;
 
-        player.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(ATTRIBUTE_ID);
-        AttributeModifier mod = new AttributeModifier(ATTRIBUTE_ID, "slippery", -100, AttributeModifier.Operation.ADDITION);
+        player.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(ID);
+        AttributeModifier mod = new AttributeModifier(ID, -100, AttributeModifier.Operation.ADD_VALUE);
         player.getAttribute(Attributes.MOVEMENT_SPEED).addTransientModifier(mod);
 
         player.level().playSound(null, player.blockPosition(), SoundEvents.SLIME_SQUISH, SoundSource.PLAYERS, 1f, 1f);
@@ -92,7 +109,7 @@ public class SlipperyCapability implements ICapabilityProvider, INBTSerializable
         fallenTicks = 0;
         isFallen = false;
 
-        player.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(ATTRIBUTE_ID);
+        player.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(ID);
         player.setForcedPose(null);
        if (!player.level().isClientSide) sync(player);
     }
@@ -100,35 +117,10 @@ public class SlipperyCapability implements ICapabilityProvider, INBTSerializable
 
 
     public void sync(Player player){
-        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(),new SyncSlipperyPacket(isFallen, player.getId(), fallenTicks, maxFallenTicks));
+       // PacketDistributor.sendToAllPlayers(SyncSlipperyPacket(isFallen, player.getId(), fallenTicks, maxFallenTicks));
     }
 
     public static SlipperyCapability get(Player player) {
-       return player.getCapability(CapabilityList.SLIPPERY).orElseThrow(IllegalStateException::new);
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        return CapabilityList.SLIPPERY.orEmpty(cap, optional.cast());
-    }
-
-    @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        tag.putFloat("lastYaw", lastYaw);
-        tag.putFloat("lastSpeed", lastSpeed);
-        tag.putBoolean("isFallen", isFallen);
-        tag.putInt("fallenTicks", fallenTicks);
-        tag.putInt("maxFallenTicks", maxFallenTicks);
-        return tag;
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        lastYaw = nbt.getFloat("lastYaw");
-        lastSpeed = nbt.getFloat("lastSpeed");
-        isFallen = nbt.getBoolean("isFallen");
-        fallenTicks = nbt.getInt("fallenTicks");
-        maxFallenTicks = nbt.getInt("maxFallenTicks");
+       return player.getData(ModDataAttachments.SLIPPERY);
     }
 }

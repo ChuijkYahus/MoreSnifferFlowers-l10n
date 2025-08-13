@@ -137,7 +137,7 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
                     if (isBondripable(pLevel, currentPos)) {
                         BlockState blockState = pLevel.getBlockState(currentPos);
 
-                        if (blockState.getBlock() instanceof BonemealableBlock bonemealable && bonemealable.isValidBonemealTarget(pLevel, currentPos, blockState, false)) {
+                        if (blockState.getBlock() instanceof BonemealableBlock bonemealable && bonemealable.isValidBonemealTarget(pLevel, currentPos, blockState)) {
                             bonemealable.performBonemeal(pLevel, pRandom, currentPos, blockState);
                             break;
                         }
@@ -200,8 +200,8 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
     }
     
     @Override
-    public boolean isValidBonemealTarget(LevelReader pLevel, BlockPos pPos, BlockState pState, boolean pIsClient) {
-        return !isMaxAge(pState);
+    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state) {
+        return !isMaxAge(state);
     }
 
     @Override

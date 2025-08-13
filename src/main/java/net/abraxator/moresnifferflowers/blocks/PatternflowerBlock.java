@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.components.BlockPattern;
+import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
@@ -89,12 +90,12 @@ public class PatternflowerBlock extends Block implements BonemealableBlock, ModC
     }
 
     @Override
-    public boolean isValidBonemealTarget(LevelReader pLevel, BlockPos pPos, BlockState pState, boolean pIsClient) {
-        Optional<BlockPos> highestPos = highestPos(pLevel, pPos, true);
+    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state) {
+        Optional<BlockPos> highestPos = highestPos(level, pos, true);
 
         if(highestPos.isPresent()) {
-            BlockState blockState = pLevel.getBlockState(highestPos.get());
-            return pLevel.getBlockState(highestPos.get().above()).is(Blocks.AIR) || (blockState.hasProperty(getAgeProperty()) && !isMaxAge(blockState));
+            BlockState blockState = level.getBlockState(highestPos.get());
+            return level.getBlockState(highestPos.get().above()).is(Blocks.AIR) || (blockState.hasProperty(getAgeProperty()) && !isMaxAge(blockState));
         }
 
         return false;
@@ -131,9 +132,9 @@ public class PatternflowerBlock extends Block implements BonemealableBlock, ModC
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+    protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
         if (harvestable(pState)) {
-            popResource(pLevel, pPos, BlockPattern.fromState(pState).getItem().getDefaultInstance());
+            popResource(pLevel, pPos, Dye.stackFromDye(new Dye(pState.getValue(COLOR), 1)));
             pLevel.playSound(
                     null, pPos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + pLevel.random.nextFloat() * 0.4F
             );
@@ -142,7 +143,7 @@ public class PatternflowerBlock extends Block implements BonemealableBlock, ModC
             pLevel.gameEvent(GameEvent.BLOCK_CHANGE, pPos, GameEvent.Context.of(pPlayer, blockstate));
             return InteractionResult.sidedSuccess(pLevel.isClientSide);
         } else {
-            return super.use(pState, pLevel, pPos, pPlayer, pHand, pHit);
+            return super.useWithoutItem(pState, pLevel, pPos, pPlayer, pHitResult);
         }
     }
 

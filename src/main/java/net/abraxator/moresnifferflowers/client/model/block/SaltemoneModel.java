@@ -45,14 +45,13 @@ public class SaltemoneModel extends EntityModel {
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        root.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-    }
-
     @Override
     public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
+    }
+
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+        root.render(poseStack, buffer, packedLight, packedOverlay, color);
     }
 }

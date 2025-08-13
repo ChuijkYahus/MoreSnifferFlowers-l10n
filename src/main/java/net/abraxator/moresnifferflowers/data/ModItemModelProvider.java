@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.data;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItemProperties;
 import net.abraxator.moresnifferflowers.init.ModItemProperties.*;
 import net.abraxator.moresnifferflowers.init.ModItems;

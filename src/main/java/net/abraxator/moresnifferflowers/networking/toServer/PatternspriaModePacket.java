@@ -1,29 +1,28 @@
 package net.abraxator.moresnifferflowers.networking.toServer;
 
 import net.abraxator.moresnifferflowers.items.PatternspriaItem;
+import net.abraxator.moresnifferflowers.networking.IMSFPacket;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.function.Supplier;
 
-public record PatternspriaModePacket(int amount) {
-    public PatternspriaModePacket(FriendlyByteBuf buf) {
-        this(buf.readInt());
-    }
-
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeInt(amount);
-    }
-
-    // Im not making a new interface until theres at least 3
-    public static void handle(PatternspriaModePacket packet, Supplier<NetworkEvent.Context> context) {
-        NetworkEvent.Context ctx = context.get();
-        ctx.enqueueWork(() -> {
-            var player = ctx.getSender();
+public record PatternspriaModePacket(int amount) implements IMSFPacket {
+    @Override
+    public void handle(IPayloadContext context) {
+        context.enqueueWork(() ->{
+            var player = context.player();
             var stack = player.getMainHandItem();
             if(stack.getItem() instanceof PatternspriaItem dyespriaItem) {
-                dyespriaItem.changeMode(player, stack, packet.amount);
+                dyespriaItem.changeMode((ServerPlayer) player, stack, amount);
             }
         });
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return null;
     }
 }

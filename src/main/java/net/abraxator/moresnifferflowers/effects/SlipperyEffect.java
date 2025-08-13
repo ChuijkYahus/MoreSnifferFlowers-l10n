@@ -1,6 +1,6 @@
 package net.abraxator.moresnifferflowers.effects;
 
-import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,14 +12,14 @@ public class SlipperyEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
         if (livingEntity instanceof Player player)
-            player.getCapability(CapabilityList.SLIPPERY).ifPresent(cap -> cap.tick(player, amplifier));
-
+            player.getData(ModDataAttachments.SLIPPERY.get()).tick(player, amplifier);
+        return true;
     }
 
     @Override
-    public boolean isDurationEffectTick(int duration, int amplifier) {
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return true;
     }
 }

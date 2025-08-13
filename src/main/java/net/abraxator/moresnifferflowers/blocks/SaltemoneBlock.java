@@ -24,7 +24,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
@@ -64,7 +64,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
     @Override
     public Stream<BlockPos> fullBlockShape(Direction direction, BlockPos center) {
         BlockPos relative = center.relative(direction).relative(direction.getClockWise());
-        return BlockPos.betweenClosedStream(new AABB(center, relative));
+        return BlockPos.betweenClosedStream(new AABB(center.getCenter(), relative.getCenter()));
     }
 
 
@@ -74,8 +74,8 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
     }
 
     @Override
-    public boolean isValidBonemealTarget(LevelReader pLevel, BlockPos pPos, BlockState pState, boolean pIsClient) {
-        return !isMaxAge(pState);
+    public boolean isValidBonemealTarget(LevelReader levelReader, BlockPos blockPos, BlockState blockState) {
+        return !isMaxAge(blockState);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
 
                 level.addFreshEntity(projectile);
 
-                ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new SaltemoneParticlePacket(vec3.toVector3f()));
+                PacketDistributor.sendToAllPlayers( new SaltemoneParticlePacket(vec3.toVector3f()));
 
             } else {
                 growHelper(level, pos, state);

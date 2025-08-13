@@ -10,6 +10,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -105,19 +106,18 @@ public class SaltyClumpBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        ItemStack itemStack = pPlayer.getItemInHand(pHand);
-        int amount = pState.getValue(ModStateProperties.AMOUNT_4);
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        int amount = state.getValue(ModStateProperties.AMOUNT_4);
 
-        if (amount < 4 && itemStack.is(ModItems.SALTY_SPICE.get())){
-            pLevel.setBlock(pPos, pState.setValue(ModStateProperties.AMOUNT_4, amount + 1), 3);
+        if (amount < 4 && stack.is(ModItems.SALTY_SPICE.get())){
+            level.setBlock(pos, state.setValue(ModStateProperties.AMOUNT_4, amount + 1), 3);
 
-        } else if (amount == 4 && itemStack.is(ModItems.SALTY_SPICE.get())){
-            pLevel.setBlock(pPos, ModBlocks.DRIPSALT.get().defaultBlockState(), 3);
+        } else if (amount == 4 && stack.is(ModItems.SALTY_SPICE.get())){
+            level.setBlock(pos, ModBlocks.DRIPSALT.get().defaultBlockState(), 3);
 
-        } else return InteractionResult.PASS;
+        } else return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-        if (!pPlayer.isCreative()) itemStack.shrink(1);
-        return InteractionResult.SUCCESS;
+        if (!player.isCreative()) stack.shrink(1);
+        return ItemInteractionResult.SUCCESS;
     }
 }

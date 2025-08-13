@@ -6,8 +6,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
-import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.components.BlockPattern;
+import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.lighting.QuadLighter;
+import net.neoforged.neoforge.client.model.lighting.QuadLighter;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -55,9 +55,9 @@ public class BlockPatternRenderer {
         frustum.prepare(camX, camY, camZ);
 
         for (LevelChunk chunk : levelChunks) {
-            chunk.getCapability(CapabilityList.BLOCK_PATTERNS).ifPresent(storage -> {
+            BlockPatternCapability storage = chunk.getData(ModDataAttachments.BLOCK_PATTERNS);
 
-                Stream<BlockPos> patternPositions = storage.patterns.keySet().stream();
+                Stream<BlockPos> patternPositions = storage.patterns().keySet().stream();
 
                 patternPositions.forEach(pos -> {
                     BlockPatternCapability.PatternData data = storage.getPattern(pos);
@@ -76,7 +76,7 @@ public class BlockPatternRenderer {
 
                                 if (smoothLighting) {
                                     ModelBlockRenderer.AmbientOcclusionFace aoFace = new ModelBlockRenderer.AmbientOcclusionFace();
-                                    aoFace.calculate(level, state, pos.relative(dir), dir, new float[Direction.values().length * 2], new BitSet(3), true);
+                                aoFace.calculate(level, state, pos.relative(dir), dir, new float[Direction.values().length * 2], new BitSet(3), true);
                                     brightness = aoFace.brightness;
                                     lightmap = aoFace.lightmap;
 
@@ -91,7 +91,6 @@ public class BlockPatternRenderer {
                         }
                     }
                 });
-            });
         }
     }
 
@@ -127,7 +126,6 @@ public class BlockPatternRenderer {
             }
 
             Matrix4f pose = poseStack.last().pose();
-            Matrix3f normal = poseStack.last().normal();
 
             /*  if (direction == Direction.UP) {
                    r = 1F;
@@ -193,10 +191,10 @@ public class BlockPatternRenderer {
                 lightmap[3] = LightTexture.FULL_BRIGHT;
             }
 
-            buffer.vertex(pose, 1, 0, 0).color(r * brightness0, g * brightness0, b * brightness0, 1f).uv(u1, v2).uv2(lightmap[0]).normal(normal, nx, ny, nz).endVertex();
-            buffer.vertex(pose, 1, 0, 1).color(r * brightness1, g * brightness1, b * brightness1, 1f).uv(u2, v1).uv2(lightmap[1]).normal(normal, nx, ny, nz).endVertex();
-            buffer.vertex(pose, 0, 0, 1).color(r * brightness2, g * brightness2, b * brightness2, 1f).uv(u3, v0).uv2(lightmap[2]).normal(normal, nx, ny, nz).endVertex();
-            buffer.vertex(pose, 0, 0, 0).color(r * brightness3, g * brightness3, b * brightness3, 1f).uv(u0, v3).uv2(lightmap[3]).normal(normal, nx, ny, nz).endVertex();
+            buffer.addVertex(pose, 1, 0, 0).setColor(r * brightness0, g * brightness0, b * brightness0, 1f).setUv(u1, v2).setLight(lightmap[0]).setNormal(poseStack.last(), nx, ny, nz);
+            buffer.addVertex(pose, 1, 0, 1).setColor(r * brightness1, g * brightness1, b * brightness1, 1f).setUv(u2, v1).setLight(lightmap[1]).setNormal(poseStack.last(), nx, ny, nz);
+            buffer.addVertex(pose, 0, 0, 1).setColor(r * brightness2, g * brightness2, b * brightness2, 1f).setUv(u3, v0).setLight(lightmap[2]).setNormal(poseStack.last(), nx, ny, nz);
+            buffer.addVertex(pose, 0, 0, 0).setColor(r * brightness3, g * brightness3, b * brightness3, 1f).setUv(u0, v3).setLight(lightmap[3]).setNormal(poseStack.last(), nx, ny, nz);
 
             poseStack.popPose();
         }
@@ -295,6 +293,8 @@ public class BlockPatternRenderer {
             float deltaYaw = Math.abs(yaw - lastYaw);
             float deltaPitch = Math.abs(pitch - lastPitch);
 
+            update(camera);
+
             return distSq > MOVE_THRESHOLD * MOVE_THRESHOLD ||
                     deltaYaw > ROTATE_THRESHOLD ||
                     deltaPitch > ROTATE_THRESHOLD;
@@ -305,10 +305,5 @@ public class BlockPatternRenderer {
             this.lastYaw = camera.getYRot();
             this.lastPitch = camera.getXRot();
         }
-    }
-
-    public interface AmbientOcclusionFaceAccessor {
-        float[] moreSnifferFlowers$getBrightness();
-        int[] moreSnifferFlowers$getLightmap();
     }
 }

@@ -55,10 +55,7 @@ public class DyescrapiaItem extends BlockItem {
                     uses = 0;
                 }
                 BlockPatternCapability.removePattern(pos, level);
-
-                CompoundTag tag = stack.getOrCreateTag();
-                tag.putInt("uses", uses);
-                stack.setTag(tag);
+                stack.set(ModDataComponents.USES, uses);
 
             }
             return InteractionResult.sidedSuccess(level.isClientSide);
@@ -74,7 +71,7 @@ public class DyescrapiaItem extends BlockItem {
                     uses = 0;
                 }
 
-                stack.set(ModDataComponents.DYESPRIA_USES, uses);
+                stack.set(ModDataComponents.COLOR, uses);
                 return InteractionResult.sidedSuccess(level.isClientSide);
             }            
         } else if (state.is(ModTags.ModBlockTags.DYED)){
@@ -120,7 +117,7 @@ public class DyescrapiaItem extends BlockItem {
                     uses = 0;
                 }
 
-                stack.set(ModDataComponents.DYESPRIA_USES, uses);
+                stack.set(ModDataComponents.COLOR, uses);
                 return InteractionResult.sidedSuccess(level.isClientSide);
 
             } else return InteractionResult.FAIL;
@@ -163,7 +160,7 @@ public class DyescrapiaItem extends BlockItem {
     }
 
     public static int getDyescrapiaUses(ItemStack stack) {
-        return stack.getOrDefault(ModDataComponents.DYESPRIA_USES, 0);
+        return stack.getOrDefault(ModDataComponents.COLOR, 0);
     }
 
     @Override

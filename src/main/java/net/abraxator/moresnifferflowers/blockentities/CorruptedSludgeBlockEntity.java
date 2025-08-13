@@ -7,7 +7,7 @@ import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.ModTags;
 import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
-import net.abraxator.moresnifferflowers.networking.CorruptedSludgePacket;
+import net.abraxator.moresnifferflowers.networking.toClient.CorruptedSludgePacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;

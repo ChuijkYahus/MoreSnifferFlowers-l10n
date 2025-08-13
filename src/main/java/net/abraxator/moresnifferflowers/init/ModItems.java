@@ -63,7 +63,7 @@ public class ModItems {
 
     public static final DeferredItem<Item> ACIDRIPIA_SEEDS = ITEMS.register("acidripia_seeds", () -> new ItemNameBlockItem(ModBlocks.ACIDRIPIA.get(), new Item.Properties()));
 
-    public static final DeferredItem<Item> CROPRESSOR = ITEMS.register("cropressor", () -> new CropressorItem(ModBlocks.CROPRESSOR_OUT.get(), new Item.Properties()));
+    public static final DeferredItem<Item> CROPRESSOR = ITEMS.register("cropressor", () -> new BlockItem(ModBlocks.CROPRESSOR_OUT.get(), new Item.Properties()));
     public static final DeferredItem<Item> TUBE_PIECE = ITEMS.register("tube_piece", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> BELT_PIECE = ITEMS.register("belt_piece", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> SCRAP_PIECE = ITEMS.register("scrap_piece", () -> new Item(new Item.Properties()));
@@ -114,44 +114,44 @@ public class ModItems {
     public static final DeferredItem<Item> BOBLING_SPAWN_EGG = ITEMS.register("bobling_spawn_egg", () -> new DeferredSpawnEggItem(ModEntityTypes.BOBLING, 0x312f35, 0xa55f85, new Item.Properties()));
 
     public static final DeferredItem<Item> CAULORFLOWER_SEEDS = ITEMS.register("caulorflower_seeds", () -> new ItemNameBlockItem(ModBlocks.CAULORFLOWER.get(), new Item.Properties()));
-    public static final RegistryObject<Item> PATTERNFLOWER_SEEDS = ITEMS.register("patternflower_seeds", () -> new ItemNameBlockItem(ModBlocks.PATTERNFLOWER.get(), new Item.Properties()));
-    public static final RegistryObject<Item> PATTERNSPRIA = ITEMS.register("patternspria", () -> new PatternspriaItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> PATTERNFLOWER_SEEDS = ITEMS.register("patternflower_seeds", () -> new ItemNameBlockItem(ModBlocks.PATTERNFLOWER.get(), new Item.Properties()));
+    public static final DeferredItem<Item> PATTERNSPRIA = ITEMS.register("patternspria", () -> new PatternspriaItem(new Item.Properties().stacksTo(1)));
 
-    public static final RegistryObject<Item> BLOCK_PATTERN_PIPES = ITEMS.register("block_pattern_pipes", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_BRICKS = ITEMS.register("block_pattern_bricks", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_FOCUS = ITEMS.register("block_pattern_focus", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_BUBBLES = ITEMS.register("block_pattern_bubbles", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_CLOUDS = ITEMS.register("block_pattern_clouds", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_DEEPSLATE = ITEMS.register("block_pattern_deepslate", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_DIAMOND = ITEMS.register("block_pattern_diamond", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_EYE = ITEMS.register("block_pattern_eye", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_HEARTS = ITEMS.register("block_pattern_hearts", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_HONEYCOMB = ITEMS.register("block_pattern_honeycomb", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_PAWS = ITEMS.register("block_pattern_paws", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_PRISMARINE = ITEMS.register("block_pattern_prismarine", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_SPROUTS = ITEMS.register("block_pattern_sprouts", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_STARS = ITEMS.register("block_pattern_stars", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_COVER = ITEMS.register("block_pattern_cover", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> BLOCK_PATTERN_FLOWERS = ITEMS.register("block_pattern_flowers", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_PIPES = ITEMS.register("block_pattern_pipes", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_BRICKS = ITEMS.register("block_pattern_bricks", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_FOCUS = ITEMS.register("block_pattern_focus", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_BUBBLES = ITEMS.register("block_pattern_bubbles", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_CLOUDS = ITEMS.register("block_pattern_clouds", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_DEEPSLATE = ITEMS.register("block_pattern_deepslate", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_DIAMOND = ITEMS.register("block_pattern_diamond", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_EYE = ITEMS.register("block_pattern_eye", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_HEARTS = ITEMS.register("block_pattern_hearts", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_HONEYCOMB = ITEMS.register("block_pattern_honeycomb", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_PAWS = ITEMS.register("block_pattern_paws", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_PRISMARINE = ITEMS.register("block_pattern_prismarine", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_SPROUTS = ITEMS.register("block_pattern_sprouts", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_STARS = ITEMS.register("block_pattern_stars", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_COVER = ITEMS.register("block_pattern_cover", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BLOCK_PATTERN_FLOWERS = ITEMS.register("block_pattern_flowers", () -> new Item(new Item.Properties()));
 
-    public static final RegistryObject<Item> BEROOT_CAULDRON = ITEMS.register("beroot_cauldron", () -> new BlockItem(ModBlocks.BEROOT_CAULDRON.get(), new Item.Properties()));
+    public static final DeferredItem<Item> BEROOT_CAULDRON = ITEMS.register("beroot_cauldron", () -> new BlockItem(ModBlocks.BEROOT_CAULDRON.get(), new Item.Properties()));
 
-    public static final RegistryObject<Item> ROOTED_SOUP = ITEMS.register("rooted_soup", () -> new RootedSoupItem(new Item.Properties().stacksTo(1)));
-    public static final RegistryObject<Item> BEROOT_COOK_BOOK = ITEMS.register("beroot_cook_book", () -> new BerootCookbookItem(new Item.Properties().stacksTo(1)));
-    public static final RegistryObject<Item> FLAVORFUL_ROOTS = ITEMS.register("flavorful_roots", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> ROOTED_SOUP = ITEMS.register("rooted_soup", () -> new RootedSoupItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> BEROOT_COOK_BOOK = ITEMS.register("beroot_cook_book", () -> new BerootCookbookItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> FLAVORFUL_ROOTS = ITEMS.register("flavorful_roots", () -> new Item(new Item.Properties()));
 
-    public static final RegistryObject<Item> SALTEMONE_SEEDS = ITEMS.register("saltemone_seeds", () -> new SaltemoneSeedsItem(ModBlocks.SALTEMONE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> SOURLEMONE_SEEDS = ITEMS.register("sourlemone_seeds", () -> new SaltemoneSeedsItem(ModBlocks.SOURLEMONE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> SALTY_SPICE = ITEMS.register("salty_spice", () -> new SaltySpiceItem(ModBlocks.SALTY_CLUMP.get(), new Item.Properties()));
-    public static final RegistryObject<Item> SOUR_SPICE = ITEMS.register("sour_spice", () -> new SourSpiceItem(ModBlocks.SOUR_PUDDLE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> FIERY_SPICE = ITEMS.register("fiery_spice", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> SWEET_SPICE = ITEMS.register("sweet_spice", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> SALTEMONE_SEEDS = ITEMS.register("saltemone_seeds", () -> new SaltemoneSeedsItem(ModBlocks.SALTEMONE.get(), new Item.Properties()));
+    public static final DeferredItem<Item> SOURLEMONE_SEEDS = ITEMS.register("sourlemone_seeds", () -> new SaltemoneSeedsItem(ModBlocks.SOURLEMONE.get(), new Item.Properties()));
+    public static final DeferredItem<Item> SALTY_SPICE = ITEMS.register("salty_spice", () -> new SaltySpiceItem(ModBlocks.SALTY_CLUMP.get(), new Item.Properties()));
+    public static final DeferredItem<Item> SOUR_SPICE = ITEMS.register("sour_spice", () -> new SourSpiceItem(ModBlocks.SOUR_PUDDLE.get(), new Item.Properties()));
+    public static final DeferredItem<Item> FIERY_SPICE = ITEMS.register("fiery_spice", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> SWEET_SPICE = ITEMS.register("sweet_spice", () -> new Item(new Item.Properties()));
 
-    public static final RegistryObject<Item> DRIPSALT = ITEMS.register("dripsalt", () -> new BlockItem(ModBlocks.DRIPSALT.get(), new Item.Properties()));
-    public static final RegistryObject<Item> BURNED_SLOT = ITEMS.register("burned_slot", () -> new BurnedSlotItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> DRIPSALT = ITEMS.register("dripsalt", () -> new BlockItem(ModBlocks.DRIPSALT.get(), new Item.Properties()));
+    public static final DeferredItem<Item> BURNED_SLOT = ITEMS.register("burned_slot", () -> new BurnedSlotItem(new Item.Properties().stacksTo(1)));
 
     public static final DeferredItem<Item> CREATIVE_TAB_ICON = ITEMS.register("creative_tab_icon", () -> new CreativeTabItem(new Item.Properties()));
     public static final DeferredItem<Item> WAND_OF_CUBING = ITEMS.register("wand_of_cubing", () -> new WandOfCubingItem(new Item.Properties()));
-    public static final RegistryObject<Item> DEBUG_FLOWER = ITEMS.register("debug_flower", () -> new DebugFlowerItem(new Item.Properties()));
+    public static final DeferredItem<Item> DEBUG_FLOWER = ITEMS.register("debug_flower", () -> new DebugFlowerItem(new Item.Properties()));
 
 }

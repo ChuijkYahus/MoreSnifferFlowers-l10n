@@ -21,7 +21,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3f;
 
 public class SaltBubbleProjectile extends ThrowableItemProjectile {
@@ -60,7 +60,7 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
     public boolean hurt(DamageSource source, float amount) {
         boolean natural = true;
 
-        if (level() instanceof ServerLevel serverLevel && source.getEntity() instanceof Player && source.isIndirect()) {
+        if (level() instanceof ServerLevel serverLevel && source.getEntity() instanceof Player && !source.isDirect()) {
             int orbs = Mth.floor(height/2);
             if (orbs < 3) orbs = 3;
             int i = serverLevel.random.nextIntBetweenInclusive(2, orbs);
@@ -116,7 +116,7 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
             projectile.setCorrupted(isCorrupted());
             level().addFreshEntity(projectile);
             level().playSound(null, blockPosition(), SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, SoundSource.BLOCKS, 10.0F + random.nextFloat() * 3, 0.75f + random.nextFloat() / 2);
-            ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new SaltemoneParticlePacket(this.position().toVector3f()));
+            PacketDistributor.sendToAllPlayers(new SaltemoneParticlePacket(this.position().toVector3f()));
         }
         discard();
     }
@@ -131,10 +131,10 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CORRUPTED, false);
-        this.entityData.define(STATE, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CORRUPTED, false);
+        builder.define(STATE, 0);
 
     }
 

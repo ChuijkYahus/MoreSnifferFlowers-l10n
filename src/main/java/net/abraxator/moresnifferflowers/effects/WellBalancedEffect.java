@@ -10,12 +10,18 @@ public class WellBalancedEffect extends MobEffect {
         super(category, color);
     }
 
-    public void removeAttributeModifiers(LivingEntity livingEntity, AttributeMap attributeMap, int amplifier) {
+/*    @Override
+    public void removeAttributeModifiers(AttributeMap attributeMap) {
         super.removeAttributeModifiers(livingEntity, attributeMap, amplifier);
         if (livingEntity.getHealth() > livingEntity.getMaxHealth()) {
             livingEntity.setHealth(livingEntity.getMaxHealth());
         }
 
     }
+
+    @Override
+    public void removeAttributeModifiers(AttributeMap attributeMap) {
+        super.removeAttributeModifiers(attributeMap);
+    }*/
 
 }

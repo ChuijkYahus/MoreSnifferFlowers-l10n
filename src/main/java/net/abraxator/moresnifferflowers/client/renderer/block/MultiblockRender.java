@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.abraxator.moresnifferflowers.blockentities.ModBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
+import net.abraxator.moresnifferflowers.client.ModColorHandler;
 import net.abraxator.moresnifferflowers.components.PreviewState;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.minecraft.client.Minecraft;
@@ -51,27 +52,23 @@ public interface MultiblockRender {
     }
 
     default void render(ModelPart modelPart, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, PreviewState previewState) {
-        float r = 1f;
-        float g = 1f;
-        float b = 1f;
-        float alpha = 1f;
-
-        render(modelPart, poseStack, vertexConsumer, packedLight, packedOverlay, r, g, b, alpha, previewState);
+        render(modelPart, poseStack, vertexConsumer, packedLight, packedOverlay, 0xffffff, previewState);
     }
 
-    default void render(ModelPart modelPart, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float r, float g, float b, float alpha, PreviewState previewState) {
-
+    default void render(ModelPart modelPart, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color, PreviewState previewState) {
+        float alpha = 1f;
+        float[] rgb = ModColorHandler.hexToRGB(color);
         switch (previewState) {
             case PREVIEW -> alpha *= 0.5f;
 
             case INVALID -> {
-                r = 1f;
-                g *= 0.4f;
-                b *= 0.4f;
+                rgb[0] = 1f;
+                rgb[1] *= 0.4f;
+                rgb[2] *= 0.4f;
                 alpha *= 0.5f;
             }
         }
 
-        modelPart.render(poseStack, vertexConsumer, packedLight, packedOverlay, r, g, b, alpha);
+        modelPart.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
     }
 }

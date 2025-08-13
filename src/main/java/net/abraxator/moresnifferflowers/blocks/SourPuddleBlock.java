@@ -102,7 +102,7 @@ public class SourPuddleBlock extends Block {
         super.entityInside(state, level, pos, entity);
 
         if (!level.isClientSide && entity instanceof Player player){
-            player.addEffect(new MobEffectInstance(ModEffects.SLIPPERY.get(), 40, 5));
+            player.addEffect(new MobEffectInstance(ModEffects.SLIPPERY, 40, 5));
         }
     }
 

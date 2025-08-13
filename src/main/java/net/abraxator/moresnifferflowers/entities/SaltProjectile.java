@@ -63,7 +63,7 @@ public class SaltProjectile extends ThrowableItemProjectile {
     public boolean placeBlockSalt(BlockPos pos, BlockState state) {
         Level level = this.level();
         if (state.canBeReplaced()){
-            if (!ModBlocks.SALTY_CLUMP.get().canSurvive(state, level, pos)){
+            if (!ModBlocks.SALTY_CLUMP.get().defaultBlockState().canSurvive(level, pos)){
                 return true;
             }
             level.setBlock(pos, ModBlocks.SALTY_CLUMP.get().defaultBlockState().setValue(ModStateProperties.AMOUNT_4, 1), 2);
@@ -87,7 +87,7 @@ public class SaltProjectile extends ThrowableItemProjectile {
         if (loop > 2) return false;
 
         if (newState.canBeReplaced()) {
-            if (!ModBlocks.SOUR_PUDDLE.get().canSurvive(newState, level, pos)){
+            if (!ModBlocks.SOUR_PUDDLE.get().defaultBlockState().canSurvive(level, pos)){
                 return true;
             }
             level.setBlock(pos, ModBlocks.SOUR_PUDDLE.get().defaultBlockState(), 3);
@@ -141,9 +141,9 @@ public class SaltProjectile extends ThrowableItemProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CORRUPTED, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CORRUPTED, false);
 
     }
 

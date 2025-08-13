@@ -1,6 +1,5 @@
 package net.abraxator.moresnifferflowers.items;
 
-import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.client.ModColorHandler;
 import net.abraxator.moresnifferflowers.nutrition.NutritionType;
 import net.minecraft.nbt.CompoundTag;

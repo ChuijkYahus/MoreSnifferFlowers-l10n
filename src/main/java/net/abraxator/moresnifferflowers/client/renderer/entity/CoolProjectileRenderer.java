@@ -41,8 +41,7 @@ public abstract class CoolProjectileRenderer<T extends Entity> extends EntityRen
                 pPoseStack,
                 pBufferSource.getBuffer(model.renderType(location)),
                 pPackedLight,
-                OverlayTexture.NO_OVERLAY,
-                1, 1, 1, 1);
+                OverlayTexture.NO_OVERLAY);
         pPoseStack.popPose();
     }
 

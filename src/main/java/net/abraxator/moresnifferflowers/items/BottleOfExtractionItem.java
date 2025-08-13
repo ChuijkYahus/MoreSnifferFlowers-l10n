@@ -78,7 +78,9 @@ public class BottleOfExtractionItem extends Item {
     }
 
     private boolean canExtract(Level level, Player player) {
-        return !level.isClientSide && player.getActiveEffects() != null && !player.getActiveEffects().isEmpty() && !player.hasEffect(ModMobEffects.EXTRACTED);
+        if (level.isClientSide) return false;
+        player.getActiveEffects();
+        return !player.getActiveEffects().isEmpty() && !player.hasEffect(ModEffects.EXTRACTED);
     }
 
     private static void doCheaterEasterEgg(Level pLevel, Player player) {

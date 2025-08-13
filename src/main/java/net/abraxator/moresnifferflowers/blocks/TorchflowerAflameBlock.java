@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.blocks;
 
+import com.mojang.serialization.MapCodec;
 import net.abraxator.moresnifferflowers.blockentities.TorchflowerBlockEntity;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModParticles;
@@ -7,6 +8,7 @@ import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -15,18 +17,18 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -38,17 +40,21 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock, ModCropBlock {
     public static final VoxelShape SHAPE = Block.box(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D);
+    public static final MapCodec<TorchflowerAflameBlock> CODEC = simpleCodec(TorchflowerAflameBlock::new);
 
     public TorchflowerAflameBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(defaultBlockState().setValue(getAgeProperty(), 0).setValue(ModStateProperties.FIRE_TICKS, 0));
+    }
+
+    @Override
+    protected MapCodec<? extends BushBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -65,7 +71,6 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (!level.isClientSide) return;
         super.animateTick(state, level, pos, random);
@@ -125,8 +130,20 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        ItemStack stack = player.getItemInHand(hand);
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        int age = getAge(state);
+
+        if (age == 2){
+            popResource(level, pos, ModItems.FIERY_SPICE.get().getDefaultInstance());
+            level.setBlock(pos, state.setValue(getAgeProperty(), 0), 3);
+            return InteractionResult.SUCCESS;
+        }
+
+        return InteractionResult.PASS;
+    }
+
+    @Override
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         int age = getAge(state);
         int fire = state.getValue(ModStateProperties.FIRE_TICKS);
 
@@ -137,10 +154,10 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
             }else if (!player.isCreative()) stack.shrink(1);
 
             BoneMealItem.addGrowthParticles(level, pos, 10);
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
-        if (age == 1 && PotionUtils.getPotion(stack) == Potions.WATER){
+        if (age == 1 && stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).is(Potions.WATER)){
             RandomSource random = level.getRandom();
             for(int j1 = 0; j1 < (fire + 1)*2; ++j1) {
                 Vec3 vec3 = state.getOffset(level, pos);
@@ -163,16 +180,10 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
                 level.setBlockAndUpdate(pos, state.setValue(getAgeProperty(), 2));
             }
 
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
-        if (age == 2){
-            popResource(level, pos, ModItems.FIERY_SPICE.get().getDefaultInstance());
-            level.setBlock(pos, state.setValue(getAgeProperty(), 0), 3);
-            return InteractionResult.SUCCESS;
-        }
-
-        return InteractionResult.PASS;
+        return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
     }
 
     public static boolean isBonemealSuccess(Level level) {
@@ -198,7 +209,7 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
     }
 
     @Override
-    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, boolean isClient) {
+    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state) {
         return getAge(state) == 0;
     }
 

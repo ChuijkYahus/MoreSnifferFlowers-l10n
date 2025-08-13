@@ -1,10 +1,10 @@
 package net.abraxator.moresnifferflowers.nutrition;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 import java.util.function.IntFunction;
@@ -36,7 +36,7 @@ public enum NutritionType {
     public static MobEffect getEffect(NutritionType nutritionType, boolean positive) {
         Map<NutritionType, ResourceLocation> map = positive ? POSITIVE_SOUP_EFFECT_MAP : NEGATIVE_SOUP_EFFECT_MAP;
 
-        return ForgeRegistries.MOB_EFFECTS.getValue(map.get(nutritionType));
+        return BuiltInRegistries.MOB_EFFECT.get(map.get(nutritionType));
     }
 
     public static final Map<NutritionType, ResourceLocation> NEGATIVE_SOUP_EFFECT_MAP = Map.of(

@@ -42,9 +42,9 @@ public abstract class AbstractMultiBlock extends Block implements MultiBlock, Mo
     }
 
     @Override
-    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         preventCreativeDrops(player, level, pos);
-        super.playerWillDestroy(level, pos, state, player);
+        return super.playerWillDestroy(level, pos, state, player);
     }
 
 }

@@ -12,7 +12,7 @@ import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModDataComponents;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.ModTags;
-import net.abraxator.moresnifferflowers.networking.DyespriaDisplayModeChangePacket;
+import net.abraxator.moresnifferflowers.networking.toClient.DyespriaDisplayModeChangePacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -202,11 +202,11 @@ public class DyespriaItem extends BlockItem implements Colorable {
     }
     
     public static int getDyespriaUses(ItemStack stack) {
-        return stack.getOrDefault(ModDataComponents.DYESPRIA_USES, 4);
+        return stack.getOrDefault(ModDataComponents.COLOR, 4);
     }
     
     public static void setDyespriaUses(ItemStack stack, int uses) {
-        stack.set(ModDataComponents.DYESPRIA_USES, uses);
+        stack.set(ModDataComponents.COLOR, uses);
     }
     
     private boolean canDye(BlockState blockState, Dye dye) {

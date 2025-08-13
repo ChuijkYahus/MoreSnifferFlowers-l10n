@@ -1,7 +1,9 @@
 package net.abraxator.moresnifferflowers.components;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.init.ModDataComponents;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
@@ -9,7 +11,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -65,7 +66,7 @@ public enum BlockPattern implements StringRepresentable {
     }
 
     public static BlockPattern fromItem(Item item){
-        return Arrays.stream(values()).filter(blockPattern -> Objects.equals(blockPattern.item, ForgeRegistries.ITEMS.getKey(item))).findFirst().orElse(EMPTY);
+        return Arrays.stream(values()).filter(blockPattern -> Objects.equals(blockPattern.item, BuiltInRegistries.ITEM.getKey(item))).findFirst().orElse(EMPTY);
     }
 
     public static BlockPattern fromDyeColor(DyeColor dyeColor) {
@@ -77,8 +78,8 @@ public enum BlockPattern implements StringRepresentable {
     }
 
     public static BlockPattern fromPatternspria(ItemStack stack) {
-        if (stack.getOrCreateTag().contains("patternId")) {
-            int patternId = stack.getTag().getInt("patternId");
+        if (stack.has(ModDataComponents.PATTERN_ID)) {
+            int patternId = stack.getOrDefault(ModDataComponents.PATTERN_ID, 0);
             return fromId(patternId);
         }
         return EMPTY;
@@ -98,7 +99,7 @@ public enum BlockPattern implements StringRepresentable {
     }
 
     public Item getItem(){
-        return ForgeRegistries.ITEMS.getValue(item);
+        return BuiltInRegistries.ITEM.get(item);
     }
 
     public boolean isBanner(){
@@ -106,12 +107,12 @@ public enum BlockPattern implements StringRepresentable {
     }
 
     public boolean isSamePattern(ItemStack patternspria) {
-        int patternId = patternspria.getOrCreateTag().getInt("patternId");
-        return patternId == this.ordinal();
+        int patternId = patternspria.getOrDefault(ModDataComponents.PATTERN_ID, 0);
+        return patternId == this.id;
     }
 
     public ItemStack getItemStack(ItemStack patternspria) {
-        int amount = patternspria.getOrCreateTag().getInt("amount");
+        int amount = patternspria.getOrDefault(ModDataComponents.AMOUNT, 1);
         return getItem().getDefaultInstance().copyWithCount(amount);
     }
 
@@ -124,52 +125,19 @@ public enum BlockPattern implements StringRepresentable {
             removePatternFromStack(itemStack);
             return;
         }
-        int patternId = Objects.requireNonNull(fromItem(patternToInsert.getItem())).ordinal();
-        CompoundTag tag = itemStack.getOrCreateTag();
-        tag.putInt("amount", amount);
-        tag.putInt("patternId", patternId);
-        tag.putInt("uses", uses);
-        itemStack.setTag(tag);
+        int patternId = Objects.requireNonNull(fromItem(patternToInsert.getItem())).getId();
+        itemStack.set(ModDataComponents.AMOUNT, amount);
+        itemStack.set(ModDataComponents.PATTERN_ID, patternId);
+        itemStack.set(ModDataComponents.USES, uses);
     }
 
     public static void removePatternFromStack(ItemStack itemStack) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-        tag.putInt("amount", 0);
-        tag.putInt("patternId", -1);
-        tag.putInt("uses", 0);
-        itemStack.setTag(tag);
+        itemStack.set(ModDataComponents.AMOUNT, 0);
+        itemStack.set(ModDataComponents.PATTERN_ID, -1);
+        itemStack.set(ModDataComponents.USES, 0);
     }
 
     public static boolean isEmpty(BlockState state) {
         return state.getValue(ModStateProperties.BLOCK_PATTERN) == EMPTY;
     }
-
-/*    public static final Map<Item, Integer> itemToPatternId = Map.ofEntries(
-        Map.entry(ModItems.BLOCK_PATTERN_PIPES.get(), 0),
-        Map.entry(ModItems.BLOCK_PATTERN_BRICKS.get(), 1),
-        Map.entry(ModItems.BLOCK_PATTERN_FOCUS.get(), 2),
-        Map.entry(ModItems.BLOCK_PATTERN_BUBBLES.get(), 3),
-        Map.entry(ModItems.BLOCK_PATTERN_CLOUDS.get(), 4),
-        Map.entry(ModItems.BLOCK_PATTERN_DEEPSLATE.get(), 5),
-        Map.entry(ModItems.BLOCK_PATTERN_DIAMOND.get(), 6),
-        Map.entry(ModItems.BLOCK_PATTERN_EYE.get(), 7),
-        Map.entry(ModItems.BLOCK_PATTERN_HEARTS.get(), 8),
-        Map.entry(ModItems.BLOCK_PATTERN_HONEYCOMB.get(), 9),
-        Map.entry(ModItems.BLOCK_PATTERN_PAWS.get(), 10),
-        Map.entry(ModItems.BLOCK_PATTERN_PRISMARINE.get(), 11),
-        Map.entry(ModItems.BLOCK_PATTERN_SPROUTS.get(), 12),
-        Map.entry(ModItems.BLOCK_PATTERN_STARS.get(), 13),
-        Map.entry(ModItems.BLOCK_PATTERN_COVER.get(), 14),
-        Map.entry(ModItems.BLOCK_PATTERN_FLOWERS.get(), 15),
-        Map.entry(Items.FLOWER_BANNER_PATTERN, 16),
-        Map.entry(Items.GLOBE_BANNER_PATTERN, 17),
-        Map.entry(Items.PIGLIN_BANNER_PATTERN, 18),
-        Map.entry(Items.CREEPER_BANNER_PATTERN, 19),
-        Map.entry(Items.SKULL_BANNER_PATTERN, 20),
-        Map.entry(Items.MOJANG_BANNER_PATTERN, 21),
-        Map.entry(ModItems.AMBUSH_BANNER_PATTERN.get(), 22),
-        Map.entry(ModItems.EVIL_BANNER_PATTERN.get(), 23)
-
-    );*/
-    
 }

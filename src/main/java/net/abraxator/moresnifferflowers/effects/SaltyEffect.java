@@ -24,16 +24,16 @@ public class SaltyEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
         Level level = livingEntity.level();
         if (livingEntity instanceof Player player){
-            double reach = player.getEntityReach();
+            double reach = 3;
             LivingEntity entity = (LivingEntity) getClosestEntity(level, player, reach);
 
             if (entity != null){
                 player.attack(entity);
 
-                entity.addEffect(new MobEffectInstance(ModEffects.SALTY.get(), livingEntity.getEffect(this).getDuration() / 2 , amplifier));
+                entity.addEffect(new MobEffectInstance(ModEffects.SALTY, livingEntity.getEffect(ModEffects.SALTY).getDuration() / 2 , amplifier));
 
             }
 
@@ -48,15 +48,16 @@ public class SaltyEffect extends MobEffect {
 
                 mob.doHurtTarget(entity);
 
-                entity.addEffect(new MobEffectInstance(ModEffects.SALTY.get(), (int) (livingEntity.getEffect(this).getDuration() / 1.5), amplifier));
+                entity.addEffect(new MobEffectInstance(ModEffects.SALTY, (int) (livingEntity.getEffect(ModEffects.SALTY).getDuration() / 1.5), amplifier));
             }
 
         }
-        else livingEntity.removeEffect(this);
+        else livingEntity.removeEffect(ModEffects.SALTY);
+        return true;
     }
 
     @Override
-    public boolean isDurationEffectTick(int duration, int amplifier) {
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return duration % (1200 / (amplifier + 1)) == 0;
     }
 

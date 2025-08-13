@@ -1,6 +1,6 @@
 package net.abraxator.moresnifferflowers.client.gui.slot;
 
-import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
@@ -52,9 +52,7 @@ public class HardenedMouthSlot extends Slot {
 
     @Override
     public void setChanged() {
-        player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(hardenedMouthCapability -> {
-            hardenedMouthCapability.sync(player);
-        });
+            player.getData(ModDataAttachments.HARDENED_MOUTH).sync(player);
     }
 
     public void handleCapabilitySlotClick(HardenedMouthSlot slot, Player player, ClickType clickType, int dragType) {
@@ -123,7 +121,7 @@ public class HardenedMouthSlot extends Slot {
 
 
     public static boolean canStack(ItemStack a, ItemStack b) {
-        return ItemStack.isSameItemSameTags(a, b);
+        return ItemStack.isSameItemSameComponents(a, b);
     }
 
     public static boolean moveToPlayerInventory(AbstractContainerMenu menu, ItemStack stackToMove) {
@@ -151,6 +149,6 @@ public class HardenedMouthSlot extends Slot {
     }
 
     public boolean hasHardenedMouthEffect() {
-        return player.hasEffect(ModEffects.HARDENED_MOUTH.get());
+        return player.hasEffect(ModEffects.HARDENED_MOUTH);
     }
 }

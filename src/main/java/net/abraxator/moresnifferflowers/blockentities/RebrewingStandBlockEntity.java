@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import net.abraxator.moresnifferflowers.blocks.rebrewingstand.RebrewingStandBlockBase;
 import net.abraxator.moresnifferflowers.client.gui.menu.RebrewingStandMenu;
 import net.abraxator.moresnifferflowers.init.ModBlockEntities;
+import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.abraxator.moresnifferflowers.init.ModItems;
-import net.abraxator.moresnifferflowers.init.ModMobEffects;
 import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -217,7 +217,7 @@ public class RebrewingStandBlockEntity extends BaseContainerBlockEntity {
         });
 
         int maxInt = Collections.max(durList);
-        ret.add(new MobEffectInstance(ModMobEffects.EXTRACTED, maxInt));
+        ret.add(new MobEffectInstance(ModEffects.EXTRACTED, maxInt));
 
         return new Pair<>(new PotionContents(Optional.of(Potions.WATER), Optional.of(PotionContents.getColor(ret)), ret), ret);
     }

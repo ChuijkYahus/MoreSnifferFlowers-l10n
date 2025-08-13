@@ -6,6 +6,7 @@ import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -249,7 +250,7 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         ));
         add(ModBlocks.CORRUPTED_GRASS_BLOCK.get(), block -> this.createSingleItemTableWithSilkTouch(block, Blocks.COARSE_DIRT));
         add(ModBlocks.CORRUPTED_TALL_GRASS.get(), block -> this.createDoublePlantWithSeedDrops(block, ModBlocks.CORRUPTED_GRASS.get()));
-        add(ModBlocks.CORRUPTED_GRASS.get(), block -> createShearsDispatchTable(block, this.applyExplosionDecay(block, LootItem.lootTableItem(ModItems.CORRUPTED_SLIME_BALL.get()).when(LootItemRandomChanceCondition.randomChance(0.125F)).apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE, 2)))));
+        add(ModBlocks.CORRUPTED_GRASS.get(), block -> createShearsDispatchTable(block, this.applyExplosionDecay(block, LootItem.lootTableItem(ModItems.CORRUPTED_SLIME_BALL.get()).when(LootItemRandomChanceCondition.randomChance(0.125F)).apply(ApplyBonusCount.addUniformBonusCount(registrylookup.getOrThrow(Enchantments.FORTUNE), 2)))));
         add(ModBlocks.CURED_GRASS_BLOCK.get(), block -> this.createSingleItemTableWithSilkTouch(block, Blocks.DIRT));
         add(ModBlocks.CORRUPTED_WART.get(), block -> this.createSingleItemTableWithSilkTouch(block, ModItems.CORRUPTED_SLIME_BALL.get(), UniformGenerator.between(0F, 1F)));
 

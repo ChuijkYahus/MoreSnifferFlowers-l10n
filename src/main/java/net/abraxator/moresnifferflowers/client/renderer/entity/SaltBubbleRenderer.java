@@ -57,8 +57,7 @@ public class SaltBubbleRenderer extends EntityRenderer<SaltBubbleProjectile> {
                     poseStack,
                     buffer.getBuffer(this.model.renderType(this.getTextureLocation(entity))),
                     packedLight,
-                    OverlayTexture.NO_OVERLAY,
-                    1, 1, 1, 1);
+                    OverlayTexture.NO_OVERLAY);
             poseStack.popPose();
             super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
         }

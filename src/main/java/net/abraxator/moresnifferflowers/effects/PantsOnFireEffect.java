@@ -1,6 +1,8 @@
 package net.abraxator.moresnifferflowers.effects;
 
+import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.abraxator.moresnifferflowers.init.ModItems;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
@@ -17,22 +19,22 @@ public class PantsOnFireEffect extends MobEffect {
         super(category, color);
     }
 
-    public boolean isDurationEffectTick(int duration, int amplifier) {
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return true;
     }
 
 
     @Override
-    public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
         Level level = livingEntity.level();
 
-        if (livingEntity instanceof Player player && player.hasEffect(this) && !level.isClientSide){
+        if (livingEntity instanceof Player player && player.hasEffect(ModEffects.PANTS_ON_FIRE) && !level.isClientSide){
             int burnedSlots = 0;
             final int maxBurnedSlots = (1 + 2*amplifier);
 
             for (Slot slot : player.inventoryMenu.slots){
                 if (slot.getItem().is(ModItems.BURNED_SLOT.get())) burnedSlots++;
-                if (burnedSlots >= maxBurnedSlots) return;
+                if (burnedSlots >= maxBurnedSlots) return true;
             }
 
             for (int i = 0; i < maxBurnedSlots - burnedSlots ; i++) {
@@ -41,7 +43,7 @@ public class PantsOnFireEffect extends MobEffect {
                 Slot slot = menu.getSlot(slotId);
 
                 if (slot.getItem().is(ModItems.BURNED_SLOT.get())){
-                    return;
+                    return true;
                 }
 
                 ItemStack stack = slot.getItem();

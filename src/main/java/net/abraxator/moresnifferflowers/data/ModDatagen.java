@@ -14,7 +14,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.List;
 
-@EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID)
 public class ModDatagen {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event){

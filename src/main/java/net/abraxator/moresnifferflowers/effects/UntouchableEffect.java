@@ -1,6 +1,6 @@
 package net.abraxator.moresnifferflowers.effects;
 
-import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,13 +12,14 @@ public class UntouchableEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
-        if (livingEntity instanceof Player player && !player.level().isClientSide)
-            player.getCapability(CapabilityList.UNTOUCHABLE).ifPresent(cap -> cap.tick(player, amplifier));
+    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+        if (livingEntity instanceof Player player)
+            player.getData(ModDataAttachments.UNTOUCHABLE.get()).tick(player, amplifier);
+        return true;
     }
 
     @Override
-    public boolean isDurationEffectTick(int duration, int amplifier) {
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return true;
     }
 }

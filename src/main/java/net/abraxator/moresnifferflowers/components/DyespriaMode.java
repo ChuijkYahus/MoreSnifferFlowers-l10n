@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.components;
 
 import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.items.DyespriaItem;
@@ -31,7 +32,7 @@ public enum DyespriaMode implements StringRepresentable {
 
     public static final Codec<DyespriaMode> CODEC = StringRepresentable.fromValues(DyespriaMode::values);
     public static final IntFunction<DyespriaMode> BY_ID = ByIdMap.continuous(DyespriaMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
-    public static final StreamCodec<ByteBuf, DyespriaMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, Enum::ordinal); 
+    public static final StreamCodec<ByteBuf, DyespriaMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, Enum::ordinal);
 
     private final String name;
     private final Function<DyespriaSelector, Set<BlockPos>> selector;

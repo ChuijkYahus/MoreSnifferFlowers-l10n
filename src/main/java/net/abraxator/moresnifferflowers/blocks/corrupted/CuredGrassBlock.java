@@ -1,5 +1,7 @@
 package net.abraxator.moresnifferflowers.blocks.corrupted;
 
+import com.mojang.serialization.MapCodec;
+import net.abraxator.moresnifferflowers.capability.CorruptionCapability;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStatePropertiesUnsafe;
 import net.minecraft.core.BlockPos;
@@ -10,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.SpreadingSnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -87,24 +90,25 @@ public class CuredGrassBlock extends SpreadingSnowyDirtBlock {
             }
 
             if (level.getBlockState(pos.above()).is(ModBlocks.CORRUPTED_GRASS.get()))
-                level.setBlock(pos.above(), Blocks.GRASS.defaultBlockState(), 18);
+                level.setBlock(pos.above(), Blocks.SHORT_GRASS.defaultBlockState(), 18);
 
             if (level.getBlockState(pos.above()).is(ModBlocks.CORRUPTED_TALL_GRASS.get())) {
                 level.setBlock(pos.above(), Blocks.TALL_GRASS.defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER), 18);
                 level.setBlock(pos.above(2), Blocks.TALL_GRASS.defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER), 18);
             }
 
-            AtomicInteger CorruptedCount = new AtomicInteger();
             var aabb = AABB.ofSize(pos.getCenter(), 4, 4, 4);
-            BlockPos.betweenClosedStream(aabb).forEach(blockPos -> {
+            boolean noCorruption = BlockPos.betweenClosedStream(aabb).allMatch(blockPos -> {
                 if (level.getBlockState(blockPos).is(ModBlocks.CORRUPTED_GRASS_BLOCK.get())) {
                     level.setBlockAndUpdate(
                             blockPos, blockstate.setValue(SNOWY, level.getBlockState(blockPos.above()).is(Blocks.SNOW))
                     );
-                    CorruptedCount.getAndIncrement();
+                    return false;
                 }
+                return true;
             });
-            if (CorruptedCount.get() == 0)
+
+            if (noCorruption)
                 level.setBlockAndUpdate(
                         pos, Blocks.GRASS_BLOCK.defaultBlockState().setValue(SNOWY, level.getBlockState(pos.above()).is(Blocks.SNOW))
                 );
