@@ -182,7 +182,44 @@ public class ModRecipesProvider extends RecipeProvider {
                         .save(pRecipeOutput);
 
         SpecialRecipeBuilder.special(RebrewedTippedArrowRecipe::new).save(pRecipeOutput, "rebrewed_tipped_arrow");
-        
+
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.DRIPSALT.get().asItem())
+                .requires(ModItems.SALTY_SPICE.get(), 5)
+                .unlockedBy("has_salty_spice", has(ModItems.SALTY_SPICE.get()))
+                .save(pRecipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.PATTERNSPRIA.get())
+                .requires(Ingredient.of(ModTags.ModItemTags.BLOCK_PATTERNS), 1)
+                .requires(Ingredient.of(ModItems.DYESPRIA.get()), 1)
+                .unlockedBy("has_block_pattern", has(ModTags.ModItemTags.BLOCK_PATTERNS))
+                .save(pRecipeOutput);
+
+        partsRecycling(pRecipeOutput, ModBlocks.DRIPSALT.get().asItem(), ModItems.SALTY_SPICE.get(), 5);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BEROOT_CAULDRON.get().asItem(), 1)
+                .pattern("A A")
+                .pattern("ABA")
+                .pattern("CDC")
+                .define('A', Tags.Items.INGOTS_IRON)
+                .define('B', ModItems.CROPRESSED_BEETROOT.get())
+                .define('C', ModItems.FLAVORFUL_ROOTS.get())
+                .define('D', ModItems.SCRAP_PIECE.get())
+                .unlockedBy("has_flavorful_roots", has(ModItems.FLAVORFUL_ROOTS.get()))
+                .save(pRecipeOutput);
+
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.TORCHFLAME.get().asItem())
+                .requires(Ingredient.of(ModItems.FIERY_SPICE.get()), 4)
+                .unlockedBy("has_fiery_spice", has(ModItems.FIERY_SPICE.get()))
+                .save(pRecipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.BEROOT_COOK_BOOK.get())
+                .requires(Ingredient.of(Items.BOOK), 1)
+                .requires(Ingredient.of(ModItems.CROPRESSED_BEETROOT.get()), 1)
+                .unlockedBy("cropressed_beetroot", has(ModItems.CROPRESSED_BEETROOT.get()))
+                .save(pRecipeOutput);
+
         ModCustomRecipeProvider.createRecipes(pRecipeOutput);
     }
 
@@ -206,7 +243,7 @@ public class ModRecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput, MoreSnifferFlowers.loc(getItemName(trim) + "_from_trim_crafting"));
     }
 
-    private void partsRecycling(RecipeOutput pRecipeOutput, Item part, Item result, int count) {
+    private void partsRecycling(RecipeOutput pRecipeOutput, ItemLike part, Item result, int count) {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, result, count)
                 .requires(part)
                 .unlockedBy("has_" + getItemName(part), has(part))

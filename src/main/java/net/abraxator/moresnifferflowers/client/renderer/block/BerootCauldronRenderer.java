@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
+import net.abraxator.moresnifferflowers.blocks.MultiBlock;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
 import net.abraxator.moresnifferflowers.components.PreviewState;
 import net.minecraft.client.Minecraft;
@@ -23,6 +24,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -155,7 +159,7 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> impleme
     }
 
     @Override
-    public boolean shouldRenderOffScreen(T pBlockEntity) {
-        return true;
+    public AABB getRenderBoundingBox(T blockEntity) {
+        return new AABB(blockEntity.center).inflate(3);
     }
 }

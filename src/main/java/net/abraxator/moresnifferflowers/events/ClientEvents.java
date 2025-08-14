@@ -86,75 +86,80 @@ public class ClientEvents {
 
 
         if (stage.equals(RenderLevelStageEvent.Stage.AFTER_SKY)) {
-            renderBlockPatterns(frustum, camera, level, minecraft, poseStack, projectionMatrix);
+            renderBlockPatterns(frustum, camera, level, minecraft, poseStack);
         }
 
         if (stage.equals(RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS)){
-            LocalPlayer player = minecraft.player;
-            if (player.getMainHandItem().getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof MultiBlock multiBlock && blockItem.getBlock() instanceof EntityBlock block) {
-               HitResult hitResult = minecraft.hitResult;
-
-               if (hitResult instanceof BlockHitResult blockHitResult){
-                   boolean placeOnWater = false;
-
-                   if (blockItem instanceof PlaceOnWaterBlockItem) {
-                       blockHitResult = Item.getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
-                       placeOnWater = level.isWaterAt(blockHitResult.getBlockPos());
-                   };
-
-                   Direction hitDirection = blockHitResult.getDirection();
-                   BlockPos hitPos = blockHitResult.getBlockPos();
-                   BlockPos pos =  hitPos.relative(hitDirection);
-
-                   BlockState state = blockItem.getBlock().defaultBlockState()
-                           .trySetValue(HorizontalDirectionalBlock.FACING, player.getDirection())
-                           .trySetValue(ModStateProperties.CENTER, true);
-                   if (blockItem.getBlock() instanceof ModCropBlock cropBlock)
-                       state = state.trySetValue(cropBlock.getAgeProperty(), cropBlock.getMaxAge());
-
-                   BlockEntity entity = block.newBlockEntity(pos, state);
-
-                   if (entity instanceof MultiBlockEntity multiBlockEntity && level.getBlockState(pos).canBeReplaced() && (!level.getBlockState(hitPos).isAir() || placeOnWater)) {
-
-                       boolean canPlace = multiBlock.canPlace(level, pos, state);
-
-                       double camX = camera.getPosition().x;
-                       double camY = camera.getPosition().y;
-                       double camZ = camera.getPosition().z;
-
-                       multiBlockEntity.previewState = canPlace ? PreviewState.PREVIEW : PreviewState.INVALID;
-                       if (level.getBlockState(hitPos).canBeReplaced() && !placeOnWater) pos = pos.relative(hitDirection.getOpposite());
-
-                       poseStack.pushPose();
-
-                       poseStack.translate(pos.getX() - camX,pos.getY() - camY,pos.getZ() - camZ);
-
-                       MultiBufferSource.BufferSource buffer = minecraft.renderBuffers().bufferSource();
-                       BlockEntityRenderer<BlockEntity> entityRender = minecraft.getBlockEntityRenderDispatcher().getRenderer(entity);
-
-                       if (entityRender != null)
-                           entityRender.render(entity, event.getPartialTick().getRealtimeDeltaTicks(), poseStack, buffer, 0xFFFFFF, OverlayTexture.NO_OVERLAY);
-
-                       poseStack.popPose();
-
-                   }
-               }
-            }
+            renderMultiblockPreviews(event, minecraft, level, camera, poseStack);
         }
 
 
     }
 
-    private static void renderBlockPatterns(Frustum frustum, Camera camera, Level level, Minecraft minecraft, PoseStack poseStack, Matrix4f projectionMatrix) {
+    private static void renderMultiblockPreviews(RenderLevelStageEvent event, Minecraft minecraft, Level level, Camera camera, PoseStack poseStack) {
+        LocalPlayer player = minecraft.player;
+        if (player.getMainHandItem().getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof MultiBlock multiBlock && blockItem.getBlock() instanceof EntityBlock block) {
+           HitResult hitResult = minecraft.hitResult;
+
+           if (hitResult instanceof BlockHitResult blockHitResult){
+               boolean placeOnWater = false;
+
+               if (blockItem instanceof PlaceOnWaterBlockItem) {
+                   blockHitResult = Item.getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
+                   placeOnWater = level.isWaterAt(blockHitResult.getBlockPos());
+               };
+
+               Direction hitDirection = blockHitResult.getDirection();
+               BlockPos hitPos = blockHitResult.getBlockPos();
+               BlockPos pos =  hitPos.relative(hitDirection);
+
+               BlockState state = blockItem.getBlock().defaultBlockState()
+                       .trySetValue(HorizontalDirectionalBlock.FACING, player.getDirection())
+                       .trySetValue(ModStateProperties.CENTER, true);
+               if (blockItem.getBlock() instanceof ModCropBlock cropBlock)
+                   state = state.trySetValue(cropBlock.getAgeProperty(), cropBlock.getMaxAge());
+
+               BlockEntity entity = block.newBlockEntity(pos, state);
+
+               if (entity instanceof MultiBlockEntity multiBlockEntity && level.getBlockState(pos).canBeReplaced() && (!level.getBlockState(hitPos).isAir() || placeOnWater)) {
+
+                   boolean canPlace = multiBlock.canPlace(level, pos, state);
+
+                   double camX = camera.getPosition().x;
+                   double camY = camera.getPosition().y;
+                   double camZ = camera.getPosition().z;
+
+                   multiBlockEntity.previewState = canPlace ? PreviewState.PREVIEW : PreviewState.INVALID;
+                   if (level.getBlockState(hitPos).canBeReplaced() && !placeOnWater) pos = pos.relative(hitDirection.getOpposite());
+
+                   poseStack.pushPose();
+
+                   poseStack.translate(pos.getX() - camX,pos.getY() - camY,pos.getZ() - camZ);
+
+                   MultiBufferSource.BufferSource buffer = minecraft.renderBuffers().bufferSource();
+                   BlockEntityRenderer<BlockEntity> entityRender = minecraft.getBlockEntityRenderDispatcher().getRenderer(entity);
+
+                   if (entityRender != null)
+                       entityRender.render(entity, event.getPartialTick().getRealtimeDeltaTicks(), poseStack, buffer, 0xFFFFFF, OverlayTexture.NO_OVERLAY);
+
+                   poseStack.popPose();
+
+               }
+           }
+        }
+    }
+
+    public static final BlockPatternRenderer.CameraTracker CAMERA_TRACKER = new BlockPatternRenderer.CameraTracker();
+
+    private static void renderBlockPatterns(Frustum frustum, Camera camera, Level level, Minecraft minecraft, PoseStack poseStack) {
         double camX = camera.getPosition().x;
         double camY = camera.getPosition().y;
         double camZ = camera.getPosition().z;
 
         BlockPatternRenderer BUFFER_MANAGER = ClientRegistration.getBlockPatternRenderer();
-        BlockPatternRenderer.CameraTracker cameraTracker = new BlockPatternRenderer.CameraTracker();
         if (level == null || minecraft.player == null) return;
 
-        if (cameraTracker.hasMoved(camera)) {
+        if (CAMERA_TRACKER.hasMoved(camera)) {
             BUFFER_MANAGER.markDirty();
         }
         int chunkRenderDistance = Math.min(ModClientConfig.getBlockPatternRenderDistance(), minecraft.options.getEffectiveRenderDistance());
@@ -172,7 +177,7 @@ public class ClientEvents {
             }
         }
 
-        BUFFER_MANAGER.cachePatterns(level, camX, camY, camZ, view, projectionMatrix, levelChunks, frustum);
+        BUFFER_MANAGER.cachePatterns(level, camX, camY, camZ, levelChunks, frustum);
         BUFFER_MANAGER.render(poseStack, Minecraft.getInstance().renderBuffers().bufferSource());
 
         poseStack.popPose();
@@ -240,7 +245,7 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public static void onPlayerTick(PlayerTickEvent event) {
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
         if (player.getDeltaMovement() != Vec3.ZERO && player.level().getGameTime() % 10 == 0){
             ClientRegistration.getBlockPatternRenderer().markDirty();

@@ -1,7 +1,11 @@
 package net.abraxator.moresnifferflowers.items;
 
 import net.abraxator.moresnifferflowers.client.ModColorHandler;
+import net.abraxator.moresnifferflowers.components.RootedSoup;
+import net.abraxator.moresnifferflowers.init.ModDataAttachments;
+import net.abraxator.moresnifferflowers.init.ModDataComponents;
 import net.abraxator.moresnifferflowers.nutrition.NutritionType;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -37,24 +41,29 @@ public class RootedSoupItem extends Item {
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity livingEntity) {
         Player player = (Player) livingEntity;
         FoodData foodData = player.getFoodData();
-        CompoundTag tag = stack.getOrCreateTag();
-        int food = tag.getInt("soupFood");
-        int sat = tag.getInt("soupSat");
-        List<MobEffectInstance> effects = new ArrayList<>();
-        ListTag effectsTag = tag.getList("effects", 10);
+        RootedSoup soup = stack.get(ModDataComponents.ROOTED_SOUP);
+        if (soup == null) return stack;
 
-        for (Tag tag1 : effectsTag) {
-            CompoundTag effectTag = (CompoundTag) tag1;
-            int id = effectTag.getInt("nutritionType");
-            int dur = effectTag.getInt("dur");
-            int amp = effectTag.getInt("amp");
-            boolean positive = effectTag.getBoolean("positive");
-            MobEffect mobEffect = NutritionType.getEffect(NutritionType.byId(id), positive);
-           if (mobEffect != null) {
-               effects.add(new MobEffectInstance(mobEffect, dur, amp));
-           }
+        int food = soup.food();
+        float sat = soup.saturation();
+
+        List<RootedSoup.RootedEffect> rootedEffects = stack.get(ModDataComponents.ROOTED_EFFECTS);
+        List<MobEffectInstance> effects = new ArrayList<>();
+
+        if (rootedEffects != null) {
+            for (RootedSoup.RootedEffect effect : rootedEffects) {
+
+                int id = effect.id();
+                int dur = effect.length();
+                int amp = effect.amplifier();
+                boolean positive = effect.isPositive();
+                Holder<MobEffect> mobEffect = NutritionType.getEffect(NutritionType.byId(id), positive);
+                if (mobEffect != null) {
+                    effects.add(new MobEffectInstance(mobEffect, dur, amp));
+                }
+            }
         }
-        
+
         foodData.eat(food, sat);
         if (!level.isClientSide) {
             for (MobEffectInstance effect : effects) {
@@ -62,23 +71,21 @@ public class RootedSoupItem extends Item {
             }
         }
 
-        int uses = tag.getInt("soupCount") - 1;
-        
+        int uses = stack.getOrDefault(ModDataComponents.USES, 1) - 1;
+
         if(uses <= 0) {
             return Items.BOWL.getDefaultInstance();
         }
 
         // Cookbook unlocking
-        ListTag ingredientListTag = tag.getList("ingredients", 10);
-        for (Tag ingredientTag : ingredientListTag) {
-            ItemStack ingredient = ItemStack.of((CompoundTag) ingredientTag);
-            player.getCapability(CapabilityList.UNLOCKED_NUTRITIONS).ifPresent(nutritionCapability -> {
-                nutritionCapability.addItem(ingredient.getItem());
-            });
+        List<ItemStack> ingredients = stack.getOrDefault(ModDataComponents.ROOTED_INGREDIENTS, new ArrayList<>());
+
+        for (ItemStack ingredient : ingredients) {
+            player.getData(ModDataAttachments.NUTRITION).addItem(ingredient.getItem());
         }
 
-        tag.putInt("soupCount", uses);
-        stack.setTag(tag);
+
+        stack.set(ModDataComponents.USES, uses);
         return stack;
     }
 
@@ -88,26 +95,36 @@ public class RootedSoupItem extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 32;
     }
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return stack.getOrCreateTag().getInt("soupCount") > 0;
+        return stack.getOrDefault(ModDataComponents.USES, 0) > 0;
     }
 
     @Override
     public int getBarColor(ItemStack stack) {
-        int input = stack.getOrCreateTag().getInt("soupCount");
-        int maxInput= stack.getOrCreateTag().contains("soupCountMax") ? stack.getOrCreateTag().getInt("soupCountMax") : 4;
+        int input = stack.getOrDefault(ModDataComponents.USES, 0);
+        RootedSoup soup = stack.get(ModDataComponents.ROOTED_SOUP);
+
+        if (soup == null) return 0;
+
+        int maxInput= soup.maxUses();
 
         return ModColorHandler.barColorHelper(input, maxInput);
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        int max = stack.getOrCreateTag().contains("soupCountMax") ? stack.getOrCreateTag().getInt("soupCountMax") : 4;
-        return Math.round((float) stack.getOrCreateTag().getInt("soupCount") / max * 13.0F);
+        int input = stack.getOrDefault(ModDataComponents.USES, 0);
+        RootedSoup soup = stack.get(ModDataComponents.ROOTED_SOUP);
+
+        if (soup == null) return 0;
+
+        int maxInput = soup.maxUses();
+
+        return Math.round((float) input / maxInput * 13.0F);
     }
 }

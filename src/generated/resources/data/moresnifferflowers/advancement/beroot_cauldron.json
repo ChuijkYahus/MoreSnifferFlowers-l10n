@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "moresnifferflowers:beroot_cauldron"
-            ]
+            "items": "moresnifferflowers:beroot_cauldron"
           }
         ]
       },
@@ -15,17 +13,14 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "fallback": "Craft the Beroot Cauldron",
       "translate": "advancements.more_sniffer_flowers.beroot_cauldron.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
-      "item": "moresnifferflowers:beroot_cauldron"
+      "count": 1,
+      "id": "moresnifferflowers:beroot_cauldron"
     },
-    "show_toast": true,
     "title": {
       "fallback": "Glooby, and never Soupy",
       "translate": "advancements.more_sniffer_flowers.beroot_cauldron"

@@ -18,7 +18,7 @@ public record SyncSlipperyPacket(boolean isFallen, int entityId, int fallenTicks
     @Override
     public void handle(IPayloadContext context) {
         context.enqueueWork(() ->{
-            Level level = Minecraft.getInstance().level;
+/*            Level level = Minecraft.getInstance().level;
             if (level == null) return;
 
             Entity entity = level.getEntity(entityId);
@@ -34,7 +34,7 @@ public record SyncSlipperyPacket(boolean isFallen, int entityId, int fallenTicks
                         cap.getUp(player);
                     }
                 });
-            }
+            }*/
         });
     }
 

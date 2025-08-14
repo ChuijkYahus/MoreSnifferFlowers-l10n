@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.init;
 
+import com.mojang.serialization.Codec;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.components.DyespriaMode;
@@ -28,14 +29,14 @@ public class ModDataComponents {
 
     public static final Supplier<DataComponentType<RootedSoup>> ROOTED_SOUP = DATA_COMPONENTS.register("rooted_soup", () -> DataComponentType.<RootedSoup>builder().persistent(RootedSoup.CODEC).networkSynchronized(RootedSoup.STREAM_CODEC).build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<RootedSoup.RootedEffect>>> ROOTED_EFFECTS = DATA_COMPONENTS.register("rooted_effects", () -> DataComponentType.<List<RootedSoup.RootedEffect>>builder().persistent(RootedSoup.RootedEffect.LIST_CODEC).networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.fromCodec(RootedSoup.RootedEffect.CODEC))).build());
-    public static final Supplier<DataComponentType<List<ItemStack>>> ROOTED_INGREDIENTS = DATA_COMPONENTS.register("rooted_soup", () -> DataComponentType.<List<ItemStack>>builder().persistent(RootedSoup.ITEM_LIST_CODEC).networkSynchronized(ByteBufCodecs.fromCodec(RootedSoup.ITEM_LIST_CODEC)).build());
+    public static final Supplier<DataComponentType<List<ItemStack>>> ROOTED_INGREDIENTS = DATA_COMPONENTS.register("rooted_ingredients", () -> DataComponentType.<List<ItemStack>>builder().persistent(RootedSoup.ITEM_LIST_CODEC).networkSynchronized(ByteBufCodecs.fromCodec(RootedSoup.ITEM_LIST_CODEC)).build());
 
 
     //Integer Land
     public static final Supplier<DataComponentType<Integer>> USES = DATA_COMPONENTS.register("uses", () -> DataComponentType.<Integer>builder().persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
-    public static final Supplier<DataComponentType<Integer>> COLOR = DATA_COMPONENTS.register("color", () -> DataComponentType.<Integer>builder().persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
-    public static final Supplier<DataComponentType<Integer>> COLOR_ID = DATA_COMPONENTS.register("color_id", () -> DataComponentType.<Integer>builder().persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
-    public static final Supplier<DataComponentType<Integer>> PATTERN_ID = DATA_COMPONENTS.register("pattern_id", () -> DataComponentType.<Integer>builder().persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
+    public static final Supplier<DataComponentType<Integer>> COLOR = DATA_COMPONENTS.register("color", () -> DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
+    public static final Supplier<DataComponentType<Integer>> COLOR_ID = DATA_COMPONENTS.register("color_id", () -> DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
+    public static final Supplier<DataComponentType<Integer>> PATTERN_ID = DATA_COMPONENTS.register("pattern_id", () -> DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
     public static final Supplier<DataComponentType<Integer>> AMOUNT = DATA_COMPONENTS.register("amount", () -> DataComponentType.<Integer>builder().persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
 
 

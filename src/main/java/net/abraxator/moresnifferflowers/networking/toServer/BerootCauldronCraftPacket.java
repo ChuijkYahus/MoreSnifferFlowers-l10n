@@ -15,7 +15,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.util.function.Supplier;
 
 public record BerootCauldronCraftPacket(BlockPos blockPos) implements IMSFPacket {
-    public static final CustomPacketPayload.Type<BerootCauldronCraftPacket> TYPE = new CustomPacketPayload.Type<>(MoreSnifferFlowers.loc("send_sludge_particle"));
+    public static final CustomPacketPayload.Type<BerootCauldronCraftPacket> TYPE = new CustomPacketPayload.Type<>(MoreSnifferFlowers.loc("cauldron_craft"));
     public static final StreamCodec<ByteBuf, BerootCauldronCraftPacket> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC, BerootCauldronCraftPacket::blockPos,
             BerootCauldronCraftPacket::new

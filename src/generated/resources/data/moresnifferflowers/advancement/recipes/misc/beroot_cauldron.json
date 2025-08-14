@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "moresnifferflowers:flavorful_roots"
-            ]
+            "items": "moresnifferflowers:flavorful_roots"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_flavorful_roots",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_flavorful_roots"
     ]
   ],
   "rewards": {
     "recipes": [
       "moresnifferflowers:beroot_cauldron"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

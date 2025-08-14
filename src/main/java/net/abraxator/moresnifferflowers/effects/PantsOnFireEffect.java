@@ -54,6 +54,7 @@ public class PantsOnFireEffect extends MobEffect {
 
             level.playSound(null, livingEntity, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS ,1, 1);
         }
+        return true;
     }
 
 }

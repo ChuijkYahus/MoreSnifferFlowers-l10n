@@ -14,19 +14,17 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Set;
 
-public record RootedSoup(int food, float saturation, int uses, int maxUses) {
+public record RootedSoup(int food, float saturation, int maxUses) {
     public static final Codec<RootedSoup> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     Codec.INT.fieldOf("food").forGetter(RootedSoup::food),
                     Codec.FLOAT.fieldOf("saturation").forGetter(RootedSoup::saturation),
-                    Codec.INT.fieldOf("uses").forGetter(RootedSoup::uses),
                     Codec.INT.fieldOf("maxUses").forGetter(RootedSoup::maxUses)
             ).apply(instance, RootedSoup::new)
     );
     public static final StreamCodec<RegistryFriendlyByteBuf, RootedSoup> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, RootedSoup::food,
             ByteBufCodecs.FLOAT, RootedSoup::saturation,
-            ByteBufCodecs.INT, RootedSoup::uses,
             ByteBufCodecs.INT, RootedSoup::maxUses,
             RootedSoup::new
     );

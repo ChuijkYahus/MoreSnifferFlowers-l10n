@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "B": {
       "item": "moresnifferflowers:cropressed_beetroot"
@@ -21,7 +21,7 @@
     "CDC"
   ],
   "result": {
-    "item": "moresnifferflowers:beroot_cauldron"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "moresnifferflowers:beroot_cauldron"
+  }
 }

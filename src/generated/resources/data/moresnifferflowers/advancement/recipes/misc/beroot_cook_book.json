@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "moresnifferflowers:cropressed_beetroot"
-            ]
+            "items": "moresnifferflowers:cropressed_beetroot"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "cropressed_beetroot",
-      "has_the_recipe"
+      "has_the_recipe",
+      "cropressed_beetroot"
     ]
   ],
   "rewards": {
     "recipes": [
       "moresnifferflowers:beroot_cook_book"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

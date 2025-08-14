@@ -11,6 +11,7 @@ import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.items.DyespriaItem;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.phys.Vec3;
@@ -139,6 +140,15 @@ public class ModColorHandler {
         int b = hex & 0xFF;
         return new float[] {r / 255f, g/ 255f, b/ 255f};
     }
+
+    public static int[] argbToArray(int argb) {
+        int r = FastColor.ARGB32.red(argb);
+        int g = FastColor.ARGB32.green(argb);
+        int b = FastColor.ARGB32.blue(argb);
+        int a = FastColor.ARGB32.alpha(argb);
+        return new int[] {r,g,b,a};
+    }
+
 
 
     public static int RGBtoInt(Vec3 color) {

@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
 import net.abraxator.moresnifferflowers.client.ClientRegistration;
 import net.abraxator.moresnifferflowers.init.*;
+import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
 import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.worldgen.configurations.ModTreeDecoratorTypes;
@@ -39,6 +40,7 @@ public class MoreSnifferFlowers {
         }
         modEventBus.addListener(this::commonSetup);
         container.registerConfig(ModConfig.Type.SERVER, ModServerConfig.SERVER_CONFIG);
+        container.registerConfig(ModConfig.Type.CLIENT, ModClientConfig.CLIENT_CONFIG);
 
 
         ModItems.ITEMS.register(modEventBus);

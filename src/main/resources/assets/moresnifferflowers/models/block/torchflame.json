@@ -14,8 +14,8 @@
 			"light_emission": 12,
 			"rotation": {"angle": 0, "axis": "y", "origin": [10.5, 8, 10.5]},
 			"faces": {
-				"east": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}},
-				"west": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}}
+				"east": {"uv": [0, 0, 16, 16], "texture": "#2", "neforge_data": {"block_light": 15, "sky_light": 15}},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#2", "neforge_data": {"block_light": 15, "sky_light": 15}}
 			}
 		},
 		{
@@ -25,8 +25,8 @@
 			"light_emission": 12,
 			"rotation": {"angle": 0, "axis": "y", "origin": [10.5, 8, 10.5]},
 			"faces": {
-				"north": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}},
-				"south": {"uv": [16, 0, 0, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}}
+				"north": {"uv": [0, 0, 16, 16], "texture": "#2", "neforge_data": {"block_light": 15, "sky_light": 15}},
+				"south": {"uv": [16, 0, 0, 16], "texture": "#2", "neforge_data": {"block_light": 15, "sky_light": 15}}
 			}
 		},
 		{
@@ -36,8 +36,8 @@
 			"light_emission": 12,
 			"rotation": {"angle": 0, "axis": "y", "origin": [3, 8, 8]},
 			"faces": {
-				"east": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}},
-				"west": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}}
+				"east": {"uv": [0, 0, 16, 16], "texture": "#2", "neforge_data": {"block_light": 15, "sky_light": 15}},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#2", "neforge_data": {"block_light": 15, "sky_light": 15}}
 			}
 		},
 		{
@@ -47,8 +47,8 @@
 			"light_emission": 12,
 			"rotation": {"angle": 0, "axis": "y", "origin": [0, 0, 3]},
 			"faces": {
-				"north": {"uv": [16, 0, 0, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}},
-				"south": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}}
+				"north": {"uv": [16, 0, 0, 16], "texture": "#2", "neforge_data": {"block_light": 15, "sky_light": 15}},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#2", "neforge_data": {"block_light": 15, "sky_light": 15}}
 			}
 		},
 		{
@@ -58,8 +58,8 @@
 			"light_emission": 12,
 			"rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
-				"north": {"uv": [16, 0, 0, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}},
-				"south": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}}
+				"north": {"uv": [16, 0, 0, 16], "texture": "#2", "neforge_data": {"block_light": 15, "sky_light": 15}},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#2", "neforge_data": {"block_light": 15, "sky_light": 15}}
 			}
 		},
 		{
@@ -69,8 +69,8 @@
 			"light_emission": 12,
 			"rotation": {"angle": -45, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
-				"north": {"uv": [0, 0, 16, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}},
-				"south": {"uv": [16, 0, 0, 16], "texture": "#2", "forge_data": {"block_light": 15, "sky_light": 15}}
+				"north": {"uv": [0, 0, 16, 16], "texture": "#2", "neforge_data": {"block_light": 15, "sky_light": 15}},
+				"south": {"uv": [16, 0, 0, 16], "texture": "#2", "neforge_data": {"block_light": 15, "sky_light": 15}}
 			}
 		}
 	],

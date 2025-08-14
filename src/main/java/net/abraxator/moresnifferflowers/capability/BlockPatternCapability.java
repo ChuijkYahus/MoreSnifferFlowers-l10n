@@ -21,9 +21,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public record BlockPatternCapability (Map<BlockPos, PatternData> patterns) {
+public class BlockPatternCapability {
+    public Map<BlockPos, PatternData> patterns;
+    public static final Codec<BlockPos> BLOCKPOS_STRING_CODEC = Codec.STRING.xmap(
+            s -> {
+                String[] parts = s.split(",");
+                return new BlockPos(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+            },
+            pos -> pos.getX() + "," + pos.getY() + "," + pos.getZ()
+    );
+
     public static final Codec<BlockPatternCapability> CODEC =RecordCodecBuilder.create(instance -> instance.group(
-            Codec.unboundedMap(BlockPos.CODEC, PatternData.CODEC).fieldOf("patterns").forGetter(BlockPatternCapability::patterns))
+            Codec.unboundedMap(BLOCKPOS_STRING_CODEC, PatternData.CODEC).fieldOf("patterns").forGetter(cap -> cap.patterns))
             .apply(instance, BlockPatternCapability::new));
 
     public static final StreamCodec<? super ByteBuf, BlockPatternCapability> STREAM_CODEC =
@@ -33,9 +42,17 @@ public record BlockPatternCapability (Map<BlockPos, PatternData> patterns) {
                     ByteBufCodecs.fromCodec(BlockPos.CODEC),
                     ByteBufCodecs.fromCodec(PatternData.CODEC)
             ),
-                    BlockPatternCapability::patterns,
+                    (cap -> cap.patterns),
                     BlockPatternCapability::new
             );
+
+    public BlockPatternCapability(Map<BlockPos, PatternData> patterns) {
+        this.patterns = new HashMap<>(patterns);
+    }
+
+    public Map<BlockPos, PatternData> getPatterns() {
+        return patterns;
+    }
 
     public static BlockPatternCapability getBlockPatterns(BlockPos pos, Level level){
         return getBlockPatterns(level.getChunkAt(pos));
@@ -130,13 +147,17 @@ public record BlockPatternCapability (Map<BlockPos, PatternData> patterns) {
 
     public void sync(BlockPos pos, Level level) {
         save(pos, level);
-        PacketDistributor.sendToAllPlayers(new SyncBlockPatternsPacket(this, pos));
+       // PacketDistributor.sendToAllPlayers(new SyncBlockPatternsPacket(this, pos));
     }
 
     public void save(BlockPos pos, Level level){
         level.getChunkAt(pos).setData(ModDataAttachments.BLOCK_PATTERNS.get(), this);
     }
 
+    public void load(BlockPatternCapability capability){
+        patterns.clear();
+        patterns.putAll(capability.patterns);
+    }
     public int count() {
         return patterns.size();
     }

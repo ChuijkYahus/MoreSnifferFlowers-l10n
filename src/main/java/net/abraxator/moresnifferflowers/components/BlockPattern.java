@@ -17,33 +17,33 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public enum BlockPattern implements StringRepresentable {
-    PIPES("pipes", MoreSnifferFlowers.loc("block_pattern_pipes"),0, 0x79b055, DyeColor.LIME), //lime
-    BRICKS("bricks", MoreSnifferFlowers.loc("block_pattern_bricks"),1, 0xae457c, DyeColor.MAGENTA), //magenta
-    FOCUS("focus", MoreSnifferFlowers.loc("block_pattern_focus"),2, 0x6a3d87, DyeColor.PURPLE), //purple
-    BUBBLES("bubbles", MoreSnifferFlowers.loc("block_pattern_bubbles"),3, 0x6dbdba, DyeColor.LIGHT_BLUE), //lightblue
-    CLOUDS("clouds", MoreSnifferFlowers.loc("block_pattern_clouds"),4, 0xddddd0, DyeColor.WHITE), //white
-    DEEPSLATE("deepslate", MoreSnifferFlowers.loc("block_pattern_deepslate"),5, 0x413f51, DyeColor.BLACK), //black
-    DIAMOND("diamond", MoreSnifferFlowers.loc("block_pattern_diamond"),6, 0x4a9887, DyeColor.CYAN), //cyan
-    EYE("eye", MoreSnifferFlowers.loc("block_pattern_eye"),7, 0x98a5a7, DyeColor.LIGHT_GRAY), //lightgray
-    HEARTS("hearts", MoreSnifferFlowers.loc("block_pattern_hearts"),8, 0xa63e3b, DyeColor.RED), //red
-    HONEYCOMB("honeycomb", MoreSnifferFlowers.loc("block_pattern_honeycomb"),9, 0xbe7b3a, DyeColor.ORANGE), //orange
-    PAWS("paws", MoreSnifferFlowers.loc("block_pattern_paws"),10, 0x7d5840, DyeColor.BROWN), //brown
-    PRISMARINE("prismarine", MoreSnifferFlowers.loc("block_pattern_prismarine"),11, 0x5351ad, DyeColor.BLUE), //blue
-    SPROUTS("sprouts", MoreSnifferFlowers.loc("block_pattern_sprouts"),12, 0x4e8646, DyeColor.GREEN), //green
-    STARS("stars", MoreSnifferFlowers.loc("block_pattern_stars"),13, 0xeed462, DyeColor.YELLOW), //yellow
-    COVER("cover", MoreSnifferFlowers.loc("block_pattern_cover"),14, 0x736979, DyeColor.GRAY), //gray
-    FLOWERS("flowers", MoreSnifferFlowers.loc("block_pattern_flowers"),15, 0xb45da6, DyeColor.PINK), //pink
+    PIPES("pipes", MoreSnifferFlowers.loc("block_pattern_pipes"),0, 0xFF79b055, DyeColor.LIME), //lime
+    BRICKS("bricks", MoreSnifferFlowers.loc("block_pattern_bricks"),1, 0xFFae457c, DyeColor.MAGENTA), //magenta
+    FOCUS("focus", MoreSnifferFlowers.loc("block_pattern_focus"),2, 0xFF6a3d87, DyeColor.PURPLE), //purple
+    BUBBLES("bubbles", MoreSnifferFlowers.loc("block_pattern_bubbles"),3, 0xFF6dbdba, DyeColor.LIGHT_BLUE), //lightblue
+    CLOUDS("clouds", MoreSnifferFlowers.loc("block_pattern_clouds"),4, 0xFFddddd0, DyeColor.WHITE), //white
+    DEEPSLATE("deepslate", MoreSnifferFlowers.loc("block_pattern_deepslate"),5, 0xFF413f51, DyeColor.BLACK), //black
+    DIAMOND("diamond", MoreSnifferFlowers.loc("block_pattern_diamond"),6, 0xFF4a9887, DyeColor.CYAN), //cyan
+    EYE("eye", MoreSnifferFlowers.loc("block_pattern_eye"),7, 0xFF98a5a7, DyeColor.LIGHT_GRAY), //lightgray
+    HEARTS("hearts", MoreSnifferFlowers.loc("block_pattern_hearts"),8, 0xFFa63e3b, DyeColor.RED), //red
+    HONEYCOMB("honeycomb", MoreSnifferFlowers.loc("block_pattern_honeycomb"),9, 0xFFbe7b3a, DyeColor.ORANGE), //orange
+    PAWS("paws", MoreSnifferFlowers.loc("block_pattern_paws"),10, 0xFF7d5840, DyeColor.BROWN), //brown
+    PRISMARINE("prismarine", MoreSnifferFlowers.loc("block_pattern_prismarine"),11, 0xFF5351ad, DyeColor.BLUE), //blue
+    SPROUTS("sprouts", MoreSnifferFlowers.loc("block_pattern_sprouts"),12, 0xFF4e8646, DyeColor.GREEN), //green
+    STARS("stars", MoreSnifferFlowers.loc("block_pattern_stars"),13, 0xFFeed462, DyeColor.YELLOW), //yellow
+    COVER("cover", MoreSnifferFlowers.loc("block_pattern_cover"),14, 0xFF736979, DyeColor.GRAY), //gray
+    FLOWERS("flowers", MoreSnifferFlowers.loc("block_pattern_flowers"),15, 0xFFb45da6, DyeColor.PINK), //pink
 
-    FLOWER_CHARGE("flower_charge", MoreSnifferFlowers.vanillaLoc("flower_banner_pattern"),16, 0xffebb6, null),
-    GLOBE("globe", MoreSnifferFlowers.vanillaLoc("globe_banner_pattern"),17, 0xffebb6, null),
-    SNOUT("snout", MoreSnifferFlowers.vanillaLoc("piglin_banner_pattern"),18, 0xffebb6, null),
-    CREEPER_CHARGE("creeper_charge", MoreSnifferFlowers.vanillaLoc("creeper_banner_pattern"),19, 0xffebb6, null),
-    SKULL_CHARGE("skull_charge", MoreSnifferFlowers.vanillaLoc("skull_banner_pattern"),20, 0xffebb6, null),
-    THING("thing", MoreSnifferFlowers.vanillaLoc("mojang_banner_pattern"),21, 0xffebb6, null),
-    AMBUSH("ambush", MoreSnifferFlowers.loc("ambush_banner_pattern"),22, 0xffebb6, null),
-    EVIL("evil", MoreSnifferFlowers.loc("evil_banner_pattern"),23, 0xffebb6, null),
+    FLOWER_CHARGE("flower_charge", MoreSnifferFlowers.vanillaLoc("flower_banner_pattern"),16, 0xFFffebb6, null),
+    GLOBE("globe", MoreSnifferFlowers.vanillaLoc("globe_banner_pattern"),17, 0xFFffebb6, null),
+    SNOUT("snout", MoreSnifferFlowers.vanillaLoc("piglin_banner_pattern"),18, 0xFFffebb6, null),
+    CREEPER_CHARGE("creeper_charge", MoreSnifferFlowers.vanillaLoc("creeper_banner_pattern"),19, 0xFFffebb6, null),
+    SKULL_CHARGE("skull_charge", MoreSnifferFlowers.vanillaLoc("skull_banner_pattern"),20, 0xFFffebb6, null),
+    THING("thing", MoreSnifferFlowers.vanillaLoc("mojang_banner_pattern"),21, 0xFFffebb6, null),
+    AMBUSH("ambush", MoreSnifferFlowers.loc("ambush_banner_pattern"),22, 0xFFffebb6, null),
+    EVIL("evil", MoreSnifferFlowers.loc("evil_banner_pattern"),23, 0xFFffebb6, null),
 
-    EMPTY("empty", null, -1, 0xddddd0, null)
+    EMPTY("empty", null, -1, 0xFFddddd0, null)
 
     ;
 

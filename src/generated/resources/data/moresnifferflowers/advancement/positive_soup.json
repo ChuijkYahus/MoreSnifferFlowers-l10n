@@ -14,18 +14,18 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "fallback": "Have 4 positive soup effects at the same time",
       "translate": "advancements.more_sniffer_flowers.positive_soup.desc"
     },
     "frame": "challenge",
-    "hidden": false,
     "icon": {
-      "item": "moresnifferflowers:rooted_soup",
-      "nbt": "{color:16759889}"
+      "components": {
+        "moresnifferflowers:color": 16759889
+      },
+      "count": 1,
+      "id": "moresnifferflowers:rooted_soup"
     },
-    "show_toast": true,
     "title": {
       "fallback": "Michelin Star Chef",
       "translate": "advancements.more_sniffer_flowers.positive_soup"

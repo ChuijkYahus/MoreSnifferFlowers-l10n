@@ -2,7 +2,7 @@
 plugins {
     id 'maven-publish'
     id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
-    id 'net.neoforged.moddev' version '2.0.74'
+    id 'net.neoforged.moddev' version '2.0.107'
 }
 
 group = 'net.abraxator.moresnifferflowers'
@@ -88,11 +88,11 @@ dependencies {
 
 final manifestAttributes = [
         'Specification-Title'   : 'More Sniffer Flowers',
-        'Specification-Vendor'  : 'AbraXator',
+        'Specification-Vendor'  : 'Nikdo53',
         'Specification-Version' : project.version,
         'Implementation-Title'  : project.name,
         'Implementation-Version': project.jar.archiveVersion,
-        'Implementation-Vendor' : 'AbraXator',
+        'Implementation-Vendor' : 'Nikdo53',
         "MixinConfigs": "more_sniffer_flowers.neoforge.mixins.json"
 ]
 

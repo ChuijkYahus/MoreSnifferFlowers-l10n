@@ -3,11 +3,14 @@ package net.abraxator.moresnifferflowers.networking.toClient;
 import io.netty.buffer.ByteBuf;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.components.DyespriaMode;
+import net.abraxator.moresnifferflowers.components.PatternspriaMode;
 import net.abraxator.moresnifferflowers.items.DyespriaItem;
+import net.abraxator.moresnifferflowers.items.PatternspriaItem;
 import net.abraxator.moresnifferflowers.networking.IMSFPacket;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record DyespriaDisplayModeChangePacket(int dyespriaModeId) implements IMSFPacket {
@@ -25,7 +28,8 @@ public record DyespriaDisplayModeChangePacket(int dyespriaModeId) implements IMS
     @Override
     public void handle(IPayloadContext context) {
         context.enqueueWork(() -> {
-            context.player().displayClientMessage(DyespriaItem.getCurrentModeComponent(DyespriaMode.byIndex(dyespriaModeId)), true);
+            Player player = context.player();
+            player.displayClientMessage(DyespriaItem.getCurrentModeComponent(DyespriaMode.byIndex(dyespriaModeId)), true);
         });
     }
 }

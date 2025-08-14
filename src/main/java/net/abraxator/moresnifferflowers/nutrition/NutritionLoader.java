@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.*;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -51,13 +52,15 @@ public class NutritionLoader extends SimpleJsonResourceReloadListener {
             try {
                 for (NutritionType nutritionType : NutritionType.values()) {
                     JsonObject entries = entry.getValue().getAsJsonObject().getAsJsonObject(nutritionType.name);
-                    Map<NutritionType, List<NutritionEntry>> currentTypeNutritions = Maps.newHashMap();
-                    
-                    var values = CODEC.parse(JsonOps.INSTANCE, entries).get();
-                    if(values.left().isPresent()) {
+
+                    DataResult<Map<Either<TagKey<Item>, Item>, Integer>> parse = CODEC.parse(JsonOps.INSTANCE, entries);
+
+                    if(parse.isSuccess()) {
+
+                        Map<Either<TagKey<Item>, Item>, Integer> values = parse.getOrThrow(); //this seems dangerous
                         Map<Item, NutritionEntry> map = new HashMap<>();
                         
-                        for (Map.Entry<Either<TagKey<Item>, Item>, Integer> mapEntry : values.left().get().entrySet()) {
+                        for (Map.Entry<Either<TagKey<Item>, Item>, Integer> mapEntry : values.entrySet()) {
                             Set<Item> itemList = new HashSet<>();
                             Map.Entry<Item, NutritionEntry> ret;
 
@@ -76,14 +79,13 @@ public class NutritionLoader extends SimpleJsonResourceReloadListener {
                             }
                         }
                         
-                        map.forEach((item, nutritionEntry) -> {
-                            currentModNutritions.merge(item,
-                                    new ArrayList<>(List.of(nutritionEntry)),
-                                    (existingList, newList) -> {
-                                        existingList.addAll(newList);
-                                        return existingList;
-                                    });
-                        });
+                        map.forEach((item, nutritionEntry) ->
+                                currentModNutritions.merge(item,
+                                new ArrayList<>(List.of(nutritionEntry)),
+                                (existingList, newList) -> {
+                                    existingList.addAll(newList);
+                                    return existingList;
+                                }));
                     }
                 }
             } catch (IllegalStateException | JsonParseException e) {

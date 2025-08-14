@@ -64,10 +64,10 @@ public class PatternspriaItem extends Item {
         }
 
         if (player.isCrouching() && BlockPatternCapability.hasPattern(blockPos, level)) {
-            if (!stack.getOrCreateTag().contains("color")){
-                stack.getOrCreateTag().putInt("color", -1);
+            if (!stack.has(ModDataComponents.COLOR)){
+                stack.set(ModDataComponents.COLOR, -1);
             }
-            if (stack.getOrCreateTag().getInt("color") != BlockPatternCapability.getPattern(blockPos, level).color() ) {
+            if (stack.getOrDefault(ModDataComponents.COLOR, DEFAULT_COLOR) != BlockPatternCapability.getPattern(blockPos, level).color() ) {
                 copyColor(stack, level, blockPos);
                 return InteractionResult.sidedSuccess(level.isClientSide);
             }
@@ -81,7 +81,7 @@ public class PatternspriaItem extends Item {
         }
 
         if (canUse(blockPos, level, stack)) {
-            int oldCount = stack.getOrCreateTag().getInt("amount");
+            int oldCount = stack.getOrDefault(ModDataComponents.AMOUNT, 0);
             AtomicInteger currentCount = new AtomicInteger(oldCount);
             AtomicBoolean canContinueDyeing = new AtomicBoolean(true);
             PatternspriaMode dyespriaMode = getMode(stack);
@@ -95,7 +95,7 @@ public class PatternspriaItem extends Item {
                     patternOne(stack, level, blockPos1, fromPatternspria, pContext.getClickedFace(), horizontalDirection);
                     currentCount.getAndDecrement();
 
-                } else if (stack.getOrCreateTag().getInt("amount") <= 0 || fromPatternspria == BlockPattern.EMPTY){
+                } else if (stack.getOrDefault(ModDataComponents.AMOUNT, 0) <= 0 || fromPatternspria == BlockPattern.EMPTY){
                     canContinueDyeing.set(false);
                 }
 
@@ -125,7 +125,7 @@ public class PatternspriaItem extends Item {
 
 
     public PatternspriaMode getMode(ItemStack stack) {
-        return PatternspriaMode.byIndex(stack.getOrCreateTag().getByte("mode"));
+        return stack.getOrDefault(ModDataComponents.PATTERNSPRIA_MODE, PatternspriaMode.SINGLE);
     }
 
     public boolean patternOne(ItemStack stack, Level level, BlockPos blockPos, BlockPattern pattern, Direction face, Direction horizontalDirection) {
@@ -164,7 +164,7 @@ public class PatternspriaItem extends Item {
         }
 
         return (!BlockPatternCapability.hasPattern(pos, level) || inputId != groundId)
-                && patternspria.getOrCreateTag().getInt("amount") > 0 && isSturdy;
+                && patternspria.getOrDefault(ModDataComponents.AMOUNT, 0) > 0 && isSturdy;
     }
 
     public void finishColoring(ItemStack blockPattern, Level level, ItemStack patternspria, BlockPos blockPos, Direction face) {
@@ -201,7 +201,7 @@ public class PatternspriaItem extends Item {
             return itemToInsert;
         }
 
-        if (patternInside == BlockPattern.EMPTY || patternspria.getOrCreateTag().getInt("amount") <= 0) {
+        if (patternInside == BlockPattern.EMPTY || patternspria.getOrDefault(ModDataComponents.AMOUNT, 0) <= 0) {
             onAddPattern(patternspria, itemToInsert, itemToInsert.getCount());
             return ItemStack.EMPTY;
         }
@@ -212,7 +212,7 @@ public class PatternspriaItem extends Item {
             return returnStack;
         }
 
-        int amountInside = patternspria.getOrCreateTag().getInt("amount");
+        int amountInside = patternspria.getOrDefault(ModDataComponents.AMOUNT, 0);
         int freeSpace = 64 - amountInside;
 
         if (freeSpace <= 0) {
@@ -227,7 +227,7 @@ public class PatternspriaItem extends Item {
     }
 
     public void onAddPattern(ItemStack destinationStack, ItemStack pattern, int amount) {
-        destinationStack.getOrCreateTag().remove("color");
+        destinationStack.remove(ModDataComponents.COLOR);
         BlockPattern.setPatternToHolderStack(destinationStack, pattern, amount);
     }
 
@@ -266,13 +266,12 @@ public class PatternspriaItem extends Item {
     public void copyColor(ItemStack patternspria, Level level, BlockPos blockPos){
         if (BlockPatternCapability.hasPattern(blockPos, level)) {
             BlockPatternCapability.PatternData patternData = BlockPatternCapability.getPattern(blockPos, level);
-            patternspria.getOrCreateTag().putInt("color", patternData.color());
+            patternspria.set(ModDataComponents.COLOR, patternData.color());
         }
     }
 
     public int getColor(ItemStack patternspria){
-        if (patternspria.getOrCreateTag().contains("color")) return patternspria.getOrCreateTag().getInt("color");
-        return DEFAULT_COLOR;
+        return patternspria.getOrDefault(ModDataComponents.COLOR, DEFAULT_COLOR);
     }
 
 
@@ -303,46 +302,40 @@ public class PatternspriaItem extends Item {
     }
 
     public static int getPatternspriaUses(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        if (tag.contains("uses")){
-            int uses = tag.getInt("uses");
-            if (uses > 4 || uses < 0) {
-                MoreSnifferFlowers.LOGGER.warn("Invalid uses lastSpeed for patternspria: " + uses);
-                tag.putInt("uses", 4);
-                return 4;
-            }
-            return uses;
+        int uses = stack.getOrDefault(ModDataComponents.USES, 4);
+        if (uses > 4 || uses < 0) {
+            MoreSnifferFlowers.LOGGER.warn("Invalid uses amount for patternspria: " + uses);
+            stack.set(ModDataComponents.USES, 4);
+            return 4;
         }
-        return 4;
+        return uses;
     }
 
     public static void setPatternspriaUses(ItemStack stack, int uses) {
-        var tag = stack.getOrCreateTag();
-        if (tag.contains("uses") && tag.getInt("uses") < 0 || tag.getInt("uses") > 4) {
-            MoreSnifferFlowers.LOGGER.warn("Invalid uses lastSpeed for patternspria: " + tag.getInt("uses") + "new: " + uses);
-            tag.putInt("uses", 4);
+        if (uses > 4 || uses < 0) {
+            MoreSnifferFlowers.LOGGER.warn("Tried setting invalid uses amount for patternspria: " + uses);
+            stack.set(ModDataComponents.USES, 4);
             return;
         }
-        tag.putInt("uses", uses);
-        stack.setTag(tag);
+        stack.set(ModDataComponents.USES, uses);
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        BlockPattern pattern = BlockPattern.fromPatternspria(pStack);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        BlockPattern pattern = BlockPattern.fromPatternspria(stack);
         Component usage = Component.translatableWithFallback("tooltip.patternspria.usage", "Right click with dye to insert \nRight click caulorflower to repaint \nSneak to apply to the whole column \n").withStyle(ChatFormatting.GOLD);
         var usageComponents = Arrays.stream(usage.getString().split("\n", -1))
                 .filter(s -> !s.isEmpty())
                 .map(String::trim);
 
-        usageComponents.forEach(s -> pTooltipComponents.add(Component.literal(s).withStyle(ChatFormatting.GOLD)));
-        pTooltipComponents.add(Component.empty());
-        pTooltipComponents.add(DyespriaItem.getCurrentModeComponent(DyespriaMode.byIndex(getMode(pStack).ordinal())));
-        pTooltipComponents.add(Component.empty());
+        usageComponents.forEach(s -> tooltipComponents.add(Component.literal(s).withStyle(ChatFormatting.GOLD)));
+        tooltipComponents.add(Component.empty());
+        tooltipComponents.add(DyespriaItem.getCurrentModeComponent(DyespriaMode.byIndex(getMode(stack).ordinal())));
+        tooltipComponents.add(Component.empty());
 
         if(pattern != BlockPattern.EMPTY) {
-            ItemStack patternStack = pattern.getItemStack(pStack);
+            ItemStack patternStack = pattern.getItemStack(stack);
             var name = Component
                     .literal(patternStack.getCount() + " - " + WordUtils.capitalizeFully(pattern.getSerializedName()
                             .toLowerCase()
@@ -350,16 +343,16 @@ public class PatternspriaItem extends Item {
                             .replaceAll("_", " ")))
                     .withStyle(Style.EMPTY
                             .withColor(pattern.getColor()));
-            pTooltipComponents.add(name);
+            tooltipComponents.add(name);
         } else {
-            pTooltipComponents.add(Component.translatableWithFallback("tooltip.dyespria.empty", "Empty").withStyle(ChatFormatting.GRAY));
+            tooltipComponents.add(Component.translatableWithFallback("tooltip.dyespria.empty", "Empty").withStyle(ChatFormatting.GRAY));
         }
     }
 
     public void spawnParticles(RandomSource randomSource, Level level, BlockPattern pattern, BlockPos blockPos, Direction face, ItemStack stack) {
         Vector3f vector3f = blockPos.getCenter().toVector3f();
         if (face != null) vector3f = vector3f.add(face.step().div(new Vector3f(2,2,2)));
-        int color = stack.getOrCreateTag().contains("color") ? stack.getOrCreateTag().getInt("color") : pattern.getColor();
+        int color = stack.getOrDefault(ModDataComponents.COLOR, pattern.getColor());
         for(int i = 0; i <= randomSource.nextIntBetweenInclusive(5, 10); i++) {
             level.addParticle(
                     new DustParticleOptions(Vec3.fromRGB24(color).toVector3f(), 1.0F),
@@ -376,5 +369,4 @@ public class PatternspriaItem extends Item {
         stack.set(ModDataComponents.PATTERNSPRIA_MODE, newMode);
         player.displayClientMessage(DyespriaItem.getCurrentModeComponent(DyespriaMode.byIndex(newMode.ordinal())), true);
 
-    }
-}
+    }}

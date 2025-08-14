@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "moresnifferflowers:block_patterns"
+            "items": "#moresnifferflowers:block_patterns"
           }
         ]
       },
@@ -20,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_block_pattern",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_block_pattern"
     ]
   ],
   "rewards": {
     "recipes": [
       "moresnifferflowers:patternspria"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

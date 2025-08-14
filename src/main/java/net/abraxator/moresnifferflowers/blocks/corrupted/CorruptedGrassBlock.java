@@ -44,8 +44,9 @@ public class CorruptedGrassBlock extends SpreadingSnowyDirtBlock implements Bone
         return CODEC;
     }
 
-    public CorruptedGrassBlock(BlockBehaviour.Properties p_53685_) {
-        super(p_53685_);
+    public CorruptedGrassBlock(BlockBehaviour.Properties properties) {
+        super(properties);
+        this.registerDefaultState(this.stateDefinition.any().setValue(ModStateProperties.CROWDED, false));
     }
 
     @Override

@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.networking.toClient;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.NutritionCapability;
 import net.abraxator.moresnifferflowers.client.gui.screen.cookbook.CookbookScreen;
+import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.abraxator.moresnifferflowers.networking.IMSFPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -25,9 +26,7 @@ public record BerootCookbookScreenPacket() implements IMSFPacket {
     public void handle(IPayloadContext context) {
         context.enqueueWork(() ->{
             LocalPlayer player = Minecraft.getInstance().player;
-            Minecraft.getInstance().setScreen((new CookbookScreen(player.getCapability(CapabilityList.UNLOCKED_NUTRITIONS)
-                    .map(NutritionCapability::getItems)
-                    .orElse(new HashSet<>()))));
+            Minecraft.getInstance().setScreen(new CookbookScreen(player.getData(ModDataAttachments.NUTRITION).getItems()));
         });
     }
 

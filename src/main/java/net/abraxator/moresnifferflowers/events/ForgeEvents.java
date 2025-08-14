@@ -44,6 +44,7 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.entity.item.ItemEvent;
+import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
@@ -114,12 +115,12 @@ public class ForgeEvents {
     }
 
     @SubscribeEvent
-    public static void itemEntity(ItemEvent event){
+    public static void itemEntity(ItemTossEvent event){
         ItemEntity itemEntity = event.getEntity();
         ItemStack item = itemEntity.getItem();
 
        if (item.is(ModItems.BURNED_SLOT.get())){
-           itemEntity.discard();
+           event.setCanceled(true);
        }
 
     }

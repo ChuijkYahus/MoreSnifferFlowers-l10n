@@ -1,6 +1,8 @@
 package net.abraxator.moresnifferflowers.mixins;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.capability.HardenedMouthCapability;
+import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
 import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.minecraft.client.gui.GuiGraphics;
@@ -36,14 +38,13 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
             int y = this.topPos + ModClientConfig.HARDENED_MOUTH_Y.get();
             guiGraphics.blit(TEXTURE_LOCATION, x, y, 0, 0, 24, 60);
 
-            player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(hardenedMouthCapability -> {
-                float maxCooldown = (float) hardenedMouthCapability.getMaxCooldown(player);
-                float cooldown = (float) hardenedMouthCapability.getCooldown();
-                int height = Math.round(14F - (14F * (cooldown / maxCooldown)));
+            HardenedMouthCapability hardenedMouthCapability = player.getData(ModDataAttachments.HARDENED_MOUTH);
 
-                guiGraphics.blit(TEXTURE_LOCATION, x + 5, y + 23 + 14 - height , 32, 14 - height, 14, height);
+            float maxCooldown = (float) hardenedMouthCapability.getMaxCooldown(player);
+            float cooldown = (float) hardenedMouthCapability.getCooldown();
+            int height = Math.round(14F - (14F * (cooldown / maxCooldown)));
 
-            });
+            guiGraphics.blit(TEXTURE_LOCATION, x + 5, y + 23 + 14 - height , 32, 14 - height, 14, height);
 
         }
     }

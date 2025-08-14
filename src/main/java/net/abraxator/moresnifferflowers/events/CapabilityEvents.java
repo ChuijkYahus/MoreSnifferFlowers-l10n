@@ -11,7 +11,7 @@ import net.neoforged.neoforge.event.level.ChunkWatchEvent;
 
 import java.util.HashSet;
 
-@EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID)
+// @EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID)
 public class CapabilityEvents {
 
 /*    // Pure Chatgpt code

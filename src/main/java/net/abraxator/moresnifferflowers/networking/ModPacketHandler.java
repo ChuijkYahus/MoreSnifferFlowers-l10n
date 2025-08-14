@@ -1,10 +1,9 @@
 package net.abraxator.moresnifferflowers.networking;
 
-import net.abraxator.moresnifferflowers.networking.toClient.BerootCauldronSuckPacket;
-import net.abraxator.moresnifferflowers.networking.toClient.BerootCookbookScreenPacket;
-import net.abraxator.moresnifferflowers.networking.toClient.CorruptedSludgePacket;
-import net.abraxator.moresnifferflowers.networking.toClient.DyespriaDisplayModeChangePacket;
+import net.abraxator.moresnifferflowers.networking.toClient.*;
+import net.abraxator.moresnifferflowers.networking.toServer.BerootCauldronCraftPacket;
 import net.abraxator.moresnifferflowers.networking.toServer.DyespriaModePacket;
+import net.abraxator.moresnifferflowers.networking.toServer.PatternspriaModePacket;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -23,13 +22,19 @@ public class ModPacketHandler {
     
     protected void registerClientToServer(ModPacketRegistrar registrar) {
         registrar.play(DyespriaModePacket.TYPE, DyespriaModePacket.STREAM_CODEC);
-        registrar.play(BerootCauldronSuckPacket.TYPE, BerootCauldronSuckPacket.STREAM_CODEC);
-        registrar.play(BerootCookbookScreenPacket.TYPE, BerootCookbookScreenPacket.STREAM_CODEC);
+        registrar.play(PatternspriaModePacket.TYPE, PatternspriaModePacket.STREAM_CODEC);
+        registrar.play(BerootCauldronCraftPacket.TYPE, BerootCauldronCraftPacket.STREAM_CODEC);
     }
     
     protected void registerServerToClient(ModPacketRegistrar registrar) {
-        registrar.play(DyespriaDisplayModeChangePacket.TYPE, DyespriaDisplayModeChangePacket.STREAM_CODEC);
+        registrar.play(BerootCauldronSuckPacket.TYPE, BerootCauldronSuckPacket.STREAM_CODEC);
+        registrar.play(BerootCookbookScreenPacket.TYPE, BerootCookbookScreenPacket.STREAM_CODEC);
         registrar.play(CorruptedSludgePacket.TYPE, CorruptedSludgePacket.STREAM_CODEC);
+        registrar.play(CorruptionParticlePacket.TYPE, CorruptionParticlePacket.STREAM_CODEC);
+        registrar.play(DyespriaDisplayModeChangePacket.TYPE, DyespriaDisplayModeChangePacket.STREAM_CODEC);
+        registrar.play(SaltemoneParticlePacket.TYPE, SaltemoneParticlePacket.STREAM_CODEC);
+
+
     }
 
     public static ModPacketHandler register(IEventBus iEventBus, int version) {

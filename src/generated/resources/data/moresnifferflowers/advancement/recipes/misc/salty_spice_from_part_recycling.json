@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "moresnifferflowers:dripsalt"
-            ]
+            "items": "moresnifferflowers:dripsalt"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_dripsalt",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_dripsalt"
     ]
   ],
   "rewards": {
     "recipes": [
       "moresnifferflowers:salty_spice_from_part_recycling"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

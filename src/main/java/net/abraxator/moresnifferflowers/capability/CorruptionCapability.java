@@ -84,6 +84,6 @@ public class CorruptionCapability {
     public static void printDebug(LevelChunk chunk){
         if (chunk.getLevel().isClientSide()) return;
         CorruptionCapability cap = chunk.getData(ModDataAttachments.CHUNK_CORRUPTION.get());
-        MoreSnifferFlowers.LOGGER.debug("Count: " + cap.count + " Resistance: " + cap.resistance + " isSource: " + cap.isSource + " isNeighbor: " + cap.isNeighbor + " Flowers size: " + cap.flowers.size());
+        System.out.println(("Count: " + cap.count + " Resistance: " + cap.resistance + " isSource: " + cap.isSource + " isNeighbor: " + cap.isNeighbor + " Flowers size: " + cap.flowers.size()));
     }
 }

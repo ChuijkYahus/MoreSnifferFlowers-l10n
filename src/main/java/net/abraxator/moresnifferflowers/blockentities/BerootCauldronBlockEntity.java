@@ -24,6 +24,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -129,7 +130,8 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
 
 
         soup.set(ModDataComponents.ROOTED_INGREDIENTS, this.ingredients.validStream().toList()); //For Cookbook unlocking
-        soup.set(ModDataComponents.ROOTED_SOUP, new RootedSoup(soupFood, soupSat, soupUses, soupUses));
+        soup.set(ModDataComponents.ROOTED_SOUP, new RootedSoup(soupFood, soupSat, soupUses));
+        soup.set(ModDataComponents.USES, soupUses);
 
         float positiveThreshold = 0.5f;
         float negativeThreshold = 0.75f;
@@ -383,13 +385,9 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         if (!isCenter) return;
 
         tag.putInt("beetroots", this.beetroots);
-        ListTag items = new ListTag();
-        for (ItemStack stack : ingredients) {
-            CompoundTag itemTag = new CompoundTag();
-            stack.save(registries, itemTag);
-            items.add(itemTag);
-        }
-        tag.put("ingredients", items);
+
+        ContainerHelper.saveAllItems(tag, ingredients, registries);
+
         tag.putInt("soupCount", this.soupCount);
         tag.putBoolean("crafting", this.crafting);
         tag.putInt("craftingTime", this.craftingTimeRemaining);
@@ -413,17 +411,8 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         this.ingredients.clear();
         this.beetroots = tag.getInt("beetroots");
 
-        ListTag ingredientsTag = tag.getList("ingredients", 10);
-        for (int i = 0; i < this.ingredients.size(); i++) {
-            if (i < ingredientsTag.size()) {
-                CompoundTag itemTag = ingredientsTag.getCompound(i);
-                ItemStack stack = ItemStack.parseOptional(registries, itemTag);
-                this.ingredients.set(i, stack);
-            } else {
-                this.ingredients.set(i, ItemStack.EMPTY);
-            }
-        }
-
+        ContainerHelper.loadAllItems(tag, ingredients, registries);
+        
         this.soupCount = tag.getInt("soupCount");
         this.crafting = tag.getBoolean("crafting");
         this.craftingTimeRemaining = tag.getInt("craftingTime");

@@ -5,6 +5,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
 import net.abraxator.moresnifferflowers.init.ModEffects;
+import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.networking.toClient.SyncMouthSlotsPacket;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 public class HardenedMouthCapability {
     public static int SLOT_COUNT = 2;
-    NonNullList<ItemStack> mouthSlots = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
+    NonNullList<ItemStack> mouthSlots = NonNullList.withSize(SLOT_COUNT, ModItems.PLACEHOLDER.toStack());
     public int cooldown = 0;
 
     public static final Codec<List<ItemStack>> ITEMSTACK_LIST_CODEC = ItemStack.CODEC.listOf()
@@ -31,10 +32,10 @@ public class HardenedMouthCapability {
                     .toList()));
 
     public static final Codec<HardenedMouthCapability> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    ITEMSTACK_LIST_CODEC.fieldOf("slots").forGetter(cap -> cap.mouthSlots))
+                    NonNullList.codecOf(ItemStack.CODEC).fieldOf("slots").forGetter(cap -> cap.mouthSlots))
             .apply(instance, (itemStacks) -> {
                 HardenedMouthCapability capability  = new HardenedMouthCapability();
-                capability.mouthSlots = (NonNullList<ItemStack>) itemStacks;
+                capability.mouthSlots = itemStacks;
                 return capability;
     }));
 

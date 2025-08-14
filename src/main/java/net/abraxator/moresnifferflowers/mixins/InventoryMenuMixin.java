@@ -1,6 +1,8 @@
 package net.abraxator.moresnifferflowers.mixins;
 
+import net.abraxator.moresnifferflowers.capability.HardenedMouthCapability;
 import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
+import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Inventory;
@@ -27,22 +29,18 @@ public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingInput, C
         int moreSnifferFlowers$mouthSlotX = 180;
         int moreSnifferFlowers$mouthSlotY = 80;
 
-        if (owner.level().isClientSide) {
+        if (owner.level().isClientSide && ModClientConfig.CLIENT_CONFIG.isLoaded()) {
             moreSnifferFlowers$mouthSlotX = ModClientConfig.HARDENED_MOUTH_X.get();
             moreSnifferFlowers$mouthSlotY = ModClientConfig.HARDENED_MOUTH_Y.get();
 
         }
 
         this.addSlot(new HardenedMouthSlot(owner , 0, moreSnifferFlowers$mouthSlotX + 4, moreSnifferFlowers$mouthSlotY + 4,
-                () -> owner.getCapability(CapabilityList.MOUTH_SLOTS)
-                .map(HardenedMouthCapability::getMouthSlotItems)
-                .orElse(NonNullList.withSize(2, ItemStack.EMPTY))));
+                () -> owner.getData(ModDataAttachments.HARDENED_MOUTH).getMouthSlotItems()));
         // x180, y84
 
         this.addSlot(new HardenedMouthSlot(owner , 1, moreSnifferFlowers$mouthSlotX + 4, moreSnifferFlowers$mouthSlotY + 40,
-                () -> owner.getCapability(CapabilityList.MOUTH_SLOTS)
-                        .map(HardenedMouthCapability::getMouthSlotItems)
-                        .orElse(NonNullList.withSize(2, ItemStack.EMPTY))));
+                () -> owner.getData(ModDataAttachments.HARDENED_MOUTH).getMouthSlotItems()));
         // x180, y120
 
 

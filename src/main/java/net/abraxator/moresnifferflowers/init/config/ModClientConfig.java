@@ -56,6 +56,7 @@ public class ModClientConfig {
     }
 
     public static int getBlockPatternRenderDistance() {
+        if (!ModClientConfig.CLIENT_CONFIG.isLoaded()) return 0;
         Minecraft minecraft = Minecraft.getInstance();
         int renderDistancePlayer = minecraft.options.getEffectiveRenderDistance();
         int configuredRenderDistance = ModClientConfig.BLOCK_PATTERN_RENDER_DISTANCE.get();

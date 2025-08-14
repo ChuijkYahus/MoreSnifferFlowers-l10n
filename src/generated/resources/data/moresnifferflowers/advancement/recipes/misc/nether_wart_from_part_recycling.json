@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "moresnifferflowers:cropressed_nether_wart"
-            ]
+            "items": "moresnifferflowers:cropressed_nether_wart"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_cropressed_nether_wart",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_cropressed_nether_wart"
     ]
   ],
   "rewards": {
     "recipes": [
       "moresnifferflowers:nether_wart_from_part_recycling"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

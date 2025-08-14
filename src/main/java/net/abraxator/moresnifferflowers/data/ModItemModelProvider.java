@@ -54,6 +54,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.DEBUG_FLOWER.get());
 
         basicItem(ModBlocks.TORCHFLAME.get().asItem());
+        basicItem(ModItems.PLACEHOLDER.get());
 
 
         /*for(int i = 1; i <= ModItemProperties.COPRESSOR_ANIMATION_FRAMES; i++) {

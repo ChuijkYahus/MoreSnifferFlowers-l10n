@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "moresnifferflowers:cropressor"
-            ]
+            "items": "moresnifferflowers:cropressor"
           }
         ]
       },
@@ -15,21 +13,20 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "moresnifferflowers:cropressing_cropressed_carrot"
+        "recipe": "moresnifferflowers:cropressed_nether_wart_from_cropressing"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_cropressor",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_cropressor"
     ]
   ],
   "rewards": {
     "recipes": [
-      "moresnifferflowers:cropressing_cropressed_carrot"
+      "moresnifferflowers:cropressed_nether_wart_from_cropressing"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

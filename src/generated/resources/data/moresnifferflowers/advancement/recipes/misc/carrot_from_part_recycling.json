@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "moresnifferflowers:cropressed_carrot"
-            ]
+            "items": "moresnifferflowers:cropressed_carrot"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_cropressed_carrot",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_cropressed_carrot"
     ]
   ],
   "rewards": {
     "recipes": [
       "moresnifferflowers:carrot_from_part_recycling"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

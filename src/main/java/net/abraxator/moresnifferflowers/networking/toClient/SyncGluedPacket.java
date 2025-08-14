@@ -24,7 +24,7 @@ public record SyncGluedPacket(boolean isGlued, int entityId) implements IMSFPack
     @Override
     public void handle(IPayloadContext context) {
         context.enqueueWork(() ->{
-            Level level = Minecraft.getInstance().level;
+/*            Level level = Minecraft.getInstance().level;
             if (level == null) return;
 
             Entity entity = level.getEntity(entityId);
@@ -34,7 +34,7 @@ public record SyncGluedPacket(boolean isGlued, int entityId) implements IMSFPack
                 living.getCapability(CapabilityList.GLUED).ifPresent(cap -> {
                     cap.isGlued = isGlued;
                 });
-            }
+            }*/
         });
     }
     @Override

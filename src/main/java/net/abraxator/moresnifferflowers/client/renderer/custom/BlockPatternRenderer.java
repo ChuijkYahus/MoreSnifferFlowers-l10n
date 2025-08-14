@@ -47,7 +47,7 @@ public class BlockPatternRenderer {
         this.dirty = true;
     }
 
-    public void cachePatterns(Level level, double camX, double camY, double camZ, Matrix4f viewMatrix, Matrix4f projectionMatrix, List<LevelChunk> levelChunks, Frustum frustum) {
+    public void cachePatterns(Level level, double camX, double camY, double camZ, List<LevelChunk> levelChunks, Frustum frustum) {
         if (!dirty) return;
         dirty = false;
         cachedQuads.clear();
@@ -57,7 +57,7 @@ public class BlockPatternRenderer {
         for (LevelChunk chunk : levelChunks) {
             BlockPatternCapability storage = chunk.getData(ModDataAttachments.BLOCK_PATTERNS);
 
-                Stream<BlockPos> patternPositions = storage.patterns().keySet().stream();
+                Stream<BlockPos> patternPositions = storage.getPatterns().keySet().stream();
 
                 patternPositions.forEach(pos -> {
                     BlockPatternCapability.PatternData data = storage.getPattern(pos);
@@ -203,7 +203,7 @@ public class BlockPatternRenderer {
     public void render(PoseStack stack, MultiBufferSource bufferSource) {
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.cutoutMipped());
 
-        if (ModClientConfig.BLOCK_PATTERN_TRANSPARENCY.get()){
+        if (ModClientConfig.CLIENT_CONFIG.isLoaded() && ModClientConfig.BLOCK_PATTERN_TRANSPARENCY.get()){
             buffer = bufferSource.getBuffer(RenderType.translucent());
         }
 
@@ -277,8 +277,8 @@ public class BlockPatternRenderer {
         private float lastYaw = 0f;
         private float lastPitch = 0f;
 
-        private static final double MOVE_THRESHOLD = 1.5; // blocks
-        private static final float ROTATE_THRESHOLD = 5f; // degrees
+        private static final double MOVE_THRESHOLD = 0.01; // blocks
+        private static final float ROTATE_THRESHOLD = 0.2f; // degrees
 
         public boolean hasMoved(Camera camera) {
             Vec3 currentPos = camera.getPosition();

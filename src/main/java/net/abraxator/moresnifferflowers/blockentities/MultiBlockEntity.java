@@ -38,7 +38,7 @@ public class MultiBlockEntity extends ModBlockEntity {
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        this.center = NbtUtils.readBlockPos(tag, "center").get();
+        this.center = NbtUtils.readBlockPos(tag, "center").orElseGet(this::getBlockPos);
         this.isPlaced = tag.getBoolean("placed");
     }
 
@@ -61,4 +61,6 @@ public class MultiBlockEntity extends ModBlockEntity {
     public static void setPlaced(LevelReader level, BlockPos blockPos) {
         if(level.getBlockEntity(blockPos) instanceof MultiBlockEntity entity) entity.setPlaced();
     }
+
+
 }

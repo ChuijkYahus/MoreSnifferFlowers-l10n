@@ -17,7 +17,7 @@ public class NutritionStack {
     }
     
     public CompoundTag serialize(CompoundTag tag, HolderLookup.Provider provider) {
-        tag.put("itemStack", this.stack.save(new CompoundTag()));
+        tag.put("itemStack", this.stack.save(provider));
         tag.putInt("nutritionEntries", this.nutrition.getNutritionEntries().size());
         for (int i = 0; i < this.nutrition.getNutritionEntries().size(); i++) {
             NutritionEntry nutritionEntry = this.nutrition.getNutritionEntries().get(i);
@@ -27,8 +27,8 @@ public class NutritionStack {
         return tag;
     }
     
-    public static NutritionStack deserialize(CompoundTag tag) {
-        ItemStack itemStack = ItemStack.of(tag.getCompound("itemStack"));
+    public static NutritionStack deserialize(CompoundTag tag, HolderLookup.Provider provider) {
+        ItemStack itemStack = ItemStack.parseOptional(provider, tag.getCompound("itemStack"));
         int entries = tag.getInt("nutritionEntries");
         List<NutritionEntry> nutritionEntries = new ArrayList<>();
         for (int i = 0; i < entries; i++) {

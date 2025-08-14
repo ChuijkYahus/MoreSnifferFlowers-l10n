@@ -14,7 +14,6 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "fallback": "Have 4 negative soup effects at the same time",
       "translate": "advancements.more_sniffer_flowers.negative_soup.desc"
@@ -22,9 +21,9 @@
     "frame": "challenge",
     "hidden": true,
     "icon": {
-      "item": "minecraft:poisonous_potato"
+      "count": 1,
+      "id": "minecraft:poisonous_potato"
     },
-    "show_toast": true,
     "title": {
       "fallback": "Pasta Burner",
       "translate": "advancements.more_sniffer_flowers.negative_soup"
