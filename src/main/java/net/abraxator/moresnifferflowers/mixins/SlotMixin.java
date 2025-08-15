@@ -31,4 +31,6 @@ public abstract class SlotMixin {
       if (this.getItem().is(ModItems.BURNED_SLOT.get()))
           cir.setReturnValue(false);
     }
+
+
 }

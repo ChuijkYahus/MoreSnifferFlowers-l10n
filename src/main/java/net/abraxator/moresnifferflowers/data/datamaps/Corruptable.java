@@ -27,6 +27,7 @@ public record Corruptable(List<Pair<Block, Integer>> list) {
     public static final Codec<Corruptable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             PAIR_CODEC.listOf().fieldOf("value").forGetter(Corruptable::list)
     ).apply(instance, Corruptable::new));
+
     public static final Map<Block, Block> HARDCODED_BLOCK = Util.make(Maps.newHashMap(), map -> {
         map.put(ModBlocks.DYESPRIA_PLANT.get(), ModBlocks.DYESCRAPIA_PLANT.get());
         map.put(ModBlocks.DAWNBERRY_VINE.get(), ModBlocks.GLOOMBERRY_VINE.get());
@@ -34,6 +35,10 @@ public record Corruptable(List<Pair<Block, Integer>> list) {
         map.put(ModBlocks.BONDRIPIA.get(), ModBlocks.ACIDRIPIA.get());
         map.put(ModBlocks.AMBUSH_BOTTOM.get(), ModBlocks.GARBUSH_BOTTOM.get());
         map.put(ModBlocks.AMBUSH_TOP.get(), ModBlocks.GARBUSH_TOP.get());
+        map.put(ModBlocks.SALTEMONE.get(), ModBlocks.SOURLEMONE.get());
+        map.put(ModBlocks.CAULORFLOWER.get(), ModBlocks.PATTERNFLOWER.get());
+        map.put(ModBlocks.TORCHFLOWER_AFLAME.get(), ModBlocks.TORCHEWFLOWER.get());
+        map.put(Blocks.TORCHFLOWER, ModBlocks.TORCHEWFLOWER.get());
     });
     
     public Corruptable(Block block) {
@@ -46,7 +51,7 @@ public record Corruptable(List<Pair<Block, Integer>> list) {
 
 
     public static Optional<Block> getCorruptedBlock(Block block, RandomSource random) {
-        Holder<Block> holder = block.builtInRegistryHolder();
+        Holder<Block> holder =  block.builtInRegistryHolder();
         Corruptable corruptable = holder.getData(ModDataMaps.CORRUPTABLE);
         Block hardcodedBlock = HARDCODED_BLOCK.getOrDefault(block, Blocks.AIR);
         

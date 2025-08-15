@@ -94,21 +94,21 @@ public class ForgeEvents {
     public static void onEffectEnd(Holder<MobEffect> effect, LivingEntity entity) {
 
         if (entity instanceof Player player) {
-            if (effect.equals(ModEffects.HARDENED_MOUTH.get()))
+            if (effect.equals(ModEffects.HARDENED_MOUTH))
                 player.getData(ModDataAttachments.HARDENED_MOUTH).onEffectEnd(player);
 
-            if (effect.equals(ModEffects.SLIPPERY.get()))
+            if (effect.equals(ModEffects.SLIPPERY))
                 player.getData(ModDataAttachments.SLIPPERY).onEffectEnd(player);
 
-            if (effect.equals(ModEffects.COMBO_MEAL.get()))
+            if (effect.equals(ModEffects.COMBO_MEAL))
                 player.getData(ModDataAttachments.COMBO_MEAL).onEffectEnd(player);
 
-            if (effect.equals(ModEffects.UNTOUCHABLE.get()))
+            if (effect.equals(ModEffects.UNTOUCHABLE))
                 player.getData(ModDataAttachments.UNTOUCHABLE).onEffectEnd(player);
 
         }
 
-        if (effect.equals(ModEffects.GLUED.get()))
+        if (effect.equals(ModEffects.GLUED))
             GluedCapability.setAndSync(entity, false, true);
 
 
@@ -119,7 +119,7 @@ public class ForgeEvents {
         ItemEntity itemEntity = event.getEntity();
         ItemStack item = itemEntity.getItem();
 
-       if (item.is(ModItems.BURNED_SLOT.get())){
+       if (item.is(ModItems.BURNED_SLOT)){
            event.setCanceled(true);
        }
 

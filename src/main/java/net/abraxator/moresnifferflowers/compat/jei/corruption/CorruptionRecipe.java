@@ -5,6 +5,7 @@ import net.abraxator.moresnifferflowers.data.datamaps.Corruptable;
 import net.abraxator.moresnifferflowers.data.datamaps.ModDataMaps;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;

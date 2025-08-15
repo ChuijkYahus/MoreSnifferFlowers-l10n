@@ -1,22 +1,18 @@
 package net.abraxator.moresnifferflowers.capability;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.networking.toClient.SyncNutritionPacket;
-import net.minecraft.core.NonNullList;
+import net.abraxator.moresnifferflowers.networking.toClient.SyncGluedPacket;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class NutritionCapability {
@@ -55,12 +51,8 @@ public class NutritionCapability {
 
     
     public void sync(Player player) {
-        if (!player.level().isClientSide) {
-            PacketDistributor.sendToAllPlayers(new SyncNutritionPacket(this.items));
-        }
     }
 
-    
     public CompoundTag serializeNBT() {
         final CompoundTag tag = new CompoundTag();
 

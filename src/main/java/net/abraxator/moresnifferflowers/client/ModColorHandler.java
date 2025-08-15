@@ -111,10 +111,13 @@ public class ModColorHandler {
         event.register(((stack, tintIndex) ->{
            BlockPattern pattern = BlockPattern.fromPatternspria(stack);
            if(tintIndex != 0 || pattern == BlockPattern.EMPTY) return -1;
-           return stack.getOrDefault(ModDataComponents.COLOR.get(), pattern.getColor());
+           return alphaFixer(stack.getOrDefault(ModDataComponents.COLOR.get(), pattern.getColor()));
         }), ModItems.PATTERNSPRIA.get());
 
-        event.register(((stack, tintIndex) -> stack.getOrDefault(ModDataComponents.COLOR.get(), 0xffffff)
+        event.register(((stack, tintIndex) -> {
+                    if (tintIndex != 0) return -1;
+                    return alphaFixer(stack.getOrDefault(ModDataComponents.COLOR.get(), 0xffffffff));
+                }
         ), ModBlocks.VIVICUS_LOG.get(),  ModBlocks.VIVICUS_WOOD.get(), ModBlocks.STRIPPED_VIVICUS_LOG.get(),  ModBlocks.STRIPPED_VIVICUS_WOOD.get(), ModBlocks.VIVICUS_PLANKS.get(),
                 ModBlocks.VIVICUS_STAIRS.get(), ModBlocks.VIVICUS_SLAB.get(), ModBlocks.VIVICUS_FENCE.get(), ModBlocks.VIVICUS_FENCE_GATE.get(), ModBlocks.VIVICUS_DOOR.get(),
                 ModBlocks.VIVICUS_TRAPDOOR.get(), ModBlocks.VIVICUS_PRESSURE_PLATE.get(), ModBlocks.VIVICUS_BUTTON.get(), ModBlocks.VIVICUS_LEAVES.get(), ModBlocks.VIVICUS_SAPLING.get(),
@@ -130,8 +133,8 @@ public class ModColorHandler {
         return Color.RGBtoHSB(startRed, startGreen, startBlue, null);
     }
 
-    public static float[] hexToRGBLarge(int hex) {
-        return new float[] {(hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF};
+    public static int[] hexToRGBLarge(int hex) {
+        return new int[] {(hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF};
     }
 
     public static float[] hexToRGB(int hex) {
@@ -149,6 +152,13 @@ public class ModColorHandler {
         return new int[] {r,g,b,a};
     }
 
+    public static int alphaFixer(int color) {
+        if (FastColor.ARGB32.alpha(color) < 1){
+           int[] rgb = hexToRGBLarge(color);
+           return FastColor.ARGB32.color(rgb[0], rgb[1], rgb[2]);
+        }
+        return color;
+    }
 
 
     public static int RGBtoInt(Vec3 color) {

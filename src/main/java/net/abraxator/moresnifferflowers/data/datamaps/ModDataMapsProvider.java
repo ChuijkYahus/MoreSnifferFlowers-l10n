@@ -4,12 +4,16 @@ import com.mojang.datafixers.util.Pair;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.data.DataMapProvider;
 import net.neoforged.neoforge.registries.datamaps.builtin.Compostable;
 import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -33,19 +37,19 @@ public class ModDataMapsProvider extends DataMapProvider {
         compostables.add(ModItems.CROPRESSED_WHEAT, new Compostable(1.0F), false);
         compostables.add(ModItems.CROPRESSED_POTATO, new Compostable(1.0F), false);
         compostables.add(ModItems.CROPRESSED_CARROT, new Compostable(1.0F), false);
-        compostables.add(ModBlocks.CORRUPTED_SAPLING.asItem().builtInRegistryHolder(), new Compostable(1.0F), false);
-        compostables.add(ModBlocks.VIVICUS_SAPLING.asItem().builtInRegistryHolder(), new Compostable(1.0F), false);
-        compostables.add(ModBlocks.CORRUPTED_LEAVES.asItem().builtInRegistryHolder(), new Compostable(1.0F), false);
-        compostables.add(ModBlocks.VIVICUS_LEAVES.asItem().builtInRegistryHolder(), new Compostable(1.0F), false);
+        compostables.add(ModBlocks.CORRUPTED_SAPLING.getId(), new Compostable(1.0F), false);
+        compostables.add(ModBlocks.VIVICUS_SAPLING.getId(), new Compostable(1.0F), false);
+        compostables.add(ModBlocks.CORRUPTED_LEAVES.getId(), new Compostable(1.0F), false);
+        compostables.add(ModBlocks.VIVICUS_LEAVES.getId(), new Compostable(1.0F), false);
         
         var corruptables = this.builder(ModDataMaps.CORRUPTABLE);
-        corruptables.add(Blocks.GRASS_BLOCK.builtInRegistryHolder(), new Corruptable( List.of(
+        corruptables.add(holder(Blocks.GRASS_BLOCK), new Corruptable( List.of(
                 Pair.of(ModBlocks.CORRUPTED_GRASS_BLOCK.get(), 15),
                 Pair.of(Blocks.COARSE_DIRT, 85)
                 )), false);
-        corruptables.add(Blocks.DIRT.builtInRegistryHolder(), new Corruptable(Blocks.COARSE_DIRT), false);
-        corruptables.add(Blocks.STONE.builtInRegistryHolder(), new Corruptable(Blocks.NETHERRACK), false);
-        corruptables.add(Blocks.DEEPSLATE.builtInRegistryHolder(), new Corruptable(Blocks.BLACKSTONE), false);
+        corruptables.add(holder(Blocks.DIRT), new Corruptable(Blocks.COARSE_DIRT), false);
+        corruptables.add(holder(Blocks.STONE), new Corruptable(Blocks.NETHERRACK), false);
+        corruptables.add(holder(Blocks.DEEPSLATE), new Corruptable(Blocks.BLACKSTONE), false);
         corruptables.add(BlockTags.LOGS, new Corruptable(ModBlocks.DECAYED_LOG.get()), false);
         corruptables.remove(ModBlocks.CORRUPTED_LOG);
         corruptables.remove(ModBlocks.DECAYED_LOG);
@@ -55,5 +59,9 @@ public class ModDataMapsProvider extends DataMapProvider {
         corruptables.add(BlockTags.LEAVES, new Corruptable(Blocks.AIR), false);
         corruptables.remove(ModBlocks.CORRUPTED_LEAVES);
         corruptables.remove(ModBlocks.CORRUPTED_LEAVES_BUSH);
+    }
+
+    public static @NotNull ResourceLocation holder(Block block) {
+        return BuiltInRegistries.BLOCK.getKey(block);
     }
 }

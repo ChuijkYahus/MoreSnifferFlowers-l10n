@@ -1,10 +1,7 @@
-package net.abraxator.moresnifferflowers.blocks.giantcrops;
+package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.Bonmeelable;
-import net.abraxator.moresnifferflowers.blocks.ModEntityBlock;
 import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.MultiBlock;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -183,23 +180,19 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     public static final BlockBehaviour.StatePredicate STATE_PREDICATE = (p_152641_, p_152642_, p_152643_) -> p_152641_.getValue(ModStateProperties.CENTER);
 
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
-        if(getter.getBlockEntity(pos) instanceof GiantCropBlockEntity entity) {
-            var x = entity.center.getX() - pos.getX();
-            var y = entity.center.getY() - pos.getY() -1;
-            var z = entity.center.getZ() - pos.getZ();
+        VoxelShape shape = Shapes.block();
 
-            if (x == 0 && z == 0){
-                return SHAPE;
-            } else {
-                if (this.equals(ModBlocks.GIANT_POTATO.get())) return SHAPE_POTATO.move(x, y, z);
-                if (this.equals(ModBlocks.GIANT_CARROT.get())) return SHAPE_CARROT.move(x, y, z);
-                if (this.equals(ModBlocks.GIANT_BEETROOT.get())) return SHAPE_BEET.move(x, y, z);
-                if (this.equals(ModBlocks.GIANT_NETHERWART.get())) return SHAPE_NETHERWART.move(x, y, z);
-                if (this.equals(ModBlocks.GIANT_WHEAT.get())) return SHAPE_WHEAT.move(x, y, z);
-            }
-
+        if (getXOffset(getter, pos) == 0 && getZOffset(getter, pos) == 0){
+            return shape;
         }
-        return SHAPE;
+
+        if (this.equals(ModBlocks.GIANT_POTATO.get())) shape = SHAPE_POTATO;
+        if (this.equals(ModBlocks.GIANT_CARROT.get())) shape = SHAPE_CARROT;
+        if (this.equals(ModBlocks.GIANT_BEETROOT.get())) shape = SHAPE_BEET;
+        if (this.equals(ModBlocks.GIANT_NETHERWART.get())) shape = SHAPE_NETHERWART;
+        if (this.equals(ModBlocks.GIANT_WHEAT.get())) shape = SHAPE_WHEAT;
+
+        return voxelShapeHelper(state, getter, pos, shape, 0, -1, 0);
     }
 
     public static VoxelShape makeShapePotato(){

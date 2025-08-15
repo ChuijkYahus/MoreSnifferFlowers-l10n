@@ -17,8 +17,8 @@ public class ModClientConfig {
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
-        builder.comment("A lot of these require a game restart seemingly at random. Restart your game before reporting it as a bug!");
-        builder.translation("moresnifferflowers.configuration.restart_required");
+       // builder.comment("A lot of these require a game restart seemingly at random. Restart your game before reporting it as a bug!");
+       // builder.translation("moresnifferflowers.configuration.restart_required");
 
         builder.push("hardened_mouth_effect");
 

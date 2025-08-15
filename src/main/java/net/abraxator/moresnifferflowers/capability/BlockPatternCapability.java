@@ -3,15 +3,12 @@ package net.abraxator.moresnifferflowers.capability;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
-import net.abraxator.moresnifferflowers.components.DirectionStorageHelper;
 import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.abraxator.moresnifferflowers.networking.toClient.SyncBlockPatternsPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -147,7 +144,7 @@ public class BlockPatternCapability {
 
     public void sync(BlockPos pos, Level level) {
         save(pos, level);
-       // PacketDistributor.sendToAllPlayers(new SyncBlockPatternsPacket(this, pos));
+        PacketDistributor.sendToAllPlayers(new SyncBlockPatternsPacket(this, pos));
     }
 
     public void save(BlockPos pos, Level level){

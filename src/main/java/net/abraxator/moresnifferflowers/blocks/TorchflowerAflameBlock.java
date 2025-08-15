@@ -66,7 +66,7 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         super.onRemove(state, level, pos, newState, movedByPiston);
         if (getAge(state) == getMaxAge()){
-            popResource(level, pos, ModItems.SWEET_SPICE.get().getDefaultInstance());
+            popResource(level, pos, ModItems.FIERY_SPICE.get().getDefaultInstance());
         }
     }
 
@@ -183,7 +183,7 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
             return ItemInteractionResult.SUCCESS;
         }
 
-        return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
     public static boolean isBonemealSuccess(Level level) {

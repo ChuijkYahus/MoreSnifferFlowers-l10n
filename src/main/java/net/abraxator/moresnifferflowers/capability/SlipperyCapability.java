@@ -4,10 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.init.ModDataAttachments;
-import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.networking.toClient.SyncSlipperyPacket;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -17,13 +14,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.UUID;
 
 public class SlipperyCapability{
     public static final ResourceLocation ID = MoreSnifferFlowers.loc("slippery");
@@ -117,7 +108,7 @@ public class SlipperyCapability{
 
 
     public void sync(Player player){
-       // PacketDistributor.sendToAllPlayers(SyncSlipperyPacket(isFallen, player.getId(), fallenTicks, maxFallenTicks));
+        PacketDistributor.sendToAllPlayers(new SyncSlipperyPacket(this, player.getId()));
     }
 
     public static SlipperyCapability get(Player player) {

@@ -248,7 +248,7 @@ public class ClientEvents {
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
         if (player.getDeltaMovement() != Vec3.ZERO && player.level().getGameTime() % 10 == 0){
-            ClientRegistration.getBlockPatternRenderer().markDirty();
+         //   ClientRegistration.getBlockPatternRenderer().markDirty();
         }
     }
 

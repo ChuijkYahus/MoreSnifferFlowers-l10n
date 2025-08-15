@@ -4,15 +4,10 @@ import io.netty.buffer.ByteBuf;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.networking.IMSFPacket;
-import net.abraxator.moresnifferflowers.networking.toClient.SyncGluedPacket;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-
-import java.util.function.Supplier;
 
 public record BerootCauldronCraftPacket(BlockPos blockPos) implements IMSFPacket {
     public static final CustomPacketPayload.Type<BerootCauldronCraftPacket> TYPE = new CustomPacketPayload.Type<>(MoreSnifferFlowers.loc("cauldron_craft"));
@@ -34,6 +29,6 @@ public record BerootCauldronCraftPacket(BlockPos blockPos) implements IMSFPacket
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
-        return null;
+        return TYPE;
     }
 }

@@ -2,7 +2,6 @@ package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
-import net.abraxator.moresnifferflowers.compat.jei.corruption.CorruptionRecipe;
 import net.abraxator.moresnifferflowers.data.datamaps.Corruptable;
 import net.abraxator.moresnifferflowers.entities.CorruptedProjectile;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
@@ -13,6 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
@@ -42,6 +43,7 @@ public interface MultiBlock {
    Optionally add preventCreativeDrops into playerWillDestroy
 
    growHelper - for bone meal and tick growth
+   voxelShapeHelper - pretty self-explanatory
 
    for Corruption - Override entityInside - return corruptionHelper
 
@@ -164,6 +166,52 @@ public interface MultiBlock {
             return entity.getCenter().equals(pos);
         }
         return false;
+    }
+
+    default int getXOffset(BlockGetter level, BlockPos pos){
+        if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+            return pos.getX() - entity.getCenter().getX();
+        }
+        return 0;
+    }
+
+    default int getYOffset(BlockGetter level, BlockPos pos){
+        if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+            return pos.getY() - entity.getCenter().getY();
+        }
+        return 0;
+    }
+
+    default int getZOffset(BlockGetter level, BlockPos pos){
+        if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+            return pos.getZ() - entity.getCenter().getZ();
+        }
+        return 0;
+    }
+
+    default VoxelShape voxelShapeHelper(BlockState state, BlockGetter level, BlockPos pos, VoxelShape shape){
+        return voxelShapeHelper(state,level,pos,shape, 0, 0, 0);
+    }
+
+    default VoxelShape voxelShapeHelper(BlockState state, BlockGetter level, BlockPos pos, VoxelShape shape, float xOffset, float yOffset, float zOffset){
+        if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+            var x = entity.center.getX() - pos.getX() + xOffset;
+            var y = entity.center.getY() - pos.getY() + yOffset;
+            var z = entity.center.getZ() - pos.getZ() + zOffset;
+
+            if (directional()) {
+                switch (state.getValue(HorizontalDirectionalBlock.FACING)) {
+                    case EAST -> x += 1;
+                    case NORTH -> {
+                        x += 1;
+                        z -= 1;
+                    }
+                    case WEST -> z -= 1;
+                }
+            }
+            return shape.move(x,y,z);
+        }
+        return shape;
     }
 
     default void corruptionHelper(BlockState state, Level level, BlockPos pos, Entity entityInside){

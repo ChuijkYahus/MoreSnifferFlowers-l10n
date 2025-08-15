@@ -277,7 +277,7 @@ public class BlockPatternRenderer {
         private float lastYaw = 0f;
         private float lastPitch = 0f;
 
-        private static final double MOVE_THRESHOLD = 0.01; // blocks
+        private static final double MOVE_THRESHOLD = 0.01f; // blocks
         private static final float ROTATE_THRESHOLD = 0.2f; // degrees
 
         public boolean hasMoved(Camera camera) {

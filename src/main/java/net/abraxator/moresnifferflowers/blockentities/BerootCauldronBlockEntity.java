@@ -23,6 +23,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
@@ -187,6 +188,9 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
 
         soup.set(ModDataComponents.ROOTED_EFFECTS, effects);
 
+        Vec3 color = color();
+        soup.set(ModDataComponents.COLOR, FastColor.ARGB32.color((int) color.x, (int) color.y, (int) color.z));
+
         this.soup = soup;
         setChanged();
     }
@@ -329,7 +333,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
             ItemStack itemStack = itementity.getItem().copy();
             ItemStack itemStack1 = itemStack.copy();
 
-            if (addItem(itemStack, null).equals(InteractionResult.SUCCESS)) {
+            if (addItem(itemStack, null).equals(ItemInteractionResult.SUCCESS)) {
                 PacketDistributor.sendToAllPlayers(new BerootCauldronSuckPacket(itemStack1,this.getBlockPos()));
                 itementity.setItem(itemStack);
             }
@@ -412,7 +416,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         this.beetroots = tag.getInt("beetroots");
 
         ContainerHelper.loadAllItems(tag, ingredients, registries);
-        
+
         this.soupCount = tag.getInt("soupCount");
         this.crafting = tag.getBoolean("crafting");
         this.craftingTimeRemaining = tag.getInt("craftingTime");

@@ -5,7 +5,6 @@ import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -109,48 +108,19 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context){
-        if (getter.getBlockEntity(pos) instanceof BerootCauldronBlockEntity entity) {
-            var x = entity.center.getX() - pos.getX();
-            var y = entity.center.getY() - pos.getY();
-            var z = entity.center.getZ() - pos.getZ() + 1.125;
+        VoxelShape shape = SHAPE_UPPER;
 
-            switch (state.getValue(HorizontalDirectionalBlock.FACING)){
-                case EAST -> x +=1;
-                case NORTH -> {
-                    x += 1;
-                    z -= 1;
-                }
-                case WEST -> z -= 1;
-            }
+        if (getYOffset(getter, pos) <= 0) {
 
-            if (y != 0) return SHAPE_UPPER.move(x,y,z);
-            if (state.getValue(HorizontalDirectionalBlock.FACING).equals(Direction.WEST) || state.getValue(HorizontalDirectionalBlock.FACING).equals(Direction.EAST))
-                return SHAPE_LOWER_ROTATED.move(x,y,z);
-            return SHAPE_LOWER.move(x,y,z);
+            if (state.getValue(HorizontalDirectionalBlock.FACING).getAxis().equals(Direction.Axis.X)) {
+                shape = SHAPE_LOWER_ROTATED;
+            } else shape = SHAPE_LOWER;
         }
-
-        return Shapes.block();
+        return voxelShapeHelper(state, getter, pos, shape, 0, 0, 1.125f);
     }
 
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
-        if (getter.getBlockEntity(pos) instanceof BerootCauldronBlockEntity entity) {
-            var x = entity.center.getX() - pos.getX();
-            var y = entity.center.getY() - pos.getY();
-            var z = entity.center.getZ() - pos.getZ() + 1.125;
-
-            switch (state.getValue(HorizontalDirectionalBlock.FACING)){
-                case EAST -> x +=1;
-                case NORTH -> {
-                    x += 1;
-                    z -= 1;
-                }
-                case WEST -> z -= 1;
-            }
-
-            return SHAPE_FULL.move(x,y,z);
-        }
-
-        return Shapes.block();
+        return voxelShapeHelper(state, getter, pos, SHAPE_FULL, 0, 0, 1.125f);
     }
 
     public static VoxelShape makeShapeUpper(){

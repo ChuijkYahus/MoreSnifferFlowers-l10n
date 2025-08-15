@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.client.gui.slot;
 
+import net.abraxator.moresnifferflowers.capability.HardenedMouthCapability;
 import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.minecraft.core.NonNullList;
@@ -15,9 +16,9 @@ import java.util.function.Supplier;
 public class HardenedMouthSlot extends Slot {
     private final Player player;
     private final int index;
-    private final Supplier<NonNullList<ItemStack>> itemStorage;
+    private final Supplier<HardenedMouthCapability> itemStorage;
 
-    public HardenedMouthSlot(Player player, int index, int x, int y, Supplier<NonNullList<ItemStack>> itemStorage) {
+    public HardenedMouthSlot(Player player, int index, int x, int y, Supplier<HardenedMouthCapability> itemStorage) {
         super(DummyContainer.INSTANCE, index, x, y); // Prevents saving to normal inventory
         this.player = player;
         this.index = index;
@@ -27,6 +28,11 @@ public class HardenedMouthSlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
+        return hasHardenedMouthEffect();
+    }
+
+    @Override
+    public boolean isActive() {
         return hasHardenedMouthEffect();
     }
 
@@ -42,17 +48,21 @@ public class HardenedMouthSlot extends Slot {
 
     @Override
     public ItemStack getItem() {
-        return itemStorage.get().get(index);
+        return itemStorage.get().getItem(index);
     }
 
     @Override
     public void set(ItemStack stack) {
-        itemStorage.get().set(index, stack);
+        if (itemStorage.get() == null) {
+            System.out.println("fuck");
+            return;
+        }
+        itemStorage.get().setItem(index, stack);
     }
 
     @Override
     public void setChanged() {
-            player.getData(ModDataAttachments.HARDENED_MOUTH).sync(player);
+        player.getData(ModDataAttachments.HARDENED_MOUTH).sync(player);
     }
 
     public void handleCapabilitySlotClick(HardenedMouthSlot slot, Player player, ClickType clickType, int dragType) {

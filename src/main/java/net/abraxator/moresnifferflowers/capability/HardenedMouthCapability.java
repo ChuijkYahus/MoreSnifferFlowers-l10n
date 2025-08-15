@@ -6,8 +6,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
 import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.abraxator.moresnifferflowers.init.ModItems;
+import net.abraxator.moresnifferflowers.networking.toClient.SyncGluedPacket;
 import net.abraxator.moresnifferflowers.networking.toClient.SyncMouthSlotsPacket;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -16,30 +18,41 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class HardenedMouthCapability {
     public static int SLOT_COUNT = 2;
-    NonNullList<ItemStack> mouthSlots = NonNullList.withSize(SLOT_COUNT, ModItems.PLACEHOLDER.toStack());
-    public int cooldown = 0;
+    public NonNullList<ItemStack> mouthSlots;
+    public int cooldown;
 
     public static final Codec<List<ItemStack>> ITEMSTACK_LIST_CODEC = ItemStack.CODEC.listOf()
             .validate(list -> list.size() != 2
                     ? DataResult.error(() -> "Expected " + 2 + " items, got " + list.size())
                     : DataResult.success(list.stream()
-                    .map(stack -> stack == null ? ItemStack.EMPTY : stack)
+                    .map(stack -> stack.isEmpty() ? ModItems.PLACEHOLDER.toStack() : stack)
                     .toList()));
 
+    public static final Codec<ItemStack> SAFE_ITEMSTACK_CODEC = ItemStack.CODEC.xmap(
+            stack -> stack.is(ModItems.PLACEHOLDER) ? ItemStack.EMPTY : stack,
+            stack -> stack.isEmpty() ? ModItems.PLACEHOLDER.toStack() : stack
+    );
+
     public static final Codec<HardenedMouthCapability> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    NonNullList.codecOf(ItemStack.CODEC).fieldOf("slots").forGetter(cap -> cap.mouthSlots))
-            .apply(instance, (itemStacks) -> {
-                HardenedMouthCapability capability  = new HardenedMouthCapability();
-                capability.mouthSlots = itemStacks;
-                return capability;
-    }));
+                    NonNullList.codecOf(SAFE_ITEMSTACK_CODEC).fieldOf("slots").forGetter(cap -> cap.mouthSlots),
+                    Codec.INT.fieldOf("cooldown").forGetter(cap -> cap.cooldown))
+            .apply(instance, HardenedMouthCapability::new));
 
 
+    public HardenedMouthCapability(NonNullList<ItemStack> list, int cooldown) {
+        this.cooldown = cooldown;
+
+        this.mouthSlots = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
+        for (int i = 0; i < SLOT_COUNT; ++i) {
+            this.mouthSlots.set(i, list.get(i));
+        }
+    }
     
     public NonNullList<ItemStack> getMouthSlotItems() {
         return mouthSlots;
@@ -48,7 +61,7 @@ public class HardenedMouthCapability {
     
     public void setAllItems(NonNullList<ItemStack> itemStacks) {
         for (int i = 0; i < itemStacks.size(); i++) {
-            mouthSlots.set(i, itemStacks.get(i));
+            setItem(i, itemStacks.get(i));
         }
     }
 
@@ -67,11 +80,9 @@ public class HardenedMouthCapability {
         mouthSlots.clear();
     }
 
-    
+
     public void sync(Player player) {
-        if (player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToAllPlayers(new SyncMouthSlotsPacket(mouthSlots, cooldown));
-        }
+        PacketDistributor.sendToPlayer((ServerPlayer) player,new SyncMouthSlotsPacket(this));
     }
 
     public void onEffectEnd(Player player) {

@@ -49,19 +49,26 @@ public class CookbookScreen extends Screen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         int x = (this.width - 272) / 2;
         int y = (this.height - 180) / 2;
-        guiGraphics.pose().scale(2,1,1);
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.blit(TEXTURE, x/2, y, 0, 0, 272/2, 180);
-        guiGraphics.pose().scale(0.5F,1,1);
 
         if(page == Page.ITEMS) {
             this.renderItems(guiGraphics, mouseX, mouseY, x, y);
         }
         this.renderContents(guiGraphics, mouseX, mouseY, x, y);
+
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+
     }
 
-    public void renderNutritionInfo(GuiGraphics guiGraphics, Nutrition nutrition) { 
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+
+        int x = (this.width - 272) / 2;
+        int y = (this.height - 180) / 2;
+        guiGraphics.blit(TEXTURE, x, y, 0, 0, 272, 180, 512, 256);
+    }
+
+    public void renderNutritionInfo(GuiGraphics guiGraphics, Nutrition nutrition) {
         int x = (this.width - 272) / 2;
         int y = (this.height - 180) / 2;
         int xPos = x + 150;

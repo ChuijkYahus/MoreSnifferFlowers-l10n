@@ -41,7 +41,7 @@ public class Nutrition {
     public static NutritionType getLargestNutrition(Item item){
         Nutrition nutrition = Nutrition.getNutritionForItem(item);
 
-        List<NutritionEntry> list = nutrition.nutritionEntries;
+        List<NutritionEntry> list =  new ArrayList<>(nutrition.nutritionEntries);
         list.sort(Comparator.comparing(nutritionEntry -> -(nutritionEntry.weight() + nutritionEntry.nutrition().priority)));
 
         return list.get(0).nutrition();

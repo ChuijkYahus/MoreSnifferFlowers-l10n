@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.capability;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.abraxator.moresnifferflowers.init.ModDataAttachments;
+import net.abraxator.moresnifferflowers.networking.toClient.SyncBlockPatternsPacket;
 import net.abraxator.moresnifferflowers.networking.toClient.SyncGluedPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -24,8 +25,6 @@ public class GluedCapability {
 
     public static void setAndSync(LivingEntity entity, boolean isGlued, boolean playSound) {
         Level level = entity.level();
-        if (level.isClientSide) return;
-
         if (playSound) playSound(level, entity);
 
         GluedCapability cap = entity.getData(ModDataAttachments.GLUED.get());
@@ -35,12 +34,9 @@ public class GluedCapability {
     }
 
     public void sync(LivingEntity entity){
-        sync(entity, isGlued);
-    }
-
-    public static void sync(LivingEntity entity, boolean isGlued) {
         PacketDistributor.sendToAllPlayers(new SyncGluedPacket(isGlued, entity.getId()));
     }
+
 
     public static void playSound(Level level, Entity entity){
         level.playSound(null, entity.getOnPos(), SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, SoundSource.PLAYERS, 5.0F, 0.02F + level.random.nextFloat() * 0.01F);

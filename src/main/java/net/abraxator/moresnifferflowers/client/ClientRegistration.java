@@ -139,27 +139,6 @@ public class ClientRegistration {
     public static void addPackFinders(AddPackFindersEvent event) {
         if(event.getPackType() == PackType.CLIENT_RESOURCES) {
             IModFile iModFileInfo = ModList.get().getModFileById(MoreSnifferFlowers.MOD_ID).getFile();
-            event.addRepositorySource(pOnLoad -> {
-                String name = "more_sniffer_flowers_rtx";
-                var pack = Pack.readMetaAndCreate(
-                        new PackLocationInfo(name, Component.literal("More Sniffer Flowers RTX"), PackSource.BUILT_IN, Optional.empty()),
-                        new Pack.ResourcesSupplier() {
-                            @Override
-                            public PackResources openPrimary(PackLocationInfo pLocation) {
-                                return new PathPackResources(pLocation, iModFileInfo.findResource("resourcepacks/" + name));
-                            }
-
-                            @Override
-                            public PackResources openFull(PackLocationInfo pLocation, Pack.Metadata pMetadata) {
-                                return openPrimary(pLocation);
-                            }
-                        },
-                        PackType.CLIENT_RESOURCES,
-                        new PackSelectionConfig(false, Pack.Position.TOP, false));
-                if(pack != null) {
-                    pOnLoad.accept(pack);
-                }
-            });
 
             event.addRepositorySource(pOnLoad -> {
                 String name = "more_sniffer_flowers_boring";

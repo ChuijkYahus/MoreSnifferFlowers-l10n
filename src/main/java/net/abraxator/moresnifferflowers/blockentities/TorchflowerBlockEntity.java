@@ -19,7 +19,7 @@ public class TorchflowerBlockEntity extends ModBlockEntity{
         AABB area = new AABB(getBlockPos().below().east().getCenter(), getBlockPos().above(4).south().getCenter());
         for (Entity entity : level.getEntities(null, area)) {
             int distance = getBlockPos().getY() + 4 - entity.getBlockY();
-            entity.setRemainingFireTicks(distance*2);
+            entity.igniteForSeconds(distance*2);
         }
     }
 }

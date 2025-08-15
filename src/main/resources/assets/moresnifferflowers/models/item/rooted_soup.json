@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "moresnifferflowers:item/flavoured_soup",
-    "layer1": "moresnifferflowers:item/flavoured_soup1"
+    "layer0": "moresnifferflowers:item/flavoured_soup1",
+    "layer1": "moresnifferflowers:item/flavoured_soup"
   }
 }

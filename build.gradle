@@ -6,7 +6,11 @@ plugins {
 }
 
 group = 'net.abraxator.moresnifferflowers'
-archivesBaseName = 'MoreSnifferFlowers-'+minecraft_version+'-neo'
+version = version
+
+base {
+    archivesName.set("MoreSnifferFlowers-${minecraft_version}-neo")
+}
 
 repositories {
     mavenCentral()

@@ -152,12 +152,12 @@ public class DyespriaItem extends BlockItem implements Colorable {
 
        int originalColor = BlockPatternCapability.getPattern(pos, level).color();
        int dyeColor = dye.color().getFireworkColor();
-       float[] originalHSB = ModColorHandler.hexToRGBLarge(originalColor);
-       float[] dyeHSB = ModColorHandler.hexToRGBLarge(dyeColor);
+       int[] originalHSB = ModColorHandler.hexToRGBLarge(originalColor);
+       int[] dyeHSB = ModColorHandler.hexToRGBLarge(dyeColor);
 
-       int r =  Math.round((originalHSB[0]*5 + dyeHSB[0]) / 6);
-       int g =  Math.round((originalHSB[1]*5 + dyeHSB[1]) / 6);
-       int b =  Math.round((originalHSB[2]*5 + dyeHSB[2]) / 6);
+       int r =  (originalHSB[0]*5 + dyeHSB[0]) / 6;
+       int g =  (originalHSB[1]*5 + dyeHSB[1]) / 6;
+       int b =  (originalHSB[2]*5 + dyeHSB[2]) / 6;
 
        int finalColor = ((r&0x0ff)<<16)|((g&0x0ff)<<8)|(b&0x0ff);
 

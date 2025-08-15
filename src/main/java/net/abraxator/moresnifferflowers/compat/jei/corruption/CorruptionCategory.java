@@ -72,7 +72,7 @@ public class CorruptionCategory implements IRecipeCategory<CorruptionRecipe> {
     public void setRecipe(IRecipeLayoutBuilder builder, CorruptionRecipe recipe, IFocusGroup iFocusGroup) {
         builder.addSlot(RecipeIngredientRole.INPUT, 10, 15).addItemStack(recipe.source());
         builder.addSlot(RecipeIngredientRole.OUTPUT, 92, 15).addItemStack(recipe.corrupted()).addRichTooltipCallback((recipeSlotView, tooltip) -> {
-            if (recipe.corrupted().is(Blocks.AIR.asItem())) {
+            if (recipe.corrupted().isEmpty()) {
                 tooltip.add(Component.literal("Air").withStyle(ChatFormatting.WHITE));
             }
         });
@@ -80,6 +80,8 @@ public class CorruptionCategory implements IRecipeCategory<CorruptionRecipe> {
 
     @Override
     public void draw(CorruptionRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        guiGraphics.blit(MoreSnifferFlowers.loc("textures/gui/container/corrupting_jei.png"), 0,0, 0 ,0 ,getWidth() ,getHeight());
+
         Minecraft minecraft = Minecraft.getInstance();
         String text = "Chance: " + recipe.chance() + "%";
         int width = minecraft.font.width(text);

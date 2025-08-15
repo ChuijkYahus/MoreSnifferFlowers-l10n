@@ -88,7 +88,7 @@ public class CropressorBlockEntityRenderer implements BlockEntityRenderer<Cropre
         }
 
         float[] rgb = ModColorHandler.hexToRGB(blockEntity.getColor());
-        renderFace(pose.last().pose(), pose.last(), buffer.getBuffer(RenderType.cutoutMipped()), rgb[0] /255, rgb[1]  /255, rgb[2]  /255, light, blockEntity.barLength);
+        renderFace(pose.last().pose(), pose.last(), buffer.getBuffer(RenderType.cutoutMipped()), rgb[0], rgb[1], rgb[2], light, blockEntity.barLength);
         pose.popPose();
 
     }
