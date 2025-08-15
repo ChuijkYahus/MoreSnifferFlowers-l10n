@@ -279,8 +279,8 @@ public class BlockPatternRenderer {
         private float lastYaw = 0f;
         private float lastPitch = 0f;
 
-        private static final double MOVE_THRESHOLD = 1.5; // blocks
-        private static final float ROTATE_THRESHOLD = 5f; // degrees
+        private static final double MOVE_THRESHOLD = 0.01f; // blocks
+        private static final float ROTATE_THRESHOLD = 0.2f; // degrees
 
         public boolean hasMoved(Camera camera) {
             Vec3 currentPos = camera.getPosition();
@@ -295,6 +295,8 @@ public class BlockPatternRenderer {
             float deltaYaw = Math.abs(yaw - lastYaw);
             float deltaPitch = Math.abs(pitch - lastPitch);
 
+            update(camera);
+
             return distSq > MOVE_THRESHOLD * MOVE_THRESHOLD ||
                     deltaYaw > ROTATE_THRESHOLD ||
                     deltaPitch > ROTATE_THRESHOLD;
@@ -305,10 +307,5 @@ public class BlockPatternRenderer {
             this.lastYaw = camera.getYRot();
             this.lastPitch = camera.getXRot();
         }
-    }
-
-    public interface AmbientOcclusionFaceAccessor {
-        float[] moreSnifferFlowers$getBrightness();
-        int[] moreSnifferFlowers$getLightmap();
     }
 }

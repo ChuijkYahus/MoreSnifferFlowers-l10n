@@ -19,7 +19,9 @@ repositories {
 }
 
 group = 'net.abraxator.moresnifferflowers'
-archivesBaseName = 'MoreSnifferFlowers-'+minecraft_version+'-Forge'
+base {
+    archivesName.set("MoreSnifferFlowers-'+${minecraft_version}+'-Forge")
+}
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 

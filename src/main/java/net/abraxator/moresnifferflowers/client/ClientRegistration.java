@@ -142,20 +142,6 @@ public class ClientRegistration {
 
             IModFile modFile = iModFileInfo.getFile();
             event.addRepositorySource(pOnLoad -> {
-                Pack rtx = Pack.readMetaAndCreate(
-                        MoreSnifferFlowers.loc("more_sniffer_flowers_rtx").toString(),
-                        Component.literal("RTX More Sniffer Flowers"),
-                        false,
-                        pId -> new PathPackResources(pId, modFile.findResource("resourcepacks/more_sniffer_flowers_rtx"), true),
-                        PackType.CLIENT_RESOURCES,
-                        Pack.Position.TOP,
-                        PackSource.BUILT_IN);
-                if(rtx != null) {
-                    pOnLoad.accept(rtx);
-                }
-            });
-
-            event.addRepositorySource(pOnLoad -> {
 
                 Pack customStyleGUI = Pack.readMetaAndCreate(
                         MoreSnifferFlowers.loc("more_sniffer_flowers_boring").toString(),
