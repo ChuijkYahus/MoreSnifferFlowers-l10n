@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 public record SyncSlipperyPacket(SlipperyCapability capability, int entityId) implements MSFClientPacket {
     public static final CustomPacketPayload.Type<SyncSlipperyPacket> TYPE = new CustomPacketPayload.Type<>(MoreSnifferFlowers.loc("sync_slippery"));
@@ -47,7 +48,7 @@ public record SyncSlipperyPacket(SlipperyCapability capability, int entityId) im
 
 
     @Override
-    public Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

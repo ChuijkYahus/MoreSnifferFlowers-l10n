@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 public record DyespriaDisplayModeChangePacket(int dyespriaModeId) implements MSFClientPacket {
     public static final CustomPacketPayload.Type<DyespriaDisplayModeChangePacket> TYPE = new CustomPacketPayload.Type<>(MoreSnifferFlowers.loc("display_dyespria_mode_change"));
@@ -23,7 +24,7 @@ public record DyespriaDisplayModeChangePacket(int dyespriaModeId) implements MSF
     );
     
     @Override
-    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+    public CustomPacketPayload.@NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 

@@ -24,7 +24,7 @@ public class ModDataAttachments {
     public static final Supplier<AttachmentType<GluedCapability>> GLUED = ATTACHMENT_TYPES.register("glued", () -> AttachmentType.builder(GluedCapability::new).serialize(GluedCapability.CODEC).build());
     public static final Supplier<AttachmentType<HardenedMouthCapability>> HARDENED_MOUTH = ATTACHMENT_TYPES.register("hardened_mouth", () -> AttachmentType.builder(() -> new HardenedMouthCapability(NonNullList.withSize(2, ItemStack.EMPTY), 0)).serialize(HardenedMouthCapability.CODEC).build());
     public static final Supplier<AttachmentType<SlipperyCapability>> SLIPPERY = ATTACHMENT_TYPES.register("slippery", () -> AttachmentType.builder(SlipperyCapability::new).serialize(SlipperyCapability.CODEC).build());
-    public static final Supplier<AttachmentType<UntouchableCapability>> UNTOUCHABLE = ATTACHMENT_TYPES.register("untouchable", () -> AttachmentType.builder(UntouchableCapability::new).serialize(UntouchableCapability.CODEC).sync(ByteBufCodecs.fromCodec(UntouchableCapability.CODEC)).build());
+    public static final Supplier<AttachmentType<UntouchableCapability>> UNTOUCHABLE = ATTACHMENT_TYPES.register("untouchable", () -> AttachmentType.builder(UntouchableCapability::new).serialize(UntouchableCapability.CODEC).build());
     public static final Supplier<AttachmentType<NutritionCapability>> NUTRITION = ATTACHMENT_TYPES.register("nutrition", () -> AttachmentType.builder(NutritionCapability::new).serialize(NutritionCapability.CODEC).sync(ByteBufCodecs.fromCodec(NutritionCapability.CODEC)).copyOnDeath().build());
 
 

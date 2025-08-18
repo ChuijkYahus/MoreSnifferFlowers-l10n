@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 public record SaltemoneParticlePacket(Vector3f pos) implements MSFClientPacket {
@@ -43,7 +44,7 @@ public record SaltemoneParticlePacket(Vector3f pos) implements MSFClientPacket {
     }
 
     @Override
-    public Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

@@ -8,6 +8,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class UntouchableCapability {
@@ -20,9 +21,9 @@ public class UntouchableCapability {
 
     public static final Codec<UntouchableCapability> CODEC =
             RecordCodecBuilder.create(instance -> instance.group(
-                    Codec.DOUBLE.fieldOf("lastYaw").forGetter(data -> data.lastX),
-                    Codec.DOUBLE.fieldOf("lastSpeed").forGetter(data -> data.lastZ),
-                    Codec.FLOAT.fieldOf("isFallen").forGetter(data -> data.speedModifier)
+                    Codec.DOUBLE.fieldOf("lastX").forGetter(data -> data.lastX),
+                    Codec.DOUBLE.fieldOf("lastZ").forGetter(data -> data.lastZ),
+                    Codec.FLOAT.fieldOf("speedModifier").forGetter(data -> data.speedModifier)
             ).apply(instance, (a,b,c) -> {
                 UntouchableCapability cap =  new UntouchableCapability();
                 cap.lastX = a;
@@ -86,7 +87,7 @@ public class UntouchableCapability {
         lastZ = posZ;
     }
 
-    public void debugPrint(){
-        System.out.println("Speed Modifier = " + speedModifier);
+    public void debugPrint(Level level){
+        System.out.println("Speed Modifier = " + speedModifier +" client = " + level.isClientSide());
     }
 }

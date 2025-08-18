@@ -37,6 +37,7 @@ public class ModPacketHandler {
         registrar.play(SyncGluedPacket.TYPE, SyncGluedPacket.STREAM_CODEC);
         registrar.play(SyncMouthSlotsPacket.TYPE, SyncMouthSlotsPacket.STREAM_CODEC);
         registrar.play(SyncSlipperyPacket.TYPE, SyncSlipperyPacket.STREAM_CODEC);
+        registrar.play(SyncUntouchablePacket.TYPE, SyncUntouchablePacket.STREAM_CODEC);
     }
 
     public static ModPacketHandler register(IEventBus iEventBus, int version) {

@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 public record DyespriaModePacket(int amount) implements MSFServerPacket {
     public static final Type<DyespriaModePacket> TYPE = new Type<>(MoreSnifferFlowers.loc("dyespria_mode"));
@@ -20,7 +21,7 @@ public record DyespriaModePacket(int amount) implements MSFServerPacket {
     );
     
     @Override
-    public Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 

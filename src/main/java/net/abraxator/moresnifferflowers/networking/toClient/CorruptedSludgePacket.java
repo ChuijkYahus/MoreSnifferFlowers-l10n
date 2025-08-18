@@ -15,6 +15,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 public record CorruptedSludgePacket(Vector3f start, Vector3f target, Vector3f direction) implements MSFClientPacket {
@@ -41,7 +42,7 @@ public record CorruptedSludgePacket(Vector3f start, Vector3f target, Vector3f di
 
 
     @Override
-    public Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

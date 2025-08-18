@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 public record BerootCauldronSuckPacket(ItemStack itemStack, BlockPos pos) implements MSFClientPacket {
     public static final CustomPacketPayload.Type<BerootCauldronSuckPacket> TYPE = new CustomPacketPayload.Type<>(MoreSnifferFlowers.loc("cauldron_suck"));
@@ -31,7 +32,7 @@ public record BerootCauldronSuckPacket(ItemStack itemStack, BlockPos pos) implem
     }
 
     @Override
-    public Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

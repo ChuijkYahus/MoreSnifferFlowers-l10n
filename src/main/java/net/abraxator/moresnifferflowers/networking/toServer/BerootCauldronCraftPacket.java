@@ -10,6 +10,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 public record BerootCauldronCraftPacket(BlockPos blockPos) implements MSFServerPacket {
     public static final CustomPacketPayload.Type<BerootCauldronCraftPacket> TYPE = new CustomPacketPayload.Type<>(MoreSnifferFlowers.loc("cauldron_craft"));
@@ -26,7 +27,7 @@ public record BerootCauldronCraftPacket(BlockPos blockPos) implements MSFServerP
     }
 
     @Override
-    public Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

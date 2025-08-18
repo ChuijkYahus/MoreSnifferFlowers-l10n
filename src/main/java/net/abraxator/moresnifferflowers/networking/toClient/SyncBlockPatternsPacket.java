@@ -17,6 +17,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 public record SyncBlockPatternsPacket(BlockPatternCapability capability, BlockPos pos) implements MSFClientPacket {
     public static final CustomPacketPayload.Type<SyncBlockPatternsPacket> TYPE = new CustomPacketPayload.Type<>(MoreSnifferFlowers.loc("sync_blockpatterns"));
@@ -35,7 +36,7 @@ public record SyncBlockPatternsPacket(BlockPatternCapability capability, BlockPo
     }
 
     @Override
-    public Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

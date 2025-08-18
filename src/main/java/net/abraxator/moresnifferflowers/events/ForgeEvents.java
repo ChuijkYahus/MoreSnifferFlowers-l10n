@@ -158,12 +158,6 @@ public class ForgeEvents {
     }
 
     @SubscribeEvent
-    public static void onAttacked(LivingDamageEvent.Post event) {
-        if (event.getEntity() instanceof Player player && player.hasEffect(ModEffects.UNTOUCHABLE)){
-            player.getData(ModDataAttachments.UNTOUCHABLE).onAttacked();
-        }
-    }
-    @SubscribeEvent
     public static void onItemPickup(ItemEntityPickupEvent.Pre event) {
         Player player = event.getPlayer();
         ItemEntity itemEntity = event.getItemEntity();

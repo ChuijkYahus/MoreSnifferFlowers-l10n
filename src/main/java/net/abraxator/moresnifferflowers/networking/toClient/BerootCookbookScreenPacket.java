@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 public record BerootCookbookScreenPacket() implements MSFClientPacket {
     public static final CustomPacketPayload.Type<BerootCookbookScreenPacket> TYPE = new CustomPacketPayload.Type<>(MoreSnifferFlowers.loc("cauldron_screen"));
@@ -22,7 +23,7 @@ public record BerootCookbookScreenPacket() implements MSFClientPacket {
                     buf -> new BerootCookbookScreenPacket());
 
     @Override
-    public Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 

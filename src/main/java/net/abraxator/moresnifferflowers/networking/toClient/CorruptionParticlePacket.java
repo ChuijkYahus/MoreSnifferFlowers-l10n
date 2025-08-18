@@ -20,6 +20,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 public record CorruptionParticlePacket (BlockPos pos, boolean isPositive, boolean isFlower) implements MSFClientPacket {
@@ -69,7 +70,7 @@ public record CorruptionParticlePacket (BlockPos pos, boolean isPositive, boolea
     }
 
     @Override
-    public Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }
