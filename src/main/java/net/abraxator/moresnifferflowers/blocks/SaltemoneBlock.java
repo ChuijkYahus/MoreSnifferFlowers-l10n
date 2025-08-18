@@ -1,6 +1,9 @@
 package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
+import net.abraxator.moresnifferflowers.blocks.multiblock.AbstractMultiBlock;
+import net.abraxator.moresnifferflowers.blocks.multiblock.CorruptableMultiblock;
+import net.abraxator.moresnifferflowers.blocks.multiblock.PreviewableMultiblock;
 import net.abraxator.moresnifferflowers.entities.SaltBubbleProjectile;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
@@ -16,9 +19,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -29,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
 
-public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock, Corruptable, ModCropBlock, MultiBlock {
+public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock, Corruptable, ModCropBlock, PreviewableMultiblock, CorruptableMultiblock {
     public SaltemoneBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(defaultBlockState().setValue(ModStateProperties.CENTER, false).setValue(getAgeProperty(), 0).setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH));
@@ -37,19 +42,33 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
     protected static final VoxelShape AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
 
     @Override
-    public @Nullable Block corruptedBlock() {
+    public Block getCorruptedBlock() {
         return ModBlocks.SOURLEMONE.get();
     }
 
     @Override
-    public Block curedBlock() {
+    public Block getCuredBlock() {
         return ModBlocks.SALTEMONE.get();
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(HorizontalDirectionalBlock.FACING, ModStateProperties.CENTER, getAgeProperty());
+    public BlockState getDefaultStateForPreviews(Direction direction) {
+        return PreviewableMultiblock.super.getDefaultStateForPreviews(direction).setValue(getAgeProperty(), getMaxAge());
     }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
+        super.createBlockStateDefinition(pBuilder);
+        pBuilder.add(getAgeProperty());
+    }
+
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        if (!isCenter(state)) return  RenderShape.INVISIBLE;
+        if (getAge(state) == getMaxAge()) return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.MODEL;
+    }
+
 
     @Override
     public boolean extraSurviveRequirements(LevelReader level, BlockPos pos, BlockState state) {
@@ -57,8 +76,8 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
     }
 
     @Override
-    public boolean directional() {
-        return true;
+    public @Nullable DirectionProperty getDirectionProperty() {
+        return HorizontalDirectionalBlock.FACING;
     }
 
     @Override

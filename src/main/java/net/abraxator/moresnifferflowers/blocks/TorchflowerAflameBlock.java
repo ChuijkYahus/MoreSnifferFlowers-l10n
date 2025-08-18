@@ -60,7 +60,7 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         super.onRemove(state, level, pos, newState, movedByPiston);
         if (getAge(state) == getMaxAge()){
-            popResource(level, pos, ModItems.SWEET_SPICE.get().getDefaultInstance());
+            popResource(level, pos, ModItems.FIERY_SPICE.get().getDefaultInstance());
         }
     }
 
@@ -167,7 +167,6 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
         }
 
         if (age == 2){
-            popResource(level, pos, ModItems.FIERY_SPICE.get().getDefaultInstance());
             level.setBlock(pos, state.setValue(getAgeProperty(), 0), 3);
             return InteractionResult.SUCCESS;
         }
