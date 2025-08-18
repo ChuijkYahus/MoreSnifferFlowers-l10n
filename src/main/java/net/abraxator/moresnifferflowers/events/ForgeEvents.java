@@ -227,11 +227,6 @@ public class ForgeEvents {
         BlockState state = level.getBlockState(pos);
         ItemStack item = player.getItemInHand(hand).getItem().getDefaultInstance();
 
-        {
-            //This is the DEBUG BLOCK, remember to delete everything from the DEBUG BLOCK later
-
-        }
-
         if (event.isCanceled()) return;
 
         if(item.getItem() instanceof JarOfBonmeelItem jar && state.is(ModTags.ModBlockTags.BONMEELABLE)) {
@@ -267,7 +262,7 @@ public class ForgeEvents {
 
         }
 
-        if (item.is(ModItems.JAR_OF_BONMEEL.get()) || item.is(ModItems.JAR_OF_ACID.get()) && state.is(Blocks.CAULDRON)){
+        if ((item.is(ModItems.JAR_OF_BONMEEL.get()) || item.is(ModItems.JAR_OF_ACID.get())) && state.is(Blocks.CAULDRON)){
             var cauldronType = item.is(ModItems.JAR_OF_BONMEEL.get()) ? ModBlocks.BONMEEL_FILLED_CAULDRON.get() :  ModBlocks.ACID_FILLED_CAULDRON.get();
             var state1 = cauldronType.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3);
             level.setBlock(pos, state1, 3);
