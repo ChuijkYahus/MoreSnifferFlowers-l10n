@@ -75,7 +75,6 @@ public class TorchewflowerBlock extends BushBlock implements ModCropBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (isMaxAge(state)){
-            popResource(level, pos, ModItems.SWEET_SPICE.get().getDefaultInstance());
             level.setBlock(pos, state.setValue(getAgeProperty(), 0), 3);
             return InteractionResult.SUCCESS;
         }

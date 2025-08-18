@@ -3,16 +3,12 @@ package net.abraxator.moresnifferflowers.components;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.abraxator.moresnifferflowers.networking.toClient.BerootCookbookScreenPacket;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
-import java.util.Set;
 
 public record RootedSoup(int food, float saturation, int maxUses) {
     public static final Codec<RootedSoup> CODEC = RecordCodecBuilder.create(

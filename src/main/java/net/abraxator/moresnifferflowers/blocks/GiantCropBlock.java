@@ -2,6 +2,8 @@ package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
+import net.abraxator.moresnifferflowers.blocks.multiblock.MultiBlock;
+import net.abraxator.moresnifferflowers.blocks.multiblock.PreviewableMultiblock;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,10 +34,11 @@ import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 
-public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable, MultiBlock {
+public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable, PreviewableMultiblock {
     public static final VoxelShape SHAPE_POTATO = makeShapePotato();
     public static final VoxelShape SHAPE_CARROT = makeShapeCarrot();
     public static final VoxelShape SHAPE_BEET = makeShapeBeet();
@@ -46,8 +49,6 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         super(pProperties);
         registerDefaultState(defaultBlockState().setValue(ModStateProperties.CENTER, false));
     }
-    private static final VoxelShape SHAPE = Block.box(0, 0,  0, 16, 16, 16);
-    private static final VoxelShape SHAPE_TEST = Block.box(0, 0,  0, 5, 6, 6);
 
     @Override
     public Stream<BlockPos> fullBlockShape(@Nullable Direction direction, BlockPos center) {
@@ -62,8 +63,9 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     }
 
     @Override
-    public boolean directional() {
-        return false;
+    protected RenderShape getRenderShape(BlockState state) {
+        if (isCenter(state)) return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
     }
 
     @Override
@@ -82,7 +84,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
     @Override
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        return canSurviveHelper(state, level, pos, this, null);
+        return canSurviveHelper(state, level, pos);
     }
 
     @Override

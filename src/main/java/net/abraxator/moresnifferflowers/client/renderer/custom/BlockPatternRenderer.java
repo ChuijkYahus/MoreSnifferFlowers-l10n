@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
+import net.abraxator.moresnifferflowers.client.ClientRegistration;
 import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
@@ -22,6 +23,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,10 +41,41 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class BlockPatternRenderer {
+    public static final BlockPatternRenderer.CameraTracker CAMERA_TRACKER = new BlockPatternRenderer.CameraTracker();
 
-    private VertexBuffer vertexBuffer;
     private boolean dirty = true;
     private final List<RenderQuad> cachedQuads = new ArrayList<>();
+
+    public static void cacheAndRender(Frustum frustum, Camera camera, Level level, Minecraft minecraft, PoseStack poseStack) {
+        double camX = camera.getPosition().x;
+        double camY = camera.getPosition().y;
+        double camZ = camera.getPosition().z;
+
+        BlockPatternRenderer BUFFER_MANAGER = ClientRegistration.getBlockPatternRenderer();
+        if (level == null || minecraft.player == null) return;
+
+        if (CAMERA_TRACKER.hasMoved(camera)) {
+            BUFFER_MANAGER.markDirty();
+        }
+        int chunkRenderDistance = Math.min(ModClientConfig.getBlockPatternRenderDistance(), minecraft.options.getEffectiveRenderDistance());
+
+        poseStack.pushPose();
+        poseStack.translate(-camX, -camY, -camZ);
+
+        List<LevelChunk> levelChunks = new ArrayList<>();
+
+        ChunkPos playerChunkPos = minecraft.player.chunkPosition();
+        for (int x = -chunkRenderDistance; x < chunkRenderDistance ; x++) {
+            for (int z = -chunkRenderDistance; z < chunkRenderDistance ; z++) {
+                levelChunks.add(level.getChunk(x + playerChunkPos.x,z + playerChunkPos.z));
+            }
+        }
+
+        BUFFER_MANAGER.cachePatterns(level, camX, camY, camZ, levelChunks, frustum);
+        BUFFER_MANAGER.render(poseStack, Minecraft.getInstance().renderBuffers().bufferSource());
+
+        poseStack.popPose();
+    }
 
     public void markDirty() {
         this.dirty = true;
@@ -65,7 +99,7 @@ public class BlockPatternRenderer {
                     if (data != null && frustum.isVisible(new AABB(pos))) {
 
                         ResourceLocation resourceLocation = MoreSnifferFlowers.loc("block/block_pattern/" + BlockPattern.fromId(data.patternId()).getSerializedName());
-                        TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(resourceLocation);
+                        TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(resourceLocation);
                         BlockState state = level.getBlockState(pos);
 
                         for (Direction dir : Direction.values()) {

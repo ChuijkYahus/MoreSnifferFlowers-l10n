@@ -1,6 +1,9 @@
 package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
+import net.abraxator.moresnifferflowers.blocks.multiblock.AbstractMultiBlock;
+import net.abraxator.moresnifferflowers.blocks.multiblock.MultiBlock;
+import net.abraxator.moresnifferflowers.blocks.multiblock.PreviewableMultiblock;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -11,13 +14,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -28,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
 
-public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntityBlock, MultiBlock {
+public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntityBlock, PreviewableMultiblock {
     public static final VoxelShape SHAPE_UPPER = makeShapeUpper();
     public static final VoxelShape SHAPE_LOWER = makeShapeLower();
     public static final VoxelShape SHAPE_LOWER_ROTATED = makeShapeLowerRotated();
@@ -37,30 +39,11 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
 
     public BerootCauldronBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(defaultBlockState().setValue(ModStateProperties.CENTER, false).setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH));
-    }
-
-    @Override
-    public @Nullable Block corruptedBlock() {
-        return null;
-    }
-
-    @Override
-    public Block curedBlock() {
-        return this;
     }
 
     @Override
     public float getShadeBrightness(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
         return 1.0F;
-    }
-
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder);
-        builder.add(HorizontalDirectionalBlock.FACING, ModStateProperties.CENTER);
-
     }
 
     @Override
@@ -72,8 +55,8 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
     }
 
     @Override
-    public boolean directional() {
-        return true;
+    public @Nullable DirectionProperty getDirectionProperty() {
+        return HorizontalDirectionalBlock.FACING;
     }
 
     @Override
@@ -111,16 +94,15 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
         VoxelShape shape = SHAPE_UPPER;
 
         if (getYOffset(getter, pos) <= 0) {
-
             if (state.getValue(HorizontalDirectionalBlock.FACING).getAxis().equals(Direction.Axis.X)) {
                 shape = SHAPE_LOWER_ROTATED;
             } else shape = SHAPE_LOWER;
         }
-        return voxelShapeHelper(state, getter, pos, shape, 0, 0, 1.125f);
+        return voxelShapeHelper(state, getter, pos, shape, 0, 0, 1.125f, true);
     }
 
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
-        return voxelShapeHelper(state, getter, pos, SHAPE_FULL, 0, 0, 1.125f);
+        return voxelShapeHelper(state, getter, pos, SHAPE_FULL, 0, 0, 1.125f, true);
     }
 
     public static VoxelShape makeShapeUpper(){

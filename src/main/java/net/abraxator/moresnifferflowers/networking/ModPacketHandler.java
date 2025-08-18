@@ -44,11 +44,11 @@ public class ModPacketHandler {
     } 
     
     protected record ModPacketRegistrar(PayloadRegistrar registrar, boolean toServer) {
-        public <MSG extends IMSFPacket> void play(CustomPacketPayload.Type<MSG> type, StreamCodec<? super RegistryFriendlyByteBuf, MSG> reader) {
+        public <MSG extends MSFPacket> void play(CustomPacketPayload.Type<MSG> type, StreamCodec<? super RegistryFriendlyByteBuf, MSG> reader) {
             if (toServer) {
-                registrar.playToServer(type, reader, IMSFPacket::handle);
+                registrar.playToServer(type, reader, MSFPacket::handle);
             } else {
-                registrar.playToClient(type, reader, IMSFPacket::handle);
+                registrar.playToClient(type, reader, MSFPacket::handle);
             }
         }
     }

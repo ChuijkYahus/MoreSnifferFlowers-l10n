@@ -1,16 +1,12 @@
-package net.abraxator.moresnifferflowers.blocks;
+package net.abraxator.moresnifferflowers.blocks.multiblock;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
-import net.abraxator.moresnifferflowers.data.datamaps.Corruptable;
-import net.abraxator.moresnifferflowers.entities.CorruptedProjectile;
+import net.abraxator.moresnifferflowers.blocks.ModCropBlock;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -19,18 +15,21 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
-public interface MultiBlock {
+public interface MultiBlock{
 
     /*
    How to use:
    implement fullBlockShape and make it return the whole shape
-   directional = true if the fullBlockShape needs directions
+   getDirectionProperty = for directions in fullBlockShape, null if there are none
 
    For placement:
    Override setPlacedBy - return place
@@ -45,37 +44,64 @@ public interface MultiBlock {
    growHelper - for bone meal and tick growth
    voxelShapeHelper - pretty self-explanatory
 
-   for Corruption - Override entityInside - return corruptionHelper
-
-    */
+   */
 
     Stream<BlockPos> fullBlockShape(@Nullable Direction direction, BlockPos center);
-    boolean directional(); // True if the BlockState doesn't have directions
 
-    default Stream<BlockPos> fullBlockShape(BlockPos center, @Nullable BlockState state){
-        if (!directional() || state == null) return fullBlockShape(null, center);
-        return fullBlockShape(state.getValue(HorizontalDirectionalBlock.FACING), center);
+    default @Nullable DirectionProperty getDirectionProperty(){
+        return null; // null if block doesn't have directions
     }
 
+    default @Nullable Direction getDirection(BlockState state){
+        if (getDirectionProperty() != null){
+            return state.getValue(getDirectionProperty());
+        }
+        throw new RuntimeException("Tried to get Direction, but DirectionProperty is null");
+    }
 
-    default void place(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity pPlacer, ItemStack stack){
-        fullBlockShape(pos, state).forEach(blockPos -> {
-            blockPos = blockPos.immutable();
+    default Block getBlock(){
+        if (this instanceof Block block){
+            return block;
+        } else {
+            throw new RuntimeException(this.getClass().getSimpleName() + " is not implemented on a Block");
+        }
+    }
+
+    default Stream<BlockPos> fullBlockShape(BlockPos center, @Nullable BlockState state){
+        if (getDirectionProperty() == null || state == null)
+            return fullBlockShape(null, center);
+
+        return fullBlockShape(state.getValue(getDirectionProperty()), center);
+    }
+
+    default @Nullable BiFunction<BlockState, BlockPos, BlockState> getStateFromOffset() {
+        return null; // For use with json models, changes blockState based on offset from centre
+    };
+
+    default void place(Level level, BlockPos posOriginal, BlockState stateOriginal){
+        fullBlockShape(posOriginal, stateOriginal).forEach(posNew -> {
             int flags = level.isClientSide ? 0 : 3;
-            level.setBlock(blockPos, state.setValue(ModStateProperties.CENTER, pos.equals(blockPos)), flags);
-            if(level.getBlockEntity(blockPos) instanceof MultiBlockEntity entity) {
-                entity.setCenter(pos);
+
+            BlockState stateNew = stateOriginal.setValue(ModStateProperties.CENTER, posOriginal.equals(posNew));
+            if (getStateFromOffset() != null) stateNew = getStateFromOffset().apply(stateNew, posNew.subtract(posOriginal));
+
+            level.setBlock(posNew, stateNew, flags);
+            if(level.getBlockEntity(posNew) instanceof MultiBlockEntity entity) {
+                entity.setCenter(posOriginal);
             }
         });
     }
 
-    default BlockState getStateForPlacementHelper(BlockPlaceContext context, Block ts) {
+    default BlockState getStateForPlacementHelper(BlockPlaceContext context) {
+        return getStateForPlacementHelper(context, context.getHorizontalDirection());
+    }
+    default BlockState getStateForPlacementHelper(BlockPlaceContext context, Direction direction) {
         LevelReader level = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        BlockState state = ts.defaultBlockState();
+        BlockState state = getBlock().defaultBlockState();
 
-        if (directional()){
-            state = state.setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection());
+        if (getDirectionProperty() != null){
+            state = state.setValue(getDirectionProperty(), direction);
         }
 
         return canPlace(level, pos, state) ? state : null;
@@ -96,16 +122,11 @@ public interface MultiBlock {
         });
     }
 
-    default boolean allBlocksPresent(LevelReader level, BlockPos pos, BlockState state, Block originalBlock, @Nullable Block corruptedBlock){
+    default boolean allBlocksPresent(LevelReader level, BlockPos pos, BlockState state){
         if (level.isClientSide()) return true;
         BlockPos center = getCenter(level, pos);
 
-        boolean ret;
-        if (corruptedBlock != null) {
-            ret = fullBlockShape(center, state).allMatch(blockPos -> level.getBlockState(blockPos).is(originalBlock) || level.getBlockState(blockPos).is(corruptedBlock));
-        } else {
-            ret = fullBlockShape(center, state).allMatch(blockPos -> level.getBlockState(blockPos).is(originalBlock));
-        }
+        boolean ret = fullBlockShape(center, state).allMatch(blockPos -> level.getBlockState(blockPos).is(getBlock()));
 
         if (ret && level.getBlockEntity(pos) instanceof MultiBlockEntity entity && !entity.isPlaced) {
             fullBlockShape(center, state).forEach(blockPos -> MultiBlockEntity.setPlaced(level, blockPos));
@@ -129,11 +150,11 @@ public interface MultiBlock {
         return state;
     }
 
-    default boolean canSurviveHelper(BlockState state, LevelReader level, BlockPos pos, Block originalBlock, @Nullable Block corruptedBlock){
+    default boolean canSurviveHelper(BlockState state, LevelReader level, BlockPos pos){
         if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity){
             //survive logic
             boolean extraSurvive = fullBlockShape(entity.getCenter(), state).allMatch(blockPos -> extraSurviveRequirements(level, blockPos, state));
-            return (allBlocksPresent(level, pos, state, originalBlock, corruptedBlock) || !entity.isPlaced) && extraSurvive;
+            return (allBlocksPresent(level, pos, state) || !entity.isPlaced) && extraSurvive;
         } else {
             //placement logic
             return canPlace(level, pos, state);
@@ -168,6 +189,10 @@ public interface MultiBlock {
         return false;
     }
 
+    default boolean isCenter(BlockState state){
+        return state.getValue(ModStateProperties.CENTER);
+    }
+
     default int getXOffset(BlockGetter level, BlockPos pos){
         if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
             return pos.getX() - entity.getCenter().getX();
@@ -189,18 +214,33 @@ public interface MultiBlock {
         return 0;
     }
 
+    static Rotation rotationFromDirection(Direction direction){
+        return switch (direction){
+            case DOWN, NORTH, UP -> Rotation.NONE;
+            case SOUTH -> Rotation.CLOCKWISE_180;
+            case WEST -> Rotation.COUNTERCLOCKWISE_90;
+            case EAST -> Rotation.CLOCKWISE_90;
+        };
+    }
+
+
     default VoxelShape voxelShapeHelper(BlockState state, BlockGetter level, BlockPos pos, VoxelShape shape){
         return voxelShapeHelper(state,level,pos,shape, 0, 0, 0);
     }
 
     default VoxelShape voxelShapeHelper(BlockState state, BlockGetter level, BlockPos pos, VoxelShape shape, float xOffset, float yOffset, float zOffset){
+        return voxelShapeHelper(state,level,pos,shape, xOffset, yOffset, zOffset, false);
+    }
+
+
+    default VoxelShape voxelShapeHelper(BlockState state, BlockGetter level, BlockPos pos, VoxelShape shape, float xOffset, float yOffset, float zOffset, boolean hasDirectionOffsets){
         if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
             var x = entity.center.getX() - pos.getX() + xOffset;
             var y = entity.center.getY() - pos.getY() + yOffset;
             var z = entity.center.getZ() - pos.getZ() + zOffset;
 
-            if (directional()) {
-                switch (state.getValue(HorizontalDirectionalBlock.FACING)) {
+            if (getDirectionProperty() != null && hasDirectionOffsets) {
+                switch (state.getValue(getDirectionProperty())) {
                     case EAST -> x += 1;
                     case NORTH -> {
                         x += 1;
@@ -214,30 +254,6 @@ public interface MultiBlock {
         return shape;
     }
 
-    default void corruptionHelper(BlockState state, Level level, BlockPos pos, Entity entityInside){
-        if(entityInside instanceof CorruptedProjectile corruptedProjectile && Corruptable.canBeCorrupted(state.getBlock(), level.random)) {
-            if(level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
-                corruptedProjectile.discard();
-                BlockPos centrePos = entity.getCenter();
-                BlockState centreState = level.getBlockState(centrePos);
-                fullBlockShape(entity.getCenter(), state).forEach(pos1 -> {
-                    afterCorruption(centrePos, level, pos1);
-                });
-            }
-        }
-    }
-
-    default void afterCorruption(BlockPos centrePos, Level level, BlockPos pos){
-        if (!Corruptable.canBeCorrupted(level.getBlockState(pos).getBlock(), level.random)) return;
-
-        Block corruptedBlock = Corruptable.getCorruptedBlock(level.getBlockState(pos).getBlock(), level.getRandom()).get();
-        level.setBlockAndUpdate(pos, corruptedBlock.withPropertiesOf(level.getBlockState(pos)));
-
-        if(level.getBlockEntity(pos) instanceof MultiBlockEntity entity){
-            entity.setCenter(centrePos);
-        }
-    }
-
     default void growHelper(Level level, BlockPos blockPos, BlockState blockState){
         Block block = blockState.getBlock();
         if (block instanceof ModCropBlock cropBlock) {
@@ -246,8 +262,6 @@ public interface MultiBlock {
                     if(level.getBlockState(pos).is(block)) {
                         cropBlock.makeGrowOnBonemeal(level, pos, level.getBlockState(pos));
                     }else {
-                        MoreSnifferFlowers.LOGGER.warn(block +" goofed up, centre = " + entity.getCenter().toString());
-                        MoreSnifferFlowers.LOGGER.warn("If this happens often, you might wanna report it to the More Sniffer Flowers devs");
                         level.destroyBlock(pos, false);
                     }
                 });

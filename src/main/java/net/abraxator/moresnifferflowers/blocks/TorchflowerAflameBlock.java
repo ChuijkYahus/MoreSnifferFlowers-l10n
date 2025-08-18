@@ -134,7 +134,6 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
         int age = getAge(state);
 
         if (age == 2){
-            popResource(level, pos, ModItems.FIERY_SPICE.get().getDefaultInstance());
             level.setBlock(pos, state.setValue(getAgeProperty(), 0), 3);
             return InteractionResult.SUCCESS;
         }

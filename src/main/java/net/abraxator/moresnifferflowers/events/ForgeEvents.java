@@ -11,6 +11,7 @@ import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -52,6 +53,7 @@ import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.event.entity.player.UseItemOnBlockEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.ChunkWatchEvent;
 
 import java.util.Objects;
 
@@ -64,11 +66,19 @@ public class ForgeEvents {
     }
 
     @SubscribeEvent
+    public static void onChunkWatch(ChunkWatchEvent.Watch.Sent event) {
+        ServerLevel level = event.getLevel();
+
+        LevelChunk chunk = event.getChunk();
+        chunk.getData(ModDataAttachments.BLOCK_PATTERNS).sync(chunk.getPos().getMiddleBlockPosition(0), level);
+    }
+
+    @SubscribeEvent
     public static void onEffectAdded(MobEffectEvent.Added event){
         Holder<MobEffect> effect = event.getEffectInstance().getEffect();
         LivingEntity entity = event.getEntity();
 
-        if (effect.equals(ModEffects.GLUED.get())){
+        if (effect.equals(ModEffects.GLUED)){
             GluedCapability.setAndSync(entity, true, true);
         }
     }

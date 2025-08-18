@@ -5,9 +5,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.MultiBlock;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
-import net.abraxator.moresnifferflowers.components.PreviewState;
+import net.abraxator.moresnifferflowers.components.PreviewMode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -24,9 +23,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -47,8 +44,8 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> impleme
         final Material CAULDRON_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/beroot_cauldron"));
         final Material SPOON_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/beroot_spoon"));
 
-        PreviewState previewState = blockEntity.previewState;
-        Function<ResourceLocation, RenderType> renderType = getRenderTypeFunction(previewState);
+        PreviewMode previewMode = blockEntity.previewMode;
+        Function<ResourceLocation, RenderType> renderType = getRenderTypeFunction(previewMode);
 
         final VertexConsumer cauldron_consumer = CAULDRON_TEXTURE.buffer(buffer, renderType);
         final VertexConsumer spoon_consumer = SPOON_TEXTURE.buffer(buffer, renderType);
@@ -61,7 +58,7 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> impleme
             poseStack.translate(1, 1.5, 0);
             poseStack.mulPose(Axis.XN.rotationDegrees(-180));
             rotate(poseStack, direction, false);
-            render(cauldron, poseStack, cauldron_consumer, packedLight, packedOverlay, previewState);
+            render(cauldron, poseStack, cauldron_consumer, packedLight, packedOverlay, previewMode);
             poseStack.popPose();
 
             //SOUP
@@ -102,7 +99,7 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> impleme
                 poseStack.mulPose(Axis.XN.rotationDegrees(-180));
                 rotate(poseStack, direction, false);
                 poseStack.mulPose((new Quaternionf()).rotationY((float) (rot * (Math.PI / 180))));
-                render(spoon ,poseStack, spoon_consumer, packedLight, packedOverlay, previewState);
+                render(spoon ,poseStack, spoon_consumer, packedLight, packedOverlay, previewMode);
                 poseStack.popPose();
             }
             

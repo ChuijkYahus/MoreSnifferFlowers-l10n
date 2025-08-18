@@ -3,7 +3,6 @@ package net.abraxator.moresnifferflowers.items;
 import net.abraxator.moresnifferflowers.capability.NutritionCapability;
 import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.abraxator.moresnifferflowers.networking.toClient.BerootCookbookScreenPacket;
-import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;

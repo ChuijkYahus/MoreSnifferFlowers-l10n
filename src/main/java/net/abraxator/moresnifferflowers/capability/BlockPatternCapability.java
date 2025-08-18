@@ -20,16 +20,13 @@ import java.util.stream.Stream;
 
 public class BlockPatternCapability {
     public Map<BlockPos, PatternData> patterns;
-    public static final Codec<BlockPos> BLOCKPOS_STRING_CODEC = Codec.STRING.xmap(
-            s -> {
-                String[] parts = s.split(",");
-                return new BlockPos(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
-            },
-            pos -> pos.getX() + "," + pos.getY() + "," + pos.getZ()
+    public static final Codec<BlockPos> BLOCKPOS_LONG_CODEC = Codec.LONG.xmap(
+            BlockPos::of,
+            BlockPos::asLong
     );
 
     public static final Codec<BlockPatternCapability> CODEC =RecordCodecBuilder.create(instance -> instance.group(
-            Codec.unboundedMap(BLOCKPOS_STRING_CODEC, PatternData.CODEC).fieldOf("patterns").forGetter(cap -> cap.patterns))
+            Codec.unboundedMap(BLOCKPOS_LONG_CODEC, PatternData.CODEC).fieldOf("patterns").forGetter(cap -> cap.patterns))
             .apply(instance, BlockPatternCapability::new));
 
     public static final StreamCodec<? super ByteBuf, BlockPatternCapability> STREAM_CODEC =
@@ -61,14 +58,11 @@ public class BlockPatternCapability {
 
 
     public static void setPattern(BlockPos pos, PatternData pattern, Level level) {
-       // ChunkPos chunkPos = new ChunkPos(pos);
-       // LevelChunk chunk = level.getChunkAt(pos);
-       // chunk.setUnsaved(true);
+        level.getChunkAt(pos).setUnsaved(true);
 
         BlockPatternCapability capability = getBlockPatterns(pos, level);
         capability.setPattern(pos, pattern);
-        if (!level.isClientSide)
-            capability.sync(pos, level);
+        if (!level.isClientSide) capability.sync(pos, level);
     }
 
     public void setPattern(BlockPos pos, PatternData pattern) {
@@ -143,13 +137,9 @@ public class BlockPatternCapability {
     }
 
     public void sync(BlockPos pos, Level level) {
-        save(pos, level);
         PacketDistributor.sendToAllPlayers(new SyncBlockPatternsPacket(this, pos));
     }
 
-    public void save(BlockPos pos, Level level){
-        level.getChunkAt(pos).setData(ModDataAttachments.BLOCK_PATTERNS.get(), this);
-    }
 
     public void load(BlockPatternCapability capability){
         patterns.clear();

@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
-import net.abraxator.moresnifferflowers.components.PreviewState;
+import net.abraxator.moresnifferflowers.components.PreviewMode;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.ModTags;
@@ -59,11 +59,11 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 		String path = blockState.getBlock().getDescriptionId().replace("block." + MoreSnifferFlowers.MOD_ID + ".", "");
 		Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/" + path));
 
-		PreviewState previewState = blockEntity.previewState;
-		Function<ResourceLocation, RenderType> renderType = getRenderTypeFunction(previewState);
+		PreviewMode previewMode = blockEntity.previewMode;
+		Function<ResourceLocation, RenderType> renderType = getRenderTypeFunction(previewMode);
 		VertexConsumer vertexConsumer = TEXTURE.buffer(buffer, renderType);
 
-		double growProgress = previewState.equals(PreviewState.PLACED) ? blockEntity.growProgress : 1;
+		double growProgress = previewMode.equals(PreviewMode.PLACED) ? blockEntity.growProgress : 1;
 		float coolPartialTick = (growProgress < 1 && blockState.is(ModTags.ModBlockTags.GIANT_CROPS) && blockState.getValue(ModStateProperties.CENTER)) ? partialTick : 0;
 		float coolGrowProgress = level().getGameTime() - blockEntity.staticGameTime;
 
@@ -71,7 +71,7 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 			float yCord = 0.5F;
 			float yScale = 1;
 
-			if (!previewState.equals(PreviewState.PLACED)) yCord++;
+			if (!previewMode.equals(PreviewMode.PLACED)) yCord++;
 
 			if(growProgress < 1) {
 				yCord = (coolGrowProgress + coolPartialTick) / 4 - 2;
@@ -82,7 +82,7 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 			poseStack.translate(0.5, yCord, 0.5);
 			poseStack.scale(1, yScale, 1);
 			poseStack.mulPose(new Quaternionf().rotateX((float) (Math.PI)));
-			render(modelPartMap.get(blockState.getBlock()), poseStack, vertexConsumer, packedLight, packedOverlay, blockEntity.previewState);
+			render(modelPartMap.get(blockState.getBlock()), poseStack, vertexConsumer, packedLight, packedOverlay, blockEntity.previewMode);
 			poseStack.popPose();
 		}
 	}
