@@ -7,6 +7,7 @@ import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.abraxator.moresnifferflowers.client.ClientRegistration;
 import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
 import net.minecraft.client.Camera;
@@ -22,6 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,16 +40,49 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class BlockPatternRenderer {
+    public static final BlockPatternRenderer.CameraTracker CAMERA_TRACKER = new BlockPatternRenderer.CameraTracker();
 
     private VertexBuffer vertexBuffer;
     private boolean dirty = true;
     private final List<RenderQuad> cachedQuads = new ArrayList<>();
 
+    public static void cacheAndRender(Frustum frustum, Camera camera, Level level, Minecraft minecraft, PoseStack poseStack) {
+        double camX = camera.getPosition().x;
+        double camY = camera.getPosition().y;
+        double camZ = camera.getPosition().z;
+
+        BlockPatternRenderer BUFFER_MANAGER = ClientRegistration.getBlockPatternRenderer();
+        if (level == null || minecraft.player == null) return;
+
+        if (CAMERA_TRACKER.hasMoved(camera)) {
+            BUFFER_MANAGER.markDirty();
+        }
+        int chunkRenderDistance = Math.min(ModClientConfig.getBlockPatternRenderDistance(), minecraft.options.getEffectiveRenderDistance());
+
+        poseStack.pushPose();
+        poseStack.translate(-camX, -camY, -camZ);
+
+        List<LevelChunk> levelChunks = new ArrayList<>();
+
+        ChunkPos playerChunkPos = minecraft.player.chunkPosition();
+        for (int x = -chunkRenderDistance; x < chunkRenderDistance ; x++) {
+            for (int z = -chunkRenderDistance; z < chunkRenderDistance ; z++) {
+                levelChunks.add(level.getChunk(x + playerChunkPos.x,z + playerChunkPos.z));
+            }
+        }
+
+        BUFFER_MANAGER.cachePatterns(level, camX, camY, camZ, levelChunks, frustum);
+        BUFFER_MANAGER.render(poseStack, Minecraft.getInstance().renderBuffers().bufferSource());
+
+        poseStack.popPose();
+    }
+
+
     public void markDirty() {
         this.dirty = true;
     }
 
-    public void cachePatterns(Level level, double camX, double camY, double camZ, Matrix4f viewMatrix, Matrix4f projectionMatrix, List<LevelChunk> levelChunks, Frustum frustum) {
+    public void cachePatterns(Level level, double camX, double camY, double camZ, List<LevelChunk> levelChunks, Frustum frustum) {
         if (!dirty) return;
         dirty = false;
         cachedQuads.clear();
@@ -279,8 +314,8 @@ public class BlockPatternRenderer {
         private float lastYaw = 0f;
         private float lastPitch = 0f;
 
-        private static final double MOVE_THRESHOLD = 1.5; // blocks
-        private static final float ROTATE_THRESHOLD = 5f; // degrees
+        private static final double MOVE_THRESHOLD = 0.01f; // blocks
+        private static final float ROTATE_THRESHOLD = 0.2f; // degrees
 
         public boolean hasMoved(Camera camera) {
             Vec3 currentPos = camera.getPosition();
@@ -295,6 +330,8 @@ public class BlockPatternRenderer {
             float deltaYaw = Math.abs(yaw - lastYaw);
             float deltaPitch = Math.abs(pitch - lastPitch);
 
+            update(camera);
+
             return distSq > MOVE_THRESHOLD * MOVE_THRESHOLD ||
                     deltaYaw > ROTATE_THRESHOLD ||
                     deltaPitch > ROTATE_THRESHOLD;
@@ -305,10 +342,5 @@ public class BlockPatternRenderer {
             this.lastYaw = camera.getYRot();
             this.lastPitch = camera.getXRot();
         }
-    }
-
-    public interface AmbientOcclusionFaceAccessor {
-        float[] moreSnifferFlowers$getBrightness();
-        int[] moreSnifferFlowers$getLightmap();
     }
 }

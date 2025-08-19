@@ -1,7 +1,7 @@
 modLoader="javafml"
 loaderVersion="[47,)"
 license="MIT"
-issueTrackerURL="https://github.com/AbraXator/MoreSnifferFlowers/issues"
+issueTrackerURL="https://github.com/Nikdo53/MoreSnifferFlowers/issues"
 [[mods]]
 modId="moresnifferflowers"
 version="${file.jarVersion}"

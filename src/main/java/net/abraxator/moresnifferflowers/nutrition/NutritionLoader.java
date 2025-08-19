@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.*;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.minecraft.core.registries.Registries;
@@ -51,9 +52,10 @@ public class NutritionLoader extends SimpleJsonResourceReloadListener {
             try {
                 for (NutritionType nutritionType : NutritionType.values()) {
                     JsonObject entries = entry.getValue().getAsJsonObject().getAsJsonObject(nutritionType.name);
-                    Map<NutritionType, List<NutritionEntry>> currentTypeNutritions = Maps.newHashMap();
-                    
-                    var values = CODEC.parse(JsonOps.INSTANCE, entries).get();
+
+                    DataResult<Map<Either<TagKey<Item>, Item>, Integer>> parse = CODEC.parse(JsonOps.INSTANCE, entries);
+                    Either<Map<Either<TagKey<Item>, Item>, Integer>, DataResult.PartialResult<Map<Either<TagKey<Item>, Item>, Integer>>> values = parse.get();
+
                     if(values.left().isPresent()) {
                         Map<Item, NutritionEntry> map = new HashMap<>();
                         

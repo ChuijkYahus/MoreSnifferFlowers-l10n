@@ -1,6 +1,6 @@
 package net.abraxator.moresnifferflowers.blockentities;
 
-import net.abraxator.moresnifferflowers.components.PreviewState;
+import net.abraxator.moresnifferflowers.components.PreviewMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -12,7 +12,7 @@ import net.minecraft.world.phys.AABB;
 public class MultiBlockEntity extends ModBlockEntity {
     public BlockPos center;
     public boolean isPlaced; //True once the whole placing logic runs (to prevent updateShape from breaking it early)
-    public PreviewState previewState = PreviewState.PLACED;
+    public PreviewMode previewMode = PreviewMode.PLACED;
 
     public MultiBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
@@ -59,7 +59,7 @@ public class MultiBlockEntity extends ModBlockEntity {
     }
 
     public boolean canRender(){
-        return center.equals(this.getBlockPos()) || !previewState.equals(PreviewState.PLACED);
+        return center.equals(this.getBlockPos()) || !previewMode.equals(PreviewMode.PLACED);
     }
 
     public static void setPlaced(LevelReader level, BlockPos blockPos) {

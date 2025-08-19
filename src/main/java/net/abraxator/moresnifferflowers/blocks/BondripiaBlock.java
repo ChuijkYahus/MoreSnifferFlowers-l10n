@@ -2,6 +2,9 @@ package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
+import net.abraxator.moresnifferflowers.blocks.multiblock.AbstractMultiBlock;
+import net.abraxator.moresnifferflowers.blocks.multiblock.CorruptableMultiblock;
+import net.abraxator.moresnifferflowers.blocks.multiblock.PreviewableMultiblock;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModParticles;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
@@ -16,10 +19,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.AbstractCauldronBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.BonemealableBlock;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -35,29 +35,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock, ModCropBlock, Corruptable, MultiBlock {
+public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock, ModCropBlock, Corruptable, PreviewableMultiblock, CorruptableMultiblock {
     public BondripiaBlock(Properties p_49795_) {
         super(p_49795_);
-        this.defaultBlockState()
-                .setValue(ModStateProperties.CENTER, false)
-                .setValue(getAgeProperty(), 0);
+        this.registerDefaultState(defaultBlockState().setValue(getAgeProperty(), 0));
     }
     private static final VoxelShape SHAPE = Block.box(2.0, 13.0, 2.0, 14.0, 16.0, 14.0);
     private static final VoxelShape SHAPE_CENTER = Block.box(0.0, 13.0, 0.0, 16.0, 16.0, 16.0);
 
     @Override
-    public @Nullable Block corruptedBlock() {
-        return ModBlocks.ACIDRIPIA.get();
-    }
-
-    @Override
-    public Block curedBlock() {
-        return ModBlocks.BONDRIPIA.get();
-    }
-
-    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(ModStateProperties.CENTER, getAgeProperty());
+        super.createBlockStateDefinition(pBuilder);
+        pBuilder.add(getAgeProperty());
+    }
+
+    @Override
+    public BlockState getDefaultStateForPreviews(Direction direction) {
+        return PreviewableMultiblock.super.getDefaultStateForPreviews(direction).setValue(getAgeProperty(), getMaxAge());
     }
 
     @Override
@@ -70,8 +64,10 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
     }
 
     @Override
-    public boolean directional() {
-        return false;
+    public RenderShape getRenderShape(BlockState state) {
+        if (!isCenter(state)) return  RenderShape.INVISIBLE;
+        if (getAge(state) == getMaxAge()) return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.MODEL;
     }
     
     @Override
@@ -225,5 +221,15 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
 
         return SHAPE;
 
+    }
+
+    @Override
+    public Block getCuredBlock() {
+        return ModBlocks.BONDRIPIA.get();
+    }
+
+    @Override
+    public Block getCorruptedBlock() {
+        return ModBlocks.ACIDRIPIA.get();
     }
 }

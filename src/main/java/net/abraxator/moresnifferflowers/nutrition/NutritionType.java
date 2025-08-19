@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.nutrition;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.effect.MobEffect;
@@ -8,6 +9,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 public enum NutritionType {
     SOUR("sour", 0xe6a005, 0.5f),
@@ -34,24 +36,24 @@ public enum NutritionType {
     }
     
     public static MobEffect getEffect(NutritionType nutritionType, boolean positive) {
-        Map<NutritionType, ResourceLocation> map = positive ? POSITIVE_SOUP_EFFECT_MAP : NEGATIVE_SOUP_EFFECT_MAP;
+        Map<NutritionType, Supplier<MobEffect>> map = positive ? POSITIVE_SOUP_EFFECT_MAP : NEGATIVE_SOUP_EFFECT_MAP;
 
-        return ForgeRegistries.MOB_EFFECTS.getValue(map.get(nutritionType));
+        return map.get(nutritionType).get();
     }
 
-    public static final Map<NutritionType, ResourceLocation> NEGATIVE_SOUP_EFFECT_MAP = Map.of(
-            SOUR,MoreSnifferFlowers.loc("negative_sour"),
-            SALTY, MoreSnifferFlowers.loc("negative_salty"),
-            SPICY, MoreSnifferFlowers.loc("pants_on_fire"),
-            SWEET, MoreSnifferFlowers.loc("sticky"),
-            NEUTRAL, MoreSnifferFlowers.loc("bland")
+    public static final Map<NutritionType, Supplier<MobEffect>> NEGATIVE_SOUP_EFFECT_MAP = Map.of(
+            SOUR, ModEffects.SLIPPERY,
+            SALTY, ModEffects.SALTY,
+            SPICY, ModEffects.PANTS_ON_FIRE,
+            SWEET, ModEffects.HARDENED_MOUTH,
+            NEUTRAL, ModEffects.BLAND
     );
 
-    public static final Map<NutritionType, ResourceLocation> POSITIVE_SOUP_EFFECT_MAP = Map.of(
-            SOUR, MoreSnifferFlowers.loc("positive_sour"),
-            SALTY,  MoreSnifferFlowers.loc("positive_salty"),
-            SPICY,  MoreSnifferFlowers.loc("hardened_mouth"),
-            SWEET,  MoreSnifferFlowers.loc("positive_sweet"),
-            NEUTRAL, MoreSnifferFlowers.loc("well_balanced")
+    public static final Map<NutritionType, Supplier<MobEffect>> POSITIVE_SOUP_EFFECT_MAP = Map.of(
+            SOUR, ModEffects.UNTOUCHABLE,
+            SALTY,  ModEffects.COMBO_MEAL,
+            SPICY,  ModEffects.HARDENED_MOUTH,
+            SWEET,  ModEffects.STICKY,
+            NEUTRAL, ModEffects.WELL_BALANCED
     );
 }

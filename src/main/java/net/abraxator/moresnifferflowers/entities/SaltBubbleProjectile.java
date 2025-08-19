@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.entities;
 
 import net.abraxator.moresnifferflowers.init.ModEntityTypes;
+import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.networking.toClient.SaltemoneParticlePacket;
@@ -147,7 +148,7 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
 
     @Override
     protected Item getDefaultItem() {
-        return null;
+        return ModItems.SALTY_SPICE.get();
     }
 
     public boolean isCorrupted() {

@@ -1,0 +1,71 @@
+package net.abraxator.moresnifferflowers.blocks.multiblock;
+
+import net.abraxator.moresnifferflowers.blocks.ModEntityBlock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import org.jetbrains.annotations.Nullable;
+
+import static net.abraxator.moresnifferflowers.init.ModStateProperties.CENTER;
+
+public abstract class AbstractMultiBlock extends Block implements MultiBlock, ModEntityBlock {
+    public AbstractMultiBlock(Properties properties) {
+        super(properties);
+        if (getDirectionProperty() != null){
+            this.registerDefaultState(this.getStateDefinition().any().setValue(CENTER, false).setValue(getDirectionProperty(), Direction.NORTH));
+        } else {
+            this.registerDefaultState(this.getStateDefinition().any().setValue(CENTER, false));
+        }
+    }
+
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        place(level, pos, state);
+    }
+
+    @Override
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        return getStateForPlacementHelper(context);
+    }
+
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        if (isCenter(state)) return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(CENTER);
+        if (getDirectionProperty() != null) builder.add(getDirectionProperty());
+    }
+
+
+    @Override
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        return updateShapeHelper(state, level, pos);
+    }
+
+    @Override
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        return canSurviveHelper(state, level, pos);
+    }
+
+    @Override
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        preventCreativeDrops(player, level, pos);
+        super.playerWillDestroy(level, pos, state, player);
+    }
+
+}
