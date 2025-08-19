@@ -360,9 +360,15 @@
 
 
 	"moresnifferflowers.configuration.section.moresnifferflowers.server.toml": "更多嗅探兽花卉（MSF）服务端配置",
+	"moresnifferflowers.configuration.section.moresnifferflowers.client.toml": "更多嗅探兽花卉（MSF）客户端配置",
+	"moresnifferflowers.configuration.section.moresnifferflowers.client.toml.title": "更多嗅探兽花卉（MSF）客户端配置",
+	"moresnifferflowers.configuration.section.moresnifferflowers.server.toml.title": "更多嗅探兽花卉（MSF）服务端配置",
+
 	"moresnifferflowers.configuration.title": "更多嗅探兽花卉",
 	"moresnifferflowers.configuration.corruption": "腐坏配置",
-	"moresnifferflowers.configuration.section.moresnifferflowers.server.toml.title": "更多嗅探兽花卉（MSF）服务端配置",
+	"moresnifferflowers.configuration.misc": "杂项",
+	"moresnifferflowers.configuration.misc.button": "杂项",
+	"moresnifferflowers.configuration.misc.tooltip": "杂项设置",
 	"moresnifferflowers.configuration.corruption.button": "编辑",
 	"moresnifferflowers.configuration.corruption.tooltip": "与腐坏方块有关的设置",
 	"moresnifferflowers.configuration.hardened_mouth_effect": "耐火坚口效果",
@@ -392,7 +398,7 @@
 	"moresnifferflowers.configuration.saltemone_lingering": "允许咸银莲破坏性行为",
 	"moresnifferflowers.configuration.saltemone_lingering.tooltip": "咸银莲的泡泡是否会在无人打破它们时产生掉落物？\n默认为true",
 	"moresnifferflowers.configuration.throwables_cooldown": "可投掷物品冷却",
-	"moresnifferflowers.configuration.throwables_cooldown.tooltip": "所有可投掷物品的冷却。\n以刻为单位",
+	"moresnifferflowers.configuration.throwables_cooldown.tooltip": "所有会形成方块的可投掷物品的冷却。\n以刻为单位",
 
 	"moresnifferflowers.configuration.hardened_mouth_x": "耐火坚口X坐标",
 	"moresnifferflowers.configuration.hardened_mouth_x.tooltip": "左右移动耐火坚口效果额外槽位的位置",
