@@ -2,6 +2,8 @@ package net.abraxator.moresnifferflowers.init.config;
 
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -69,19 +71,19 @@ public class ModServerConfig {
 
         REBREWING_LENGTH = builder
                 .translation("moresnifferflowers.configuration.rebrew_length")
-                .define("Rebrewing Length", itemToString(Items.REDSTONE));
+                .define("Rebrewing Length", itemToString(Items.REDSTONE), ModServerConfig::validateItemName);
 
         REBREWING_AMPLIFIER = builder
                 .translation("moresnifferflowers.configuration.rebrew_amplifier")
-                .define("Rebrewing Amplifier", itemToString(Items.GLOWSTONE_DUST));
+                .define("Rebrewing Amplifier", itemToString(Items.GLOWSTONE_DUST), ModServerConfig::validateItemName);
 
         REBREWING_SPLASH = builder
                 .translation("moresnifferflowers.configuration.rebrew_splash")
-                .define("Rebrewing Splash", itemToString(Items.GUNPOWDER));
+                .define("Rebrewing Splash", itemToString(Items.GUNPOWDER), ModServerConfig::validateItemName);
 
         REBREWING_LINGERING = builder
                 .translation("moresnifferflowers.configuration.rebrew_lingering")
-                .define("Rebrewing Lingering", itemToString(Items.DRAGON_BREATH));
+                .define("Rebrewing Lingering", itemToString(Items.DRAGON_BREATH), ModServerConfig::validateItemName);
 
         builder.pop();
 
@@ -108,5 +110,9 @@ public class ModServerConfig {
 
     public static Item itemFromLoc(String loc) {
        return ForgeRegistries.ITEMS.getValue(MoreSnifferFlowers.ofLoc(loc));
+    }
+
+    private static boolean validateItemName(final Object obj) {
+        return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(itemName));
     }
 }
