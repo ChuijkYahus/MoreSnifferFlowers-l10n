@@ -3,6 +3,8 @@ package net.abraxator.moresnifferflowers.blocks.multiblock;
 import net.abraxator.moresnifferflowers.blocks.ModEntityBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -51,6 +53,19 @@ public abstract class AbstractMultiBlock extends Block implements MultiBlock, Mo
         if (getDirectionProperty() != null) builder.add(getDirectionProperty());
     }
 
+    @Override
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+
+        fixInStructures(state, level, pos, oldState);
+    }
+
+    @Override
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        super.tick(state, level, pos, random);
+
+        if (isBroken(level, pos, state)) fixTick(state, level , pos);
+    }
 
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {

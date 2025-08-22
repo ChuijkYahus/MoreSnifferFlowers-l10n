@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.init;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.client.gui.menu.HardenedMouthMenu;
 import net.abraxator.moresnifferflowers.client.gui.menu.RebrewingStandMenu;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.flag.FeatureFlags;

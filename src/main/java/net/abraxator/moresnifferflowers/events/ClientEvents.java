@@ -60,7 +60,7 @@ public class ClientEvents {
         DeltaTracker partialTick = event.getPartialTick();
 
 
-        if (stage.equals(RenderLevelStageEvent.Stage.AFTER_SKY)) {
+        if (stage.equals(RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS)) {
             BlockPatternRenderer.cacheAndRender(frustum, camera, level, minecraft, poseStack);
         }
 
