@@ -27,6 +27,7 @@ public class TypeWidget extends AbstractWidget {
     @Override
     public void onClick(double mouseX, double mouseY) {
         this.screen.pageToItems(this.type);
+        screen.type =  this.type;
     }
 
     @Override

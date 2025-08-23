@@ -1,0 +1,69 @@
+package net.abraxator.moresnifferflowers.client.gui.screen.cookbook;
+
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.abraxator.moresnifferflowers.capability.NutritionCapability;
+import net.abraxator.moresnifferflowers.init.ModEffects;
+import net.abraxator.moresnifferflowers.nutrition.NutritionType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.ScreenEffectRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.MobEffectTextureManager;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraftforge.common.data.SpriteSourceProvider;
+import org.violetmoon.zeta.config.Config;
+
+public class EffectWidget extends AbstractWidget {
+    private final NutritionType nutrition;
+    private final CookbookScreen screen;
+    private final boolean isPositive;
+
+    public EffectWidget(int x, int y, Component message, NutritionType nutrition, CookbookScreen screen, boolean isPositive) {
+        super(x, y, 20 , 20, message);
+        this.nutrition = nutrition;
+        this.screen = screen;
+        this.isPositive = isPositive;
+    }
+
+    @Override
+    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        MobEffectTextureManager mobeffecttexturemanager = Minecraft.getInstance().getMobEffectTextures();
+        int id = NutritionCapability.idFromNutrition(nutrition, isPositive);
+
+        NutritionCapability capability = Minecraft.getInstance().player.getCapability(CapabilityList.UNLOCKED_NUTRITIONS).orElseGet(NutritionCapability::new);
+        boolean isUnlocked = capability.unlockedEffects.contains(id);
+        int size = isUnlocked ? 18 : 21;
+
+        MobEffect effect = NutritionCapability.effectFromId(id);
+        if (isUnlocked) {
+            guiGraphics.blit(getX(), getY(), 0, size, size, mobeffecttexturemanager.get(effect));
+        } else {
+            guiGraphics.blit(CookbookScreen.RENDERABLES, getX(), getY(), 0, 32, size, size);
+        }
+
+        guiGraphics.blit(CookbookScreen.RENDERABLES, getX() - 10, getY() - 2, 0, 160, 118, 22);
+
+        FormattedText text = isPositive ? FormattedText.of("Positive", Style.EMPTY.withBold(true).withUnderlined(true)) : FormattedText.of("Negative", Style.EMPTY.withBold(true).withUnderlined(true));
+        int color = isPositive ? 0x67911c : 0x8d2a22;
+
+        guiGraphics.drawWordWrap(screen.getMinecraft().font,text, getX() + 35, getY() + 4, 100, color);
+
+        if (isHovered && isUnlocked) {
+            screen.renderEffectInfo(guiGraphics, effect, isPositive);
+        }
+
+    }
+
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+
+    }
+}

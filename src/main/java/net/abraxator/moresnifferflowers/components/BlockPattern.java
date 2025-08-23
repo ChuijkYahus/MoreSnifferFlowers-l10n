@@ -2,6 +2,7 @@ package net.abraxator.moresnifferflowers.components;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.abraxator.moresnifferflowers.items.PatternspriaItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
@@ -116,7 +117,7 @@ public enum BlockPattern implements StringRepresentable {
     }
 
     public static void setPatternToHolderStack(ItemStack itemStack, ItemStack patternToInsert, int amount) {
-        setPatternToHolderStack(itemStack, patternToInsert, amount, 4);
+        setPatternToHolderStack(itemStack, patternToInsert, amount, PatternspriaItem.getPatternspriaUses(itemStack));
     }
 
     public static void setPatternToHolderStack(ItemStack itemStack, ItemStack patternToInsert, int amount, int uses) {
@@ -134,7 +135,7 @@ public enum BlockPattern implements StringRepresentable {
 
     public static void removePatternFromStack(ItemStack itemStack) {
         CompoundTag tag = itemStack.getOrCreateTag();
-        tag.putInt("amount", 0);
+        tag.putInt("amount", 4);
         tag.putInt("patternId", -1);
         tag.putInt("uses", 0);
         itemStack.setTag(tag);

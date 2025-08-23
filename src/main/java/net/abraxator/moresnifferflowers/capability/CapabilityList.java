@@ -40,7 +40,7 @@ public class CapabilityList {
     public static void attachCapabilities(AttachCapabilitiesEvent<Entity> event) {
         if(event.getObject() instanceof LivingEntity) {
             if (event.getObject() instanceof Player player) {
-                event.addCapability(NutritionCapability.ID, new NutritionCapabilityHandler());
+                event.addCapability(NutritionCapability.ID, new NutritionCapability());
                 event.addCapability(HardenedMouthCapability.ID, new HardenedMouthCapabilityHandler());
                 event.addCapability(ComboMealCapability.ID,  new ComboMealCapability());
                 event.addCapability(SlipperyCapability.ID,  new SlipperyCapability());

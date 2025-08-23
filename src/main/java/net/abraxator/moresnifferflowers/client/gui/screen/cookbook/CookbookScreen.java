@@ -14,6 +14,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -24,7 +25,7 @@ import java.util.Set;
 
 public class CookbookScreen extends Screen {
     private static final ResourceLocation TEXTURE = MoreSnifferFlowers.loc("textures/gui/cookbook.png");
-    protected static final ResourceLocation RENDERABLES = MoreSnifferFlowers.loc("textures/gui/cookbook_renderables.png");
+    public static final ResourceLocation RENDERABLES = MoreSnifferFlowers.loc("textures/gui/cookbook_renderables.png");
     private final int ROWS = 8;
     private final int COLUMNS = 5;
     private final int PAGE_SIZE = ROWS * COLUMNS;
@@ -33,12 +34,16 @@ public class CookbookScreen extends Screen {
     private final List<String> mods;
     private final Set<Item> unlocked;
     private Page page = Page.CONTENTS;
-    private NutritionType type;
+    public NutritionType type;
     private List<Nutrition> nutritions = new ArrayList<>();
     private float scrollOffs;
     private int startIndex;
     private boolean isScrolling;
-    
+    public int yOffset = 0;
+    public int yTotal = 0;
+    public static int MAX_Y = 140;
+
+
     public CookbookScreen(Set<Item> unlocked) {
         super(Component.empty());
         this.mods = new ArrayList<>(NutritionLoader.modNutritions.keySet());
@@ -78,18 +83,35 @@ public class CookbookScreen extends Screen {
             guiGraphics.drawString(font, nutritionName.append(" : ").append(String.valueOf(nutritionEntry.weight())), xPos, yPos, nutritionEntry.nutrition().color);
         }
     }
+
+    public void renderEffectInfo(GuiGraphics guiGraphics, MobEffect effect, boolean isPositive) {
+        int x = (this.width - 272) / 2;
+        int y = (this.height - 180) / 2;
+        int xPos = x + 150;
+        int yPos = y + 20;
+        String string = effect.getDisplayName().getString();
+        int nameLength = string.length();
+        int color = isPositive ? 0x67911c : 0x8d2a22;
+
+        guiGraphics.drawWordWrap(font, FormattedText.of(string, Style.EMPTY.withBold(true).withUnderlined(true)), xPos, yPos, 100, color);
+
+        yPos += 15;
+        MutableComponent effectDescription = Component.translatable(effect.getDescriptionId() + ".description").withStyle(ChatFormatting.DARK_GRAY);
+        guiGraphics.drawWordWrap(font, effectDescription, xPos, yPos, 108, ChatFormatting.DARK_GRAY.getColor());
+    }
     
     private void renderItems(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
         int xPos = 18;
         int yPos = 16;
+        int yStarting = yPos;
         guiGraphics.blit(RENDERABLES, x + 17, y + 15, 25, 0, 111, 144);
 
-        for (int i = startIndex + 1; i < startIndex + 1 + PAGE_SIZE && i < this.nutritions.size() + 1; i++) {
+        for (int i = startIndex * COLUMNS + 1; i < startIndex * COLUMNS  + 1 + PAGE_SIZE && i < this.nutritions.size() + 1; i++) {
             Nutrition nutrition = nutritions.get(i - 1);
             boolean unlocked = this.unlocked.contains(nutrition.getItem());
             
             nutrition = unlocked ? nutrition : Nutrition.EMPTY;
-            addRenderableWidget(new ItemWidget(x + xPos, y + yPos, Component.empty(), nutrition, this));
+            if (yPos >= 16) addRenderableWidget(new ItemWidget(x + xPos, y + yPos, Component.empty(), nutrition, this));
 
             if (i % COLUMNS != 0) {
                 xPos += 18;
@@ -98,10 +120,25 @@ public class CookbookScreen extends Screen {
                 xPos = 18;
             }
         }
-        
-        boolean scrollable = this.nutritions.size() > PAGE_SIZE;
+
+        if (xPos > 18) yPos += 18;
+        xPos = 18;
+        yPos += 10;
+        yPos += startIndex / COLUMNS * -18;
+
+        if (canRender(yPos)) addRenderableWidget(new EffectWidget(x + xPos, y + yPos, Component.empty(), type, this, false));
+        yPos += 25;
+        if (canRender(yPos))  addRenderableWidget(new EffectWidget(x + xPos, y + yPos, Component.empty(), type, this, true));
+
+        boolean scrollable = yTotal > MAX_Y;
         int scrollAmount = (int) ((SCROLLBAR_HEIGHT - SCROLLER_HEIGHT) * this.scrollOffs);
         guiGraphics.blit(RENDERABLES, x + 115, y + 16 + scrollAmount, scrollable ? 0 : 12, 0, 12, 15);
+
+        this.yTotal = yPos - yStarting + startIndex * 18;
+    }
+
+    public boolean canRender(int yPos){
+        return yPos >= 16 && yPos <= MAX_Y + 10;
     }
 
     private void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
@@ -129,6 +166,8 @@ public class CookbookScreen extends Screen {
     }
     
     private void turnPage(Page page) {
+        startIndex = 0;
+        yTotal = 0;
         this.page = page;
         this.clearWidgets();
     }
@@ -137,11 +176,8 @@ public class CookbookScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int x = (this.width - 272) / 2;
         int y = (this.height - 180) / 2;
-        this.isScrolling = false;
-        
-        if(isMouseOver(mouseX, mouseY, x + 115, y + 15, 7, 72) && this.page == Page.ITEMS) {
-            this.isScrolling = true;
-        }
+
+        this.isScrolling = isMouseOver(mouseX, mouseY, x + 115, y + 15, 15, MAX_Y) && this.page == Page.ITEMS;
         
         return super.mouseClicked(mouseX, mouseY, button);
     }
@@ -149,16 +185,7 @@ public class CookbookScreen extends Screen {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if(this.page == Page.ITEMS && this.isScrolling) {
-            int y = (this.height - 180) / 2;
-            int i = y + 16;
-            int j = i + 157;
-            int totalRows = Math.max(0, (this.nutritions.size() + 4) / 5 - ROWS);
-
-            this.scrollOffs = ((float) mouseY - (float) i) / ((float)(j - i) - 15.0F);
-            this.scrollOffs = Mth.clamp(this.scrollOffs, 0.0F, 1.0F);
-            this.startIndex = (int) (this.scrollOffs * totalRows) * 5;
-            
-            clearWidgets();
+            mouseScrolled(mouseX, mouseY, - dragY / 65);
             return true;
         }
         
@@ -169,15 +196,16 @@ public class CookbookScreen extends Screen {
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         int totalItems = this.nutritions.size();
         int maxRows = Math.max(1, (int) Math.ceil((double) totalItems / COLUMNS));
-        int scrollableRows = Math.max(0, maxRows - ROWS);
+        float value = (yTotal - MAX_Y) / 18f;
+        int scrollableRows = Math.max(0, Mth.ceil(value));
 
         if (scrollableRows > 0) {
             float f = (float) delta / (float) scrollableRows;
             this.scrollOffs = Mth.clamp(this.scrollOffs - f, 0.0F, 1.0F);
             
-            int maxStartIndex = (maxRows - ROWS) * COLUMNS;
-            this.startIndex = Math.min((int)((this.scrollOffs * scrollableRows) * COLUMNS), maxStartIndex);
+            this.startIndex = (int) Math.max((this.scrollOffs * scrollableRows), 0);
 
+            if (startIndex > scrollableRows) startIndex = scrollableRows;
             clearWidgets();
         }
 
