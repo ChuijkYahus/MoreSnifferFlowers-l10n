@@ -158,7 +158,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
         for (NutritionEntry nutritionEntry : entryList) {
             if (!nutritionEntry.nutrition().equals(NutritionType.NEUTRAL)) {
                 totalFlavour += nutritionEntry.weight();
-                float ratio = nutritionEntry.weight() / (neutral * 1.2f + 1f);
+                float ratio = nutritionEntry.weight() / (neutral + 1f);
                 int amplifier = 1;
                 Boolean positive = null;
 
@@ -557,7 +557,7 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
-    
+
     @Override
     public AABB getRenderBoundingBox() {
         return AABB.ofSize(this.center.getCenter(), 4, 4, 4);

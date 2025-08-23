@@ -173,6 +173,43 @@ public interface MultiBlock{
         }
     }
 
+
+    default void fixInStructures(BlockState state, Level level, BlockPos pos, BlockState oldState){
+        if (
+                level.getBlockEntity(pos) instanceof MultiBlockEntity blockEntity
+                        && !blockEntity.isPlaced
+                        && !oldState.is(getBlock())
+                        && isCenter(state)
+        ) {
+            level.scheduleTick(pos, state.getBlock(), 5);
+        }
+    }
+
+    default void fixTick(BlockState state, Level level, BlockPos pos){
+        if (isCenter(state)){
+
+            fullBlockShape(pos, state).forEach(posNew -> {
+                if (level.getBlockEntity(posNew) instanceof MultiBlockEntity entity) {
+                    entity.setCenter(pos);
+
+                    entity.setChanged();
+                    level.sendBlockUpdated(posNew, state, state, 2);
+                }
+            });
+        }
+    }
+
+    default boolean isBroken(LevelReader level, BlockPos pos, BlockState state){
+        if (!isCenter(state)) return false;
+
+        return fullBlockShape(pos, state).anyMatch(blockPos -> {
+            if (level.getBlockEntity(blockPos) instanceof MultiBlockEntity entity){
+                return !(entity.center.equals(pos) && !isCenter(level.getBlockState(blockPos)));
+            }
+            return true;
+        });
+    }
+
     default BlockPos getCenter(LevelReader level, BlockPos pos){
         if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity){
             return entity.getCenter();
