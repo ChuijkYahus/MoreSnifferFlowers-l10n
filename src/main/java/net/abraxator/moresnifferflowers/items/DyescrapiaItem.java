@@ -71,7 +71,7 @@ public class DyescrapiaItem extends BlockItem {
                     uses = 0;
                 }
 
-                stack.set(ModDataComponents.COLOR, uses);
+                stack.set(ModDataComponents.USES, uses);
                 return InteractionResult.sidedSuccess(level.isClientSide);
             }            
         } else if (state.is(ModTags.ModBlockTags.DYED)){
@@ -117,7 +117,7 @@ public class DyescrapiaItem extends BlockItem {
                     uses = 0;
                 }
 
-                stack.set(ModDataComponents.COLOR, uses);
+                stack.set(ModDataComponents.USES, uses);
                 return InteractionResult.sidedSuccess(level.isClientSide);
 
             } else return InteractionResult.FAIL;
@@ -160,7 +160,7 @@ public class DyescrapiaItem extends BlockItem {
     }
 
     public static int getDyescrapiaUses(ItemStack stack) {
-        return stack.getOrDefault(ModDataComponents.COLOR, 0);
+        return stack.getOrDefault(ModDataComponents.USES, 0);
     }
 
     @Override
