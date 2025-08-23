@@ -23,6 +23,7 @@
   ],
   "client": [
     "BiomeColorsMixin",
+    "CreativeInventoryScreenMixin",
     "InventoryScreenMixin",
     "SpriteResourceLoaderMixin$PalettedPermutationsAccessor"
   ]
