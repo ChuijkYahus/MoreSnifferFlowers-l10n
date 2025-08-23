@@ -51,10 +51,10 @@ public class EffectWidget extends AbstractWidget {
 
         guiGraphics.blit(CookbookScreen.RENDERABLES, getX() - 10, getY() - 2, 0, 160, 118, 22);
 
-        FormattedText text = isPositive ? FormattedText.of("Positive", Style.EMPTY.withBold(true).withUnderlined(true)) : FormattedText.of("Negative", Style.EMPTY.withBold(true).withUnderlined(true));
+        String text = isPositive ? Component.translatable("gui.moresnifferflowers.cookbook.positive").getString(): Component.translatable("gui.moresnifferflowers.cookbook.negative").getString();
         int color = isPositive ? 0x67911c : 0x8d2a22;
 
-        guiGraphics.drawWordWrap(screen.getMinecraft().font,text, getX() + 35, getY() + 4, 100, color);
+        guiGraphics.drawWordWrap(screen.getMinecraft().font, FormattedText.of(text, Style.EMPTY.withBold(true).withUnderlined(true)), getX() + 35, getY() + 4, 100, color);
 
         if (isHovered && isUnlocked) {
             screen.renderEffectInfo(guiGraphics, effect, isPositive);
