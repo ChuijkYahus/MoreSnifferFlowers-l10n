@@ -348,6 +348,8 @@
 	"gui.moresnifferflowers.cookbook.spicy": "Spicy",
 	"gui.moresnifferflowers.cookbook.sweet": "Sweet",
 	"gui.moresnifferflowers.cookbook.neutral": "Neutral",
+	"gui.moresnifferflowers.cookbook.positive": "Positive",
+	"gui.moresnifferflowers.cookbook.negative": "Negative",
 
 
 	"entity.moresnifferflowers.dragonfly": "Dragonfly",
