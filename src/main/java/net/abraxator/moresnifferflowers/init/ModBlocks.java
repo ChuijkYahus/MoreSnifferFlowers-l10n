@@ -78,7 +78,10 @@ public class ModBlocks {
     public static final RegistryObject<Block> GIANT_NETHERWART = registerGiantCrop("giant_netherwart", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE)));
     public static final RegistryObject<Block> GIANT_BEETROOT = registerGiantCrop("giant_beetroot", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE)));
     public static final RegistryObject<Block> GIANT_WHEAT = registerGiantCrop("giant_wheat", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE)));
-    
+    public static final RegistryObject<Block> GIANT_CABBAGE = registerGiantCrop("giant_cabbage", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE)));
+    public static final RegistryObject<Block> GIANT_ONION = registerGiantCrop("giant_onion", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE)));
+    public static final RegistryObject<Block> GIANT_TOMATO = registerGiantCrop("giant_tomato", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE)));
+
     public static final RegistryObject<Block> BONMEELIA = registerBlockNoItem("bonmeelia", () ->  new BonmeeliaBlock(BlockBehaviour.Properties.copy(Blocks.WHEAT).strength(0.2F).lightLevel(value -> 3).noOcclusion(), false));
     public static final RegistryObject<Block> BONWILTIA = registerBlockNoItem("bonwiltia", () ->  new BonmeeliaBlock(BlockBehaviour.Properties.copy(Blocks.WHEAT).strength(0.2F).lightLevel(value -> 3).noOcclusion(), true));
     public static final RegistryObject<Block> BONDRIPIA = registerBlockNoItem("bondripia", () ->  new BondripiaBlock(BlockBehaviour.Properties.copy(Blocks.SPORE_BLOSSOM).strength(0.2F).lightLevel(value -> 3).noOcclusion().randomTicks().pushReaction(PushReaction.BLOCK)));

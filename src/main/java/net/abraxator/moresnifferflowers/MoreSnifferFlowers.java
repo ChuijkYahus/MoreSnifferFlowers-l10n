@@ -134,7 +134,16 @@ public class MoreSnifferFlowers {
             ModCauldronInteractions.bootstrap();
         });
     }
-    
+
+    public static boolean hasFarmersDelight(){
+        return ModList.get().isLoaded("farmersdelight");
+    }
+
+    public static ResourceLocation farmersDelightLoc(String path) {
+        return new ResourceLocation("farmersdelight", path);
+    }
+
+
     public static ResourceLocation loc(String path) {
         return new ResourceLocation(MOD_ID, path);
     }

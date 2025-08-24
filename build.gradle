@@ -112,6 +112,11 @@ dependencies {
 
     //right click harvest
     compileOnly("curse.maven:rightclickharvest-452834:6326903")
+
+    //farmersDelight
+    modRuntimeOnly("curse.maven:farmers-delight-398521:6917255");
+    modCompileOnly("curse.maven:farmers-delight-398521:6917255");
+
 }
 
 mixin {

@@ -5,6 +5,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -111,6 +112,12 @@ public class ModCreativeTabs {
                 output.accept(ModItems.EXTRACTION_BOTTLE.get());
                 output.accept(ModItems.BROKEN_REBREWING_STAND.get());
                 output.accept(ModItems.REBREWING_STAND.get());
+
+                if (MoreSnifferFlowers.hasFarmersDelight()){
+                    output.accept(ModBlocks.GIANT_ONION.get());
+                    output.accept(ModBlocks.GIANT_CABBAGE.get());
+                    output.accept(ModBlocks.GIANT_TOMATO.get());
+                }
                 
                 output.accept(ModItems.BOBLING_SPAWN_EGG.get());
                 output.accept(ModItems.CORRUPTED_BOBLING_CORE.get());
@@ -191,5 +198,6 @@ public class ModCreativeTabs {
             })
             .withBackgroundLocation(MoreSnifferFlowers.loc("textures/gui/container/tab_items.png"))
             .withTabsImage(MoreSnifferFlowers.loc("textures/gui/container/tabs.png"))
-            .build());
+            .build()
+    );
 }
