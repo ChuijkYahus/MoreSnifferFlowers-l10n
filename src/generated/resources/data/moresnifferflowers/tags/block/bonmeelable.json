@@ -4,6 +4,18 @@
     "minecraft:carrots",
     "minecraft:potatoes",
     "minecraft:beetroots",
-    "minecraft:nether_wart"
+    "minecraft:nether_wart",
+    {
+      "id": "farmersdelight:tomatoes",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:onions",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:cabbages",
+      "required": false
+    }
   ]
 }

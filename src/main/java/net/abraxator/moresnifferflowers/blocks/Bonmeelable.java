@@ -16,7 +16,10 @@ public interface Bonmeelable {
             Blocks.POTATOES, ModBlocks.GIANT_POTATO.get(),
             Blocks.NETHER_WART, ModBlocks.GIANT_NETHERWART.get(),
             Blocks.BEETROOTS, ModBlocks.GIANT_BEETROOT.get(),
-            Blocks.WHEAT, ModBlocks.GIANT_WHEAT.get()
+            Blocks.WHEAT, ModBlocks.GIANT_WHEAT.get(),
+            vectorwing.farmersdelight.common.registry.ModBlocks.ONION_CROP.get(), ModBlocks.GIANT_ONION.get(),
+            vectorwing.farmersdelight.common.registry.ModBlocks.TOMATO_CROP.get(), ModBlocks.GIANT_TOMATO.get(),
+            vectorwing.farmersdelight.common.registry.ModBlocks.CABBAGE_CROP.get(), ModBlocks.GIANT_CABBAGE.get()
     );
     
     void performBonmeel(BlockPos blockPos, BlockState blockState, Level level, @Nullable Player player);

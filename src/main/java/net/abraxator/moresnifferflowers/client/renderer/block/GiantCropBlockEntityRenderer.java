@@ -34,9 +34,13 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 	private final ModelPart netherwart;
 	private final ModelPart beetroot;
 	private final ModelPart wheat;
+    private final ModelPart onion;
+    private final ModelPart tomato;
+    private final ModelPart cabbage;
 
-	public GiantCropBlockEntityRenderer(BlockEntityRendererProvider.Context pContext) {
-        ModelPart carrotModelPart = pContext.bakeLayer(ModModelLayerLocations.GIANT_CARROT);
+
+    public GiantCropBlockEntityRenderer(BlockEntityRendererProvider.Context pContext) {
+		ModelPart carrotModelPart = pContext.bakeLayer(ModModelLayerLocations.GIANT_CARROT);
 		this.carrot = carrotModelPart.getChild("root");
 		this.modelPartMap.put(ModBlocks.GIANT_CARROT.get(), this.carrot);
 		ModelPart potatoModelPart = pContext.bakeLayer(ModModelLayerLocations.GIANT_POTATO);
@@ -51,6 +55,16 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 		ModelPart wheatModelPart = pContext.bakeLayer(ModModelLayerLocations.GIANT_WHEAT);
 		this.wheat = wheatModelPart.getChild("root");
 		this.modelPartMap.put(ModBlocks.GIANT_WHEAT.get(), this.wheat);
+
+        ModelPart onionModelPart = pContext.bakeLayer(ModModelLayerLocations.GIANT_ONION);
+        this.onion = onionModelPart.getChild("root");
+        this.modelPartMap.put(ModBlocks.GIANT_ONION.get(), this.onion);
+        ModelPart tomatoModelPart = pContext.bakeLayer(ModModelLayerLocations.GIANT_TOMATO);
+        this.tomato = tomatoModelPart.getChild("root");
+        this.modelPartMap.put(ModBlocks.GIANT_TOMATO.get(), this.tomato);
+        ModelPart cabbageModelPart = pContext.bakeLayer(ModModelLayerLocations.GIANT_CABBAGE);
+        this.cabbage = cabbageModelPart.getChild("root");
+        this.modelPartMap.put(ModBlocks.GIANT_CABBAGE.get(), this.cabbage);
 	}
 
 	@Override

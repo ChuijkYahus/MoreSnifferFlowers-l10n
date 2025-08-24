@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.items;
 
 import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
+import net.abraxator.moresnifferflowers.blocks.multiblock.MultiBlock;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -25,7 +26,8 @@ public class GiantCropItem extends BlockItem {
         var level = pContext.getLevel();
         var clickPos = pContext.getClickedPos().relative(pContext.getClickedFace(), 1);
         var aabb = AABB.ofSize(clickPos.getCenter(), 2, 2, 2);
-        BlockPos.betweenClosedStream(aabb).forEach(pos -> {
+        MultiBlock multiBlock = (MultiBlock) pState.getBlock();
+        multiBlock.fullBlockShape(clickPos, null).forEach(pos -> {
             level.setBlockAndUpdate(pos, this.getBlock().defaultBlockState().setValue(ModStateProperties.CENTER, pos.equals(clickPos)));
             if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
                 entity.setCenter(clickPos);
@@ -39,9 +41,9 @@ public class GiantCropItem extends BlockItem {
     protected boolean canPlace(BlockPlaceContext pContext, BlockState pState) {
         var pos = pContext.getClickedPos();
         var level = pContext.getLevel();
+        MultiBlock multiBlock = (MultiBlock) pState.getBlock();
         var aabb = AABB.ofSize(pContext.getClickedPos().relative(pContext.getClickedFace(), 1).getCenter(), 2, 2, 2);
-        var ret = BlockPos.betweenClosedStream(aabb)
-                .allMatch(blockPos -> level.getBlockState(blockPos).canBeReplaced());
+        var ret = multiBlock.fullBlockShape(pos.relative(pContext.getClickedFace()), null).allMatch(blockPos -> level.getBlockState(blockPos).canBeReplaced());
 
         return ret;
     }
