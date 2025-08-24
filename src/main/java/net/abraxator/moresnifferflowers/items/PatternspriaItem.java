@@ -229,7 +229,8 @@ public class PatternspriaItem extends Item {
 
     public void onAddPattern(ItemStack destinationStack, ItemStack pattern, int amount) {
         destinationStack.remove(ModDataComponents.COLOR);
-        BlockPattern.setPatternToHolderStack(destinationStack, pattern, amount);
+        int uses = getPatternspriaUses(destinationStack);
+        BlockPattern.setPatternToHolderStack(destinationStack, pattern, amount, uses <= 0 ? 4 : uses);
     }
 
     private ItemStack removePattern(ItemStack pStack) {

@@ -286,13 +286,15 @@ public class DyespriaItem extends BlockItem implements Colorable {
         Dye.setDyeToDyeHolderStack(destinationStack, dye, amount);
     }
 
-    private ItemStack remove(ItemStack pStack) {
-        var dye = Dye.getDyeFromDyespria(pStack);
-        int uses = getDyespriaUses(pStack);
+    private ItemStack remove(ItemStack stack) {
+        var dye = Dye.getDyeFromDyespria(stack);
+        int uses = getDyespriaUses(stack);
         
         if(!dye.isEmpty()) {
-            Dye.setDyeColorToStack(pStack, DyeColor.WHITE, 0);
-            return Dye.stackFromDye(new Dye(dye.color(), dye.amount() - (uses == 4 ? 0 : 1)));
+            Dye.setDyeColorToStack(stack, DyeColor.WHITE, 0);
+            ItemStack returnStack = Dye.stackFromDye(new Dye(dye.color(), dye.amount() - (uses == 4 ? 0 : 1)));
+            setDyespriaUses(stack, 4);
+            return returnStack;
         } else {
             return ItemStack.EMPTY;
         }
