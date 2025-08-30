@@ -24,8 +24,8 @@ public class BondripiaBlockEntityRenderer<T extends BondripiaBlockEntity> implem
     private static final Material BONDRIPIA_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/bondripia"));
     private static final Material ACIDRIPIA_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/acidripia"));
 
-    public BondripiaBlockEntityRenderer(BlockEntityRendererProvider.Context pContext) {
-        this.model = pContext.bakeLayer(ModModelLayerLocations.BONDRIPIA);
+    public BondripiaBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+        this.model = context.bakeLayer(ModModelLayerLocations.BONDRIPIA);
     }
 
     @Override

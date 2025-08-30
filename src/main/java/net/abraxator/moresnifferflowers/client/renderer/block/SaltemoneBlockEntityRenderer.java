@@ -28,9 +28,9 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
     private static final Material SALTEMONE_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/saltemone"));
     private static final Material SOURLEMON_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/sourlemon"));
 
-    public SaltemoneBlockEntityRenderer(BlockEntityRendererProvider.Context pContext) {
-        this.body = pContext.bakeLayer(ModModelLayerLocations.SALTEMONE);
-        this.top = pContext.bakeLayer(ModModelLayerLocations.SALTEMONE_TOP);
+    public SaltemoneBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+        this.body = context.bakeLayer(ModModelLayerLocations.SALTEMONE);
+        this.top = context.bakeLayer(ModModelLayerLocations.SALTEMONE_TOP);
     }
 
     @Override

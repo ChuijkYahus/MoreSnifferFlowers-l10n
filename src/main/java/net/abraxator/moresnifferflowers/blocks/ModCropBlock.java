@@ -56,8 +56,8 @@ public interface ModCropBlock extends BonemealableBlock {
         level.setBlock(blockPos, blockState.setValue(getAgeProperty(), isMaxAge(blockState) ? getAge(blockState) : getAge(blockState) + 1), 2);
     }
 
-    default boolean mayPlaceOn(BlockState pState) {
-        return pState.is(Blocks.FARMLAND) || pState.getBlock() instanceof FarmBlock || pState.is(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("supplementaries", "planters")));
+    default boolean mayPlaceOn(BlockState state) {
+        return state.is(Blocks.FARMLAND) || state.getBlock() instanceof FarmBlock || state.is(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("supplementaries", "planters")));
     }
 
     private static void shear(Player player, Level level, BlockPos blockPos, BlockState blockState, InteractionHand hand) {

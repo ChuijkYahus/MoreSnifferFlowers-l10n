@@ -17,16 +17,16 @@ import net.minecraft.world.phys.AABB;
 import java.util.List;
 
 public class GiantCropItem extends BlockItem {
-    public GiantCropItem(Block pBlock, Properties pProperties) {
-        super(pBlock, pProperties);
+    public GiantCropItem(Block pBlock, Properties properties) {
+        super(pBlock, properties);
     }
 
     @Override
-    protected boolean placeBlock(BlockPlaceContext pContext, BlockState pState) {
-        var level = pContext.getLevel();
-        var clickPos = pContext.getClickedPos().relative(pContext.getClickedFace(), 1);
+    protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
+        var level = context.getLevel();
+        var clickPos = context.getClickedPos().relative(context.getClickedFace(), 1);
         var aabb = AABB.ofSize(clickPos.getCenter(), 2, 2, 2);
-        MultiBlock multiBlock = (MultiBlock) pState.getBlock();
+        MultiBlock multiBlock = (MultiBlock) state.getBlock();
         multiBlock.fullBlockShape(clickPos, null).forEach(pos -> {
             level.setBlockAndUpdate(pos, this.getBlock().defaultBlockState().setValue(ModStateProperties.CENTER, pos.equals(clickPos)));
             if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
@@ -38,20 +38,20 @@ public class GiantCropItem extends BlockItem {
     }
 
     @Override
-    protected boolean canPlace(BlockPlaceContext pContext, BlockState pState) {
-        var pos = pContext.getClickedPos();
-        var level = pContext.getLevel();
-        MultiBlock multiBlock = (MultiBlock) pState.getBlock();
-        var aabb = AABB.ofSize(pContext.getClickedPos().relative(pContext.getClickedFace(), 1).getCenter(), 2, 2, 2);
-        var ret = multiBlock.fullBlockShape(pos.relative(pContext.getClickedFace()), null).allMatch(blockPos -> level.getBlockState(blockPos).canBeReplaced());
+    protected boolean canPlace(BlockPlaceContext context, BlockState state) {
+        var pos = context.getClickedPos();
+        var level = context.getLevel();
+        MultiBlock multiBlock = (MultiBlock) state.getBlock();
+        var aabb = AABB.ofSize(context.getClickedPos().relative(context.getClickedFace(), 1).getCenter(), 2, 2, 2);
+        var ret = multiBlock.fullBlockShape(pos.relative(context.getClickedFace()), null).allMatch(blockPos -> level.getBlockState(blockPos).canBeReplaced());
 
         return ret;
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
-        super.appendHoverText(pStack, pContext, pTooltipComponents, pTooltipFlag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> components, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, components, tooltipFlag);
 
-        pTooltipComponents.add(Component.literal("CREATIVE ONLY").withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD));
+        components.add(Component.literal("CREATIVE ONLY").withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD));
     }
 }

@@ -65,22 +65,22 @@ public class PatternflowerBlock extends CaulorflowerBlock implements Bonemealabl
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(FACING, SHEARED, FLIPPED, getAgeProperty(), ModStateProperties.BLOCK_PATTERN, EMPTY);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING, SHEARED, FLIPPED, getAgeProperty(), ModStateProperties.BLOCK_PATTERN, EMPTY);
     }
 
     @Override
-    public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        if(canSurvive(pState, pLevel, pCurrentPos)) {
-            return pState.setValue(FLIPPED, pCurrentPos.getY() % 2 == 0).setValue(EMPTY, BlockPattern.isEmpty(pState));
+    public BlockState updateShape(BlockState state, Direction pFacing, BlockState pFacingState, LevelAccessor level, BlockPos pCurrentPos, BlockPos pFacingPos) {
+        if(canSurvive(state, level, pCurrentPos)) {
+            return state.setValue(FLIPPED, pCurrentPos.getY() % 2 == 0).setValue(EMPTY, BlockPattern.isEmpty(state));
         } else {
             return Blocks.AIR.defaultBlockState();
         }
     }
 
     @Override
-    public boolean isBonemealSuccess(Level pLevel, RandomSource pRandom, BlockPos pPos, BlockState pState) {
-        return BlockPattern.fromState(pState).isBanner() ? pRandom.nextFloat() < 0.2 : pRandom.nextFloat() < 0.50;
+    public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
+        return BlockPattern.fromState(state).isBanner() ? random.nextFloat() < 0.2 : random.nextFloat() < 0.50;
     }
 
     @Override

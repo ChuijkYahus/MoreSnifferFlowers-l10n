@@ -65,8 +65,8 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
     int craftingTimeRemaining = 0;
     public boolean isCenter = false;
 
-    public BerootCauldronBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(ModBlockEntities.BEROOT_CAULDRON.get(), pPos, pBlockState);
+    public BerootCauldronBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.BEROOT_CAULDRON.get(), pos, state);
     }
 
     public ItemInteractionResult addItem(ItemStack itemStack, Player player) {

@@ -46,8 +46,8 @@ import java.util.Optional;
 import static net.abraxator.moresnifferflowers.init.ModStateProperties.*;
 
 public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCropBlock, Colorable, Corruptable {
-    public CaulorflowerBlock(Properties pProperties) {
-        super(pProperties);
+    public CaulorflowerBlock(Properties properties) {
+        super(properties);
 
         if (!isCorrupted()) {
             this.registerDefaultState(defaultBlockState()
@@ -65,15 +65,15 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCr
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(FACING, FLIPPED, SHEARED, getAgeProperty(), getColorAndEmptyProperties().getA(), getColorAndEmptyProperties().getB());
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(FACING, FLIPPED, SHEARED, getAgeProperty(), getColorAndEmptyProperties().getA(), getColorAndEmptyProperties().getB());
     }
 
     @Override
-    public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        if(canSurvive(pState, pLevel, pCurrentPos)) {
-            return pState.setValue(FLIPPED, pCurrentPos.getY() % 2 == 0);
+    public BlockState updateShape(BlockState state, Direction pFacing, BlockState pFacingState, LevelAccessor level, BlockPos pCurrentPos, BlockPos pFacingPos) {
+        if(canSurvive(state, level, pCurrentPos)) {
+            return state.setValue(FLIPPED, pCurrentPos.getY() % 2 == 0);
         } else {
             return Blocks.AIR.defaultBlockState();
         }
@@ -81,93 +81,93 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCr
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        BlockState state = pContext.getLevel().getBlockState(pContext.getClickedPos().below());
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockState state = context.getLevel().getBlockState(context.getClickedPos().below());
         if(state.is(this)) {
-            return state.setValue(FLIPPED, pContext.getClickedPos().getY() % 2 == 0);
+            return state.setValue(FLIPPED, context.getClickedPos().getY() % 2 == 0);
         }
-        return super.getStateForPlacement(pContext).setValue(FLIPPED, pContext.getClickedPos().getY() % 2 == 0).setValue(FACING, pContext.getHorizontalDirection().getOpposite());
+        return super.getStateForPlacement(context).setValue(FLIPPED, context.getClickedPos().getY() % 2 == 0).setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
     @Override
-    public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
-        BlockPos blockPos = pPos.below();
-        BlockState blockState = pLevel.getBlockState(blockPos);
-        BlockPos wallPos = pPos.relative(pState.getValue(FACING).getOpposite());
-        BlockState wallState = pLevel.getBlockState(wallPos);
-        return ((blockState.is(ModBlocks.CAULORFLOWER.get()) || blockState.is(ModBlocks.PATTERNFLOWER.get())) && getAge(blockState) > 0) || blockState.isFaceSturdy(pLevel, blockPos, Direction.UP) || wallState.isFaceSturdy(pLevel, wallPos, pState.getValue(FACING));
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        BlockPos blockPos = pos.below();
+        BlockState blockState = level.getBlockState(blockPos);
+        BlockPos wallPos = pos.relative(state.getValue(FACING).getOpposite());
+        BlockState wallState = level.getBlockState(wallPos);
+        return ((blockState.is(ModBlocks.CAULORFLOWER.get()) || blockState.is(ModBlocks.PATTERNFLOWER.get())) && getAge(blockState) > 0) || blockState.isFaceSturdy(level, blockPos, Direction.UP) || wallState.isFaceSturdy(level, wallPos, state.getValue(FACING));
     }
 
     @Override
-    public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
-        super.randomTick(pState, pLevel, pPos, pRandom);
-        if(pRandom.nextFloat() < 0.15 && !pState.getValue(SHEARED)) {
-            grow(pLevel, pPos, false);
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        super.randomTick(state, level, pos, random);
+        if(random.nextFloat() < 0.15 && !state.getValue(SHEARED)) {
+            grow(level, pos, false);
         }
     }
 
     @Override
-    public boolean isValidBonemealTarget(LevelReader pLevel, BlockPos pPos, BlockState pState) {
-        Optional<BlockPos> highestPos = highestPos(pLevel, pPos, true);
+    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state) {
+        Optional<BlockPos> highestPos = highestPos(level, pos, true);
         
         if(highestPos.isPresent()) {
-            BlockState blockState = pLevel.getBlockState(highestPos.get());
-            return pLevel.getBlockState(highestPos.get().above()).is(Blocks.AIR) || (blockState.hasProperty(getAgeProperty()) && !isMaxAge(blockState));
+            BlockState blockState = level.getBlockState(highestPos.get());
+            return level.getBlockState(highestPos.get().above()).is(Blocks.AIR) || (blockState.hasProperty(getAgeProperty()) && !isMaxAge(blockState));
         }
         
         return false;
     }
 
     @Override
-    public boolean isBonemealSuccess(Level pLevel, RandomSource pRandom, BlockPos pPos, BlockState pState) {
+    public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
         return true;
     }
 
     @Override
-    public void performBonemeal(ServerLevel pLevel, RandomSource pRandom, BlockPos pPos, BlockState pState) {
-        grow(pLevel, pPos, true);
+    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
+        grow(level, pos, true);
     }
 
-    protected void grow(ServerLevel pLevel, BlockPos originalPos, boolean bonemeal) {
-        if(!isMaxAge(pLevel.getBlockState(originalPos))) {
-            makeGrowOnBonemeal(pLevel, originalPos, pLevel.getBlockState(originalPos));
+    protected void grow(ServerLevel level, BlockPos originalPos, boolean bonemeal) {
+        if(!isMaxAge(level.getBlockState(originalPos))) {
+            makeGrowOnBonemeal(level, originalPos, level.getBlockState(originalPos));
         } else {
-            highestPos(pLevel, originalPos, bonemeal).ifPresent(highestPos -> {
+            highestPos(level, originalPos, bonemeal).ifPresent(highestPos -> {
                 var posBelow = highestPos.below();
-                var stateBelow = pLevel.getBlockState(posBelow);
+                var stateBelow = level.getBlockState(posBelow);
                 if (isMaxAge(stateBelow)) {
-                    pLevel.setBlockAndUpdate(highestPos, this.withPropertiesOf(stateBelow)
+                    level.setBlockAndUpdate(highestPos, this.withPropertiesOf(stateBelow)
                             .setValue(this.getAgeProperty(), 0).setValue(FLIPPED, highestPos.getY() % 2 == 0));
                 } else {
-                    makeGrowOnBonemeal(pLevel, posBelow, stateBelow);
+                    makeGrowOnBonemeal(level, posBelow, stateBelow);
                 }
             });
         }
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
-        if (shear(pPlayer, pLevel, pPos, pHand)){
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (shear(player, level, pos, hand)){
             return ItemInteractionResult.SUCCESS;
         }
-        return harvestable(pState) && pStack.is(Items.BONE_MEAL)
+        return harvestable(state) && stack.is(Items.BONE_MEAL)
                 ? ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION
-                : super.useItemOn(pStack, pState, pLevel, pPos, pPlayer, pHand, pHitResult);
+                : super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
-        if (harvestable(pState)) {
-            popResource(pLevel, pPos, pState);
-            pLevel.playSound(
-                    null, pPos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + pLevel.random.nextFloat() * 0.4F
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (harvestable(state)) {
+            popResource(level, pos, state);
+            level.playSound(
+                    null, pos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.random.nextFloat() * 0.4F
             );
-            BlockState blockstate = pState.setValue(getAgeProperty(), 1);
-            pLevel.setBlock(pPos, blockstate, 2);
-            pLevel.gameEvent(GameEvent.BLOCK_CHANGE, pPos, GameEvent.Context.of(pPlayer, blockstate));
-            return InteractionResult.sidedSuccess(pLevel.isClientSide);
+            BlockState blockstate = state.setValue(getAgeProperty(), 1);
+            level.setBlock(pos, blockstate, 2);
+            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, blockstate));
+            return InteractionResult.sidedSuccess(level.isClientSide);
         } else {
-            return super.useWithoutItem(pState, pLevel, pPos, pPlayer, pHitResult);
+            return super.useWithoutItem(state, level, pos, player, hitResult);
         }
     }
 
@@ -191,8 +191,8 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCr
         return posDown.filter(blockPos -> level.getBlockState(blockPos).is(this));
     }
 
-    public Optional<BlockPos> getLastConnectedBlock(BlockGetter pGetter, BlockPos pPos, Direction pDirection) {
-        BlockPos.MutableBlockPos blockpos$mutableblockpos = pPos.mutable();
+    public Optional<BlockPos> getLastConnectedBlock(BlockGetter pGetter, BlockPos pos, Direction pDirection) {
+        BlockPos.MutableBlockPos blockpos$mutableblockpos = pos.mutable();
 
         while (pGetter.getBlockState(blockpos$mutableblockpos).is(this)){
             blockpos$mutableblockpos.move(pDirection);
@@ -202,8 +202,8 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCr
     }
 
     @Override
-    public BlockState mirror(BlockState pState, Mirror pMirror) {
-        return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
+    public BlockState mirror(BlockState state, Mirror pMirror) {
+        return state.rotate(pMirror.getRotation(state.getValue(FACING)));
     }
 
     @Override
