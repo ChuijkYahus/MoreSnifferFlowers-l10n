@@ -189,6 +189,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
                 Blocks.NETHER_WART, new Pair<>(ModBlocks.GIANT_NETHERWART.get(), new Pair<>(NetherWartBlock.AGE, NetherWartBlock.MAX_AGE)),
                 Blocks.BEETROOTS, new Pair<>(ModBlocks.GIANT_BEETROOT.get(), new Pair<>(BeetrootBlock.AGE, BeetrootBlock.MAX_AGE)),
                 Blocks.WHEAT, new Pair<>(ModBlocks.GIANT_WHEAT.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
+
                 vectorwing.farmersdelight.common.registry.ModBlocks.ONION_CROP.get(), new Pair<>(ModBlocks.GIANT_ONION.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
                 vectorwing.farmersdelight.common.registry.ModBlocks.TOMATO_CROP.get(), new Pair<>(ModBlocks.GIANT_TOMATO.get(), new Pair<>(TomatoVineBlock.VINE_AGE, 3)),
                 vectorwing.farmersdelight.common.registry.ModBlocks.CABBAGE_CROP.get(), new Pair<>(ModBlocks.GIANT_CABBAGE.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE))
@@ -199,7 +200,6 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     private static Map<Block, Pair<Block, Pair<IntegerProperty, Integer>>> cropMapVanilla() {
         return Map.of(
                 Blocks.CARROTS, new Pair<>(ModBlocks.GIANT_CARROT.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
-
                 Blocks.POTATOES, new Pair<>(ModBlocks.GIANT_POTATO.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
                 Blocks.NETHER_WART, new Pair<>(ModBlocks.GIANT_NETHERWART.get(), new Pair<>(NetherWartBlock.AGE, NetherWartBlock.MAX_AGE)),
                 Blocks.BEETROOTS, new Pair<>(ModBlocks.GIANT_BEETROOT.get(), new Pair<>(BeetrootBlock.AGE, BeetrootBlock.MAX_AGE)),

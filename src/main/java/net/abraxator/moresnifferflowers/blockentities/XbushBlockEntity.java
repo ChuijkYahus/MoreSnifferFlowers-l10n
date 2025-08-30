@@ -13,6 +13,8 @@ public class XbushBlockEntity extends GrowingCropBlockEntity {
 
     @Override
     public boolean canGrow(float growProgress, boolean hasGrown) {
-        return this.getBlockState().getValue(ModStateProperties.AGE_8).equals(7) && super.canGrow(growProgress, hasGrown);
+        return this.getBlockState().getValue(ModStateProperties.AGE_8).equals(7)
+                && !getBlockState().getValue(ModStateProperties.SHEARED)
+                && super.canGrow(growProgress, hasGrown);
     }
 }

@@ -1,6 +1,8 @@
 package net.abraxator.moresnifferflowers.init.config;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ModClientConfig {
@@ -25,11 +27,11 @@ public class ModClientConfig {
         HARDENED_MOUTH_X = builder
                 .comment("Move extra slots from the Hardened mouth effect left to right")
                 .translation("moresnifferflowers.configuration.hardened_mouth_x")
-                .defineInRange("Hardened Mouth X", 25, -5000, 5000);
+                .defineInRange("Hardened Mouth X", -25, -5000, 5000);
         HARDENED_MOUTH_Y = builder
                 .comment("Move extra slots from the Hardened mouth effect up and down")
                 .translation("moresnifferflowers.configuration.hardened_mouth_y")
-                .defineInRange("Hardened Mouth Y", 80, -5000, 5000);
+                .defineInRange("Hardened Mouth Y", -80, -5000, 5000);
 
         builder.pop();
 
@@ -61,6 +63,10 @@ public class ModClientConfig {
         int renderDistancePlayer = minecraft.options.getEffectiveRenderDistance();
         int configuredRenderDistance = ModClientConfig.BLOCK_PATTERN_RENDER_DISTANCE.get();
         return configuredRenderDistance < 0 ? renderDistancePlayer / Math.abs(configuredRenderDistance) : configuredRenderDistance;
+    }
+
+    private static boolean validateHardenedMouthY(Object obj) {
+        return obj instanceof Integer integer && (integer <= -5 || integer >= 32);
     }
 
 }

@@ -77,13 +77,16 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
+        if(shear(pPlayer, pLevel, pPos, pHand)){
+            return ItemInteractionResult.SUCCESS;
+        }
         if(pStack.is(Items.BONE_MEAL)) {
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         } else if(isMaxAge(pState) && pLevel.getBlockEntity(pPos) instanceof DyespriaPlantBlockEntity entity) {
             if(pStack.getItem() instanceof DyeItem) {
                 return addDye(pStack, pPlayer, pLevel, entity);
-            } else if(pStack.is(Items.SHEARS)) {
-                shear(pPlayer, pLevel, pPos, pState, pHand);
+
+            } else if(shear(pPlayer, pLevel, pPos, pHand)) {
                 return ItemInteractionResult.sidedSuccess(pLevel.isClientSide());
             }
         }
@@ -166,7 +169,7 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
 
     @Override
     public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
-        makeGrowOnTick(this, pState, pLevel, pPos);
+        makeGrowOnTick(pState, pLevel, pPos);
     }
 
     @Override

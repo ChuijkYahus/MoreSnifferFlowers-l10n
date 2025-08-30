@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -30,6 +31,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -40,6 +42,7 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
 
     public AbstractXBushBlockBase(Properties pProperties) {
         super(pProperties);
+        registerDefaultState(defaultBlockState().setValue(ModStateProperties.SHEARED, false));
     }
     
     @Override
@@ -78,8 +81,9 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(ModStateProperties.AGE_8);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(ModStateProperties.AGE_8);
+        builder.add(ModStateProperties.SHEARED);
     }
 
     @Override
@@ -114,6 +118,7 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
 
     @Override
     public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
+        if (pState.getValue(ModStateProperties.SHEARED)) return;
         float f = ModCropBlock.getGrowthSpeed(pState, pLevel, pPos);
         if(pRandom.nextInt((int) ((25.0F / f) + 1)) == 0) {
             this.grow(pLevel, pState, pPos, 1);
@@ -137,13 +142,14 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-            ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult
-    ) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
+        if (shear(pPlayer, pLevel, pPos, pHand)){
+            return ItemInteractionResult.SUCCESS;
+        }
         int k = Math.min(getAge(pState) + 1, getMaxAge());
-        return pStack.is(Items.BONE_MEAL) && this.canGrow(pLevel, pPos, pState, k)
+        return stack.is(Items.BONE_MEAL) && this.canGrow(pLevel, pPos, pState, k)
                 ? ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION
-                : super.useItemOn(pStack, pState, pLevel, pPos, pPlayer, pHand, pHitResult);
+                : super.useItemOn(stack, pState, pLevel, pPos, pPlayer, pHand, pHitResult);
     }
 
     @Override

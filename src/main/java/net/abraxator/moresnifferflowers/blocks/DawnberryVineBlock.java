@@ -37,8 +37,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class DawnberryVineBlock extends MultifaceBlock implements BonemealableBlock, ModCropBlock {
     public static final IntegerProperty AGE = BlockStateProperties.AGE_4;
-    public static final BooleanProperty IS_SHEARED = BooleanProperty.create("is_sheared");
-    public static final MapCodec<DawnberryVineBlock> CODEC = RecordCodecBuilder.mapCodec(p_304392_ -> 
+    public static final BooleanProperty SHEARED = ModStateProperties.SHEARED;
+    public static final MapCodec<DawnberryVineBlock> CODEC = RecordCodecBuilder.mapCodec(p_304392_ ->
             p_304392_.group(propertiesCodec(), Codec.BOOL.fieldOf("evil").forGetter(DawnberryVineBlock::isEvil))
                     .apply(p_304392_, DawnberryVineBlock::new));
 
@@ -47,7 +47,7 @@ public class DawnberryVineBlock extends MultifaceBlock implements BonemealableBl
 
     public DawnberryVineBlock(Properties pProperties, boolean evil) {
         super(pProperties);
-        this.registerDefaultState(this.defaultBlockState().setValue(AGE, 0).setValue(IS_SHEARED, Boolean.FALSE));
+        this.registerDefaultState(this.defaultBlockState().setValue(AGE, 0).setValue(SHEARED, Boolean.FALSE));
 
         this.evil = evil;
     }
@@ -60,7 +60,7 @@ public class DawnberryVineBlock extends MultifaceBlock implements BonemealableBl
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(AGE, IS_SHEARED);
+        pBuilder.add(AGE, SHEARED);
     }
 
     public IntegerProperty getAgeProperty() {
@@ -81,13 +81,13 @@ public class DawnberryVineBlock extends MultifaceBlock implements BonemealableBl
 
     @Override
     public boolean isRandomlyTicking(BlockState pState) {
-        return !this.isMaxAge(pState) && !pState.getValue(IS_SHEARED);
+        return !this.isMaxAge(pState) && !pState.getValue(SHEARED);
     }
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
-        if(pStack.is(Items.SHEARS) && !(getAge(pState) >= 4) && !pState.getValue(ModStateProperties.SHEARED)) {
-            return shearAction(pState, pLevel, pPos, pPlayer, pHand, pStack);
+        if(shear(pPlayer, pLevel, pPos, pHand)) {
+            return ItemInteractionResult.SUCCESS;
         } else if(pStack.is(Items.BONE_MEAL) && (getAge(pState) < 4)) {
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
@@ -104,11 +104,6 @@ public class DawnberryVineBlock extends MultifaceBlock implements BonemealableBl
         }
 
         return InteractionResult.PASS;
-    }
-
-    private ItemInteractionResult shearAction(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, ItemStack stack) {
-        shear(player, level, pos, blockState, hand);
-        return ItemInteractionResult.sidedSuccess(level.isClientSide);
     }
 
     private InteractionResult dropMaxAgeLoot(BlockState blockState, Level level, BlockPos pos, Player player) {
@@ -139,7 +134,7 @@ public class DawnberryVineBlock extends MultifaceBlock implements BonemealableBl
     public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
         if (!pLevel.isAreaLoaded(pPos, 1)) return; // Forge: prevent loading unloaded chunks when checking neighbor's light
         if (pLevel.getRawBrightness(pPos, 0) >= 9) {
-            makeGrowOnTick(this, pState, pLevel, pPos);
+            makeGrowOnTick(pState, pLevel, pPos);
         }
     }
 
