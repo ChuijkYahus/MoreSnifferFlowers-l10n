@@ -96,7 +96,9 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 			poseStack.translate(0.5, yCord, 0.5);
 			poseStack.scale(1, yScale, 1);
 			poseStack.mulPose(new Quaternionf().rotateX((float) (Math.PI)));
-			render(modelPartMap.get(blockState.getBlock()), poseStack, vertexConsumer, packedLight, packedOverlay, blockEntity.previewMode);
+
+            render(modelPartMap.get(blockState.getBlock()), poseStack, vertexConsumer, packedLight, packedOverlay, blockEntity.previewMode);
+
 			poseStack.popPose();
 		}
 	}

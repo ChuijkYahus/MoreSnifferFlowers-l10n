@@ -12,9 +12,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 
 import java.util.List;
+
+import static net.abraxator.moresnifferflowers.blocks.GiantCropBlock.WATERLOGGED;
 
 public class GiantCropItem extends BlockItem {
     public GiantCropItem(Block pBlock, Properties properties) {
@@ -27,8 +30,15 @@ public class GiantCropItem extends BlockItem {
         var clickPos = context.getClickedPos().relative(context.getClickedFace(), 1);
         var aabb = AABB.ofSize(clickPos.getCenter(), 2, 2, 2);
         MultiBlock multiBlock = (MultiBlock) state.getBlock();
+
         multiBlock.fullBlockShape(clickPos, null).forEach(pos -> {
-            level.setBlockAndUpdate(pos, this.getBlock().defaultBlockState().setValue(ModStateProperties.CENTER, pos.equals(clickPos)));
+
+            boolean isWaterLogged = context.getLevel().getFluidState(pos).getType() == Fluids.WATER;
+
+            level.setBlockAndUpdate(pos, this.getBlock().defaultBlockState()
+                    .setValue(ModStateProperties.CENTER, pos.equals(clickPos))
+                    .setValue(WATERLOGGED, isWaterLogged));
+
             if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
                 entity.setCenter(clickPos);
             }

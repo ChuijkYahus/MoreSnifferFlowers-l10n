@@ -13,6 +13,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -24,7 +27,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -39,7 +47,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 
-public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable, PreviewableMultiblock {
+public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable, PreviewableMultiblock, SimpleWaterloggedBlock {
     public static final VoxelShape SHAPE_POTATO = makeShapePotato();
     public static final VoxelShape SHAPE_CARROT = makeShapeCarrot();
     public static final VoxelShape SHAPE_BEET = makeShapeBeet();
@@ -48,10 +56,17 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     public static final VoxelShape SHAPE_ONION = makeShapeOnion();
     public static final VoxelShape SHAPE_TOMATO = makeShapeTomato();
     public static final VoxelShape SHAPE_CABBAGE = makeShapeCabbage();
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public GiantCropBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(ModStateProperties.CENTER, false));
+        registerDefaultState(defaultBlockState().setValue(ModStateProperties.CENTER, false).setValue(WATERLOGGED, false));
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
     }
 
     @Override
@@ -108,8 +123,30 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        if (state.getValue(WATERLOGGED)) {
+            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+        }
+
         return updateShapeHelper(state, level, pos);
     }
+
+    @Override
+    protected FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+
+    @Override
+    public ItemStack pickupBlock(@javax.annotation.Nullable Player player, LevelAccessor level, BlockPos pos, BlockState state) {
+        return player != null && player.isCreative()
+                ? SimpleWaterloggedBlock.super.pickupBlock(player, level, pos, state)
+                : ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean canPlaceLiquid(@javax.annotation.Nullable Player player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+        return player != null && player.isCreative() && SimpleWaterloggedBlock.super.canPlaceLiquid(player, level, pos, state, fluid);
+    }
+
 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState pOldState, boolean pMovedByPiston) {
@@ -128,7 +165,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(ModStateProperties.CENTER);
+        builder.add(ModStateProperties.CENTER, WATERLOGGED);
     }
 
     @Nullable
@@ -283,14 +320,14 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
     public static VoxelShape makeShapeOnion(){
         VoxelShape shape = Shapes.empty();
-        shape = Shapes.join(shape, Shapes.box(-0.296875, 0, -0.3125, 1.328125, 2.0625, 1.3125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.33, 0, -0.325, 1.3, 2.0, 1.3), BooleanOp.OR);
 
         return shape;
     }
 
     public static VoxelShape makeShapeTomato(){
         VoxelShape shape = Shapes.empty();
-        shape = Shapes.join(shape, Shapes.box(-0.4375, -0.0625, -0.4, 1.4375, 1.8125, 1.465), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.437, -0.0625, -0.405, 1.4375, 1.8125, 1.465), BooleanOp.OR);
 
         return shape;
     }
