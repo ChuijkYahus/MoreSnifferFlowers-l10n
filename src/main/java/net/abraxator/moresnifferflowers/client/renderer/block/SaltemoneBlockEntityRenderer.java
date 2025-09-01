@@ -71,7 +71,7 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
 
     @Override
     public @NotNull AABB getRenderBoundingBox(T blockEntity) {
-        return new AABB(blockEntity.center).inflate(3);
+        return new AABB(blockEntity.center).inflate(1);
     }
 
 }

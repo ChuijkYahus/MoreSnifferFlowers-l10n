@@ -7,6 +7,7 @@ import net.abraxator.moresnifferflowers.blocks.multiblock.PreviewableMultiblock;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -40,6 +41,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.ScheduledTick;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
+import vectorwing.farmersdelight.common.block.RiceBlock;
 import vectorwing.farmersdelight.common.block.TomatoVineBlock;
 
 import java.util.Map;
@@ -56,7 +58,10 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     public static final VoxelShape SHAPE_ONION = makeShapeOnion();
     public static final VoxelShape SHAPE_TOMATO = makeShapeTomato();
     public static final VoxelShape SHAPE_CABBAGE = makeShapeCabbage();
+    public static final VoxelShape SHAPE_RICE = makeShapeRice();
+
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final BlockBehaviour.StatePredicate STATE_PREDICATE = (p_152641_, p_152642_, p_152643_) -> p_152641_.getValue(ModStateProperties.CENTER);
 
     public GiantCropBlock(Properties properties) {
         super(properties);
@@ -100,6 +105,11 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     @Override
     public float getShadeBrightness(BlockState state, BlockGetter level, BlockPos pos) {
         return 1.0F;
+    }
+
+    @Override
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
+        return true;
     }
 
     @Override
@@ -182,12 +192,23 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
     @Override
     public void performBonmeel(BlockPos blockPos, BlockState blockState, Level level, Player player) {
+        if (isRicePanicles(blockState.getBlock())) blockPos = blockPos.below();
+
+        BlockPos finalBlockPos = blockPos;
         this.fullBlockShape(null, blockPos.above()).forEach(pos -> {
             pos = pos.immutable();
+            boolean isWaterLogged = level.getFluidState(pos).getType() == Fluids.WATER;
+
             level.destroyBlock(pos, false);
-            level.setBlockAndUpdate(pos, getCropMap().get(blockState.getBlock()).getA().defaultBlockState().setValue(ModStateProperties.CENTER, pos.equals(blockPos.above())));
+
+            BlockState state = getCropMap().get(blockState.getBlock()).getA().defaultBlockState()
+                    .setValue(ModStateProperties.CENTER, pos.equals(finalBlockPos.above()))
+                    .setValue(WATERLOGGED, isWaterLogged);
+
+            level.setBlockAndUpdate(pos, state);
+
             if(level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
-                entity.setCenter(blockPos.above());
+                entity.setCenter(finalBlockPos.above());
             }
         });
 
@@ -204,19 +225,27 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     @Override
     public boolean canBonmeel(BlockPos blockPos, BlockState blockState, Level level) {
         Block crop = blockState.getBlock();
+        int cropY = blockPos.getY();
+
+        if (isRicePanicles(crop)){
+            blockPos = blockPos.below();
+        }
 
         return fullBlockShape(null, blockPos.above()).allMatch(pos -> {
             BlockState state = level.getBlockState(pos);
-            int cropY = blockPos.getY();
             var PROPERTY = getCropMap().get(crop).getB().getA();
             int MAX_AGE = getCropMap().get(crop).getB().getB();
 
             if(pos.getY() == cropY) {
-                return state.is(blockState.getBlock()) && state.is(ModTags.ModBlockTags.BONMEELABLE) && state.getValue(PROPERTY) == MAX_AGE;
+                return state.is(crop) && state.is(ModTags.ModBlockTags.BONMEELABLE) && state.getValue(PROPERTY) == MAX_AGE;
             } else {
-                return state.canBeReplaced();
+                return state.canBeReplaced() || state.is(ModTags.ModBlockTags.GIANT_CROP_REPLACEABLE) || state.is(crop);
             }
         });
+    }
+
+    private static boolean isRicePanicles(Block crop) {
+        return crop.equals(BuiltInRegistries.BLOCK.get(MoreSnifferFlowers.farmersDelightLoc("rice_panicles")));
     }
 
     private static Map<Block, Pair<Block, Pair<IntegerProperty, Integer>>> cropMapCompat() {
@@ -229,7 +258,8 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
                 vectorwing.farmersdelight.common.registry.ModBlocks.ONION_CROP.get(), new Pair<>(ModBlocks.GIANT_ONION.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
                 vectorwing.farmersdelight.common.registry.ModBlocks.TOMATO_CROP.get(), new Pair<>(ModBlocks.GIANT_TOMATO.get(), new Pair<>(TomatoVineBlock.VINE_AGE, 3)),
-                vectorwing.farmersdelight.common.registry.ModBlocks.CABBAGE_CROP.get(), new Pair<>(ModBlocks.GIANT_CABBAGE.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE))
+                vectorwing.farmersdelight.common.registry.ModBlocks.CABBAGE_CROP.get(), new Pair<>(ModBlocks.GIANT_CABBAGE.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
+                vectorwing.farmersdelight.common.registry.ModBlocks.RICE_CROP_PANICLES.get(), new Pair<>(ModBlocks.GIANT_RICE.get(), new Pair<>(RiceBlock.AGE, 3))
 
         );
     }
@@ -248,11 +278,6 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         return MoreSnifferFlowers.hasFarmersDelight() ? cropMapCompat() : cropMapVanilla();
     }
 
-    @Override
-    protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) {}
-
-    public static final BlockBehaviour.StatePredicate STATE_PREDICATE = (p_152641_, p_152642_, p_152643_) -> p_152641_.getValue(ModStateProperties.CENTER);
-
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
         VoxelShape shape = Shapes.block();
 
@@ -268,6 +293,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         if (this.equals(ModBlocks.GIANT_ONION.get())) shape = SHAPE_ONION;
         if (this.equals(ModBlocks.GIANT_TOMATO.get())) shape = SHAPE_TOMATO;
         if (this.equals(ModBlocks.GIANT_CABBAGE.get())) shape = SHAPE_CABBAGE;
+        if (this.equals(ModBlocks.GIANT_RICE.get())) shape = SHAPE_RICE;
 
 
         return voxelShapeHelper(state, getter, pos, shape, 0, -1, 0);
@@ -331,6 +357,15 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
         return shape;
     }
+
+    public static VoxelShape makeShapeRice(){
+        VoxelShape shape = Shapes.empty();
+        shape = Shapes.join(shape, Shapes.box(0, 0.75, 0, 1, 2.5, 1), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.1875, -0.0625, -0.1875, 1.1875, 0.8125, 1.1875), BooleanOp.OR);
+
+        return shape;
+    }
+
 
 
 

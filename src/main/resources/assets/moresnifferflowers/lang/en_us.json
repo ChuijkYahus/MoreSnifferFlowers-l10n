@@ -152,6 +152,8 @@
 	"block.moresnifferflowers.giant_onion": "Giant Onion",
 	"block.moresnifferflowers.giant_tomato": "Giant Tomato",
 	"block.moresnifferflowers.giant_cabbage": "Giant Cabbage",
+	"block.moresnifferflowers.giant_rice": "Giant Rice",
+
 	"block.moresnifferflowers.rebrewing_stand": "Rebrewing Stand",	
 	"block.moresnifferflowers.dyespria_plant": "Dyespria",
 	"block.moresnifferflowers.dyescrapia_plant": "Dyescrapia",
@@ -225,6 +227,7 @@
 # Tooltips 📜📜📜
 	"message.more_sniffer_flowers.dyespria_mode": "Current Mode",
 
+	"tooltip.trim_material_item.usage": "Can be used as an armor trim material",
 	"tooltip.dyespria.usage": "Hover+Right-click to insert dye \nRight-click compatible block or pattern to paint \nSneak+Scroll to change paint mode\n",
 	"tooltip.patternspria.usage": "Controls like Dyespria \nShift+Right-click to copy pattern color \nAccepts: \n-Block Patterns \n-Banner Patterns \n",
 	"tooltip.dyespria.empty": "Empty",

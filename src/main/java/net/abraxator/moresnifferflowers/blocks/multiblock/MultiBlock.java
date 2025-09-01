@@ -45,7 +45,7 @@ public interface MultiBlock{
 
    */
 
-    Stream<BlockPos> fullBlockShape(@Nullable Direction direction, BlockPos center);
+     Stream<BlockPos> fullBlockShape(@Nullable Direction direction, BlockPos center);
 
     default @Nullable DirectionProperty getDirectionProperty(){
         return null; // null if block doesn't have directions

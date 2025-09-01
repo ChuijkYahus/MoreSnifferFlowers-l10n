@@ -206,5 +206,26 @@ public class GiantCropModels {
         return LayerDefinition.create(meshdefinition, 256, 256);
     }
 
+    public static LayerDefinition createRiceLayer() {
+        MeshDefinition meshdefinition = new MeshDefinition();
+        PartDefinition partdefinition = meshdefinition.getRoot();
+
+        PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create().texOffs(88, 81).addBox(-6.0F, -40.0F, -6.0F, 12.0F, 28.0F, 12.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 81).addBox(-11.0F, -13.0F, -11.0F, 22.0F, 14.0F, 22.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+
+        PartDefinition cube_r1 = root.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(90, 0).addBox(-9.1039F, -14.771F, -8.0F, 0.0F, 22.0F, 16.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -41.2388F, 0.0F, 1.5708F, -1.1781F, -1.5708F));
+
+        PartDefinition cube_r2 = root.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(90, 0).mirror().addBox(9.1039F, -14.771F, -8.0F, 0.0F, 22.0F, 16.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, -41.2388F, 0.0F, -1.5708F, -1.1781F, 1.5708F));
+
+        PartDefinition cube_r3 = root.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(90, 0).addBox(-5.0F, -9.0F, -8.0F, 0.0F, 22.0F, 16.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-6.0F, -45.0F, 0.0F, 0.0F, 0.0F, -0.3927F));
+
+        PartDefinition cube_r4 = root.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(0, -16).addBox(0.0F, -18.0F, -30.5F, 0.0F, 36.0F, 61.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -30.0F, 0.0F, 0.0F, 2.3562F, 0.0F));
+
+        PartDefinition cube_r5 = root.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(90, 0).mirror().addBox(5.0F, -9.0F, -8.0F, 0.0F, 22.0F, 16.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(6.0F, -45.0F, 0.0F, 0.0F, 0.0F, 0.3927F));
+
+        PartDefinition cube_r6 = root.addOrReplaceChild("cube_r6", CubeListBuilder.create().texOffs(0, -17).addBox(0.0F, -19.0F, -30.5F, 0.0F, 37.0F, 61.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -30.0F, 0.0F, 0.0F, -2.3562F, 0.0F));
+
+        return LayerDefinition.create(meshdefinition, 256, 256);
+    }
 
 }

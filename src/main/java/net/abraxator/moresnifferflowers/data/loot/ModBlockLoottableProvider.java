@@ -370,7 +370,12 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
                 .stream()
                 .filter(block -> BuiltInRegistries.BLOCK.getKey(block).getNamespace().equals(MoreSnifferFlowers.MOD_ID))
                 .filter(block -> {
-                    boolean isCompat = block.equals(ModBlocks.GIANT_CABBAGE.get()) || block.equals(ModBlocks.GIANT_ONION.get()) || block.equals(ModBlocks.GIANT_TOMATO.get());
+                    boolean isCompat = block.equals(ModBlocks.GIANT_CABBAGE.get())
+                            || block.equals(ModBlocks.GIANT_ONION.get())
+                            || block.equals(ModBlocks.GIANT_TOMATO.get())
+                            || block.equals(ModBlocks.GIANT_RICE.get())
+
+                            ;
                     return !isCompat;
                 })
                 .collect(Collectors.toSet());

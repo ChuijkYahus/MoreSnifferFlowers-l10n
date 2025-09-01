@@ -16,6 +16,10 @@
     {
       "id": "farmersdelight:cabbages",
       "required": false
+    },
+    {
+      "id": "farmersdelight:rice_panicles",
+      "required": false
     }
   ]
 }

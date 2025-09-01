@@ -88,7 +88,7 @@ dependencies {
     //implementation("me.shedaniel.cloth:cloth-config-neoforge:${cloth_version}")
     //implementation("dev.architectury:architectury-neoforge:${architectury_version}")
 
-   // runtimeOnly "curse.maven:farmers-delight-398521:6917256"
+    runtimeOnly "curse.maven:farmers-delight-398521:6917256"
     compileOnly "curse.maven:farmers-delight-398521:6917256"
 
     implementation("net.neoforged:neoforge:${neoforge_version}")
