@@ -61,8 +61,8 @@ public class ClientEvents {
         Frustum frustum = event.getFrustum();
 
 
-        if (stage.equals(RenderLevelStageEvent.Stage.AFTER_SKY)) {
-           BlockPatternRenderer.cacheAndRender(frustum, camera, level, minecraft, poseStack);
+        if (stage.equals(RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS)) {
+            BlockPatternRenderer.cacheAndRender(frustum, camera, level, minecraft, poseStack);
         }
 
         if (stage.equals(RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS)){

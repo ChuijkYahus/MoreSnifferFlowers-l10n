@@ -16,12 +16,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public record SyncNutritionPacket(Set<Item> nutritionItems) {
+public record SyncNutritionPacket(Set<Item> nutritionItems, Set<Integer> effects) {
 
     public static void encode(SyncNutritionPacket msg, FriendlyByteBuf buffer) {
         buffer.writeInt(msg.nutritionItems.size());
         for (Item item : msg.nutritionItems) {
             buffer.writeResourceLocation(BuiltInRegistries.ITEM.getKey(item));
+        }
+
+        buffer.writeInt(msg.effects.size());
+        for (Integer effect : msg.effects) {
+            buffer.writeInt(effect);
         }
     }
 
@@ -37,7 +42,13 @@ public record SyncNutritionPacket(Set<Item> nutritionItems) {
             }
         }
 
-        return new SyncNutritionPacket(nutritionItems);
+        int effectSize = buffer.readInt();
+        Set<Integer> effects = new HashSet<>();
+        for (int i = 0; i < effectSize; i++) {
+            effects.add(buffer.readInt());
+        }
+
+        return new SyncNutritionPacket(nutritionItems, effects);
     }
 
     public static void handle(SyncNutritionPacket msg, Supplier<NetworkEvent.Context> ctx) {
@@ -52,6 +63,7 @@ public record SyncNutritionPacket(Set<Item> nutritionItems) {
         if (player != null) {
             player.getCapability(CapabilityList.UNLOCKED_NUTRITIONS).ifPresent(cap -> {
                 cap.setItems(msg.nutritionItems);
+                cap.unlockedEffects = msg.effects;
             });
         }
     }

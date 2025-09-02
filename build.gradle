@@ -97,6 +97,8 @@ dependencies {
     // modRuntimeOnly("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
     // modImplementation("com.tterrag.registrate:Registrate:${registrate_version}")
 
+   // modRuntimeOnly("curse.maven:farmers-delight-398521:6917255");
+
     //mixin
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     implementation(jarJar(group: "io.github.llamalad7", name:"mixinextras-forge", version: "[0.5.0,)"))
@@ -110,6 +112,11 @@ dependencies {
 
     //right click harvest
     compileOnly("curse.maven:rightclickharvest-452834:6326903")
+
+    //farmersDelight
+    modRuntimeOnly("curse.maven:farmers-delight-398521:6917255");
+    modCompileOnly("curse.maven:farmers-delight-398521:6917255");
+
 }
 
 mixin {
