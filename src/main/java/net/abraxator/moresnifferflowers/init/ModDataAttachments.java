@@ -12,6 +12,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -26,6 +27,7 @@ public class ModDataAttachments {
     public static final Supplier<AttachmentType<SlipperyCapability>> SLIPPERY = ATTACHMENT_TYPES.register("slippery", () -> AttachmentType.builder(SlipperyCapability::new).serialize(SlipperyCapability.CODEC).build());
     public static final Supplier<AttachmentType<UntouchableCapability>> UNTOUCHABLE = ATTACHMENT_TYPES.register("untouchable", () -> AttachmentType.builder(UntouchableCapability::new).serialize(UntouchableCapability.CODEC).build());
     public static final Supplier<AttachmentType<NutritionCapability>> NUTRITION = ATTACHMENT_TYPES.register("nutrition", () -> AttachmentType.builder(NutritionCapability::new).serialize(NutritionCapability.CODEC).sync(ByteBufCodecs.fromCodec(NutritionCapability.CODEC)).copyOnDeath().build());
+    public static final Supplier<AttachmentType<FakeRenderingCapability>> FAKE_RENDERING = ATTACHMENT_TYPES.register("fake_rendering", () -> AttachmentType.builder(() -> new FakeRenderingCapability(new HashSet<>())).serialize(FakeRenderingCapability.CODEC).sync(ByteBufCodecs.fromCodec(FakeRenderingCapability.CODEC)).copyOnDeath().build());
 
 
 }

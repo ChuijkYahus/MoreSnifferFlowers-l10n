@@ -1,10 +1,7 @@
 package net.abraxator.moresnifferflowers.events;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
-import net.abraxator.moresnifferflowers.capability.CorruptionCapability;
-import net.abraxator.moresnifferflowers.capability.GluedCapability;
-import net.abraxator.moresnifferflowers.capability.UntouchableCapability;
+import net.abraxator.moresnifferflowers.capability.*;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
 import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
@@ -58,6 +55,7 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkWatchEvent;
 
 import java.util.Objects;
+import java.util.Set;
 
 @EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID)
 public class ForgeEvents {
@@ -202,17 +200,26 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
-       BlockState state = event.getPlacedBlock();
-       LevelAccessor badLevel = event.getLevel();
+        BlockState state = event.getPlacedBlock();
+        LevelAccessor badLevel = event.getLevel();
+        BlockPos pos = event.getPos();
+        if (!(badLevel instanceof Level level)) return;
+        LevelChunk chunk = level.getChunkAt(pos);
 
-       if (state.is(ModTags.ModBlockTags.CORRUPTION_SHIELDING) && badLevel instanceof Level level){
-           LevelChunk chunk = level.getChunkAt(event.getPos());
+        if (state.is(ModTags.ModBlockTags.CORRUPTION_SHIELDING)){
            CorruptionCapability cap = chunk.getData(ModDataAttachments.CHUNK_CORRUPTION);
 
            cap.resistance++;
            cap.isSource = false;
-           cap.flowers.add(event.getPos());
-       }
+           cap.flowers.add(pos);
+        }
+
+
+        if (state.is(ModTags.ModBlockTags.FAKE_RENDER)){
+            Set<BlockPos> posSet = FakeRenderingCapability.getCopy(chunk);
+            posSet.add(pos);
+            FakeRenderingCapability.set(chunk, posSet);
+        }
     }
 
     @SubscribeEvent

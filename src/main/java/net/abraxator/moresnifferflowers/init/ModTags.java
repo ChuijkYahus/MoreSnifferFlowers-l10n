@@ -43,6 +43,9 @@ public class ModTags {
         public static final TagKey<Block> CORRUPTION_SHIELDING = create(Registries.BLOCK, "corruption_shielding");
         public static final TagKey<Block> NO_SHADING = create(Registries.BLOCK, "no_shading");
 
+        public static final TagKey<Block> FAKE_RENDER = create(Registries.BLOCK, "fake_render");
+
+
     }
 
     public static class ModBannerPatternTags {

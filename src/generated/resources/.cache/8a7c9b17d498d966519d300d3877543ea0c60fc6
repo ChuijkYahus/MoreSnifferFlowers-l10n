@@ -1,4 +1,4 @@
-// 1.21.1	2025-09-01T16:07:40.811333	Tags for minecraft:block mod id moresnifferflowers
+// 1.21.1	2025-09-02T22:32:26.1999213	Tags for minecraft:block mod id moresnifferflowers
 a4a6a65c9ff027e1e1a8624a3079962b61fb88d4 data/minecraft/tags/block/cauldrons.json
 6e65e09e93f94f05212cbc66135b682b8722b50d data/minecraft/tags/block/dirt.json
 6d8903ab7204569206b2f7cb5c89b74235cf79d6 data/minecraft/tags/block/fence_gates.json
@@ -29,6 +29,7 @@ ee34938fd51d0fdc1d8bf833ed7b3c09a5566876 data/moresnifferflowers/tags/block/bonm
 b9093235454f1058cd15b6c1923e68b248355f70 data/moresnifferflowers/tags/block/corruption_shielding.json
 e695bf022d47bc0866910b50fc28cf5d67f4c273 data/moresnifferflowers/tags/block/corruption_transformables.json
 ada0019ebf117711430cf38733e053d92914f59e data/moresnifferflowers/tags/block/dyed.json
+f79c86c03e38e55d342ada8cee20765ce3ffabbe data/moresnifferflowers/tags/block/fake_render.json
 fc7e8a8d9eaaf063ec3a2749d30c461256316dbf data/moresnifferflowers/tags/block/giant_crops.json
 226bbfa5b432c3e48ff8c1d4aa843bd964571b6f data/moresnifferflowers/tags/block/giant_crop_replaceable.json
 27a3bbb3715e42a87ffab63d4e1cbdfe0205b129 data/moresnifferflowers/tags/block/no_corrupted_slime_collision.json

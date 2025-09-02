@@ -12,10 +12,12 @@ import net.abraxator.moresnifferflowers.client.renderer.entity.*;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.*;
 import net.minecraft.server.packs.repository.Pack;
@@ -25,9 +27,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.RenderTypeHelper;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforgespi.locating.IModFile;
 
@@ -84,6 +85,9 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModModelLayerLocations.BEROOT_SPOON, BerootCauldronModel::createSpoonLayer);
         event.registerLayerDefinition(ModModelLayerLocations.SALTEMONE, SaltemoneModel::createBodyLayer);
         event.registerLayerDefinition(ModModelLayerLocations.SALTEMONE_TOP, SaltemoneModel::createTopLayer);
+        event.registerLayerDefinition(ModModelLayerLocations.SIMPLE_CUBE, SimpleModels::simpleCube);
+        event.registerLayerDefinition(ModModelLayerLocations.INVERTED_CUBE, SimpleModels::invertedCube);
+
 
     }
 
@@ -116,6 +120,7 @@ public class ClientRegistration {
         event.registerBlockEntityRenderer(ModBlockEntities.BONDRIPIA.get(), BondripiaBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.BEROOT_CAULDRON.get(), BerootCauldronRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.SALTEMONE.get(), SaltemoneBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.CROPRESSED_CROP.get(), CropressedCropRenderer::new);
 
     }
 
@@ -138,6 +143,11 @@ public class ClientRegistration {
         event.registerSpriteSet(ModParticles.BUBBLE.get(), ModBubbleParticle.Provider::new);
 
 
+    }
+
+    @SubscribeEvent
+    public static void onRegisterRenderTypes(RegisterRenderBuffersEvent event) {
+        event.registerRenderBuffer(ModRenderTypes.CRUMBLING_BLOCK);
     }
 
     @SubscribeEvent

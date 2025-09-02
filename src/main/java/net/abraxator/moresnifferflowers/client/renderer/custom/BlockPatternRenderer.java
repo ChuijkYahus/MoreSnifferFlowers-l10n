@@ -35,9 +35,7 @@ import net.neoforged.neoforge.client.model.lighting.QuadLighter;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class BlockPatternRenderer {
@@ -62,14 +60,7 @@ public class BlockPatternRenderer {
         poseStack.pushPose();
         poseStack.translate(-camX, -camY, -camZ);
 
-        List<LevelChunk> levelChunks = new ArrayList<>();
-
-        ChunkPos playerChunkPos = minecraft.player.chunkPosition();
-        for (int x = -chunkRenderDistance; x < chunkRenderDistance ; x++) {
-            for (int z = -chunkRenderDistance; z < chunkRenderDistance ; z++) {
-                levelChunks.add(level.getChunk(x + playerChunkPos.x,z + playerChunkPos.z));
-            }
-        }
+        Set<LevelChunk> levelChunks = getVisibleChunks(chunkRenderDistance);
 
         BUFFER_MANAGER.cachePatterns(level, camX, camY, camZ, levelChunks, frustum);
         BUFFER_MANAGER.render(poseStack, Minecraft.getInstance().renderBuffers().bufferSource());
@@ -81,7 +72,7 @@ public class BlockPatternRenderer {
         this.dirty = true;
     }
 
-    public void cachePatterns(Level level, double camX, double camY, double camZ, List<LevelChunk> levelChunks, Frustum frustum) {
+    public void cachePatterns(Level level, double camX, double camY, double camZ, Set<LevelChunk> levelChunks, Frustum frustum) {
         if (!dirty) return;
         dirty = false;
         cachedQuads.clear();
@@ -341,5 +332,29 @@ public class BlockPatternRenderer {
             this.lastYaw = camera.getYRot();
             this.lastPitch = camera.getXRot();
         }
+    }
+
+    public static Set<LevelChunk> getVisibleChunks() {
+        int chunkRenderDistance = Minecraft.getInstance().options.getEffectiveRenderDistance();
+        return getVisibleChunks(chunkRenderDistance);
+    }
+
+    public static Set<LevelChunk> getVisibleChunks(int chunkRenderDistance) {
+        Minecraft minecraft = Minecraft.getInstance();
+        Level level = minecraft.level;
+        assert level != null;
+        assert minecraft.player != null;
+
+        Set<LevelChunk> levelChunks = new HashSet<>();
+
+        ChunkPos playerChunkPos = minecraft.player.chunkPosition();
+
+        for (int x = -chunkRenderDistance; x < chunkRenderDistance; x++) {
+            for (int z = -chunkRenderDistance; z < chunkRenderDistance; z++) {
+                levelChunks.add(level.getChunk(x + playerChunkPos.x,z + playerChunkPos.z));
+            }
+        }
+
+        return levelChunks;
     }
 }

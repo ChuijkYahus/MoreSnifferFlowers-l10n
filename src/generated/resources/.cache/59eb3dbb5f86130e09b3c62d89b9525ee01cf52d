@@ -1,4 +1,4 @@
-// 1.21.1	2025-09-01T14:52:38.6647151	Loot Tables
+// 1.21.1	2025-09-02T20:51:18.8576773	Loot Tables
 421d4c078004a75f24902e1d857ee88a3c0688d2 data/moresnifferflowers/loot_table/blocks/acidripia.json
 16882dced81963aacd1b4d32ed8e0ca33a618998 data/moresnifferflowers/loot_table/blocks/acid_filled_cauldron.json
 867be0e1c64c89c59a6ef95f1d02bf10cf067d66 data/moresnifferflowers/loot_table/blocks/amber_block.json
@@ -45,6 +45,7 @@ abb4ee942549a66f5d6ca7480b15d3445bcec4d2 data/moresnifferflowers/loot_table/bloc
 2672da549a8bd6856b93a040042529506d39c42e data/moresnifferflowers/loot_table/blocks/corrupted_wood.json
 f191b1520f60f7e0354cd2fb9669a8c5b255c3cd data/moresnifferflowers/loot_table/blocks/cracked_amber.json
 41074a0dfc64ad3fb06efc8eaf5acad158b06d18 data/moresnifferflowers/loot_table/blocks/cracked_garnet.json
+ae5a7e0fbaa205fbf0b2b597b435f2e572c628bb data/moresnifferflowers/loot_table/blocks/cropressed_netherwart.json
 37af3f3dac2c78281633f683655a68bb8c14da21 data/moresnifferflowers/loot_table/blocks/cropressor_center.json
 c9d1c42f59fe168d69df20f9bd8e887032077322 data/moresnifferflowers/loot_table/blocks/cropressor_out.json
 2e0ff8bf8aa4c606f0366e8ca2fde09b4518171a data/moresnifferflowers/loot_table/blocks/cured_grass_block.json

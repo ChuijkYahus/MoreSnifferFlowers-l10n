@@ -7,7 +7,10 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.GluedCapability;
 import net.abraxator.moresnifferflowers.capability.SlipperyCapability;
 import net.abraxator.moresnifferflowers.client.ClientRegistration;
+import net.abraxator.moresnifferflowers.client.model.baked.EmptyBakedModel;
 import net.abraxator.moresnifferflowers.client.renderer.custom.BlockPatternRenderer;
+import net.abraxator.moresnifferflowers.client.renderer.custom.FakeBlockEntityRenderer;
+import net.abraxator.moresnifferflowers.client.renderer.custom.FakeBlockRenderer;
 import net.abraxator.moresnifferflowers.client.renderer.custom.MultiblockPreviewRenderer;
 import net.abraxator.moresnifferflowers.entities.GluingGumEntity;
 import net.abraxator.moresnifferflowers.init.*;
@@ -20,15 +23,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.model.EmptyModel;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -68,6 +75,17 @@ public class ClientEvents {
         if (stage.equals(RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) && ModClientConfig.DISABLE_MULTIBLOCK_PREVIEWS.isFalse()){
             MultiblockPreviewRenderer.renderMultiblockPreviews(partialTick, minecraft, level, camera, poseStack);
         }
+
+        /*
+        if (stage.equals(RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS)) {
+            FakeBlockEntityRenderer.render(partialTick, minecraft, level, camera, poseStack);
+        }
+        */
+
+        if (stage.equals(RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS)) {
+            FakeBlockRenderer.render(minecraft, level, camera, poseStack);
+        }
+
 
     }
 
@@ -151,5 +169,17 @@ public class ClientEvents {
         ClientRegistration.getBlockPatternRenderer().markDirty();
 
     }
+
+/*    @SubscribeEvent
+    public static void onModelBake(ModelEvent.ModifyBakingResult event) {
+        event.getModels().replaceAll((modelLocation, model) -> {
+            Block block = BuiltInRegistries.BLOCK.get(modelLocation.id());
+            boolean isInventory = modelLocation.variant().equals(ModelResourceLocation.INVENTORY_VARIANT);
+            if (block.defaultBlockState().is(ModTags.ModBlockTags.FAKE_RENDER) && !isInventory) {
+                return new EmptyBakedModel(model);
+            }
+            return model;
+        });
+    }*/
 
 }

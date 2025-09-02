@@ -95,6 +95,9 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         this.tag(BlockTags.DIRT).add(ModBlocks.CORRUPTED_GRASS_BLOCK.get(), ModBlocks.CURED_GRASS_BLOCK.get());
         this.tag(BlockTags.FLOWER_POTS).add(ModBlocks.POTTED_DYESPRIA.get(), ModBlocks.POTTED_CORRUPTED_SAPLING.get(), ModBlocks.POTTED_VIVICUS_SAPLING.get());
 
+        this.tag(ModTags.ModBlockTags.FAKE_RENDER).add(ModBlocks.CROPRESSED_NETHERWART.get(), Blocks.GLASS,
+                ModBlocks.VIVICUS_LEAVES.get(), Blocks.PURPLE_STAINED_GLASS, Blocks.GREEN_STAINED_GLASS_PANE, ModBlocks.AMBER_MOSAIC.get());
+
         this.tag(ModTags.ModBlockTags.DYED).add(Blocks.GLASS, Blocks.GLASS_PANE, Blocks.TERRACOTTA, Blocks.SHULKER_BOX, Blocks.CANDLE);
         addColored(ModTags.ModBlockTags.DYED, "{c}_wool", "{c}_stained_glass", "{c}_stained_glass_pane" , "{c}_carpet", "{c}_terracotta", "{c}_concrete", "{c}_concrete_powder", "{c}_glazed_terracotta", "{c}_shulker_box", "{c}_candle", "{c}_banner");
     }

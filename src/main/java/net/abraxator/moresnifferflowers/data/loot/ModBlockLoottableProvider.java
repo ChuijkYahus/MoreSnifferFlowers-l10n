@@ -323,6 +323,8 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.TORCHFLOWER_AFLAME.get());
         dropSelf(ModBlocks.TORCHFLAME.get());
         dropSelf(ModBlocks.TORCHEWFLOWER.get());
+
+        dropSelf(ModBlocks.CROPRESSED_NETHERWART.get());
     }
 
     private LootTable.Builder simpleIncreasingConditional(Property<Integer> property, Block block, Item item){

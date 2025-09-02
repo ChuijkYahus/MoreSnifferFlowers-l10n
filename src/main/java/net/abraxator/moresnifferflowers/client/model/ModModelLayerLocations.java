@@ -33,5 +33,7 @@ public class ModModelLayerLocations {
     public static final ModelLayerLocation BEROOT_SPOON = new ModelLayerLocation(MoreSnifferFlowers.loc("beroot_spoon"), "main");
     public static final ModelLayerLocation SALTEMONE = new ModelLayerLocation(MoreSnifferFlowers.loc("saltemone"), "main");
     public static final ModelLayerLocation SALTEMONE_TOP = new ModelLayerLocation(MoreSnifferFlowers.loc("saltemone"), "top");
+    public static final ModelLayerLocation SIMPLE_CUBE = new ModelLayerLocation(MoreSnifferFlowers.loc("simple_cube"), "main");
+    public static final ModelLayerLocation INVERTED_CUBE = new ModelLayerLocation(MoreSnifferFlowers.loc("inverted_cube"), "main");
 
 }

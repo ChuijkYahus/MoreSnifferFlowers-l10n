@@ -63,7 +63,7 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
 
     @Override
     public BlockState getDefaultStateForPreviews(Direction direction) {
-        return PreviewableMultiblock.super.getDefaultStateForPreviews(direction).setValue(getAgeProperty(), getMaxAge());
+        return PreviewableMultiblock.super.getDefaultStateForPreviews(direction).setValue(getAgeProperty(), 1);
     }
 
     @Override
