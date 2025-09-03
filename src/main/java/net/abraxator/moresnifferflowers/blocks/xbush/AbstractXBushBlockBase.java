@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -42,6 +43,7 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
 
     public AbstractXBushBlockBase(Properties pProperties) {
         super(pProperties);
+        registerDefaultState(defaultBlockState().setValue(ModStateProperties.SHEARED, false));
     }
     
     @Override
@@ -80,8 +82,9 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(ModStateProperties.AGE_8);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(ModStateProperties.AGE_8);
+        builder.add(ModStateProperties.SHEARED);
     }
 
     @Override
@@ -89,12 +92,12 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
         if(pEntity instanceof Ravager && pLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
             pLevel.destroyBlock(pPos, true, pEntity);
         }
-        
+
         onCorruptByEntity(pEntity, pPos, pState, this, pLevel);
 
         super.entityInside(pState, pLevel, pPos, pEntity);
     }
-    
+
     @Override
     public boolean canBeReplaced(BlockState pState, BlockPlaceContext pUseContext) {
         return false;
@@ -118,6 +121,7 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
 
     @Override
     public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
+        if (pState.getValue(ModStateProperties.SHEARED)) return;
         float f = ModCropBlock.getGrowthSpeed(pState, pLevel, pPos);
         if(pRandom.nextInt((int) ((25.0F / f) + 1)) == 0) {
             this.grow(pLevel, pState, pPos, 1);
@@ -142,6 +146,10 @@ public abstract class AbstractXBushBlockBase extends ModEntityDoubleTallBlock im
 
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+        if (shear(pPlayer, pLevel, pPos, pHand)){
+            return InteractionResult.SUCCESS;
+        }
+
         Optional<PosAndState> optional = getLowerHalf(pLevel, pPos, pState);
         var stack = pPlayer.getItemInHand(pHand);
 

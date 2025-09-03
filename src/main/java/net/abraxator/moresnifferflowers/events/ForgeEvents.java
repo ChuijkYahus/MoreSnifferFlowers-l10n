@@ -6,6 +6,7 @@ import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.capability.GluedCapability;
 import net.abraxator.moresnifferflowers.capability.UntouchableCapability;
+import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
 import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
@@ -15,6 +16,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
@@ -45,6 +47,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -187,7 +190,7 @@ public class ForgeEvents {
 
         }
     }
-    
+
     @SubscribeEvent
     public static void onLivingJump(LivingEvent.LivingJumpEvent event) {
         LivingEntity livingEntity = event.getEntity();
@@ -216,6 +219,26 @@ public class ForgeEvents {
        }
     }
 
+    @SubscribeEvent
+    public static void onItemCrafted(PlayerEvent.ItemCraftedEvent event) {
+        ItemStack output = event.getCrafting();
+        Container input = event.getInventory();
+
+        if (output.is(ModTags.ModItemTags.COLORABLE)){
+            for (int i = 0; i < input.getContainerSize(); i++) {
+                ItemStack stack = input.getItem(i);
+
+                int colorId = stack.getOrCreateTag().getInt(Colorable.TAG_ID);
+                int color = stack.getOrCreateTag().getInt(Colorable.TAG_HEX);
+
+                if (colorId != 0 && color != 0) {
+                    output.getOrCreateTag().putInt(Colorable.TAG_ID, colorId);
+                    output.getOrCreateTag().putInt(Colorable.TAG_HEX, color);
+                    break;
+                }
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void onPlayerInteractRightClickItem(PlayerInteractEvent.RightClickBlock event) {

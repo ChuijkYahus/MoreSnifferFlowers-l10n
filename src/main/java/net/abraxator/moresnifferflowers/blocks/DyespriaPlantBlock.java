@@ -75,14 +75,15 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         var stack = pPlayer.getItemInHand(pHand);
 
+        if(shear(pPlayer, pLevel, pPos, pHand)){
+            return InteractionResult.SUCCESS;
+        }
+
         if(stack.is(Items.BONE_MEAL) && !isMaxAge(pState)) {
             return InteractionResult.PASS;
         } else if(isMaxAge(pState) && pLevel.getBlockEntity(pPos) instanceof DyespriaPlantBlockEntity entity) {
             if(stack.getItem() instanceof DyeItem) {
                 return addDye(stack, pPlayer, pLevel, entity);
-            } else if(stack.is(Items.SHEARS)) {
-                shear(pPlayer, pLevel, pPos, pState, pHand);
-                return InteractionResult.sidedSuccess(pLevel.isClientSide());
             }
         } else if(isMaxAge(pState) && pLevel.getBlockEntity(pPos) instanceof DyespriaPlantBlockEntity entity) {
             pPlayer.addItem(Dye.stackFromDye(entity.removeDye()));
@@ -132,7 +133,7 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         onCorruptByEntity(entity, pos, state, this, level);
     }
-    
+
     @Override
     public void onCorrupt(Level level, BlockPos pos, BlockState oldState, Block corruptedBlock) {
         if(level.getBlockEntity(pos) instanceof DyespriaPlantBlockEntity entity && isMaxAge(oldState)) {
@@ -161,7 +162,7 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
 
     @Override
     public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
-        makeGrowOnTick(this, pState, pLevel, pPos);
+        makeGrowOnTick(pState, pLevel, pPos);
     }
 
     @Override

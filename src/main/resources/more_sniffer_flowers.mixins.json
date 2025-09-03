@@ -9,6 +9,7 @@
     "BiomeColorsMixin",
     "BlockBehaviourMixin",
     "BlockMixin",
+    "CraftingMenuMixin",
     "EntityMixin",
     "FarmBlockMixin",
     "FarmersDelightTomatoVineMixin",

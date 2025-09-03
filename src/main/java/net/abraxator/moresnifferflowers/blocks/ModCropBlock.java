@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.common.Tags;
 
 ;import java.util.OptionalLong;
 
@@ -42,7 +44,9 @@ public interface ModCropBlock extends BonemealableBlock {
         return blockState.getValue(getAgeProperty());
     }
 
-    default void makeGrowOnTick(Block block, BlockState blockState, Level level, BlockPos blockPos) {
+    default void makeGrowOnTick(BlockState blockState, Level level, BlockPos blockPos) {
+        if (blockState.getValue(ModStateProperties.SHEARED)) return;
+
         if (!isMaxAge(blockState) && level.isAreaLoaded(blockPos, 1) && level.getRawBrightness(blockPos, 0) >= 9) {
             float f = getGrowthSpeed(blockState, level, blockPos);
             if (ForgeHooks.onCropsGrowPre(level, blockPos, blockState, level.getRandom().nextInt((int)(25.0F / f) + 1) == 0)) {
@@ -59,8 +63,8 @@ public interface ModCropBlock extends BonemealableBlock {
     default boolean mayPlaceOn(BlockState pState) {
         return pState.is(Blocks.FARMLAND) || pState.getBlock() instanceof FarmBlock || pState.is(TagKey.create(Registries.BLOCK, new ResourceLocation("supplementaries", "planters")));
     }
-    
-    default void shear(Player player, Level level, BlockPos blockPos, BlockState blockState, InteractionHand hand) {
+
+    private static void shear(Player player, Level level, BlockPos blockPos, BlockState blockState, InteractionHand hand) {
         if (player instanceof ServerPlayer) {
             CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player, blockPos, player.getItemInHand(hand));
         }
@@ -73,11 +77,20 @@ public interface ModCropBlock extends BonemealableBlock {
         });
     }
 
+    default boolean shear(Player player, Level level, BlockPos blockPos, InteractionHand hand) {
+        BlockState blockState = level.getBlockState(blockPos);
+        if (player.getItemInHand(hand).is(Tags.Items.SHEARS) && !blockState.getValue(ModStateProperties.SHEARED)) {
+            shear(player, level, blockPos, blockState, hand);
+            return true;
+        }
+        return false;
+    }
+
     static float getGrowthSpeed(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
         float f = 1.0F;
         BlockPos blockpos = pPos.below();
         var pBlock = pState.getBlock();
-        
+
         for(int i = -1; i <= 1; ++i) {
             for(int j = -1; j <= 1; ++j) {
                 float f1 = 0.0F;

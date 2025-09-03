@@ -7,6 +7,7 @@ import net.abraxator.moresnifferflowers.components.Dye;
 import net.abraxator.moresnifferflowers.init.ModAdvancementCritters;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModItems;
+import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,18 +46,26 @@ import static net.abraxator.moresnifferflowers.init.ModStateProperties.*;
 public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCropBlock, Colorable, Corruptable {
     public CaulorflowerBlock(Properties pProperties) {
         super(pProperties);
-        this.registerDefaultState(defaultBlockState()
-                .setValue(FACING, Direction.NORTH)
-                .setValue(FLIPPED, true)
-                .setValue(getAgeProperty(), 0)
-                .setValue(getColorAndEmptyProperties().getA(), DyeColor.WHITE)
-                .setValue(getColorAndEmptyProperties().getB(), true));
+
+        if (!isCorrupted()) {
+            this.registerDefaultState(defaultBlockState()
+                    .setValue(FACING, Direction.NORTH)
+                    .setValue(FLIPPED, true)
+                    .setValue(getAgeProperty(), 0)
+                    .setValue(getColorAndEmptyProperties().getA(), DyeColor.WHITE)
+                    .setValue(getColorAndEmptyProperties().getB(), true)
+                    .setValue(SHEARED, false));
+        }
+    }
+
+    public boolean isCorrupted(){
+        return false;
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(FACING, FLIPPED, getAgeProperty(), getColorAndEmptyProperties().getA(), getColorAndEmptyProperties().getB());
+        pBuilder.add(FACING, FLIPPED, SHEARED, getAgeProperty(), getColorAndEmptyProperties().getA(), getColorAndEmptyProperties().getB());
     }
 
     @Override
@@ -84,13 +93,13 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCr
         BlockState blockState = pLevel.getBlockState(blockPos);
         BlockPos wallPos = pPos.relative(pState.getValue(FACING).getOpposite());
         BlockState wallState = pLevel.getBlockState(wallPos);
-        return ((blockState.is(this) || blockState.is(ModBlocks.PATTERNFLOWER.get())) && getAge(blockState) > 0) || blockState.isFaceSturdy(pLevel, blockPos, Direction.UP) || wallState.isFaceSturdy(pLevel, wallPos, pState.getValue(FACING));
+        return ((blockState.is(ModBlocks.CAULORFLOWER.get()) || blockState.is(ModBlocks.PATTERNFLOWER.get())) && getAge(blockState) > 0) || blockState.isFaceSturdy(pLevel, blockPos, Direction.UP) || wallState.isFaceSturdy(pLevel, wallPos, pState.getValue(FACING));
     }
 
     @Override
     public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
         super.randomTick(pState, pLevel, pPos, pRandom);
-        if(pRandom.nextFloat() < 0.15) {
+        if(pRandom.nextFloat() < 0.15 && !pState.getValue(SHEARED)) {
             grow(pLevel, pPos, false);
         }
     }
@@ -125,11 +134,8 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCr
                 var posBelow = highestPos.below();
                 var stateBelow = pLevel.getBlockState(posBelow);
                 if (isMaxAge(stateBelow)) {
-                    pLevel.setBlockAndUpdate(highestPos, this.defaultBlockState()
-                            .setValue(FLIPPED, highestPos.getY() % 2 == 0)
-                            .setValue(FACING, stateBelow.getValue(FACING))
-                            .setValue(getColorAndEmptyProperties().getA(), stateBelow.getValue(getColorAndEmptyProperties().getA()))
-                            .setValue(getColorAndEmptyProperties().getB(), stateBelow.getValue(getColorAndEmptyProperties().getB())));
+                    pLevel.setBlockAndUpdate(highestPos, this.withPropertiesOf(stateBelow)
+                            .setValue(this.getAgeProperty(), 0).setValue(FLIPPED, highestPos.getY() % 2 == 0));
                 } else {
                     makeGrowOnBonemeal(pLevel, posBelow, stateBelow);
                 }
@@ -139,8 +145,12 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCr
 
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+        if (shear(pPlayer, pLevel, pPos, pHand)){
+            return InteractionResult.SUCCESS;
+        }
+
         if (harvestable(pState)) {
-            popResource(pLevel, pPos, Dye.stackFromDye(new Dye(pState.getValue(COLOR), 1)));
+            popResource(pLevel, pPos, pState);
             pLevel.playSound(
                     null, pPos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + pLevel.random.nextFloat() * 0.4F
             );
@@ -152,19 +162,23 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCr
             return super.use(pState, pLevel, pPos, pPlayer, pHand, pHit);
         }
     }
-    
-    private boolean harvestable(BlockState blockState) {
+
+    public void popResource(Level level, BlockPos pos, BlockState state){
+        popResource(level, pos, Dye.stackFromDye(new Dye(state.getValue(COLOR), 1)));
+    }
+
+    public boolean harvestable(BlockState blockState) {
         return isMaxAge(blockState) && !getDyeFromBlock(blockState).isEmpty();
     }
 
-    private Optional<BlockPos> highestPos(BlockGetter level, BlockPos originalPos, boolean bonemeal) {
+    public Optional<BlockPos> highestPos(BlockGetter level, BlockPos originalPos, boolean bonemeal) {
         var lowestPos = getLowestPos(level, originalPos);
         if(lowestPos.isEmpty()) { return Optional.empty(); }
         var highestPos = getLastConnectedBlock(level, lowestPos.get(), Direction.UP);
         return highestPos.filter(blockPos1 -> bonemeal || !((lowestPos.get().getY() + 5) <= blockPos1.getY())).map(BlockPos::above);
     }
 
-    private Optional<BlockPos> getLowestPos(BlockGetter level, BlockPos originalPos) {
+    public Optional<BlockPos> getLowestPos(BlockGetter level, BlockPos originalPos) {
         var posDown = getLastConnectedBlock(level, originalPos, Direction.DOWN).map(BlockPos::above);
         return posDown.filter(blockPos -> level.getBlockState(blockPos).is(this));
     }

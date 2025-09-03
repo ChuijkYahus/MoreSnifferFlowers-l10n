@@ -13,7 +13,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -26,6 +29,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -37,7 +41,11 @@ import java.util.stream.Stream;
 public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock, Corruptable, ModCropBlock, PreviewableMultiblock, CorruptableMultiblock {
     public SaltemoneBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(defaultBlockState().setValue(ModStateProperties.CENTER, false).setValue(getAgeProperty(), 0).setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH));
+        this.registerDefaultState(defaultBlockState()
+                .setValue(ModStateProperties.CENTER, false)
+                .setValue(getAgeProperty(), 0)
+                .setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH)
+                .setValue(ModStateProperties.SHEARED, false));
     }
     protected static final VoxelShape AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
 
@@ -59,7 +67,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(getAgeProperty());
+        pBuilder.add(getAgeProperty(), ModStateProperties.SHEARED);
     }
 
     @Override
@@ -117,7 +125,16 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
     }
 
     @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (shear(player, level, pos, hand)){
+            return InteractionResult.SUCCESS;
+        }
+
+        return super.use(state, level, pos, player, hand, hit);
+    }
+    @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (state.getValue(ModStateProperties.SHEARED)) return;
         if (level.getBlockEntity(pos) instanceof SaltemoneBlockEntity entity && pos.equals(entity.center)) {
             if (isMaxAge(state)) {
                 Direction direction = state.getValue(HorizontalDirectionalBlock.FACING);
