@@ -65,14 +65,14 @@ public class PatternflowerBlock extends CaulorflowerBlock implements Bonemealabl
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(FACING, SHEARED, FLIPPED, getAgeProperty(), ModStateProperties.BLOCK_PATTERN, EMPTY);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING, SHEARED, FLIPPED, getAgeProperty(), ModStateProperties.BLOCK_PATTERN, EMPTY);
     }
 
     @Override
-    public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        if(canSurvive(pState, pLevel, pCurrentPos)) {
-            return pState.setValue(FLIPPED, pCurrentPos.getY() % 2 == 0).setValue(EMPTY, BlockPattern.isEmpty(pState));
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+        if(canSurvive(state, level, currentPos)) {
+            return state.setValue(FLIPPED, currentPos.getY() % 2 == 0).setValue(EMPTY, BlockPattern.isEmpty(state));
         } else {
             return Blocks.AIR.defaultBlockState();
         }
@@ -80,34 +80,34 @@ public class PatternflowerBlock extends CaulorflowerBlock implements Bonemealabl
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        BlockState state = pContext.getLevel().getBlockState(pContext.getClickedPos().below());
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockState state = context.getLevel().getBlockState(context.getClickedPos().below());
         if(state.is(this)) {
-            return state.setValue(FLIPPED, pContext.getClickedPos().getY() % 2 == 0);
+            return state.setValue(FLIPPED, context.getClickedPos().getY() % 2 == 0);
         }
-        return super.getStateForPlacement(pContext).setValue(FLIPPED, pContext.getClickedPos().getY() % 2 == 0).setValue(FACING, pContext.getHorizontalDirection().getOpposite());
+        return super.getStateForPlacement(context).setValue(FLIPPED, context.getClickedPos().getY() % 2 == 0).setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
     @Override
-    public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
-        BlockPos blockPos = pPos.below();
-        BlockState blockState = pLevel.getBlockState(blockPos);
-        BlockPos wallPos = pPos.relative(pState.getValue(FACING).getOpposite());
-        BlockState wallState = pLevel.getBlockState(wallPos);
-        return ((blockState.is(this) || blockState.is(ModBlocks.CAULORFLOWER.get())) && getAge(blockState) > 0) || blockState.isFaceSturdy(pLevel, blockPos, Direction.UP) || wallState.isFaceSturdy(pLevel, wallPos, pState.getValue(FACING));
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        BlockPos blockPos = pos.below();
+        BlockState blockState = level.getBlockState(blockPos);
+        BlockPos wallPos = pos.relative(state.getValue(FACING).getOpposite());
+        BlockState wallState = level.getBlockState(wallPos);
+        return ((blockState.is(this) || blockState.is(ModBlocks.CAULORFLOWER.get())) && getAge(blockState) > 0) || blockState.isFaceSturdy(level, blockPos, Direction.UP) || wallState.isFaceSturdy(level, wallPos, state.getValue(FACING));
     }
 
     @Override
-    public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
-        super.randomTick(pState, pLevel, pPos, pRandom);
-        if(pRandom.nextFloat() < 0.15) {
-            grow(pLevel, pPos, false);
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        super.randomTick(state, level, pos, random);
+        if(random.nextFloat() < 0.15) {
+            grow(level, pos, false);
         }
     }
 
     @Override
-    public boolean isBonemealSuccess(Level pLevel, RandomSource pRandom, BlockPos pPos, BlockState pState) {
-        return BlockPattern.fromState(pState).isBanner() ? pRandom.nextFloat() < 0.2 : pRandom.nextFloat() < 0.50;
+    public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
+        return BlockPattern.fromState(state).isBanner() ? random.nextFloat() < 0.2 : random.nextFloat() < 0.50;
     }
 
     @Override

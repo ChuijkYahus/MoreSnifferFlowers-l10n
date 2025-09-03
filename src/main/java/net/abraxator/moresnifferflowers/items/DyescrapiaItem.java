@@ -37,17 +37,17 @@ import java.util.List;
 import static net.abraxator.moresnifferflowers.items.DyespriaItem.copyAllBlockStateProperties;
 
 public class DyescrapiaItem extends BlockItem {
-    public DyescrapiaItem(Properties pProperties) {
-        super(ModBlocks.DYESCRAPIA_PLANT.get(), pProperties);
+    public DyescrapiaItem(Properties properties) {
+        super(ModBlocks.DYESCRAPIA_PLANT.get(), properties);
     }
 
     @Override
-    public InteractionResult useOn(UseOnContext pContext) {
-        var pos = pContext.getClickedPos();
-        var state = pContext.getLevel().getBlockState(pos);
-        var player = pContext.getPlayer();
-        var level = pContext.getLevel();
-        var stack = pContext.getItemInHand();
+    public InteractionResult useOn(UseOnContext context) {
+        var pos = context.getClickedPos();
+        var state = context.getLevel().getBlockState(pos);
+        var player = context.getPlayer();
+        var level = context.getLevel();
+        var stack = context.getItemInHand();
         int uses = getDyescrapiaUses(stack) + 1;
 
 
@@ -134,7 +134,7 @@ public class DyescrapiaItem extends BlockItem {
 
         }
         
-        return handlePlacement(pos, level, player, pContext.getHand(), pContext.getItemInHand());
+        return handlePlacement(pos, level, player, context.getHand(), context.getItemInHand());
     }
 
     private InteractionResult handlePlacement(BlockPos blockPos, Level level, Player player, InteractionHand hand, ItemStack stack) {
@@ -175,8 +175,8 @@ public class DyescrapiaItem extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<net.minecraft.network.chat.Component> pTooltip, TooltipFlag pFlag) {
-        super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
-        pTooltip.add(Component.translatableWithFallback("tooltip.dyescrapia", "Scrapes the dye off of colored blocks").withStyle(ChatFormatting.GOLD));
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<net.minecraft.network.chat.Component> tooltip, TooltipFlag flag) {
+        super.appendHoverText(stack, level, tooltip, flag);
+        tooltip.add(Component.translatableWithFallback("tooltip.dyescrapia", "Scrapes the dye off of colored blocks").withStyle(ChatFormatting.GOLD));
     }
 }

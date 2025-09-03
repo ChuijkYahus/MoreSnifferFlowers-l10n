@@ -21,8 +21,8 @@ import java.util.Map;
 public class ColoredBlockEntity extends ModBlockEntity implements Colorable {
     public Dye dye = Dye.EMPTY;
 
-    public ColoredBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
-        super(pType, pPos, pBlockState);
+    public ColoredBlockEntity(BlockEntityType<?> pType, BlockPos pos, BlockState pBlockState) {
+        super(pType, pos, pBlockState);
     }
 
     @Override
@@ -58,17 +58,17 @@ public class ColoredBlockEntity extends ModBlockEntity implements Colorable {
     }
 
     @Override
-    public void load(CompoundTag pTag) {
-        super.load(pTag);
+    public void load(CompoundTag tag) {
+        super.load(tag);
         dye = Dye.EMPTY;
-        this.dye = new Dye(DyeColor.byId(pTag.getInt("dyeId")), pTag.getInt("amount"));
+        this.dye = new Dye(DyeColor.byId(tag.getInt("dyeId")), tag.getInt("amount"));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag) {
-        super.saveAdditional(pTag);
-        pTag.putInt("dyeId", dye.color().getId());
-        pTag.putInt("amount", dye.amount());
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        tag.putInt("dyeId", dye.color().getId());
+        tag.putInt("amount", dye.amount());
     }
 
     @Override

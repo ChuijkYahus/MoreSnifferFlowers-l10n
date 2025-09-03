@@ -14,8 +14,8 @@ import net.minecraft.world.level.Level;
 
 public record CropressingRecipe(ResourceLocation id, Ingredient ingredient, int count, ItemStack result) implements Recipe<Container> {
     @Override
-    public boolean matches(Container pContainer, Level pLevel) {
-        ItemStack itemStack = pContainer.getItem(0);
+    public boolean matches(Container container, Level level) {
+        ItemStack itemStack = container.getItem(0);
         return itemStack.getCount() >= count && ingredient.test(itemStack.copyWithCount(1));
     }
 

@@ -13,21 +13,21 @@ import net.minecraft.world.level.block.state.BlockState;
 public class BoblingSackBlockEntity extends BlockEntity {
     public NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
     
-    public BoblingSackBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(ModBlockEntities.BOBLING_SACK.get(), pPos, pBlockState);
+    public BoblingSackBlockEntity(BlockPos pos, BlockState pBlockState) {
+        super(ModBlockEntities.BOBLING_SACK.get(), pos, pBlockState);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag) {
-        super.saveAdditional(pTag);
-/*        pTag.putInt("inv_size", this.inventory.size());
-        ContainerHelper.saveAllItems(pTag, this.inventory, pRegistries);*/
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+/*        tag.putInt("inv_size", this.inventory.size());
+        ContainerHelper.saveAllItems(tag, this.inventory, pRegistries);*/
     }
 
     @Override
-    public void load(CompoundTag pTag) {
-        super.load(pTag);
-/*        this.inventory = NonNullList.withSize(pTag.getInt("inv_size"), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(pTag, this.inventory, pRegistries);*/
+    public void load(CompoundTag tag) {
+        super.load(tag);
+/*        this.inventory = NonNullList.withSize(tag.getInt("inv_size"), ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(tag, this.inventory, pRegistries);*/
     }
 }

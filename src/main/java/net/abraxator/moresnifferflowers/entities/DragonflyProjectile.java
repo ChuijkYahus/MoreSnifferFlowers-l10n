@@ -20,12 +20,12 @@ import java.util.Comparator;
 import java.util.List;
 
 public class DragonflyProjectile extends ThrowableItemProjectile {
-    public DragonflyProjectile(EntityType<? extends DragonflyProjectile> entityType, Level pLevel) {
-        super(entityType, pLevel);
+    public DragonflyProjectile(EntityType<? extends DragonflyProjectile> entityType, Level level) {
+        super(entityType, level);
     }
 
-    public DragonflyProjectile(Level pLevel, Player player) {
-        super(ModEntityTypes.DRAGONFLY.get(), player, pLevel);
+    public DragonflyProjectile(Level level, Player player) {
+        super(ModEntityTypes.DRAGONFLY.get(), player, level);
         this.setOwner(player);
     }
     

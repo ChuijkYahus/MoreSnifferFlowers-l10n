@@ -32,16 +32,16 @@ import java.util.Optional;
 
 public class JarOfAcidProjectile extends ThrowableItemProjectile {
     private static final Logger log = LoggerFactory.getLogger(JarOfAcidProjectile.class);
-    public JarOfAcidProjectile(LivingEntity pShooter, Level pLevel) {
-        super(ModEntityTypes.JAR_OF_ACID.get(), pShooter, pLevel);
+    public JarOfAcidProjectile(LivingEntity pShooter, Level level) {
+        super(ModEntityTypes.JAR_OF_ACID.get(), pShooter, level);
     }
     
-    public JarOfAcidProjectile(Level pLevel) {
-        super(ModEntityTypes.JAR_OF_ACID.get(), pLevel);
+    public JarOfAcidProjectile(Level level) {
+        super(ModEntityTypes.JAR_OF_ACID.get(), level);
     }
     
-    public JarOfAcidProjectile(EntityType<? extends ThrowableItemProjectile> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
+    public JarOfAcidProjectile(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
+        super(entityType, level);
     }
 
     @Override

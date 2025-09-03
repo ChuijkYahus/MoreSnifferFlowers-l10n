@@ -65,9 +65,9 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(getAgeProperty(), ModStateProperties.SHEARED);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(getAgeProperty(), ModStateProperties.SHEARED);
     }
 
     @Override
@@ -101,23 +101,23 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
     }
 
     @Override
-    public boolean isValidBonemealTarget(LevelReader pLevel, BlockPos pPos, BlockState pState, boolean pIsClient) {
-        return !isMaxAge(pState);
+    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, boolean pIsClient) {
+        return !isMaxAge(state);
     }
 
     @Override
-    public boolean isBonemealSuccess(Level pLevel, RandomSource pRandom, BlockPos pPos, BlockState pState) {
+    public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
         return true;
     }
 
     @Override
-    public boolean isRandomlyTicking(BlockState pState) {
+    public boolean isRandomlyTicking(BlockState state) {
         return true;
     }
 
     @Override
-    public void performBonemeal(ServerLevel pLevel, RandomSource pRandom, BlockPos pPos, BlockState pState) {
-        growHelper(pLevel, pPos, pState);
+    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
+        growHelper(level, pos, state);
     }
 
     public boolean isCorrupted(){

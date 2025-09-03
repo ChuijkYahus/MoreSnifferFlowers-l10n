@@ -41,50 +41,50 @@ public class BonmeeliaBlock extends BushBlock implements ModCropBlock, Corruptab
 
     private final boolean wilted;
     
-    public BonmeeliaBlock(Properties pProperties, boolean wilted) {
-        super(pProperties);
+    public BonmeeliaBlock(Properties properties, boolean wilted) {
+        super(properties);
         registerDefaultState(this.defaultBlockState().setValue(HAS_BOTTLE, false).setValue(SHOW_HINT, false).setValue(AGE, 0).setValue(HAS_JAR, false));
         this.wilted = wilted;
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(AGE, HAS_BOTTLE, SHOW_HINT, HAS_JAR);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(AGE, HAS_BOTTLE, SHOW_HINT, HAS_JAR);
     }
 
     @Override
-    public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
-        return this.mayPlaceOn(pLevel.getBlockState(pPos.below()));
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        return this.mayPlaceOn(level.getBlockState(pos.below()));
     }
 
     @Override
-    public boolean mayPlaceOn(BlockState pState) {
-        return ModCropBlock.super.mayPlaceOn(pState);
+    public boolean mayPlaceOn(BlockState state) {
+        return ModCropBlock.super.mayPlaceOn(state);
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        ItemStack itemStack = pPlayer.getMainHandItem();
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        ItemStack itemStack = player.getMainHandItem();
 
-        if (itemStack.is(Items.GLASS_BOTTLE) && canInsertBottle(pState)) {
-            return addBottle(pLevel, pPos, pState, itemStack, pPlayer);
-        } else if (pState.getValue(HAS_BOTTLE) && pState.getValue(AGE) >= MAX_AGE) {
-            return takeJarOfBonmeel(pLevel, pPos, pState, pPlayer);
-        } else if (!pState.getValue(HAS_BOTTLE) && getAge(pState) >= 3) {
-            return hint(pLevel, pPos, pState);
+        if (itemStack.is(Items.GLASS_BOTTLE) && canInsertBottle(state)) {
+            return addBottle(level, pos, state, itemStack, player);
+        } else if (state.getValue(HAS_BOTTLE) && state.getValue(AGE) >= MAX_AGE) {
+            return takeJarOfBonmeel(level, pos, state, player);
+        } else if (!state.getValue(HAS_BOTTLE) && getAge(state) >= 3) {
+            return hint(level, pos, state);
         }
 
         return InteractionResult.PASS;
     }
 
     @Override
-    public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
-        pLevel.setBlock(pPos, pState.setValue(SHOW_HINT, false), 3);
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        level.setBlock(pos, state.setValue(SHOW_HINT, false), 3);
     }
 
     @Override
@@ -111,8 +111,8 @@ public class BonmeeliaBlock extends BushBlock implements ModCropBlock, Corruptab
     }
 
     @Override
-    public boolean isRandomlyTicking(BlockState pState) {
-        return getAge(pState) < 3 || (getAge(pState) >= 3 && pState.getValue(HAS_BOTTLE));
+    public boolean isRandomlyTicking(BlockState state) {
+        return getAge(state) < 3 || (getAge(state) >= 3 && state.getValue(HAS_BOTTLE));
     }
 
     private boolean canInsertBottle(BlockState blockState) {
@@ -120,19 +120,19 @@ public class BonmeeliaBlock extends BushBlock implements ModCropBlock, Corruptab
     }
 
     @Override
-    public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
-        if(!isMaxAge(pState)) {
-            pLevel.setBlockAndUpdate(pPos, pState
-                    .setValue(AGE, getAge(pState) + 1)
-                    .setValue(HAS_JAR, (getAge(pState) + 1) == MAX_AGE && pState.getValue(HAS_BOTTLE)));
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if(!isMaxAge(state)) {
+            level.setBlockAndUpdate(pos, state
+                    .setValue(AGE, getAge(state) + 1)
+                    .setValue(HAS_JAR, (getAge(state) + 1) == MAX_AGE && state.getValue(HAS_BOTTLE)));
             var particle = new DustParticleOptions(wilted ? Vec3.fromRGB24(0xaeff5c).toVector3f() : Vec3.fromRGB24(0xAA51B2).toVector3f(), 1F);
-            if(getAge(pState) >= 3) {
-                for (int i = 0; i <= pRandom.nextIntBetweenInclusive(5, 10); i++) {
-                    pLevel.sendParticles(
+            if(getAge(state) >= 3) {
+                for (int i = 0; i <= random.nextIntBetweenInclusive(5, 10); i++) {
+                    level.sendParticles(
                             particle,
-                            pPos.getX() + pRandom.nextDouble(),
-                            pPos.getY() + pRandom.nextDouble(),
-                            pPos.getZ() + pRandom.nextDouble(),
+                            pos.getX() + random.nextDouble(),
+                            pos.getY() + random.nextDouble(),
+                            pos.getZ() + random.nextDouble(),
                             1, 0, 0, 0, 0.3D);
                 }
             }
@@ -145,17 +145,17 @@ public class BonmeeliaBlock extends BushBlock implements ModCropBlock, Corruptab
     }
 
     @Override
-    public boolean isValidBonemealTarget(LevelReader pLevel, BlockPos pPos, BlockState pState, boolean pIsClient) {
-        return getAge(pState) < 3;
+    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, boolean pIsClient) {
+        return getAge(state) < 3;
     }
 
     @Override
-    public boolean isBonemealSuccess(Level pLevel, RandomSource pRandom, BlockPos pPos, BlockState pState) {
+    public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
         return true;
     }
 
     @Override
-    public void performBonemeal(ServerLevel pLevel, RandomSource pRandom, BlockPos pPos, BlockState pState) {
-        makeGrowOnBonemeal(pLevel, pPos, pState);
+    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
+        makeGrowOnBonemeal(level, pos, state);
     }
 }

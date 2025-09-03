@@ -162,8 +162,8 @@ public class BlockPatternCapability implements ICapabilityProvider, INBTSerializ
     public void load(CompoundTag tag) {
         patterns.clear();
         ListTag patternList = tag.getList("all", Tag.TAG_COMPOUND);
-        for (Tag pTag : patternList) {
-                CompoundTag entry = (CompoundTag) pTag;
+        for (Tag tag1 : patternList) {
+                CompoundTag entry = (CompoundTag) tag1;
                 BlockPos pos = NbtUtils.readBlockPos(entry.getCompound("pos"));
                 PatternData data = PatternData.load(entry.getCompound("data"));
                 patterns.put(pos, data);

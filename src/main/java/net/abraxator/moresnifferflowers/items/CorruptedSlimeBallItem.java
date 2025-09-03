@@ -9,8 +9,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class CorruptedSlimeBallItem extends Item implements ProjectileItem {
-    public CorruptedSlimeBallItem(Properties pProperties) {
-        super(pProperties);
+    public CorruptedSlimeBallItem(Properties properties) {
+        super(properties);
     }
 
     @Override

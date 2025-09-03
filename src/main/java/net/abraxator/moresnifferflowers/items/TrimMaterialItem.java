@@ -11,13 +11,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class TrimMaterialItem extends Item {
-    public TrimMaterialItem(Properties pProperties) {
-        super(pProperties);
+    public TrimMaterialItem(Properties properties) {
+        super(properties);
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+        super.appendHoverText(stack, level, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(Component.translatableWithFallback("tooltip.trim_material_item.usage", "Can be used as an armor trim material").withStyle(ChatFormatting.GOLD));
     }
 

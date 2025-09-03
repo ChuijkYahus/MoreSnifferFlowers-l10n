@@ -45,8 +45,8 @@ import org.jetbrains.annotations.Nullable;
 public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEntityBlock, Corruptable {
     public static final VoxelShape SHAPE = Block.box(2, 0, 2, 14, 16, 14);
 
-    public DyespriaPlantBlock(Properties pProperties) {
-        super(pProperties);
+    public DyespriaPlantBlock(Properties properties) {
+        super(properties);
         this.registerDefaultState(this.defaultBlockState()
                 .setValue(getAgeProperty(), 0)
                 .setValue(ModStateProperties.SHEARED, false)
@@ -54,41 +54,41 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(getAgeProperty()).add(ModStateProperties.COLOR).add(ModStateProperties.SHEARED);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(getAgeProperty()).add(ModStateProperties.COLOR).add(ModStateProperties.SHEARED);
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity pPlacer, ItemStack pStack) {
-        if(pPlacer instanceof ServerPlayer serverPlayer) {
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        if(placer instanceof ServerPlayer serverPlayer) {
             ModAdvancementCritters.PLACED_DYESPRIA_PLANT.trigger(serverPlayer);
         }
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        var stack = pPlayer.getItemInHand(pHand);
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        var stack = player.getItemInHand(hand);
 
-        if(shear(pPlayer, pLevel, pPos, pHand)){
+        if(shear(player, level, pos, hand)){
             return InteractionResult.SUCCESS;
         }
 
-        if(stack.is(Items.BONE_MEAL) && !isMaxAge(pState)) {
+        if(stack.is(Items.BONE_MEAL) && !isMaxAge(state)) {
             return InteractionResult.PASS;
-        } else if(isMaxAge(pState) && pLevel.getBlockEntity(pPos) instanceof DyespriaPlantBlockEntity entity) {
+        } else if(isMaxAge(state) && level.getBlockEntity(pos) instanceof DyespriaPlantBlockEntity entity) {
             if(stack.getItem() instanceof DyeItem) {
-                return addDye(stack, pPlayer, pLevel, entity);
+                return addDye(stack, player, level, entity);
             }
-        } else if(isMaxAge(pState) && pLevel.getBlockEntity(pPos) instanceof DyespriaPlantBlockEntity entity) {
-            pPlayer.addItem(Dye.stackFromDye(entity.removeDye()));
+        } else if(isMaxAge(state) && level.getBlockEntity(pos) instanceof DyespriaPlantBlockEntity entity) {
+            player.addItem(Dye.stackFromDye(entity.removeDye()));
 
-            return InteractionResult.sidedSuccess(pLevel.isClientSide());
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
         return InteractionResult.PASS;
@@ -106,27 +106,27 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
     }
 
     @Override
-    public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        return canSurvive(pState, pLevel, pCurrentPos) ? pState : Blocks.AIR.defaultBlockState();
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+        return canSurvive(state, level, currentPos) ? state : Blocks.AIR.defaultBlockState();
     }
 
     @Override
-    public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
-        return mayPlaceOn(pLevel.getBlockState(pPos.below()));
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        return mayPlaceOn(level.getBlockState(pos.below()));
     }
     
     @Override
-    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
-        if(!pNewState.is(ModBlocks.DYESCRAPIA_PLANT.get()) && !pState.is(pNewState.getBlock()) && pLevel.getBlockEntity(pPos) instanceof DyespriaPlantBlockEntity entity && isMaxAge(pState)) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean pMovedByPiston) {
+        if(!newState.is(ModBlocks.DYESCRAPIA_PLANT.get()) && !state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof DyespriaPlantBlockEntity entity && isMaxAge(state)) {
             ItemStack dyespria = ModItems.DYESPRIA.get().getDefaultInstance();
 
             dyespria.getOrCreateTag().putInt("amount", entity.dye.amount());
             dyespria.getOrCreateTag().putInt("color", entity.dye.colorId());
 
-            Containers.dropItemStack(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), dyespria);
+            Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), dyespria);
         }
 
-        super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
+        super.onRemove(state, level, pos, newState, pMovedByPiston);
     }
 
     @Override
@@ -146,8 +146,8 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
     }
     
     @Override
-    public boolean mayPlaceOn(BlockState pState) {
-        return pState.is(BlockTags.DIRT) && !(pState.getBlock() instanceof FarmBlock);
+    public boolean mayPlaceOn(BlockState state) {
+        return state.is(BlockTags.DIRT) && !(state.getBlock() instanceof FarmBlock);
     }
 
     @Override
@@ -156,18 +156,18 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
     }
 
     @Override
-    public boolean isRandomlyTicking(BlockState pState) {
-        return isMaxAge(pState);
+    public boolean isRandomlyTicking(BlockState state) {
+        return isMaxAge(state);
     }
 
     @Override
-    public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
-        makeGrowOnTick(pState, pLevel, pPos);
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        makeGrowOnTick(state, level, pos);
     }
 
     @Override
-    public boolean isValidBonemealTarget(LevelReader pLevel, BlockPos pPos, BlockState pState, boolean pIsClient) {
-        return !isMaxAge(pState);
+    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, boolean pIsClient) {
+        return !isMaxAge(state);
     }
 
     @Override
@@ -176,8 +176,8 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
     }
 
     @Override
-    public void performBonemeal(ServerLevel pLevel, RandomSource pRandom, BlockPos pPos, BlockState pState) {
-        makeGrowOnBonemeal(pLevel, pPos, pState);
+    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
+        makeGrowOnBonemeal(level, pos, state);
     }
 
     @Override
@@ -193,7 +193,7 @@ public class DyespriaPlantBlock extends BushBlock implements ModCropBlock, ModEn
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new DyespriaPlantBlockEntity(pPos, pState);
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new DyespriaPlantBlockEntity(pos, state);
     }
 }

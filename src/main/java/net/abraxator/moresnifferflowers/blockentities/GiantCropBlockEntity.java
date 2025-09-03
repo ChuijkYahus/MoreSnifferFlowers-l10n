@@ -17,8 +17,8 @@ public class GiantCropBlockEntity extends MultiBlockEntity {
     public int state = 0; //0 NONE; 1 ANIMATION; 2 SACK;
     public float staticGameTime;
 
-    public GiantCropBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(ModBlockEntities.GIANT_CROP.get(), pPos, pBlockState);
+    public GiantCropBlockEntity(BlockPos pos, BlockState pBlockState) {
+        super(ModBlockEntities.GIANT_CROP.get(), pos, pBlockState);
     }
 
     @Override
@@ -50,20 +50,20 @@ public class GiantCropBlockEntity extends MultiBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag) {
-        super.saveAdditional(pTag);
-        pTag.putBoolean("canGrow", canGrow);
-        pTag.putDouble("growProgress", growProgress);
-        pTag.putFloat("staticGameTime", staticGameTime);
-        pTag.putInt("state", this.state);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        tag.putBoolean("canGrow", canGrow);
+        tag.putDouble("growProgress", growProgress);
+        tag.putFloat("staticGameTime", staticGameTime);
+        tag.putInt("state", this.state);
     }
 
     @Override
-    public void load(CompoundTag pTag) {
-        super.load(pTag);
-        this.canGrow = pTag.getBoolean("canGrow");
-        this.growProgress = pTag.getDouble("growProgress");
-        this.staticGameTime = pTag.getFloat("staticGameTime");
-        this.state = pTag.getInt("state");
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        this.canGrow = tag.getBoolean("canGrow");
+        this.growProgress = tag.getDouble("growProgress");
+        this.staticGameTime = tag.getFloat("staticGameTime");
+        this.state = tag.getInt("state");
     }
 }

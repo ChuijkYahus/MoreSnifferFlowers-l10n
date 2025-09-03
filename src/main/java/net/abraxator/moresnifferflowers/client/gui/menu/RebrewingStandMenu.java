@@ -53,7 +53,7 @@ public class RebrewingStandMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player pPlayer, int pIndex) {
+    public ItemStack quickMoveStack(Player player, int pIndex) {
         ItemStack movedStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(pIndex);
         if (slot.hasItem()) {
@@ -106,7 +106,7 @@ public class RebrewingStandMenu extends AbstractContainerMenu {
                 return ItemStack.EMPTY;
             }
 
-            slot.onTake(pPlayer, itemstack1);
+            slot.onTake(player, itemstack1);
         }
 
         return movedStack;
@@ -125,13 +125,13 @@ public class RebrewingStandMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean stillValid(Player pPlayer) {
-        return this.rebrewingStand.stillValid(pPlayer);
+    public boolean stillValid(Player player) {
+        return this.rebrewingStand.stillValid(player);
     }
 
     static class FuelSlot extends Slot {
-        public FuelSlot(Container pContainer, int pSlot, int pX, int pY) {
-            super(pContainer, pSlot, pX, pY);
+        public FuelSlot(Container container, int pSlot, int pX, int pY) {
+            super(container, pSlot, pX, pY);
         }
 
         public static boolean mayPlaceItem(ItemStack itemStack) {
@@ -139,8 +139,8 @@ public class RebrewingStandMenu extends AbstractContainerMenu {
         }
 
         @Override
-        public boolean mayPlace(ItemStack pStack) {
-            return mayPlaceItem(pStack);
+        public boolean mayPlace(ItemStack stack) {
+            return mayPlaceItem(stack);
         }
 
         @Override
@@ -150,8 +150,8 @@ public class RebrewingStandMenu extends AbstractContainerMenu {
     }
 
     static class OriginalPotionSlot extends Slot {
-        public OriginalPotionSlot(Container pContainer, int pSlot, int pX, int pY) {
-            super(pContainer, pSlot, pX, pY);
+        public OriginalPotionSlot(Container container, int pSlot, int pX, int pY) {
+            super(container, pSlot, pX, pY);
         }
 
         public static boolean mayPlaceItem(ItemStack itemStack) {
@@ -159,8 +159,8 @@ public class RebrewingStandMenu extends AbstractContainerMenu {
         }
 
         @Override
-        public boolean mayPlace(ItemStack pStack) {
-            return mayPlaceItem(pStack);
+        public boolean mayPlace(ItemStack stack) {
+            return mayPlaceItem(stack);
         }
 
         @Override
@@ -170,8 +170,8 @@ public class RebrewingStandMenu extends AbstractContainerMenu {
     }
 
     static class IngredientSlot extends Slot {
-        public IngredientSlot(Container pContainer, int pSlot, int pX, int pY) {
-            super(pContainer, pSlot, pX, pY);
+        public IngredientSlot(Container container, int pSlot, int pX, int pY) {
+            super(container, pSlot, pX, pY);
         }
 
         public static boolean mayPlaceItem(ItemStack itemStack) {
@@ -182,8 +182,8 @@ public class RebrewingStandMenu extends AbstractContainerMenu {
         }
 
         @Override
-        public boolean mayPlace(ItemStack pStack) {
-            return mayPlaceItem(pStack);
+        public boolean mayPlace(ItemStack stack) {
+            return mayPlaceItem(stack);
         }
         @Override
         public int getMaxStackSize() {
@@ -192,8 +192,8 @@ public class RebrewingStandMenu extends AbstractContainerMenu {
     }
 
     static class PotionSlot extends Slot {
-        public PotionSlot(Container pContainer, int pSlot, int pX, int pY) {
-            super(pContainer, pSlot, pX, pY);
+        public PotionSlot(Container container, int pSlot, int pX, int pY) {
+            super(container, pSlot, pX, pY);
         }
 
         public static boolean mayPlaceItem(ItemStack itemStack) {
@@ -201,17 +201,17 @@ public class RebrewingStandMenu extends AbstractContainerMenu {
         }
 
         @Override
-        public boolean mayPlace(ItemStack pStack) {
-            return mayPlaceItem(pStack);
+        public boolean mayPlace(ItemStack stack) {
+            return mayPlaceItem(stack);
         }
 
-        public void onTake(Player pPlayer, ItemStack pStack) {
-            Potion potion = PotionUtils.getPotion(pStack);
-            if (pPlayer instanceof ServerPlayer && pStack.is(ModTags.ModItemTags.REBREWED_POTIONS)) {
-                CriteriaTriggers.BREWED_POTION.trigger((ServerPlayer)pPlayer, potion);
+        public void onTake(Player player, ItemStack stack) {
+            Potion potion = PotionUtils.getPotion(stack);
+            if (player instanceof ServerPlayer && stack.is(ModTags.ModItemTags.REBREWED_POTIONS)) {
+                CriteriaTriggers.BREWED_POTION.trigger((ServerPlayer)player, potion);
             }
 
-            super.onTake(pPlayer, pStack);
+            super.onTake(player, stack);
         }
 
         @Override

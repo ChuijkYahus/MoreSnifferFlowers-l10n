@@ -48,8 +48,8 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     public static final VoxelShape SHAPE_TOMATO = makeShapeTomato();
     public static final VoxelShape SHAPE_CABBAGE = makeShapeCabbage();
 
-    public GiantCropBlock(Properties pProperties) {
-        super(pProperties);
+    public GiantCropBlock(Properties properties) {
+        super(properties);
     }
 
     @Override
@@ -75,13 +75,13 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     }
 
     @Override
-    public float getShadeBrightness(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
+    public float getShadeBrightness(BlockState state, BlockGetter level, BlockPos pos) {
         return 1.0F;
     }
 
     @Override
-    public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
-        if(pLevel.getBlockEntity(pPos) instanceof GiantCropBlockEntity entity) {
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if(level.getBlockEntity(pos) instanceof GiantCropBlockEntity entity) {
             if(entity.state == 1) {
                 entity.canGrow = true;
             }
@@ -110,35 +110,35 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     }
 
     @Override
-    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
-        if(pState.getValue(ModStateProperties.CENTER)) {
-            pLevel.getBlockTicks().schedule(new ScheduledTick<>(this, pPos, pLevel.getGameTime() + 7, pLevel.nextSubTickCount()));
-            if(pLevel.getBlockEntity(pPos) instanceof GiantCropBlockEntity entity && entity.state == 0) {
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState pOldState, boolean pMovedByPiston) {
+        if(state.getValue(ModStateProperties.CENTER)) {
+            level.getBlockTicks().schedule(new ScheduledTick<>(this, pos, level.getGameTime() + 7, level.nextSubTickCount()));
+            if(level.getBlockEntity(pos) instanceof GiantCropBlockEntity entity && entity.state == 0) {
                 entity.state = 1;
             }
 
-            if(pLevel instanceof ServerLevel serverLevel) {
-                serverLevel.sendParticles(ModParticles.GIANT_CROP.get(), pPos.getCenter().x, pPos.getCenter().y, pPos.getCenter().z, 1, 0, 0, 0, 0);
+            if(level instanceof ServerLevel serverLevel) {
+                serverLevel.sendParticles(ModParticles.GIANT_CROP.get(), pos.getCenter().x, pos.getCenter().y, pos.getCenter().z, 1, 0, 0, 0, 0);
             }
         }
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(ModStateProperties.CENTER);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(ModStateProperties.CENTER);
     }
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new GiantCropBlockEntity(pPos, pState);
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new GiantCropBlockEntity(pos, state);
     }
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return tickerHelper(pLevel);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> pBlockEntityType) {
+        return tickerHelper(level);
     }
 
     @Override

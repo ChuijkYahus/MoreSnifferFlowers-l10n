@@ -78,8 +78,8 @@ public class RebrewingStandBlockEntity extends BaseContainerBlockEntity {
         }
     };
 
-    public RebrewingStandBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(ModBlockEntities.REBREWING_STAND.get(), pPos, pBlockState);
+    public RebrewingStandBlockEntity(BlockPos pos, BlockState pBlockState) {
+        super(ModBlockEntities.REBREWING_STAND.get(), pos, pBlockState);
     }
 
     @Override
@@ -254,15 +254,15 @@ public class RebrewingStandBlockEntity extends BaseContainerBlockEntity {
     }
 
     @Override
-    public void setItem(int pSlot, ItemStack pStack) {
+    public void setItem(int pSlot, ItemStack stack) {
         if (pSlot >= 0 && pSlot < this.inv.size()) {
-            this.inv.set(pSlot, pStack);
+            this.inv.set(pSlot, stack);
         }
     }
 
     @Override
-    public boolean stillValid(Player pPlayer) {
-        return Container.stillValidBlockEntity(this, pPlayer);
+    public boolean stillValid(Player player) {
+        return Container.stillValidBlockEntity(this, player);
     }
 
     @Override
@@ -271,21 +271,21 @@ public class RebrewingStandBlockEntity extends BaseContainerBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag) {
-        super.saveAdditional(pTag);
-        ContainerHelper.saveAllItems(pTag, inv);
-        pTag.putByte("progress", ((byte) brewProgress));
-        pTag.putByte("fuel", ((byte) fuel));
-        pTag.putByte("cost", ((byte) this.cost));
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ContainerHelper.saveAllItems(tag, inv);
+        tag.putByte("progress", ((byte) brewProgress));
+        tag.putByte("fuel", ((byte) fuel));
+        tag.putByte("cost", ((byte) this.cost));
     }
 
     @Override
-    public void load(CompoundTag pTag) {
-        super.load(pTag);
+    public void load(CompoundTag tag) {
+        super.load(tag);
         inv = NonNullList.withSize(6, ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(pTag, inv);
-        fuel = pTag.getByte("fuel");
-        brewProgress = pTag.getByte("progress");
-        this.cost = pTag.getByte("cost");
+        ContainerHelper.loadAllItems(tag, inv);
+        fuel = tag.getByte("fuel");
+        brewProgress = tag.getByte("progress");
+        this.cost = tag.getByte("cost");
     }
 }

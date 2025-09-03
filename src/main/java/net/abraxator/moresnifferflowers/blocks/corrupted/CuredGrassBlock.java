@@ -27,11 +27,11 @@ public class CuredGrassBlock extends SpreadingSnowyDirtBlock {
     }
 
     @Override
-    public void stepOn(Level pLevel, BlockPos pPos, BlockState pState, Entity pEntity) {
-        double d0 = Math.abs(pEntity.getDeltaMovement().y);
-        if (d0 < 0.1 && !pEntity.isSteppingCarefully()) {
+    public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
+        double d0 = Math.abs(entity.getDeltaMovement().y);
+        if (d0 < 0.1 && !entity.isSteppingCarefully()) {
             double d1 = 0.8;
-            pEntity.setDeltaMovement(pEntity.getDeltaMovement().multiply(d1, 1.0, d1));
+            entity.setDeltaMovement(entity.getDeltaMovement().multiply(d1, 1.0, d1));
         }
     }
 

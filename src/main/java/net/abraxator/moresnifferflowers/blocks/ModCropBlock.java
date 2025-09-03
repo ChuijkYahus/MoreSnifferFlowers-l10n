@@ -60,8 +60,8 @@ public interface ModCropBlock extends BonemealableBlock {
         level.setBlock(blockPos, blockState.setValue(getAgeProperty(), isMaxAge(blockState) ? getAge(blockState) : getAge(blockState) + 1), 2);
     }
 
-    default boolean mayPlaceOn(BlockState pState) {
-        return pState.is(Blocks.FARMLAND) || pState.getBlock() instanceof FarmBlock || pState.is(TagKey.create(Registries.BLOCK, new ResourceLocation("supplementaries", "planters")));
+    default boolean mayPlaceOn(BlockState state) {
+        return state.is(Blocks.FARMLAND) || state.getBlock() instanceof FarmBlock || state.is(TagKey.create(Registries.BLOCK, new ResourceLocation("supplementaries", "planters")));
     }
 
     private static void shear(Player player, Level level, BlockPos blockPos, BlockState blockState, InteractionHand hand) {
@@ -86,18 +86,18 @@ public interface ModCropBlock extends BonemealableBlock {
         return false;
     }
 
-    static float getGrowthSpeed(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
+    static float getGrowthSpeed(BlockState state, BlockGetter level, BlockPos pos) {
         float f = 1.0F;
-        BlockPos blockpos = pPos.below();
-        var pBlock = pState.getBlock();
+        BlockPos blockpos = pos.below();
+        var block = state.getBlock();
 
         for(int i = -1; i <= 1; ++i) {
             for(int j = -1; j <= 1; ++j) {
                 float f1 = 0.0F;
-                BlockState blockstate = pLevel.getBlockState(blockpos.offset(i, 0, j));
-                if (pState.getBlock() instanceof IPlantable plantable && blockstate.canSustainPlant(pLevel, blockpos.offset(i, 0, j), Direction.UP, plantable)) {
+                BlockState blockstate = level.getBlockState(blockpos.offset(i, 0, j));
+                if (state.getBlock() instanceof IPlantable plantable && blockstate.canSustainPlant(level, blockpos.offset(i, 0, j), Direction.UP, plantable)) {
                     f1 = 1.0F;
-                    if (blockstate.isFertile(pLevel, pPos.offset(i, 0, j))) {
+                    if (blockstate.isFertile(level, pos.offset(i, 0, j))) {
                         f1 = 3.0F;
                     }
                 }
@@ -110,16 +110,16 @@ public interface ModCropBlock extends BonemealableBlock {
             }
         }
 
-        BlockPos blockpos1 = pPos.north();
-        BlockPos blockpos2 = pPos.south();
-        BlockPos blockpos3 = pPos.west();
-        BlockPos blockpos4 = pPos.east();
-        boolean flag = pLevel.getBlockState(blockpos3).is(pBlock) || pLevel.getBlockState(blockpos4).is(pBlock);
-        boolean flag1 = pLevel.getBlockState(blockpos1).is(pBlock) || pLevel.getBlockState(blockpos2).is(pBlock);
+        BlockPos blockpos1 = pos.north();
+        BlockPos blockpos2 = pos.south();
+        BlockPos blockpos3 = pos.west();
+        BlockPos blockpos4 = pos.east();
+        boolean flag = level.getBlockState(blockpos3).is(block) || level.getBlockState(blockpos4).is(block);
+        boolean flag1 = level.getBlockState(blockpos1).is(block) || level.getBlockState(blockpos2).is(block);
         if (flag && flag1) {
             f /= 2.0F;
         } else {
-            boolean flag2 = pLevel.getBlockState(blockpos3.north()).is(pBlock) || pLevel.getBlockState(blockpos4.north()).is(pBlock) || pLevel.getBlockState(blockpos4.south()).is(pBlock) || pLevel.getBlockState(blockpos3.south()).is(pBlock);
+            boolean flag2 = level.getBlockState(blockpos3.north()).is(block) || level.getBlockState(blockpos4.north()).is(block) || level.getBlockState(blockpos4.south()).is(block) || level.getBlockState(blockpos3.south()).is(block);
             if (flag2) {
                 f /= 2.0F;
             }

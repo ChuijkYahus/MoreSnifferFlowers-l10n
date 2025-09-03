@@ -11,27 +11,27 @@ import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class DyescrapiaPlantBlock extends Block {
-    public DyescrapiaPlantBlock(Properties pProperties) {
-        super(pProperties);
+    public DyescrapiaPlantBlock(Properties properties) {
+        super(properties);
     }
 
     @Override
-    public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        return !pState.canSurvive(pLevel, pCurrentPos)
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+        return !state.canSurvive(level, currentPos)
                 ? Blocks.AIR.defaultBlockState()
-                : super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
+                : super.updateShape(state, facing, facingState, level, currentPos, facingPos);
     }
 
     
     
     @Override
-    public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
-        BlockPos blockpos = pPos.below();
-        BlockState belowBlockState = pLevel.getBlockState(blockpos);
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        BlockPos blockpos = pos.below();
+        BlockState belowBlockState = level.getBlockState(blockpos);
         return this.mayPlaceOn(belowBlockState);
     }
     
-    public boolean mayPlaceOn(BlockState pState) {
-        return pState.is(BlockTags.DIRT) && !(pState.getBlock() instanceof FarmBlock);
+    public boolean mayPlaceOn(BlockState state) {
+        return state.is(BlockTags.DIRT) && !(state.getBlock() instanceof FarmBlock);
     }
 }

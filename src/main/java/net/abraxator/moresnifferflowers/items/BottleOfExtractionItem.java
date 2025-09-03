@@ -23,38 +23,38 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class BottleOfExtractionItem extends Item {
-    public BottleOfExtractionItem(Properties pProperties) {
-        super(pProperties);
+    public BottleOfExtractionItem(Properties properties) {
+        super(properties);
     }
 
     @Override
-    public ItemStack finishUsingItem(ItemStack pStack, Level pLevel, LivingEntity pLivingEntity) {
+    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity pLivingEntity) {
 
-        if (pLivingEntity instanceof Player player && !pLevel.isClientSide) {
+        if (pLivingEntity instanceof Player player && !level.isClientSide) {
 
             if (pLivingEntity instanceof ServerPlayer serverplayer) {
-                CriteriaTriggers.CONSUME_ITEM.trigger(serverplayer, pStack);
+                CriteriaTriggers.CONSUME_ITEM.trigger(serverplayer, stack);
                 serverplayer.awardStat(Stats.ITEM_USED.get(this));
             }
 
             if (player.hasEffect(ModEffects.EXTRACTED.get())) {
-                doCheaterEasterEgg(pLevel, player);
+                doCheaterEasterEgg(level, player);
                 return new ItemStack(Items.POISONOUS_POTATO);
             }
 
-            pStack = initPotion(player);
+            stack = initPotion(player);
             pLivingEntity.removeAllEffects();
         }
-        return pStack;
+        return stack;
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-        if (!canExtract(pLevel, pPlayer)) {
-            return InteractionResultHolder.pass(pPlayer.getItemInHand(pUsedHand));
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand pUsedHand) {
+        if (!canExtract(level, player)) {
+            return InteractionResultHolder.pass(player.getItemInHand(pUsedHand));
         } else {
-            pPlayer.startUsingItem(pUsedHand);
-            return InteractionResultHolder.consume(pPlayer.getItemInHand(pUsedHand));
+            player.startUsingItem(pUsedHand);
+            return InteractionResultHolder.consume(player.getItemInHand(pUsedHand));
         }
     }
 
@@ -65,12 +65,12 @@ public class BottleOfExtractionItem extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack pStack) {
+    public int getUseDuration(ItemStack stack) {
         return 32;
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack pStack) {
+    public UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.DRINK;
     }
 
@@ -78,7 +78,7 @@ public class BottleOfExtractionItem extends Item {
         return !level.isClientSide && player.getActiveEffects() != null && !player.getActiveEffects().isEmpty() && !player.hasEffect(ModEffects.EXTRACTED.get());
     }
 
-    private static void doCheaterEasterEgg(Level pLevel, Player player) {
+    private static void doCheaterEasterEgg(Level level, Player player) {
         player.setAbsorptionAmount(0);
         player.setHealth(0.1F);
         player.addEffect(new MobEffectInstance(MobEffects.POISON, 800, 2));
@@ -86,15 +86,15 @@ public class BottleOfExtractionItem extends Item {
         player.setJumping(true);
         player.setXRot(0F);
         player.setYHeadRot(0f);
-        pLevel.playSound(null, player, SoundEvents.ENDERMAN_SCREAM, SoundSource.PLAYERS, 1.2F, 1.0F);
-        pLevel.playSound(null, player, SoundEvents.ENDERMAN_SCREAM, SoundSource.PLAYERS, 1.2F, 0.8F);
-        pLevel.playSound(null, player, SoundEvents.ENDERMAN_SCREAM, SoundSource.PLAYERS, 1.2F, 1.3F);
-        pLevel.playSound(null, player, SoundEvents.ENDERMAN_SCREAM, SoundSource.PLAYERS, 1.2F, 0.8F);
-        pLevel.playSound(null, player, SoundEvents.SPLASH_POTION_BREAK, SoundSource.PLAYERS, 1.4F, 1.0F);
+        level.playSound(null, player, SoundEvents.ENDERMAN_SCREAM, SoundSource.PLAYERS, 1.2F, 1.0F);
+        level.playSound(null, player, SoundEvents.ENDERMAN_SCREAM, SoundSource.PLAYERS, 1.2F, 0.8F);
+        level.playSound(null, player, SoundEvents.ENDERMAN_SCREAM, SoundSource.PLAYERS, 1.2F, 1.3F);
+        level.playSound(null, player, SoundEvents.ENDERMAN_SCREAM, SoundSource.PLAYERS, 1.2F, 0.8F);
+        level.playSound(null, player, SoundEvents.SPLASH_POTION_BREAK, SoundSource.PLAYERS, 1.4F, 1.0F);
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         pTooltipComponents.add(Component.translatableWithFallback("tooltip.bottle_of_extraction.usage", "Drink to extract all effects into single potion").withStyle(ChatFormatting.GOLD));
     }
 }

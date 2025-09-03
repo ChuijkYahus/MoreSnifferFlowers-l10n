@@ -86,10 +86,10 @@ public class ClientRegistration {
         event.registerEntityRenderer(ModEntityTypes.BOBLING.get(), BoblingRenderer::new);
         event.registerEntityRenderer(ModEntityTypes.DRAGONFLY.get(), DragonflyRenderer::new);
         event.registerEntityRenderer(ModEntityTypes.CORRUPTED_SLIME_BALL.get(), CorruptedProjectileRenderer::new);
-        event.registerEntityRenderer(ModEntityTypes.MOD_CORRUPTED_BOAT.get(), pContext -> new ModBoatRenderer(pContext, false));
-        event.registerEntityRenderer(ModEntityTypes.MOD_CORRUPTED_CHEST_BOAT.get(), pContext -> new ModBoatRenderer(pContext, true));
-        event.registerEntityRenderer(ModEntityTypes.MOD_VIVICUS_BOAT.get(), pContext -> new ModBoatRenderer(pContext, false));
-        event.registerEntityRenderer(ModEntityTypes.MOD_VIVICUS_CHEST_BOAT.get(), pContext -> new ModBoatRenderer(pContext, true));
+        event.registerEntityRenderer(ModEntityTypes.MOD_CORRUPTED_BOAT.get(), context -> new ModBoatRenderer(context, false));
+        event.registerEntityRenderer(ModEntityTypes.MOD_CORRUPTED_CHEST_BOAT.get(), context -> new ModBoatRenderer(context, true));
+        event.registerEntityRenderer(ModEntityTypes.MOD_VIVICUS_BOAT.get(), context -> new ModBoatRenderer(context, false));
+        event.registerEntityRenderer(ModEntityTypes.MOD_VIVICUS_CHEST_BOAT.get(), context -> new ModBoatRenderer(context, true));
         event.registerEntityRenderer(ModEntityTypes.JAR_OF_ACID.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(ModEntityTypes.SALT_BUBBLE.get(), SaltBubbleRenderer::new);
         event.registerEntityRenderer(ModEntityTypes.SALT_PROJECTILE.get(), SaltProjectileRenderer::new);

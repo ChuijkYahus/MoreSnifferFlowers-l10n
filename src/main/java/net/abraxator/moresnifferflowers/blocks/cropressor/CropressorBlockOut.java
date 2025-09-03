@@ -12,14 +12,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class CropressorBlockOut extends CropressorBlockBase implements ModEntityBlock {
-    public CropressorBlockOut(Properties pProperties, Part part) {
-        super(pProperties, part);
+    public CropressorBlockOut(Properties properties, Part part) {
+        super(properties, part);
     }
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return tickerHelper(pLevel);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> pBlockEntityType) {
+        return tickerHelper(level);
     }
 
     @Override
@@ -33,8 +33,8 @@ public class CropressorBlockOut extends CropressorBlockBase implements ModEntity
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        ENTITY_POS = pPos;
-        return new CropressorBlockEntity(pPos, pState);
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        ENTITY_POS = pos;
+        return new CropressorBlockEntity(pos, state);
     }
 }

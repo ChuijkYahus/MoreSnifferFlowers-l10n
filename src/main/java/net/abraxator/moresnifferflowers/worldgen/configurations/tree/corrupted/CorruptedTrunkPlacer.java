@@ -33,27 +33,27 @@ public class CorruptedTrunkPlacer extends TrunkPlacer {
 
 
     @Override
-    public List<FoliagePlacer.FoliageAttachment> placeTrunk(LevelSimulatedReader pLevel, BiConsumer<BlockPos, BlockState> pBlockSetter, RandomSource pRandom, int pFreeTreeHeight, BlockPos pPos, TreeConfiguration pConfig) {
+    public List<FoliagePlacer.FoliageAttachment> placeTrunk(LevelSimulatedReader level, BiConsumer<BlockPos, BlockState> blockSetter, RandomSource random, int pFreeTreeHeight, BlockPos pos, TreeConfiguration config) {
         List<FoliagePlacer.FoliageAttachment> ret = new ArrayList<>();
-        int lastLogHeight = pFreeTreeHeight - ((int) Mth.randomBetween(pRandom, 2, 3));
-        BlockPos.MutableBlockPos mainTrunk = pPos.mutable();
+        int lastLogHeight = pFreeTreeHeight - ((int) Mth.randomBetween(random, 2, 3));
+        BlockPos.MutableBlockPos mainTrunk = pos.mutable();
         Direction growthDir = null;
-        int outerHeight = pRandom.nextInt(3);;
-        int cornerHeight = outerHeight + (pRandom.nextInt(2) - 1);
-        int innerHeight =  Math.min(outerHeight + pRandom.nextIntBetweenInclusive(3, 5), pFreeTreeHeight - 2);
+        int outerHeight = random.nextInt(3);;
+        int cornerHeight = outerHeight + (random.nextInt(2) - 1);
+        int innerHeight =  Math.min(outerHeight + random.nextIntBetweenInclusive(3, 5), pFreeTreeHeight - 2);
 
         for(int i = 0; i < pFreeTreeHeight; i++) {
 
-            this.placeLog(pLevel, pBlockSetter, pRandom, mainTrunk, pConfig);
+            this.placeLog(level, blockSetter, random, mainTrunk, config);
 
             if (i == pFreeTreeHeight - 1){
                 for(int branchOrder = 0; branchOrder < heightRandB; branchOrder++) {
-                    addBranch(mainTrunk.immutable(), ret, pBlockSetter, branchOrder, pLevel, pConfig, pRandom, pFreeTreeHeight);
+                    addBranch(mainTrunk.immutable(), ret, blockSetter, branchOrder, level, config, random, pFreeTreeHeight);
                 }
             }
 
             if (i == 0) {
-                fattenTrunk(pLevel, pBlockSetter, pRandom, pPos, pConfig, innerHeight, ret, cornerHeight, outerHeight);
+                fattenTrunk(level, blockSetter, random, pos, config, innerHeight, ret, cornerHeight, outerHeight);
             }
 
             mainTrunk.move(Direction.UP);
@@ -63,38 +63,38 @@ public class CorruptedTrunkPlacer extends TrunkPlacer {
         return ret;
     }
 
-    private void fattenTrunk(LevelSimulatedReader pLevel, BiConsumer<BlockPos, BlockState> pBlockSetter, RandomSource pRandom, BlockPos pPos, TreeConfiguration pConfig, int innerHeight, List<FoliagePlacer.FoliageAttachment> ret, int cornerHeight, int outerHeight) {
+    private void fattenTrunk(LevelSimulatedReader level, BiConsumer<BlockPos, BlockState> blockSetter, RandomSource random, BlockPos pos, TreeConfiguration config, int innerHeight, List<FoliagePlacer.FoliageAttachment> ret, int cornerHeight, int outerHeight) {
         for(Direction direction : Direction.Plane.HORIZONTAL) {
-            if(pRandom.nextDouble() <= 0.90D) {
-                BlockPos blockPosInner = pPos.relative(direction);
+            if(random.nextDouble() <= 0.90D) {
+                BlockPos blockPosInner = pos.relative(direction);
                 for(int j = 0; j < innerHeight; j++) {
-                    this.placeLog(pLevel, pBlockSetter, pRandom, blockPosInner.above(j), pConfig);
-                    //addBranch(blockPosInner, direction, branchesPos, branchesDir, pRandom, j);
+                    this.placeLog(level, blockSetter, random, blockPosInner.above(j), config);
+                    //addBranch(blockPosInner, direction, branchesPos, branchesDir, random, j);
                 }
 
-               /* if(pRandom.nextDouble() <= 0.8D) {
+               /* if(random.nextDouble() <= 0.8D) {
                     ret.add(new FoliagePlacer.FoliageAttachment(blockPosInner.above(innerHeight), 1, false));
                 } */
 
-                if(pRandom.nextDouble() <= 0.90D) {
-                    BlockPos blockPosCorner = blockPosInner.relative(pRandom.nextDouble() > 0.5D ? direction.getClockWise() : direction.getCounterClockWise());
+                if(random.nextDouble() <= 0.90D) {
+                    BlockPos blockPosCorner = blockPosInner.relative(random.nextDouble() > 0.5D ? direction.getClockWise() : direction.getCounterClockWise());
                     for(int j = 0; j < cornerHeight; j++) {
-                        this.placeLog(pLevel, pBlockSetter, pRandom, blockPosCorner.above(j), pConfig);
-                        //addBranch(blockPosInner, direction, branchesPos, branchesDir, pRandom, j);
+                        this.placeLog(level, blockSetter, random, blockPosCorner.above(j), config);
+                        //addBranch(blockPosInner, direction, branchesPos, branchesDir, random, j);
                     }
                 }
 
-                if(pRandom.nextDouble() <= 0.90D) {
+                if(random.nextDouble() <= 0.90D) {
                     BlockPos blockPosOuter = blockPosInner.relative(direction);
                     for(int j = 0; j < outerHeight; j++) {
-                        this.placeLog(pLevel, pBlockSetter, pRandom, blockPosOuter.above(j), pConfig);
+                        this.placeLog(level, blockSetter, random, blockPosOuter.above(j), config);
                     }
                 }
             }
         }
     }
 
-    private void addBranch(BlockPos blockPos, List<FoliagePlacer.FoliageAttachment> ret, BiConsumer<BlockPos, BlockState> pBlockSetter, int branchOrder, LevelSimulatedReader level, TreeConfiguration config, RandomSource random, int pFreeTreeHeight) {
+    private void addBranch(BlockPos blockPos, List<FoliagePlacer.FoliageAttachment> ret, BiConsumer<BlockPos, BlockState> blockSetter, int branchOrder, LevelSimulatedReader level, TreeConfiguration config, RandomSource random, int pFreeTreeHeight) {
         Direction direction = computeBranchDir(random);
         BlockPos.MutableBlockPos pos = blockPos.relative(direction).mutable();
         BlockPos.MutableBlockPos defaultPos = blockPos.relative(direction).mutable();
@@ -108,22 +108,22 @@ public class CorruptedTrunkPlacer extends TrunkPlacer {
             float branchHeightRand = (float)x / branchLength;
 
             if (branchHeightRand < random.nextFloat() & branchHeightRand > 0) {
-                this.placeLog(level, pBlockSetter, random, pos.move(0, 1, 0), config);
+                this.placeLog(level, blockSetter, random, pos.move(0, 1, 0), config);
             }
 
             if (branchHeightRand > random.nextFloat()/1.5 & branchHeightRand > 0.5F) {
-                this.placeLog(level, pBlockSetter, random, pos.move(0, -1, 0), config);
+                this.placeLog(level, blockSetter, random, pos.move(0, -1, 0), config);
             }
 
             if (x == 0) {
-                this.placeLog(level, pBlockSetter, random, pos.move(0, 0, 0), config);
+                this.placeLog(level, blockSetter, random, pos.move(0, 0, 0), config);
             }
 
-            this.placeLog(level, pBlockSetter, random, pos.move(v1, 0, v3), config);
+            this.placeLog(level, blockSetter, random, pos.move(v1, 0, v3), config);
             ret.add(new FoliagePlacer.FoliageAttachment(pos.above(), 0, false));
 
             if(x == branchLength - 1) {
-                this.placeLog(level, pBlockSetter, random, pos.move(0, -1, 0), config);
+                this.placeLog(level, blockSetter, random, pos.move(0, -1, 0), config);
             }
         }
 
@@ -136,7 +136,7 @@ public class CorruptedTrunkPlacer extends TrunkPlacer {
     }
 
     @Override
-    protected boolean validTreePos(LevelSimulatedReader pLevel, BlockPos pPos) {
-        return ModServerConfig.CORRUPTED_TREE_GROW_THROUGH.get() || super.validTreePos(pLevel, pPos);
+    protected boolean validTreePos(LevelSimulatedReader level, BlockPos pos) {
+        return ModServerConfig.CORRUPTED_TREE_GROW_THROUGH.get() || super.validTreePos(level, pos);
     }
 }

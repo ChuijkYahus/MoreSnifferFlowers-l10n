@@ -96,8 +96,8 @@ public class SaltyClumpBlock extends Block implements SimpleWaterloggedBlock {
         return canSurvive(state, level, pos) ? state : Blocks.AIR.defaultBlockState();
     }
 
-    public boolean isFree(BlockState pState) {
-        return pState.isAir() || pState.is(BlockTags.FIRE) || pState.liquid() || pState.canBeReplaced();
+    public boolean isFree(BlockState state) {
+        return state.isAir() || state.is(BlockTags.FIRE) || state.liquid() || state.canBeReplaced();
     }
 
     public FluidState getFluidState(BlockState state) {
@@ -105,19 +105,19 @@ public class SaltyClumpBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        ItemStack itemStack = pPlayer.getItemInHand(pHand);
-        int amount = pState.getValue(ModStateProperties.AMOUNT_4);
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        ItemStack itemStack = player.getItemInHand(hand);
+        int amount = state.getValue(ModStateProperties.AMOUNT_4);
 
         if (amount < 4 && itemStack.is(ModItems.SALTY_SPICE.get())){
-            pLevel.setBlock(pPos, pState.setValue(ModStateProperties.AMOUNT_4, amount + 1), 3);
+            level.setBlock(pos, state.setValue(ModStateProperties.AMOUNT_4, amount + 1), 3);
 
         } else if (amount == 4 && itemStack.is(ModItems.SALTY_SPICE.get())){
-            pLevel.setBlock(pPos, ModBlocks.DRIPSALT.get().defaultBlockState(), 3);
+            level.setBlock(pos, ModBlocks.DRIPSALT.get().defaultBlockState(), 3);
 
         } else return InteractionResult.PASS;
 
-        if (!pPlayer.isCreative()) itemStack.shrink(1);
+        if (!player.isCreative()) itemStack.shrink(1);
         return InteractionResult.SUCCESS;
     }
 }

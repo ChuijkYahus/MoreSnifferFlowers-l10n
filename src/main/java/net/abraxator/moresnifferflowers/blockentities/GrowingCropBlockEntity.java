@@ -16,8 +16,8 @@ public abstract class GrowingCropBlockEntity extends ModBlockEntity {
     public boolean hasGrown;
     public final float growRate;
     
-    public GrowingCropBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState, float growRate) {
-        super(pType, pPos, pBlockState);
+    public GrowingCropBlockEntity(BlockEntityType<?> pType, BlockPos pos, BlockState pBlockState, float growRate) {
+        super(pType, pos, pBlockState);
         this.growRate = growRate;
     }
 
@@ -60,17 +60,17 @@ public abstract class GrowingCropBlockEntity extends ModBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag pTag) {
-        super.load(pTag);
-        this.hasGrown = pTag.getBoolean("hasGrown");
-        this.growProgress = pTag.getFloat("progress");
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        this.hasGrown = tag.getBoolean("hasGrown");
+        this.growProgress = tag.getFloat("progress");
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag) {
-        super.saveAdditional(pTag);
-        pTag.putBoolean("hasGrown", this.hasGrown);
-        pTag.putFloat("progress", this.growProgress);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        tag.putBoolean("hasGrown", this.hasGrown);
+        tag.putFloat("progress", this.growProgress);
     }
 
     @Nullable

@@ -7,8 +7,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class XbushBlockEntity extends GrowingCropBlockEntity {
-    public XbushBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(ModBlockEntities.XBUSH.get(), pPos, pBlockState, pBlockState.is(ModBlocks.AMBUSH_TOP.get()) ? 0.001f : 0.0005F);
+    public XbushBlockEntity(BlockPos pos, BlockState pBlockState) {
+        super(ModBlockEntities.XBUSH.get(), pos, pBlockState, pBlockState.is(ModBlocks.AMBUSH_TOP.get()) ? 0.001f : 0.0005F);
     }
 
     @Override

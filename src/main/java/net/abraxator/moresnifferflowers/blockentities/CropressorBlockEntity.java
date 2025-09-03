@@ -50,8 +50,8 @@ public class CropressorBlockEntity extends ModBlockEntity implements Container {
     private final RecipeManager.CachedCheck<Container, CropressingRecipe> quickCheck = RecipeManager.createCheck(ModRecipeTypes.CROPRESSING.get());
     public int barLength = 0;
 
-    public CropressorBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(ModBlockEntities.CROPRESSOR.get(), pPos, pBlockState);
+    public CropressorBlockEntity(BlockPos pos, BlockState pBlockState) {
+        super(ModBlockEntities.CROPRESSOR.get(), pos, pBlockState);
     }
 
     @Override

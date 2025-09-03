@@ -16,13 +16,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 public class GloomberryVineBlock extends DawnberryVineBlock {
-    public GloomberryVineBlock(Properties pProperties) {
-        super(pProperties, true);
+    public GloomberryVineBlock(Properties properties) {
+        super(properties, true);
     }
 
     @Override
-    public void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity) {
-        if(pEntity instanceof LivingEntity livingEntity) {
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        if(entity instanceof LivingEntity livingEntity) {
             livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 30, 0));
         }
     }

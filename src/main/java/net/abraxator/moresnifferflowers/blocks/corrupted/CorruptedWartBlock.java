@@ -22,8 +22,8 @@ public class CorruptedWartBlock extends BushBlock {
     private static final VoxelShape SHAPE = Block.box(4, 0,  4, 12, 5, 12);
 
     @Override
-    public void stepOn(Level pLevel, BlockPos pPos, BlockState pState, Entity pEntity) {
-        explode(pPos, pLevel);
+    public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
+        explode(pos, level);
     }
 
     @Override
@@ -32,11 +32,11 @@ public class CorruptedWartBlock extends BushBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState stateOriginal, Direction dir, BlockState stateNew, LevelAccessor level, BlockPos pCurrentPos, BlockPos pNewPos) {
+    public BlockState updateShape(BlockState stateOriginal, Direction dir, BlockState stateNew, LevelAccessor level, BlockPos currentPos, BlockPos pNewPos) {
 
-        if (!canSurvive(stateOriginal, level, pCurrentPos)) {
-            boolean drop = !level.getBlockState(pCurrentPos.below()).is(ModBlocks.CURED_GRASS_BLOCK.get());
-            level.destroyBlock(pCurrentPos, drop);
+        if (!canSurvive(stateOriginal, level, currentPos)) {
+            boolean drop = !level.getBlockState(currentPos.below()).is(ModBlocks.CURED_GRASS_BLOCK.get());
+            level.destroyBlock(currentPos, drop);
         }
         return stateOriginal;
     }

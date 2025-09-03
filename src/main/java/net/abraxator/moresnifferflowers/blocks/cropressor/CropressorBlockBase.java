@@ -41,15 +41,15 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
     protected static final VoxelShape CENTER_WEST = Block.box(0, 0, 0, 16, 11, 16);
     protected static final VoxelShape CENTER_NORTH = Block.box(0, 0, 0, 16, 11, 16);
 
-    public CropressorBlockBase(Properties pProperties, Part part) {
-        super(pProperties);
+    public CropressorBlockBase(Properties properties, Part part) {
+        super(properties);
         PART = part;
     }
     
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        Direction direction = getConnectedDirection(pState);
-        if(pState.getBlock() instanceof CropressorBlockOut) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        Direction direction = getConnectedDirection(state);
+        if(state.getBlock() instanceof CropressorBlockOut) {
             return switch (direction) {
                 case EAST -> OUT_EAST;
                 case SOUTH -> OUT_SOUTH;
@@ -67,8 +67,8 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(FACING, ModStateProperties.FULLNESS);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING, ModStateProperties.FULLNESS);
     }
 
     private Direction getNeighbourDirection(Part part, Direction direction) {
@@ -76,18 +76,18 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pNeighborPos) {
-        if(pDirection == getNeighbourDirection(PART, pState.getValue(FACING))) {
+    public BlockState updateShape(BlockState state, Direction pDirection, BlockState pNeighborState, LevelAccessor level, BlockPos currentPos, BlockPos pNeighborPos) {
+        if(pDirection == getNeighbourDirection(PART, state.getValue(FACING))) {
             var b = pNeighborState.getBlock() instanceof CropressorBlockBase;
             var b1 = getPartFromState(pNeighborState) != PART;
             if(b && b1) {
-                return super.updateShape(pState, pDirection, pNeighborState, pLevel, pCurrentPos, pNeighborPos);
+                return super.updateShape(state, pDirection, pNeighborState, level, currentPos, pNeighborPos);
             } else {
                 return Blocks.AIR.defaultBlockState();
             }
         }
         
-        return super.updateShape(pState, pDirection, pNeighborState, pLevel, pCurrentPos, pNeighborPos);
+        return super.updateShape(state, pDirection, pNeighborState, level, currentPos, pNeighborPos);
             
     }
 
@@ -98,37 +98,37 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        Direction direction = pContext.getHorizontalDirection();
-        BlockPos blockPos = pContext.getClickedPos();
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        Direction direction = context.getHorizontalDirection();
+        BlockPos blockPos = context.getClickedPos();
         BlockPos blockPos1 = blockPos.relative(direction);
-        Level level = pContext.getLevel();
+        Level level = context.getLevel();
 
-        return level.getBlockState(blockPos1).canBeReplaced(pContext) && level.getWorldBorder().isWithinBounds(blockPos1) ? this.defaultBlockState().setValue(FACING, direction) : null;
+        return level.getBlockState(blockPos1).canBeReplaced(context) && level.getWorldBorder().isWithinBounds(blockPos1) ? this.defaultBlockState().setValue(FACING, direction) : null;
     }
 
-    public static Direction getConnectedDirection(BlockState pState) {
-        Direction direction = pState.getValue(FACING);
-        return getPartFromState(pState) == Part.CENTER ? direction.getOpposite() : direction;
+    public static Direction getConnectedDirection(BlockState state) {
+        Direction direction = state.getValue(FACING);
+        return getPartFromState(state) == Part.CENTER ? direction.getOpposite() : direction;
     }
 
     @Override
-    public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity pPlacer, ItemStack pStack) {
-        super.setPlacedBy(pLevel, pPos, pState, pPlacer, pStack);
-        if(!pLevel.isClientSide) {
-            BlockPos blockPos = pPos.relative(pState.getValue(FACING));
-            pLevel.setBlock(blockPos, ModBlocks.CROPRESSOR_CENTER.get().defaultBlockState().setValue(FACING, pState.getValue(FACING)), 3);
-            pLevel.blockUpdated(pPos, Blocks.AIR);
-            pState.updateNeighbourShapes(pLevel, pPos, 3);
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(level, pos, state, placer, stack);
+        if(!level.isClientSide) {
+            BlockPos blockPos = pos.relative(state.getValue(FACING));
+            level.setBlock(blockPos, ModBlocks.CROPRESSOR_CENTER.get().defaultBlockState().setValue(FACING, state.getValue(FACING)), 3);
+            level.blockUpdated(pos, Blocks.AIR);
+            state.updateNeighbourShapes(level, pos, 3);
         }
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        ENTITY_POS = getEntityPos(pLevel, pPos, PART);
-        if (!pLevel.isClientSide && pLevel.getBlockEntity(ENTITY_POS) instanceof CropressorBlockEntity entity && entity.canInteract() && pPlayer.getMainHandItem().is(ModTags.ModItemTags.CROPRESSABLE)) {
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        ENTITY_POS = getEntityPos(level, pos, PART);
+        if (!level.isClientSide && level.getBlockEntity(ENTITY_POS) instanceof CropressorBlockEntity entity && entity.canInteract() && player.getMainHandItem().is(ModTags.ModItemTags.CROPRESSABLE)) {
             
-            return entity.addItem(pPlayer.getItemInHand(pHand));
+            return entity.addItem(player.getItemInHand(hand));
         }
 
         return InteractionResult.FAIL;

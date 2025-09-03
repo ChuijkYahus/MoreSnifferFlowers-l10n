@@ -21,8 +21,8 @@ import org.jetbrains.annotations.Nullable;
 public abstract class ModEntityDoubleTallBlock extends Block implements IModEntityDoubleTallBlock {
     protected BlockPos ENTITY_POS;
     
-    public ModEntityDoubleTallBlock(Properties pProperties) {
-        super(pProperties);
+    public ModEntityDoubleTallBlock(Properties properties) {
+        super(properties);
     }
     
     @Override
@@ -31,67 +31,67 @@ public abstract class ModEntityDoubleTallBlock extends Block implements IModEnti
     }
     
     @Override
-    public void playerWillDestroy(Level pLevel, BlockPos pPos, BlockState pState, Player pPlayer) {
-        if(!pLevel.isClientSide) {
-            if(pPlayer.isCreative()) {
-                preventCreativeDropFromBottomPart(pLevel, pPos, pState, pPlayer);
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        if(!level.isClientSide) {
+            if(player.isCreative()) {
+                preventCreativeDropFromBottomPart(level, pos, state, player);
             } else {
-                var blockEntity = isUpper(pState) ? pLevel.getBlockEntity(pPos) : null;
-                dropResources(pState, pLevel, pPos, blockEntity, pPlayer, pPlayer.getMainHandItem());
+                var blockEntity = isUpper(state) ? level.getBlockEntity(pos) : null;
+                dropResources(state, level, pos, blockEntity, player, player.getMainHandItem());
             }
         }
 
-        super.playerWillDestroy(pLevel, pPos, pState, pPlayer);
+        super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override
-    public void playerDestroy(Level pLevel, Player pPlayer, BlockPos pPos, BlockState pState, @Nullable BlockEntity pBlockEntity, ItemStack pTool) {
-        super.playerDestroy(pLevel, pPlayer, pPos, Blocks.AIR.defaultBlockState(), pBlockEntity, pTool);
+    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity pBlockEntity, ItemStack pTool) {
+        super.playerDestroy(level, player, pos, Blocks.AIR.defaultBlockState(), pBlockEntity, pTool);
     }
     
     @Override
-    public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        if (pFacing.getAxis() != Direction.Axis.Y || isLower(pState) != (pFacing == Direction.UP) || isStateThis(pFacingState) && !areTwoHalfSame(pState, pFacingState)) {
-            return isLower(pState) && pFacing == Direction.DOWN && !canSurvive(pState, pLevel, pCurrentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+        if (facing.getAxis() != Direction.Axis.Y || isLower(state) != (facing == Direction.UP) || isStateThis(facingState) && !areTwoHalfSame(state, facingState)) {
+            return isLower(state) && facing == Direction.DOWN && !canSurvive(state, level, currentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, facing, facingState, level, currentPos, facingPos);
         } else {
             return Blocks.AIR.defaultBlockState();
         }
     }
     
     @Override
-    public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
-        if (isLower(pState)) {
-            return super.canSurvive(pState, pLevel, pPos);
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        if (isLower(state)) {
+            return super.canSurvive(state, level, pos);
         } else {
 
-            BlockState blockstate = pLevel.getBlockState(pPos.below());
-            if (!isStateThis(pState)) return super.canSurvive(pState, pLevel, pPos); //Forge: This function is called during world gen and placement, before this block is set, so if we are not 'here' then assume it's the pre-check.
+            BlockState blockstate = level.getBlockState(pos.below());
+            if (!isStateThis(state)) return super.canSurvive(state, level, pos); //Forge: This function is called during world gen and placement, before this block is set, so if we are not 'here' then assume it's the pre-check.
             return isStateThis(blockstate) && isLower(blockstate);
         }
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        BlockPos blockPos = pContext.getClickedPos();
-        Level level = pContext.getLevel();
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockPos blockPos = context.getClickedPos();
+        Level level = context.getLevel();
 
-        return blockPos.getY() < level.getMaxBuildHeight() - 1 && level.getBlockState(blockPos.above()).canBeReplaced(pContext) ? super.getStateForPlacement(pContext) : null;
+        return blockPos.getY() < level.getMaxBuildHeight() - 1 && level.getBlockState(blockPos.above()).canBeReplaced(context) ? super.getStateForPlacement(context) : null;
     }
     
     @Override
-    public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity pPlacer, ItemStack pStack) {
-        pLevel.setBlockAndUpdate(pPos.above(), getUpperBlock().defaultBlockState());
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        level.setBlockAndUpdate(pos.above(), getUpperBlock().defaultBlockState());
     }
     
-    public void preventCreativeDropFromBottomPart(Level pLevel, BlockPos pPos, BlockState pState, Player pPlayer) {
-        if (isUpper(pState)) {
-            BlockPos blockPosBelow = pPos.below();
-            BlockState blockStateBelow = pLevel.getBlockState(blockPosBelow);
+    public void preventCreativeDropFromBottomPart(Level level, BlockPos pos, BlockState state, Player player) {
+        if (isUpper(state)) {
+            BlockPos blockPosBelow = pos.below();
+            BlockState blockStateBelow = level.getBlockState(blockPosBelow);
             if (isStateThis(blockStateBelow) && isLower(blockStateBelow)) {
                 BlockState blockStateForReplacement = blockStateBelow.getFluidState().is(Fluids.WATER) ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState();
-                pLevel.setBlock(blockPosBelow, blockStateForReplacement, 35);
-                pLevel.levelEvent(pPlayer, 2001, blockPosBelow, Block.getId(blockStateBelow));
+                level.setBlock(blockPosBelow, blockStateForReplacement, 35);
+                level.levelEvent(player, 2001, blockPosBelow, Block.getId(blockStateBelow));
             }
         }
     }

@@ -18,26 +18,26 @@ public class DragonflyRenderer extends EntityRenderer<DragonflyProjectile> {
     public static final ResourceLocation TEXTURE = MoreSnifferFlowers.loc("textures/entity/dragonfly.png");
     private final DragonflyModel model;
 
-    public DragonflyRenderer(EntityRendererProvider.Context pContext) {
-        super(pContext);
-        this.model = new DragonflyModel(pContext.bakeLayer(ModModelLayerLocations.DRAGONFLY));
+    public DragonflyRenderer(EntityRendererProvider.Context context) {
+        super(context);
+        this.model = new DragonflyModel(context.bakeLayer(ModModelLayerLocations.DRAGONFLY));
     }
 
     @Override
-    public void render(DragonflyProjectile pEntity, float pEntityYaw, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight) {
+    public void render(DragonflyProjectile entity, float pEntityYaw, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight) {
         pPoseStack.pushPose();
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(pPartialTick, pEntity.yRotO, pEntity.getYRot()) - 180F));
-        pPoseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(pPartialTick, pEntity.xRotO, pEntity.getXRot())));
+        pPoseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(pPartialTick, entity.yRotO, entity.getYRot()) - 180F));
+        pPoseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(pPartialTick, entity.xRotO, entity.getXRot())));
         pPoseStack.translate(0, -1, 0.5);
         this.model.renderToBuffer(
                 pPoseStack,
-                pBufferSource.getBuffer(this.model.renderType(this.getTextureLocation(pEntity))),
+                pBufferSource.getBuffer(this.model.renderType(this.getTextureLocation(entity))),
                 pPackedLight,
                 OverlayTexture.NO_OVERLAY,
                 1, 1, 1, 1);
         model.animate(pPartialTick);
         pPoseStack.popPose();
-        super.render(pEntity, pEntityYaw, pPartialTick, pPoseStack, pBufferSource, pPackedLight);
+        super.render(entity, pEntityYaw, pPartialTick, pPoseStack, pBufferSource, pPackedLight);
     }
 
     @Override

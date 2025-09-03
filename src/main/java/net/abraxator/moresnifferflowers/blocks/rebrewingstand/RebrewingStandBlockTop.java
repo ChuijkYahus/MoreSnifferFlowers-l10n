@@ -17,40 +17,40 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class RebrewingStandBlockTop extends RebrewingStandBlockBase implements ModEntityBlock {
-    public RebrewingStandBlockTop(Properties pProperties) {
-        super(pProperties);
+    public RebrewingStandBlockTop(Properties properties) {
+        super(properties);
     }
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new RebrewingStandBlockEntity(pPos, pState);
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new RebrewingStandBlockEntity(pos, state);
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {}
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {}
 
     @Override
-    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
-        if(pLevel.getBlockEntity(pPos) instanceof RebrewingStandBlockEntity entity) {
-            Containers.dropContents(pLevel, pPos, entity);
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean pMovedByPiston) {
+        if(level.getBlockEntity(pos) instanceof RebrewingStandBlockEntity entity) {
+            Containers.dropContents(level, pos, entity);
         }
         
-        super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
+        super.onRemove(state, level, pos, newState, pMovedByPiston);
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return ROD_UPPER;
     }
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        if(pLevel.isClientSide) return null;
-        return (pLevel1, pPos, pState1, pBlockEntity) -> {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> pBlockEntityType) {
+        if(level.isClientSide) return null;
+        return (pLevel1, pos, pState1, pBlockEntity) -> {
             if (pBlockEntity instanceof RebrewingStandBlockEntity) {
-                ((RebrewingStandBlockEntity) pBlockEntity).tick(pLevel);
+                ((RebrewingStandBlockEntity) pBlockEntity).tick(level);
             }
         };
     }

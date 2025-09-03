@@ -14,17 +14,17 @@ public class MultiBlockEntity extends ModBlockEntity {
     public boolean isPlaced; //True once the whole placing logic runs (to prevent updateShape from breaking it early)
     public PreviewMode previewMode = PreviewMode.PLACED;
 
-    public MultiBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
-        super(pType, pPos, pBlockState);
+    public MultiBlockEntity(BlockEntityType<?> pType, BlockPos pos, BlockState pBlockState) {
+        super(pType, pos, pBlockState);
         this.center = this.getBlockPos();
         this.isPlaced = false;
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag) {
-        super.saveAdditional(pTag);
-        pTag.put("center", NbtUtils.writeBlockPos(this.center));
-        pTag.putBoolean("placed", this.isPlaced);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        tag.put("center", NbtUtils.writeBlockPos(this.center));
+        tag.putBoolean("placed", this.isPlaced);
     }
 
     @Override
@@ -35,10 +35,10 @@ public class MultiBlockEntity extends ModBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag pTag) {
-        super.load(pTag);
-        this.center = NbtUtils.readBlockPos(pTag.getCompound("center"));
-        this.isPlaced = pTag.getBoolean("placed");
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        this.center = NbtUtils.readBlockPos(tag.getCompound("center"));
+        this.isPlaced = tag.getBoolean("placed");
     }
 
     @Override

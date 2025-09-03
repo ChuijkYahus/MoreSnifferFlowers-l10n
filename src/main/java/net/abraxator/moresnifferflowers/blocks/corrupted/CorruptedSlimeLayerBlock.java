@@ -29,58 +29,58 @@ public class CorruptedSlimeLayerBlock extends SnowLayerBlock {
     }
     
     @Override
-    public @NotNull VoxelShape getCollisionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        return Block.box(0, 0, 0, 16, Math.max((pState.getValue(LAYERS) - 3) * 2, 0), 16);
+    public @NotNull VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return Block.box(0, 0, 0, 16, Math.max((state.getValue(LAYERS) - 3) * 2, 0), 16);
     }
 
     @Override
-    public void onPlace(BlockState pState, Level pLevel, BlockPos pos, BlockState pOldState, boolean pIsMoving) {
-        if (isFree(pLevel.getBlockState(pos.below())) && pos.getY() >= pLevel.getMinBuildHeight()) {
-            spawnProjectile(pState, pLevel, pos);
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState pOldState, boolean pIsMoving) {
+        if (isFree(level.getBlockState(pos.below())) && pos.getY() >= level.getMinBuildHeight()) {
+            spawnProjectile(state, level, pos);
         }
     }
 
     @Override
-    public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         return true;
-        //return pLevel.getBlockState(pPos.below()).isFaceSturdy(pLevel, pPos.below(), Direction.UP);
+        //return level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP);
     }
 
     @Override
-    public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pos, BlockPos pFacingPos) {
-        if (isFree(pLevel.getBlockState(pos.below())) && pos.getY() >= pLevel.getMinBuildHeight()) {
-            spawnProjectile(pState, pLevel, pos);
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos pos, BlockPos facingPos) {
+        if (isFree(level.getBlockState(pos.below())) && pos.getY() >= level.getMinBuildHeight()) {
+            spawnProjectile(state, level, pos);
             return Blocks.AIR.defaultBlockState();
         }
-        return super.updateShape(pState, pFacing, pFacingState, pLevel, pos, pFacingPos);
+        return super.updateShape(state, facing, facingState, level, pos, facingPos);
     }
 
-    private static void spawnProjectile(BlockState pState, LevelAccessor pLevel, BlockPos pos) {
-        for (int i = 0; i < pState.getValue(LAYERS); i++) {
-            pLevel.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-            CorruptedProjectile projectile = new CorruptedProjectile((Level) pLevel);
+    private static void spawnProjectile(BlockState state, LevelAccessor level, BlockPos pos) {
+        for (int i = 0; i < state.getValue(LAYERS); i++) {
+            level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+            CorruptedProjectile projectile = new CorruptedProjectile((Level) level);
             projectile.setPos(pos.below().getCenter());
             projectile.setXRot(Mth.PI / 90.0F);
-            pLevel.addFreshEntity(projectile);
+            level.addFreshEntity(projectile);
         }
     }
 
     @Override
-    public void fallOn(Level pLevel, BlockState pState, BlockPos pPos, Entity pEntity, float pFallDistance) {
-        pEntity.playSound(SoundEvents.HONEY_BLOCK_SLIDE, 1.0F, 1.0F);
-        showParticles(pEntity, 10);
+    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float pFallDistance) {
+        entity.playSound(SoundEvents.HONEY_BLOCK_SLIDE, 1.0F, 1.0F);
+        showParticles(entity, 10);
 
-        if (pEntity.causeFallDamage(pFallDistance, 0.2F, pLevel.damageSources().fall())) {
-            pEntity.playSound(this.soundType.getFallSound(), this.soundType.getVolume() * 0.5F, this.soundType.getPitch() * 0.75F);
+        if (entity.causeFallDamage(pFallDistance, 0.2F, level.damageSources().fall())) {
+            entity.playSound(this.soundType.getFallSound(), this.soundType.getVolume() * 0.5F, this.soundType.getPitch() * 0.75F);
         }
     }
 
     @Override
-    public void stepOn(Level pLevel, BlockPos pPos, BlockState pState, Entity pEntity) {
-        double d0 = Math.abs(pEntity.getDeltaMovement().y);
-        if (d0 < 0.1 && !pEntity.isSteppingCarefully()) {
-            double d1 = (double) 1 / (pState.getValue(LAYERS)+1) + d0 * 0.2;
-            pEntity.setDeltaMovement(pEntity.getDeltaMovement().multiply(d1, 1.0, d1));
+    public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
+        double d0 = Math.abs(entity.getDeltaMovement().y);
+        if (d0 < 0.1 && !entity.isSteppingCarefully()) {
+            double d1 = (double) 1 / (state.getValue(LAYERS)+1) + d0 * 0.2;
+            entity.setDeltaMovement(entity.getDeltaMovement().multiply(d1, 1.0, d1));
         }
     }
 
@@ -88,8 +88,8 @@ public class CorruptedSlimeLayerBlock extends SnowLayerBlock {
         return 2;
     }
 
-    public boolean isFree(BlockState pState) {
-        return pState.isAir() || pState.is(BlockTags.FIRE) || pState.liquid() || pState.canBeReplaced();
+    public boolean isFree(BlockState state) {
+        return state.isAir() || state.is(BlockTags.FIRE) || state.liquid() || state.canBeReplaced();
     }
 
     @Override
@@ -107,11 +107,11 @@ public class CorruptedSlimeLayerBlock extends SnowLayerBlock {
         }
     }
     
-    private void showParticles(Entity pEntity, int pParticleCount) {
-        if (pEntity.level().isClientSide) {
+    private void showParticles(Entity entity, int pParticleCount) {
+        if (entity.level().isClientSide) {
             for (int i = 0; i < pParticleCount; i++) {
-                pEntity.level()
-                        .addParticle(new BlockParticleOption(ParticleTypes.BLOCK, this.defaultBlockState()), pEntity.getX(), pEntity.getY(), pEntity.getZ(), 0.0, 0.0, 0.0);
+                entity.level()
+                        .addParticle(new BlockParticleOption(ParticleTypes.BLOCK, this.defaultBlockState()), entity.getX(), entity.getY(), entity.getZ(), 0.0, 0.0, 0.0);
             }
         }
     }

@@ -90,13 +90,13 @@ public class DripsaltBlock extends PointedDripstoneBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        ItemStack itemStack = pPlayer.getItemInHand(pHand);
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        ItemStack itemStack = player.getItemInHand(hand);
         if (itemStack.is(ModItems.SALTY_SPICE.get()) && itemStack.getCount() >= 5){
             for (int i = 0; i < 5; i++){
-                if (pLevel.getBlockState(pPos.above(i + 1)).isAir() && pLevel.getBlockState(pPos.above(i)).is(this)) {
-                    pLevel.setBlock(pPos.above(i + 1), this.defaultBlockState(), 3);
-                    if (!pPlayer.isCreative()) itemStack.shrink(5);
+                if (level.getBlockState(pos.above(i + 1)).isAir() && level.getBlockState(pos.above(i)).is(this)) {
+                    level.setBlock(pos.above(i + 1), this.defaultBlockState(), 3);
+                    if (!player.isCreative()) itemStack.shrink(5);
                     return InteractionResult.SUCCESS;
                 }
             }
