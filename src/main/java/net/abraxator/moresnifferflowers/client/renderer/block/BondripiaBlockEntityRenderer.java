@@ -15,7 +15,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class BondripiaBlockEntityRenderer<T extends BondripiaBlockEntity> implements BlockEntityRenderer<T>, MultiblockRender {
     private ModelPart model;
@@ -41,15 +43,8 @@ public class BondripiaBlockEntityRenderer<T extends BondripiaBlockEntity> implem
     }
 
     @Override
-    public boolean shouldRenderOffScreen(T pBlockEntity) {
-        return true;
-    }
-
     public int getViewDistance() {
         return 256;
     }
 
-    public boolean shouldRender(T pBlockEntity, Vec3 pCameraPos) {
-        return Vec3.atCenterOf(pBlockEntity.getBlockPos()).multiply(1.0D, 0.0D, 1.0D).closerThan(pCameraPos.multiply(1.0D, 0.0D, 1.0D), this.getViewDistance());
-    }
 }

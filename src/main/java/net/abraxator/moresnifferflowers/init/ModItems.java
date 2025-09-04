@@ -18,7 +18,7 @@ import java.util.List;
 public class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(
             ForgeRegistries.ITEMS, MoreSnifferFlowers.MOD_ID);
-    
+
     public static final RegistryObject<Item> DAWNBERRY_VINE_SEEDS = ITEMS.register("dawnberry_vine_seeds", () -> new ItemNameBlockItem(ModBlocks.DAWNBERRY_VINE.get(), new Item.Properties()));
     public static final RegistryObject<Item> GLOOMBERRY_VINE_SEEDS = ITEMS.register("gloomberry_vine_seeds", () -> new ItemNameBlockItem(ModBlocks.GLOOMBERRY_VINE.get(), new Item.Properties()));
     public static final RegistryObject<Item> DAWNBERRY = ITEMS.register("dawnberry", () -> new Item(new Item.Properties().food(ModFoods.DAWNBERRY)));

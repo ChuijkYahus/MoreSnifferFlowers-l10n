@@ -81,6 +81,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> GIANT_CABBAGE = registerGiantCrop("giant_cabbage", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE)));
     public static final RegistryObject<Block> GIANT_ONION = registerGiantCrop("giant_onion", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE)));
     public static final RegistryObject<Block> GIANT_TOMATO = registerGiantCrop("giant_tomato", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE)));
+    public static final RegistryObject<Block> GIANT_RICE = registerGiantCrop("giant_rice", () ->  new GiantCropBlock(BlockBehaviour.Properties.copy(ModBlocks.GIANT_CARROT.get()).noOcclusion().isSuffocating(GiantCropBlock.STATE_PREDICATE)));
 
     public static final RegistryObject<Block> BONMEELIA = registerBlockNoItem("bonmeelia", () ->  new BonmeeliaBlock(BlockBehaviour.Properties.copy(Blocks.WHEAT).strength(0.2F).lightLevel(value -> 3).noOcclusion(), false));
     public static final RegistryObject<Block> BONWILTIA = registerBlockNoItem("bonwiltia", () ->  new BonmeeliaBlock(BlockBehaviour.Properties.copy(Blocks.WHEAT).strength(0.2F).lightLevel(value -> 3).noOcclusion(), true));
@@ -163,6 +164,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> DRIPSALT = registerBlockNoItem("dripsalt", () -> new DripsaltBlock(BlockBehaviour.Properties.copy(Blocks.POINTED_DRIPSTONE)));
     public static final RegistryObject<Block> SOUR_PUDDLE = registerBlockNoItem("sour_puddle", () -> new SourPuddleBlock(BlockBehaviour.Properties.copy(ModBlocks.SALTY_CLUMP.get()).sound(SoundType.MUD).requiresCorrectToolForDrops().friction(0.98F).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never)));
 
+   // public static final DeferredBlock<Block> CROPRESSED_NETHERWART = registerBlockNoItem("cropressed_netherwart", () -> new Block(BlockBehaviour.Properties.of().strength(1f).sound(SoundType.HARD_CROP).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never)));
 
     private static <T extends Block> RegistryObject<T> registerBlockNoItem(String name, Supplier<T> block) {
         return BLOCKS.register(name, block);

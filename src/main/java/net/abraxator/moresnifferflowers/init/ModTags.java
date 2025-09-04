@@ -28,7 +28,7 @@ public class ModTags {
 
     public static class ModBlockTags {
         public static final TagKey<Block> BONMEELABLE = create(Registries.BLOCK, "bonmeelable");
-        public static final TagKey<Block> BONDRIPABLE = create(Registries.BLOCK, "bondripable");
+        public static final TagKey<Block> GIANT_CROP_REPLACEABLE = create(Registries.BLOCK, "giant_crop_replaceable");
         public static final TagKey<Block> GIANT_CROPS = create(Registries.BLOCK, "giant_crops");
         public static final TagKey<Block> WATERLOGGABLE = create(Registries.BLOCK, "waterloggable");
 
@@ -42,6 +42,7 @@ public class ModTags {
         public static final TagKey<Block> UNCORRUPTABLE = create(Registries.BLOCK, "uncorruptable");
         public static final TagKey<Block> STICKABLE = create(Registries.BLOCK, "stickable");
         public static final TagKey<Block> CORRUPTION_SHIELDING = create(Registries.BLOCK, "corruption_shielding");
+        public static final TagKey<Block> NO_SHADING = create(Registries.BLOCK, "no_shading");
 
     }
 

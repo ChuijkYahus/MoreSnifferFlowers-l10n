@@ -9,6 +9,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
 public class GiantCropBlockEntity extends MultiBlockEntity {
@@ -19,6 +20,11 @@ public class GiantCropBlockEntity extends MultiBlockEntity {
 
     public GiantCropBlockEntity(BlockPos pos, BlockState pBlockState) {
         super(ModBlockEntities.GIANT_CROP.get(), pos, pBlockState);
+    }
+
+    @Override
+    public AABB getRenderBoundingBox() {
+        return new AABB(center).inflate(1.1);
     }
 
     @Override

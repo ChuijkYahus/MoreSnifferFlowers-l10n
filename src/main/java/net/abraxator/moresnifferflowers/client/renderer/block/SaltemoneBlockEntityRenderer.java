@@ -18,7 +18,9 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implements BlockEntityRenderer<T>, MultiblockRender {
     private final ModelPart body;
@@ -64,15 +66,8 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
     }
 
     @Override
-    public boolean shouldRenderOffScreen(T pBlockEntity) {
-        return true;
-    }
-
     public int getViewDistance() {
         return 256;
     }
 
-    public boolean shouldRender(T pBlockEntity, Vec3 pCameraPos) {
-        return Vec3.atCenterOf(pBlockEntity.getBlockPos()).multiply(1.0D, 0.0D, 1.0D).closerThan(pCameraPos.multiply(1.0D, 0.0D, 1.0D), this.getViewDistance());
-    }
 }

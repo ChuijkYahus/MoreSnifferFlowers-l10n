@@ -117,6 +117,8 @@ public class ModCreativeTabs {
                     output.accept(ModBlocks.GIANT_ONION.get());
                     output.accept(ModBlocks.GIANT_CABBAGE.get());
                     output.accept(ModBlocks.GIANT_TOMATO.get());
+                    output.accept(ModBlocks.GIANT_RICE.get());
+
                 }
                 
                 output.accept(ModItems.BOBLING_SPAWN_EGG.get());
