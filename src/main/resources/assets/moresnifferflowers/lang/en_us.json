@@ -391,6 +391,9 @@
  	"moresnifferflowers.configuration.rebrewing": "Rebrewing potions",
  	"moresnifferflowers.configuration.rebrewing.button": "Edit",
  	"moresnifferflowers.configuration.rebrewing.tooltip": "Settings related to the Rebrewing Recipe",
+     "moresnifferflowers.configuration.multiblocks": "Multiblocks",
+     "moresnifferflowers.configuration.multiblocks.tooltip": "Settings related to Multiblocks",
+     "moresnifferflowers.configuration.multiblocks.button": "Edit",
 
 
  	"moresnifferflowers.configuration.restart_required": "A lot of these require a game restart seemingly at random. Restart your game before reporting it as a bug!",
@@ -431,6 +434,11 @@
  	"moresnifferflowers.configuration.rebrew_amplifier.tooltip": "",
  	"moresnifferflowers.configuration.rebrew_splash.tooltip": "",
  	"moresnifferflowers.configuration.rebrew_lingering.tooltip": "",
+ 	
+ 	"moresnifferflowers.configuration.disable_multiblock_previews": "Disable Multiblock Previews",
+ 	"moresnifferflowers.configuration.disable_multiblock_previews.tooltip": "Disables ghost previews when trying to place a multiblock",
+
+
 
 	
 	"effect.moresnifferflowers.pants_on_fire.description":"Burns away slots in the targets inventory",

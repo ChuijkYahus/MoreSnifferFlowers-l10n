@@ -8,18 +8,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
@@ -97,7 +97,7 @@ public interface MultiBlock{
     default BlockState getStateForPlacementHelper(BlockPlaceContext context, Direction direction) {
         LevelReader level = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        BlockState state = getBlock().defaultBlockState();
+        BlockState state = getBlock().defaultBlockState().setValue(ModStateProperties.CENTER, true);
 
         if (getDirectionProperty() != null){
             state = state.setValue(getDirectionProperty(), direction);
@@ -174,14 +174,9 @@ public interface MultiBlock{
     }
 
 
-    default void fixInStructures(BlockState state, Level level, BlockPos pos, BlockState oldState){
-        if (
-                level.getBlockEntity(pos) instanceof MultiBlockEntity blockEntity
-                        && !blockEntity.isPlaced
-                        && !oldState.is(getBlock())
-                        && isCenter(state)
-        ) {
-            level.scheduleTick(pos, state.getBlock(), 5);
+    default void fixInStructures(BlockState state, ServerLevelAccessor level, BlockPos pos){
+        if (isCenter(state)) {
+            level.scheduleTick(pos, state.getBlock(), 3);
         }
     }
 
@@ -210,7 +205,7 @@ public interface MultiBlock{
         });
     }
 
-    default BlockPos getCenter(LevelReader level, BlockPos pos){
+    default BlockPos getCenter(BlockGetter level, BlockPos pos){
         if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity){
             return entity.getCenter();
         }

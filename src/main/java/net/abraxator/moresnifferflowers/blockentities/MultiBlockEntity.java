@@ -65,4 +65,10 @@ public class MultiBlockEntity extends ModBlockEntity {
     public static void setPlaced(LevelReader level, BlockPos blockPos) {
         if(level.getBlockEntity(blockPos) instanceof MultiBlockEntity entity) entity.setPlaced();
     }
+
+    public boolean isCenter(){
+        return this.center.equals(getBlockPos());
+    }
+
+
 }

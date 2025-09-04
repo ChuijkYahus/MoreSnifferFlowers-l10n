@@ -31,11 +31,6 @@ public abstract class AbstractMultiBlock extends Block implements MultiBlock, Mo
     }
 
     @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        place(level, pos, state);
-    }
-
-    @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
         return getStateForPlacementHelper(context);
     }
@@ -57,14 +52,17 @@ public abstract class AbstractMultiBlock extends Block implements MultiBlock, Mo
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         super.onPlace(state, level, pos, oldState, movedByPiston);
 
-        fixInStructures(state, level, pos, oldState);
+        if (state.getValue(CENTER)) {
+            place(level, pos, state);
+        }
     }
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         super.tick(state, level, pos, random);
 
-        if (isBroken(level, pos, state)) fixTick(state, level , pos);
+        if (isBroken(level, pos, state))
+            fixTick(state, level , pos);
     }
 
     @Override
@@ -82,5 +80,7 @@ public abstract class AbstractMultiBlock extends Block implements MultiBlock, Mo
         preventCreativeDrops(player, level, pos);
         super.playerWillDestroy(level, pos, state, player);
     }
+
+
 
 }

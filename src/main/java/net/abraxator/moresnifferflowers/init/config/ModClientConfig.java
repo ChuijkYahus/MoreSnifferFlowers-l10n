@@ -10,6 +10,7 @@ public class ModClientConfig {
     public static final ForgeConfigSpec.IntValue BLOCK_PATTERN_RENDER_DISTANCE;
     public static final ForgeConfigSpec.BooleanValue BLOCK_PATTERN_SMOOTH_LIGHTING;
     public static final ForgeConfigSpec.BooleanValue BLOCK_PATTERN_TRANSPARENCY;
+    public static final ForgeConfigSpec.BooleanValue DISABLE_MULTIBLOCK_PREVIEWS;
 
 
 
@@ -51,6 +52,14 @@ public class ModClientConfig {
 
         builder.pop();
 
+        builder.push("multiblocks");
+
+        DISABLE_MULTIBLOCK_PREVIEWS = builder
+                .comment("Disables ghost previews when trying to place a multiblock")
+                .translation("moresnifferflowers.configuration.disable_multiblock_previews")
+                .define("Disable Multiblock Previews", false);
+
+        builder.pop();
         CLIENT_CONFIG = builder.build();
 
     }

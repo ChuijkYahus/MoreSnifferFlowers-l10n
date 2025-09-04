@@ -32,6 +32,8 @@ import java.util.Optional;
 
 public class JarOfAcidProjectile extends ThrowableItemProjectile {
     private static final Logger log = LoggerFactory.getLogger(JarOfAcidProjectile.class);
+
+
     public JarOfAcidProjectile(LivingEntity pShooter, Level level) {
         super(ModEntityTypes.JAR_OF_ACID.get(), pShooter, level);
     }

@@ -30,6 +30,8 @@ public class ModTags {
         public static final TagKey<Block> BONMEELABLE = create(Registries.BLOCK, "bonmeelable");
         public static final TagKey<Block> BONDRIPABLE = create(Registries.BLOCK, "bondripable");
         public static final TagKey<Block> GIANT_CROPS = create(Registries.BLOCK, "giant_crops");
+        public static final TagKey<Block> WATERLOGGABLE = create(Registries.BLOCK, "waterloggable");
+
         public static final TagKey<Block> VIVICUS_BLOCKS = create(Registries.BLOCK, "vivicus_blocks");
         public static final TagKey<Block> CORRUPTED_BLOCKS = create(Registries.BLOCK, "corrupted_blocks");
         public static final TagKey<Block> CORRUPTED_SLUDGE = create(Registries.BLOCK, "corrupted_sludge");
