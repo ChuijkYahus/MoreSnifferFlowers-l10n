@@ -32,7 +32,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,8 +50,7 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
                 .setValue(getAgeProperty(), 0)
                 .setValue(ModStateProperties.SHEARED, false));
     }
-    private static final VoxelShape SHAPE = Block.box(2.0, 13.0, 2.0, 14.0, 16.0, 14.0);
-    private static final VoxelShape SHAPE_CENTER = Block.box(0.0, 13.0, 0.0, 16.0, 16.0, 16.0);
+    private static final VoxelShape SHAPE = makeShape();
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -230,14 +231,7 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
-        if(getter.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
-            if(state.getValue(ModStateProperties.CENTER)) return SHAPE_CENTER;
-            BlockPos center = entity.getCenter();
-            var offset = pos.subtract(center);
-            return Block.box(Math.min(2.0 - offset.getX()*2, 2), 13.0, Math.min(2.0 - offset.getZ()*2, 2), Math.max(14.0 - offset.getX()*2, 14), 16.0, Math.max(14.0 - offset.getZ()*2, 14));
-        }
-
-        return SHAPE;
+        return voxelShapeHelper(state, getter, pos, SHAPE);
 
     }
 
@@ -250,4 +244,13 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
     public Block getCorruptedBlock() {
         return ModBlocks.ACIDRIPIA.get();
     }
+
+    public static VoxelShape makeShape(){
+        VoxelShape shape = Shapes.empty();
+        shape = Shapes.join(shape, Shapes.box(-0.6875, 0.875, 0, 1.6875, 1.0625, 1), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0, 0.875, -0.6875, 1, 1.0625, 1.6875), BooleanOp.OR);
+
+        return shape;
+    }
+
 }
