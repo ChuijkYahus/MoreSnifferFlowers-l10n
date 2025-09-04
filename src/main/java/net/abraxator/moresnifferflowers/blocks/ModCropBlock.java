@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.blocks;
 
+import net.abraxator.moresnifferflowers.blocks.multiblock.MultiBlock;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -65,9 +66,14 @@ public interface ModCropBlock extends BonemealableBlock {
             CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player, blockPos, player.getItemInHand(hand));
         }
 
-        level.setBlockAndUpdate(blockPos, blockState.setValue(ModStateProperties.SHEARED, true));
+        MultiBlock.getFullShape(level, blockPos).forEach(pos -> {
+            BlockState blockStateNew = level.getBlockState(pos);
+
+            level.setBlockAndUpdate(pos, blockStateNew.trySetValue(ModStateProperties.SHEARED, true));
+            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, blockStateNew));
+        });
+
         level.playSound(null, blockPos, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1.0F, 0.8F + level.random.nextFloat() * 0.4F);
-        level.gameEvent(GameEvent.BLOCK_CHANGE, blockPos, GameEvent.Context.of(player, level.getBlockState(blockPos)));
         player.getItemInHand(hand).hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
     }
 

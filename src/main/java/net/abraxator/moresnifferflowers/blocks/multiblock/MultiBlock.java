@@ -73,6 +73,16 @@ public interface MultiBlock{
         return fullBlockShape(state.getValue(getDirectionProperty()), center);
     }
 
+    static Stream<BlockPos> getFullShape(Level level, BlockPos pos){
+        if (level.getBlockEntity(pos) instanceof MultiBlockEntity multiBlockEntity
+                && level.getBlockState(pos).getBlock() instanceof MultiBlock multiBlock){
+
+            return multiBlock.fullBlockShape(multiBlockEntity.getCenter(), level.getBlockState(pos));
+        }
+        else return Stream.of(pos);
+    }
+
+
     default @Nullable BiFunction<BlockState, BlockPos, BlockState> getStateFromOffset() {
         return null; // For use with json models, changes blockState based on offset from centre
     };
@@ -87,6 +97,7 @@ public interface MultiBlock{
             level.setBlock(posNew, stateNew, flags);
             if(level.getBlockEntity(posNew) instanceof MultiBlockEntity entity) {
                 entity.setCenter(posOriginal);
+                entity.setChanged();
             }
         });
     }

@@ -32,7 +32,7 @@ public class ModClientConfig {
         HARDENED_MOUTH_Y = builder
                 .comment("Move extra slots from the Hardened mouth effect up and down")
                 .translation("moresnifferflowers.configuration.hardened_mouth_y")
-                .defineInRange("Hardened Mouth Y", -80, -5000, 5000);
+                .defineInRange("Hardened Mouth Y", 80, -5000, 5000);
 
         builder.pop();
 

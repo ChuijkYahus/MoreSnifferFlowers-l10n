@@ -147,14 +147,13 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
     @Override
     public ItemStack pickupBlock(@javax.annotation.Nullable Player player, LevelAccessor level, BlockPos pos, BlockState state) {
-        return player != null && player.isCreative()
-                ? SimpleWaterloggedBlock.super.pickupBlock(player, level, pos, state)
-                : ItemStack.EMPTY;
+        return SimpleWaterloggedBlock.super.pickupBlock(player, level, pos, state);
     }
 
     @Override
     public boolean canPlaceLiquid(@javax.annotation.Nullable Player player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
-        return player != null && player.isCreative() && SimpleWaterloggedBlock.super.canPlaceLiquid(player, level, pos, state, fluid);
+        if (!this.defaultBlockState().is(ModTags.ModBlockTags.WATERLOGGABLE)) return false;
+        return SimpleWaterloggedBlock.super.canPlaceLiquid(player, level, pos, state, fluid);
     }
 
 

@@ -162,7 +162,7 @@ public class ModBlocks {
     public static final DeferredBlock<Block> DRIPSALT = registerBlockNoItem("dripsalt", () -> new DripsaltBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.POINTED_DRIPSTONE)));
     public static final DeferredBlock<Block> SOUR_PUDDLE = registerBlockNoItem("sour_puddle", () -> new SourPuddleBlock(BlockBehaviour.Properties.ofFullCopy(ModBlocks.SALTY_CLUMP.get()).sound(SoundType.MUD).requiresCorrectToolForDrops().friction(0.98F).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never)));
 
-    public static final DeferredBlock<Block> CROPRESSED_NETHERWART = registerBlockNoItem("cropressed_netherwart", () -> new Block(BlockBehaviour.Properties.of().strength(1f).sound(SoundType.HARD_CROP).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never)));
+   // public static final DeferredBlock<Block> CROPRESSED_NETHERWART = registerBlockNoItem("cropressed_netherwart", () -> new Block(BlockBehaviour.Properties.of().strength(1f).sound(SoundType.HARD_CROP).noOcclusion().pushReaction(PushReaction.DESTROY).isSuffocating(ModBlocks::never)));
 
     private static <T extends Block> DeferredBlock<T> registerBlockNoItem(String name, Supplier<T> block) {
         return BLOCKS.register(name, block);
