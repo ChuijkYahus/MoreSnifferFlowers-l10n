@@ -49,6 +49,8 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         this.tag(ModTags.ModBlockTags.GIANT_CROPS).add(ModBlocks.GIANT_CARROT.get(), ModBlocks.GIANT_POTATO.get(), ModBlocks.GIANT_NETHERWART.get(), ModBlocks.GIANT_BEETROOT.get(), ModBlocks.GIANT_WHEAT.get(), ModBlocks.GIANT_ONION.get(), ModBlocks.GIANT_TOMATO.get(), ModBlocks.GIANT_CABBAGE.get());
         this.tag(ModTags.ModBlockTags.WATERLOGGABLE).add(ModBlocks.GIANT_RICE.get());
         this.tag(ModTags.ModBlockTags.NO_SHADING).add(ModBlocks.GIANT_RICE.get());
+        this.tag(ModTags.ModBlockTags.GIANT_CROP_REPLACEABLE).addOptional(MoreSnifferFlowers.farmersDelightLoc("rice"));
+
 
         this.tag(BlockTags.LOGS_THAT_BURN).add(ModBlocks.DECAYED_LOG.get(), ModBlocks.CORRUPTED_LOG.get(), ModBlocks.VIVICUS_LOG.get(), ModBlocks.STRIPPED_CORRUPTED_LOG.get(), ModBlocks.STRIPPED_VIVICUS_LOG.get(), ModBlocks.CORRUPTED_WOOD.get(), ModBlocks.VIVICUS_WOOD.get(), ModBlocks.STRIPPED_CORRUPTED_WOOD.get(), ModBlocks.STRIPPED_VIVICUS_WOOD.get());
         this.tag(BlockTags.LEAVES).add(ModBlocks.CORRUPTED_LEAVES.get(), ModBlocks.CORRUPTED_LEAVES_BUSH.get(), ModBlocks.VIVICUS_LEAVES.get());
