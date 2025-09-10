@@ -41,10 +41,10 @@ public class ModBoatRenderer extends BoatRenderer {
     }
 
     @Override
-    public void render(Boat entity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) {
-        pPoseStack.pushPose();
-        pPoseStack.translate(0.0F, 0.375F, 0.0F);
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(180.0F - pEntityYaw));
+    public void render(Boat entity, float pEntityYaw, float pPartialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+        poseStack.pushPose();
+        poseStack.translate(0.0F, 0.375F, 0.0F);
+        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - pEntityYaw));
         float f = (float)entity.getHurtTime() - pPartialTicks;
         float f1 = entity.getDamage() - pPartialTicks;
         if (f1 < 0.0F) {
@@ -52,53 +52,53 @@ public class ModBoatRenderer extends BoatRenderer {
         }
 
         if (f > 0.0F) {
-            pPoseStack.mulPose(Axis.XP.rotationDegrees(Mth.sin(f) * f * f1 / 10.0F * (float)entity.getHurtDir()));
+            poseStack.mulPose(Axis.XP.rotationDegrees(Mth.sin(f) * f * f1 / 10.0F * (float)entity.getHurtDir()));
         }
 
         float f2 = entity.getBubbleAngle(pPartialTicks);
         if (!Mth.equal(f2, 0.0F)) {
-            pPoseStack.mulPose(new Quaternionf().setAngleAxis(entity.getBubbleAngle(pPartialTicks) * (float) (Math.PI / 180.0), 1.0F, 0.0F, 1.0F));
+            poseStack.mulPose(new Quaternionf().setAngleAxis(entity.getBubbleAngle(pPartialTicks) * (float) (Math.PI / 180.0), 1.0F, 0.0F, 1.0F));
         }
 
         Pair<ResourceLocation, ListModel<Boat>> pair = getModelWithLocation(entity);
         ResourceLocation resourcelocation = pair.getFirst();
         ListModel<Boat> listmodel = pair.getSecond();
-        pPoseStack.scale(-1.0F, -1.0F, 1.0F);
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+        poseStack.scale(-1.0F, -1.0F, 1.0F);
+        poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
         listmodel.setupAnim(entity, pPartialTicks, 0.0F, -0.1F, 0.0F, 0.0F);
-        VertexConsumer vertexconsumer = pBuffer.getBuffer(listmodel.renderType(resourcelocation));
+        VertexConsumer vertexconsumer = buffer.getBuffer(listmodel.renderType(resourcelocation));
         int hex = boatColor(entity);
-        listmodel.renderToBuffer(pPoseStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, 1- hexToRGBLarge(hex)[0], 1- hexToRGBLarge(hex)[1], 1- hexToRGBLarge(hex)[2], 1);
+        listmodel.renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, 1- hexToRGBLarge(hex)[0], 1- hexToRGBLarge(hex)[1], 1- hexToRGBLarge(hex)[2], 1);
         if (!entity.isUnderWater()) {
-            VertexConsumer vertexconsumer1 = pBuffer.getBuffer(RenderType.waterMask());
+            VertexConsumer vertexconsumer1 = buffer.getBuffer(RenderType.waterMask());
             if (listmodel instanceof WaterPatchModel waterpatchmodel) {
-                waterpatchmodel.waterPatch().render(pPoseStack, vertexconsumer1, pPackedLight, OverlayTexture.NO_OVERLAY);
+                waterpatchmodel.waterPatch().render(poseStack, vertexconsumer1, packedLight, OverlayTexture.NO_OVERLAY);
             }
         }
 
-        pPoseStack.popPose();
+        poseStack.popPose();
     }
 
-    private static String getTextureLocation(ModBoatEntity.Type pType, boolean pChestBoat) {
-        return pChestBoat ? "textures/entity/chest_boat/" + pType.getName() + ".png" : "textures/entity/boat/" + pType.getName() + ".png";
+    private static String getTextureLocation(ModBoatEntity.Type type, boolean pChestBoat) {
+        return pChestBoat ? "textures/entity/chest_boat/" + type.getName() + ".png" : "textures/entity/boat/" + type.getName() + ".png";
     }
 
-    private ListModel<Boat> createBoatModel(EntityRendererProvider.Context context, ModBoatEntity.Type pType, boolean pChestBoat) {
-        ModelLayerLocation modellayerlocation = pChestBoat ? ModBoatRenderer.createChestBoatModelName(pType) : ModBoatRenderer.createBoatModelName(pType);
+    private ListModel<Boat> createBoatModel(EntityRendererProvider.Context context, ModBoatEntity.Type type, boolean pChestBoat) {
+        ModelLayerLocation modellayerlocation = pChestBoat ? ModBoatRenderer.createChestBoatModelName(type) : ModBoatRenderer.createBoatModelName(type);
         ModelPart modelpart = context.bakeLayer(modellayerlocation);
         return pChestBoat ? new ChestBoatModel(modelpart) : new BoatModel(modelpart);
     }
 
-    public static ModelLayerLocation createBoatModelName(ModBoatEntity.Type pType) {
-        return createLocation("boat/" + pType.getName(), "main");
+    public static ModelLayerLocation createBoatModelName(ModBoatEntity.Type type) {
+        return createLocation("boat/" + type.getName(), "main");
     }
 
-    public static ModelLayerLocation createChestBoatModelName(ModBoatEntity.Type pType) {
-        return createLocation("chest_boat/" + pType.getName(), "main");
+    public static ModelLayerLocation createChestBoatModelName(ModBoatEntity.Type type) {
+        return createLocation("chest_boat/" + type.getName(), "main");
     }
 
-    private static ModelLayerLocation createLocation(String pPath, String pModel) {
-        return new ModelLayerLocation(MoreSnifferFlowers.loc(pPath), pModel);
+    private static ModelLayerLocation createLocation(String pPath, String model) {
+        return new ModelLayerLocation(MoreSnifferFlowers.loc(pPath), model);
     }
 
     @Override

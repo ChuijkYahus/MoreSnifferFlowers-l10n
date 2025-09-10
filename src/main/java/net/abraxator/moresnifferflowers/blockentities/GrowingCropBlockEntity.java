@@ -16,8 +16,8 @@ public abstract class GrowingCropBlockEntity extends ModBlockEntity {
     public boolean hasGrown;
     public final float growRate;
     
-    public GrowingCropBlockEntity(BlockEntityType<?> pType, BlockPos pos, BlockState pBlockState, float growRate) {
-        super(pType, pos, pBlockState);
+    public GrowingCropBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState pBlockState, float growRate) {
+        super(type, pos, pBlockState);
         this.growRate = growRate;
     }
 

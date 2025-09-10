@@ -30,20 +30,20 @@ public abstract class CoolProjectileRenderer<T extends Entity> extends EntityRen
         }
     }
 
-    public static void projectileRendering(Entity entity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, Model model, ResourceLocation location) {
-        pPoseStack.pushPose();
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(pPartialTick, entity.yRotO, entity.getYRot()) - 180F));
-        pPoseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(pPartialTick, entity.xRotO, entity.getXRot())));
-        pPoseStack.translate(0, -0.5, 0);
+    public static void projectileRendering(Entity entity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, Model model, ResourceLocation location) {
+        poseStack.pushPose();
+        poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTick, entity.yRotO, entity.getYRot()) - 180F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTick, entity.xRotO, entity.getXRot())));
+        poseStack.translate(0, -0.5, 0);
         float scale = 0.6F;
-        pPoseStack.scale(scale, scale, scale);
+        poseStack.scale(scale, scale, scale);
         model.renderToBuffer(
-                pPoseStack,
-                pBufferSource.getBuffer(model.renderType(location)),
-                pPackedLight,
+                poseStack,
+                buffer.getBuffer(model.renderType(location)),
+                packedLight,
                 OverlayTexture.NO_OVERLAY,
                 1, 1, 1, 1);
-        pPoseStack.popPose();
+        poseStack.popPose();
     }
 
     public static boolean projectileCameraCheck(Entity entity, EntityRenderDispatcher renderer ) {

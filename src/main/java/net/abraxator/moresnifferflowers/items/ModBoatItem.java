@@ -28,10 +28,10 @@ public class ModBoatItem extends Item {
     private final ModBoatEntity.Type type;
     private final boolean hasChest;
 
-    public ModBoatItem(boolean pHasChest, ModBoatEntity.Type pType, Properties properties) {
+    public ModBoatItem(boolean pHasChest, ModBoatEntity.Type type, Properties properties) {
         super(properties);
         this.hasChest = pHasChest;
-        this.type = pType;
+        this.type = type;
     }
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {

@@ -305,18 +305,18 @@ public class DyespriaItem extends BlockItem implements Colorable {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        super.appendHoverText(stack, level, pTooltipComponents, pIsAdvanced);
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
         Dye dye = Dye.getDyeFromDyespria(stack);
         Component usage = Component.translatableWithFallback("tooltip.dyespria.usage", "Right click with dye to insert \nRight click caulorflower to repaint \nSneak to apply to the whole column \n").withStyle(ChatFormatting.GOLD);
         var usageComponents = Arrays.stream(usage.getString().split("\n", -1))
                 .filter(s -> !s.isEmpty())
                 .map(String::trim);
 
-        usageComponents.forEach(s -> pTooltipComponents.add(Component.literal(s).withStyle(ChatFormatting.GOLD)));
-        pTooltipComponents.add(Component.empty());
-        pTooltipComponents.add(getCurrentModeComponent(getMode(stack)));
-        pTooltipComponents.add(Component.empty());
+        usageComponents.forEach(s -> tooltipComponents.add(Component.literal(s).withStyle(ChatFormatting.GOLD)));
+        tooltipComponents.add(Component.empty());
+        tooltipComponents.add(getCurrentModeComponent(getMode(stack)));
+        tooltipComponents.add(Component.empty());
         
         if(!dye.isEmpty()) {
             var name = Component
@@ -327,9 +327,9 @@ public class DyespriaItem extends BlockItem implements Colorable {
                             .replaceAll("_", " ")))
                     .withStyle(Style.EMPTY
                             .withColor(Dye.colorForDye(this, dye.color())));
-            pTooltipComponents.add(name);
+            tooltipComponents.add(name);
         } else {
-            pTooltipComponents.add(Component.translatableWithFallback("tooltip.dyespria.empty", "Empty").withStyle(ChatFormatting.GRAY));
+            tooltipComponents.add(Component.translatableWithFallback("tooltip.dyespria.empty", "Empty").withStyle(ChatFormatting.GRAY));
         }
     }
 

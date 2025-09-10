@@ -10,8 +10,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 public class GiantCropParticle extends TextureSheetParticle {
-    protected GiantCropParticle(ClientLevel level, double pX, double pY, double pZ) {
-        super(level, pX, pY, pZ);
+    protected GiantCropParticle(ClientLevel level, double x, double y, double z) {
+        super(level, x, y, z);
         this.scale(5);
         this.setLifetime(25);
     }
@@ -30,8 +30,8 @@ public class GiantCropParticle extends TextureSheetParticle {
 
         @Nullable
         @Override
-        public Particle createParticle(SimpleParticleType pType, ClientLevel level, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
-            GiantCropParticle giantCropParticle = new GiantCropParticle(level, pX, pY, pZ);
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+            GiantCropParticle giantCropParticle = new GiantCropParticle(level, x, y, z);
             giantCropParticle.pickSprite(spriteSet);
             return giantCropParticle;
         }

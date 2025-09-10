@@ -11,7 +11,6 @@ import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.worldgen.configurations.ModTreeDecoratorTypes;
 import net.abraxator.moresnifferflowers.worldgen.configurations.ModTrunkPlacerTypes;
 import net.abraxator.moresnifferflowers.worldgen.feature.ModFeatures;
-import net.abraxator.moresnifferflowers.worldgen.structures.ModStructureTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.level.block.Blocks;
@@ -55,7 +54,6 @@ public class MoreSnifferFlowers {
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModLootModifiers.LOOT_MODIFIERS.register(modEventBus);
         ModTreeDecoratorTypes.DECORATORS.register(modEventBus);
-        ModStructureTypes.STRUCTURE_PIECE.register(modEventBus);
         ModBannerPatterns.BANNER_PATTERNS.register(modEventBus);
         ModRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
 

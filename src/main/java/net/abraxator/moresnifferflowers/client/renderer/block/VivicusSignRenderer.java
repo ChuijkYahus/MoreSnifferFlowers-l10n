@@ -28,20 +28,20 @@ public class VivicusSignRenderer extends SignRenderer {
     }
 
     @Override
-    public void renderSignWithText(SignBlockEntity pSignEntity, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay, BlockState state, SignBlock pSignBlock, WoodType pWoodType, Model pModel) {
-        pPoseStack.pushPose();
-        pPoseStack.translate(0.5F, 0.75F * this.getSignModelRenderScale(), 0.5F);
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(-pSignBlock.getYRotationDegrees(state)));
+    public void renderSignWithText(SignBlockEntity pSignEntity, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, BlockState state, SignBlock pSignBlock, WoodType pWoodType, Model model) {
+        poseStack.pushPose();
+        poseStack.translate(0.5F, 0.75F * this.getSignModelRenderScale(), 0.5F);
+        poseStack.mulPose(Axis.YP.rotationDegrees(-pSignBlock.getYRotationDegrees(state)));
         if (!(state.getBlock() instanceof StandingSignBlock)) {
-            pPoseStack.translate(0.0F, -0.3125F, -0.4375F);
+            poseStack.translate(0.0F, -0.3125F, -0.4375F);
         }
-        renderVivicusSign(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pWoodType, pModel, state);
+        renderVivicusSign(poseStack, buffer, packedLight, packedOverlay, pWoodType, model, state);
         this.renderSignText(
                 pSignEntity.getBlockPos(),
                 pSignEntity.getFrontText(),
-                pPoseStack,
-                pBuffer,
-                pPackedLight,
+                poseStack,
+                buffer,
+                packedLight,
                 pSignEntity.getTextLineHeight(),
                 pSignEntity.getMaxTextLineWidth(),
                 true
@@ -49,34 +49,34 @@ public class VivicusSignRenderer extends SignRenderer {
         this.renderSignText(
                 pSignEntity.getBlockPos(),
                 pSignEntity.getBackText(),
-                pPoseStack,
-                pBuffer,
-                pPackedLight,
+                poseStack,
+                buffer,
+                packedLight,
                 pSignEntity.getTextLineHeight(),
                 pSignEntity.getMaxTextLineWidth(),
                 false
         );
-        pPoseStack.popPose();
+        poseStack.popPose();
     }
     
-    private void renderVivicusSign(PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay, WoodType pWoodType, Model pModel, BlockState state) {
-        pPoseStack.pushPose();
+    private void renderVivicusSign(PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, WoodType pWoodType, Model model, BlockState state) {
+        poseStack.pushPose();
         float f = this.getSignModelRenderScale();
-        pPoseStack.scale(f, -f, -f);
+        poseStack.scale(f, -f, -f);
         Material material = Sheets.getSignMaterial(pWoodType);
-        VertexConsumer vertexconsumer = material.buffer(pBuffer, pModel::renderType);
+        VertexConsumer vertexconsumer = material.buffer(buffer, model::renderType);
         var color = -1;
         if(state.getBlock() instanceof ColorableVivicusBlock colorableVivicusBlock) {
             var dyeColor = state.getValue(ModStateProperties.COLOR);
             color = colorableVivicusBlock.colorValues().get(dyeColor);
             vertexconsumer.color(color);
         }
-        this.renderSignModel(pPoseStack, pPackedLight, pPackedOverlay, pModel, vertexconsumer, color);
-        pPoseStack.popPose();
+        this.renderSignModel(poseStack, packedLight, packedOverlay, model, vertexconsumer, color);
+        poseStack.popPose();
     }
 
-    void renderSignModel(PoseStack pPoseStack, int pPackedLight, int pPackedOverlay, Model pModel, VertexConsumer pVertexConsumer, int color) {
-        SignRenderer.SignModel signrenderer$signmodel = (SignRenderer.SignModel)pModel;
-        signrenderer$signmodel.root.render(pPoseStack, pVertexConsumer, pPackedLight, pPackedOverlay, 1-((color >> 16) & 0xFF), 1-((color >> 8) & 0xFF), 1-(color & 0xFF), 1);
+    void renderSignModel(PoseStack poseStack, int packedLight, int packedOverlay, Model model, VertexConsumer pVertexConsumer, int color) {
+        SignRenderer.SignModel signrenderer$signmodel = (SignRenderer.SignModel)model;
+        signrenderer$signmodel.root.render(poseStack, pVertexConsumer, packedLight, packedOverlay, 1-((color >> 16) & 0xFF), 1-((color >> 8) & 0xFF), 1-(color & 0xFF), 1);
     }
 }

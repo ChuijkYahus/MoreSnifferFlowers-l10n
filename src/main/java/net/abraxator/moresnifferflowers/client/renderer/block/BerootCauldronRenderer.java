@@ -155,7 +155,7 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> impleme
     }
 
     @Override
-    public boolean shouldRenderOffScreen(T pBlockEntity) {
+    public boolean shouldRenderOffScreen(T blockEntity) {
         return true;
     }
 }

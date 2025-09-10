@@ -8,8 +8,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class ModBlockEntity extends BlockEntity {
-    public ModBlockEntity(BlockEntityType<?> pType, BlockPos pos, BlockState pBlockState) {
-        super(pType, pos, pBlockState);
+    public ModBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState pBlockState) {
+        super(type, pos, pBlockState);
     }
 
     public void tick(Level level) {}

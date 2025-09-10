@@ -24,20 +24,20 @@ public class DragonflyRenderer extends EntityRenderer<DragonflyProjectile> {
     }
 
     @Override
-    public void render(DragonflyProjectile entity, float pEntityYaw, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight) {
-        pPoseStack.pushPose();
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(pPartialTick, entity.yRotO, entity.getYRot()) - 180F));
-        pPoseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(pPartialTick, entity.xRotO, entity.getXRot())));
-        pPoseStack.translate(0, -1, 0.5);
+    public void render(DragonflyProjectile entity, float pEntityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+        poseStack.pushPose();
+        poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTick, entity.yRotO, entity.getYRot()) - 180F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTick, entity.xRotO, entity.getXRot())));
+        poseStack.translate(0, -1, 0.5);
         this.model.renderToBuffer(
-                pPoseStack,
-                pBufferSource.getBuffer(this.model.renderType(this.getTextureLocation(entity))),
-                pPackedLight,
+                poseStack,
+                buffer.getBuffer(this.model.renderType(this.getTextureLocation(entity))),
+                packedLight,
                 OverlayTexture.NO_OVERLAY,
                 1, 1, 1, 1);
-        model.animate(pPartialTick);
-        pPoseStack.popPose();
-        super.render(entity, pEntityYaw, pPartialTick, pPoseStack, pBufferSource, pPackedLight);
+        model.animate(partialTick);
+        poseStack.popPose();
+        super.render(entity, pEntityYaw, partialTick, poseStack, buffer, packedLight);
     }
 
     @Override

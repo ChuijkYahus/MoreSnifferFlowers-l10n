@@ -27,12 +27,12 @@ public class VivicusBoatEntity extends ModBoatEntity implements ColorableVivicus
         super(entityType, level);
     }
 
-    public VivicusBoatEntity(Level level, double pX, double pY, double pZ) {
+    public VivicusBoatEntity(Level level, double x, double y, double z) {
         this(ModEntityTypes.MOD_VIVICUS_BOAT.get(), level);
-        this.setPos(pX, pY, pZ);
-        this.xo = pX;
-        this.yo = pY;
-        this.zo = pZ;
+        this.setPos(x, y, z);
+        this.xo = x;
+        this.yo = y;
+        this.zo = z;
     }
 
     @Override

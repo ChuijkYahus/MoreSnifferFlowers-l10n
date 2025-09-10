@@ -24,6 +24,7 @@ public class CapabilityList {
     public static final Capability<SlipperyCapability> SLIPPERY = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<UntouchableCapability> UNTOUCHABLE = CapabilityManager.get(new CapabilityToken<>() {});
 
+   @SubscribeEvent
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.register(NutritionCapability.class);
         event.register(HardenedMouthCapability.class);

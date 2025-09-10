@@ -31,8 +31,8 @@ public class DragonflyItem extends Item {
     }
     
     @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity pLivingEntity, int pTimeCharged) {
-        if (pLivingEntity instanceof Player player) {
+    public void releaseUsing(ItemStack stack, Level level, LivingEntity livingEntity, int pTimeCharged) {
+        if (livingEntity instanceof Player player) {
             int useDuration = getUseDuration(stack) - pTimeCharged;
             if(useDuration >= 10) {
                 if(!player.getAbilities().instabuild) stack.shrink(1);
@@ -47,8 +47,8 @@ public class DragonflyItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand pUsedHand) {
-        player.startUsingItem(pUsedHand);
-        return InteractionResultHolder.consume(player.getItemInHand(pUsedHand));
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        player.startUsingItem(hand);
+        return InteractionResultHolder.consume(player.getItemInHand(hand));
     }
 }

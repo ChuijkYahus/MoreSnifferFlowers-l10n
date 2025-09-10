@@ -45,8 +45,8 @@ public abstract class ModEntityDoubleTallBlock extends Block implements IModEnti
     }
 
     @Override
-    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity pBlockEntity, ItemStack pTool) {
-        super.playerDestroy(level, player, pos, Blocks.AIR.defaultBlockState(), pBlockEntity, pTool);
+    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack pTool) {
+        super.playerDestroy(level, player, pos, Blocks.AIR.defaultBlockState(), blockEntity, pTool);
     }
     
     @Override

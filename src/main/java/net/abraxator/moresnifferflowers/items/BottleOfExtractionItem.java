@@ -28,11 +28,11 @@ public class BottleOfExtractionItem extends Item {
     }
 
     @Override
-    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity pLivingEntity) {
+    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity livingEntity) {
 
-        if (pLivingEntity instanceof Player player && !level.isClientSide) {
+        if (livingEntity instanceof Player player && !level.isClientSide) {
 
-            if (pLivingEntity instanceof ServerPlayer serverplayer) {
+            if (livingEntity instanceof ServerPlayer serverplayer) {
                 CriteriaTriggers.CONSUME_ITEM.trigger(serverplayer, stack);
                 serverplayer.awardStat(Stats.ITEM_USED.get(this));
             }
@@ -43,18 +43,18 @@ public class BottleOfExtractionItem extends Item {
             }
 
             stack = initPotion(player);
-            pLivingEntity.removeAllEffects();
+            livingEntity.removeAllEffects();
         }
         return stack;
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand pUsedHand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!canExtract(level, player)) {
-            return InteractionResultHolder.pass(player.getItemInHand(pUsedHand));
+            return InteractionResultHolder.pass(player.getItemInHand(hand));
         } else {
-            player.startUsingItem(pUsedHand);
-            return InteractionResultHolder.consume(player.getItemInHand(pUsedHand));
+            player.startUsingItem(hand);
+            return InteractionResultHolder.consume(player.getItemInHand(hand));
         }
     }
 
@@ -94,7 +94,7 @@ public class BottleOfExtractionItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatableWithFallback("tooltip.bottle_of_extraction.usage", "Drink to extract all effects into single potion").withStyle(ChatFormatting.GOLD));
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        tooltipComponents.add(Component.translatableWithFallback("tooltip.bottle_of_extraction.usage", "Drink to extract all effects into single potion").withStyle(ChatFormatting.GOLD));
     }
 }

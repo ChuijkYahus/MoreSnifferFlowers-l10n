@@ -130,8 +130,8 @@ public class RebrewingStandMenu extends AbstractContainerMenu {
     }
 
     static class FuelSlot extends Slot {
-        public FuelSlot(Container container, int pSlot, int pX, int pY) {
-            super(container, pSlot, pX, pY);
+        public FuelSlot(Container container, int pSlot, int x, int y) {
+            super(container, pSlot, x, y);
         }
 
         public static boolean mayPlaceItem(ItemStack itemStack) {
@@ -150,8 +150,8 @@ public class RebrewingStandMenu extends AbstractContainerMenu {
     }
 
     static class OriginalPotionSlot extends Slot {
-        public OriginalPotionSlot(Container container, int pSlot, int pX, int pY) {
-            super(container, pSlot, pX, pY);
+        public OriginalPotionSlot(Container container, int pSlot, int x, int y) {
+            super(container, pSlot, x, y);
         }
 
         public static boolean mayPlaceItem(ItemStack itemStack) {
@@ -170,8 +170,8 @@ public class RebrewingStandMenu extends AbstractContainerMenu {
     }
 
     static class IngredientSlot extends Slot {
-        public IngredientSlot(Container container, int pSlot, int pX, int pY) {
-            super(container, pSlot, pX, pY);
+        public IngredientSlot(Container container, int pSlot, int x, int y) {
+            super(container, pSlot, x, y);
         }
 
         public static boolean mayPlaceItem(ItemStack itemStack) {
@@ -192,8 +192,8 @@ public class RebrewingStandMenu extends AbstractContainerMenu {
     }
 
     static class PotionSlot extends Slot {
-        public PotionSlot(Container container, int pSlot, int pX, int pY) {
-            super(container, pSlot, pX, pY);
+        public PotionSlot(Container container, int pSlot, int x, int y) {
+            super(container, pSlot, x, y);
         }
 
         public static boolean mayPlaceItem(ItemStack itemStack) {

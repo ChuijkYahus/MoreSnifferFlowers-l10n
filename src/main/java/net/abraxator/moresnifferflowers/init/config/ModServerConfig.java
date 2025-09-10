@@ -113,6 +113,9 @@ public class ModServerConfig {
     }
 
     private static boolean validateItemName(final Object obj) {
-        return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(itemName));
+        if (!(obj instanceof String itemName)) return false;
+        ResourceLocation resourceLocation = ResourceLocation.tryParse(itemName);
+        if (resourceLocation == null) return false;
+        return ForgeRegistries.ITEMS.containsKey(resourceLocation);
     }
 }

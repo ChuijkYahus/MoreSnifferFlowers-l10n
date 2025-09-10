@@ -27,6 +27,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.system.NonnullDefault;
 
 import java.util.Map;
 
@@ -57,6 +58,7 @@ public class VivicusSproutingBlock extends Block implements ModCropBlock, Colora
     public boolean isRandomlyTicking(BlockState state) {
         return super.isRandomlyTicking(state) || !isMaxAge(state);
     }
+
 
     public void grow(BlockState state, Level level, BlockPos pos) {
         makeGrowOnBonemeal(level, pos, state);

@@ -107,19 +107,19 @@ public class VivicusTrunkPlacerUnused extends TrunkPlacer {
             TreeConfiguration pTreeConfig,
             List<FoliagePlacer.FoliageAttachment> pFoliageAttachments,
             BlockPos.MutableBlockPos pos,
-            int pY,
+            int y,
             Direction pDirection,
             int pExtraBranchLength,
             int pExtraBranchSteps
     ) {
-        int i = pY + pExtraBranchLength;
+        int i = y + pExtraBranchLength;
         int j = pos.getX();
         int k = pos.getZ();
         int l = pExtraBranchLength;
 
         while (l < pFreeTreeHeight && pExtraBranchSteps > 0) {
             if (l >= 1) {
-                int i1 = pY + l;
+                int i1 = y + l;
                 j += pDirection.getStepX();
                 k += pDirection.getStepZ();
                 i = i1;
@@ -134,7 +134,7 @@ public class VivicusTrunkPlacerUnused extends TrunkPlacer {
             pExtraBranchSteps--;
         }
 
-        if (i - pY > 1) {
+        if (i - y > 1) {
             BlockPos blockpos = new BlockPos(j, i, k);
             pFoliageAttachments.add(new FoliagePlacer.FoliageAttachment(blockpos, 0, false));
             pFoliageAttachments.add(new FoliagePlacer.FoliageAttachment(blockpos.below(2), 0, false));

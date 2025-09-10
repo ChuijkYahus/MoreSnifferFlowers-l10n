@@ -6,8 +6,8 @@ import net.minecraft.core.particles.SimpleParticleType;
 import org.jetbrains.annotations.Nullable;
 
 public class FlyParticle extends TextureSheetParticle {
-    protected FlyParticle(ClientLevel level, double pX, double pY, double pZ) {
-        super(level, pX, pY, pZ);
+    protected FlyParticle(ClientLevel level, double x, double y, double z) {
+        super(level, x, y, z);
         this.setSize(0.1F, 0.1F);
         this.gravity = 0.005F;
         this.lifetime = 300 + random.nextInt(40);
@@ -27,8 +27,8 @@ public class FlyParticle extends TextureSheetParticle {
 
         @Nullable
         @Override
-        public Particle createParticle(SimpleParticleType pType, ClientLevel level, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
-            FlyParticle flyParticle = new FlyParticle(level, pX, pY, pZ);
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+            FlyParticle flyParticle = new FlyParticle(level, x, y, z);
             flyParticle.pickSprite(spriteSet);
             return flyParticle;
         }

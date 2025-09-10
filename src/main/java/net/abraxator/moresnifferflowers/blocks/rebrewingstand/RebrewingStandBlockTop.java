@@ -48,9 +48,9 @@ public class RebrewingStandBlockTop extends RebrewingStandBlockBase implements M
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> pBlockEntityType) {
         if(level.isClientSide) return null;
-        return (pLevel1, pos, pState1, pBlockEntity) -> {
-            if (pBlockEntity instanceof RebrewingStandBlockEntity) {
-                ((RebrewingStandBlockEntity) pBlockEntity).tick(level);
+        return (pLevel1, pos, pState1, blockEntity) -> {
+            if (blockEntity instanceof RebrewingStandBlockEntity) {
+                ((RebrewingStandBlockEntity) blockEntity).tick(level);
             }
         };
     }

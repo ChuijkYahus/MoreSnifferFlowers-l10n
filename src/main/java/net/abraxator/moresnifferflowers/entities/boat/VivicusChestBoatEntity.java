@@ -26,12 +26,12 @@ public class VivicusChestBoatEntity extends ModChestBoatEntity implements Colora
         super(entityType, level);
     }
 
-    public VivicusChestBoatEntity(Level level, double pX, double pY, double pZ) {
+    public VivicusChestBoatEntity(Level level, double x, double y, double z) {
         this(ModEntityTypes.MOD_VIVICUS_CHEST_BOAT.get(), level);
-        this.setPos(pX, pY, pZ);
-        this.xo = pX;
-        this.yo = pY;
-        this.zo = pZ;
+        this.setPos(x, y, z);
+        this.xo = x;
+        this.yo = y;
+        this.zo = z;
     }
 
     @Override

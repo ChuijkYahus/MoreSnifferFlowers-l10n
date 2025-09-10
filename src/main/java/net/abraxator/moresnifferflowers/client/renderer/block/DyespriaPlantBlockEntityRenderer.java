@@ -21,19 +21,19 @@ public class DyespriaPlantBlockEntityRenderer implements BlockEntityRenderer<Dye
     }
 
     @Override
-    public void render(DyespriaPlantBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
-        var isGrown = pBlockEntity.getBlockState().getValue(ModStateProperties.AGE_3) >= 3;
-        var hasDye = !pBlockEntity.dye.isEmpty();
+    public void render(DyespriaPlantBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+        var isGrown = blockEntity.getBlockState().getValue(ModStateProperties.AGE_3) >= 3;
+        var hasDye = !blockEntity.dye.isEmpty();
         
-        if(isGrown && hasDye && !pBlockEntity.getBlockState().getValue(ModStateProperties.SHEARED)) {
+        if(isGrown && hasDye && !blockEntity.getBlockState().getValue(ModStateProperties.SHEARED)) {
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-            DyeItem dyeItem = DyeItem.byColor(pBlockEntity.getBlockState().getValue(ModStateProperties.COLOR));
-            pPoseStack.pushPose();
-            pPoseStack.translate(0.5, 0.9375, 0.5);
-            pPoseStack.mulPose(entityRenderDispatcher.cameraOrientation());
-            pPoseStack.scale(0.35F, 0.35F, 0.35F);
-            itemRenderer.renderStatic(new ItemStack(dyeItem), ItemDisplayContext.FIXED, pPackedLight, pPackedOverlay, pPoseStack, pBufferSource, pBlockEntity.getLevel(), ((int) pBlockEntity.getBlockPos().asLong()));
-            pPoseStack.popPose();
+            DyeItem dyeItem = DyeItem.byColor(blockEntity.getBlockState().getValue(ModStateProperties.COLOR));
+            poseStack.pushPose();
+            poseStack.translate(0.5, 0.9375, 0.5);
+            poseStack.mulPose(entityRenderDispatcher.cameraOrientation());
+            poseStack.scale(0.35F, 0.35F, 0.35F);
+            itemRenderer.renderStatic(new ItemStack(dyeItem), ItemDisplayContext.FIXED, packedLight, packedOverlay, poseStack, buffer, blockEntity.getLevel(), ((int) blockEntity.getBlockPos().asLong()));
+            poseStack.popPose();
         }
     }
 }

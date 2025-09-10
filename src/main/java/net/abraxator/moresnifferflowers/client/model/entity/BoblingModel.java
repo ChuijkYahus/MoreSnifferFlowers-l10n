@@ -83,7 +83,7 @@ public class BoblingModel<T extends BoblingEntity> extends HierarchicalModel<T> 
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, float pRed, float pGreen, float pBlue, float pAlpha) {
-		root.render(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pRed, pGreen, pBlue, pAlpha);
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float pRed, float pGreen, float pBlue, float pAlpha) {
+		root.render(poseStack, buffer, packedLight, packedOverlay, pRed, pGreen, pBlue, pAlpha);
 	}
 }

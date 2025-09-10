@@ -20,16 +20,16 @@ public class AmbushBlockEntityRenderer implements BlockEntityRenderer<XbushBlock
     }
 
     @Override
-    public void render(XbushBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
-        if(pBlockEntity.getBlockState().getBlock() instanceof AbstractXBushBlockUpper bushBlockUpper) {
+    public void render(XbushBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+        if(blockEntity.getBlockState().getBlock() instanceof AbstractXBushBlockUpper bushBlockUpper) {
             BlockState state = bushBlockUpper.getDropBlock().defaultBlockState();
-            pPoseStack.pushPose();
-            float progress = Math.min(pBlockEntity.growProgress, 1);
+            poseStack.pushPose();
+            float progress = Math.min(blockEntity.growProgress, 1);
             float translate = 0.5f -(progress  * 0.5f);
-            pPoseStack.translate(translate, translate, translate);
-            pPoseStack.scale(progress, progress, progress);
-            this.blockRenderer.renderSingleBlock(state, pPoseStack, pBufferSource, pPackedLight, pPackedOverlay, ModelData.EMPTY, RenderType.translucent());
-            pPoseStack.popPose();
+            poseStack.translate(translate, translate, translate);
+            poseStack.scale(progress, progress, progress);
+            this.blockRenderer.renderSingleBlock(state, poseStack, buffer, packedLight, packedOverlay, ModelData.EMPTY, RenderType.translucent());
+            poseStack.popPose();
         }
     }
 }

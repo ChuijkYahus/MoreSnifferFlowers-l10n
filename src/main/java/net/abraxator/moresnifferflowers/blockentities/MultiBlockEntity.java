@@ -18,8 +18,8 @@ public class MultiBlockEntity extends ModBlockEntity {
     public boolean isPlaced; //True once the whole placing logic runs (to prevent updateShape from breaking it early)
     public PreviewMode previewMode = PreviewMode.PLACED;
 
-    public MultiBlockEntity(BlockEntityType<?> pType, BlockPos pos, BlockState pBlockState) {
-        super(pType, pos, pBlockState);
+    public MultiBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState pBlockState) {
+        super(type, pos, pBlockState);
         this.center = this.getBlockPos();
         this.isPlaced = false;
     }

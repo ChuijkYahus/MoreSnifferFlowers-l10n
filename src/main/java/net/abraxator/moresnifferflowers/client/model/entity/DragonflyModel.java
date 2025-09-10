@@ -41,13 +41,13 @@ public class DragonflyModel extends Model {
 		return LayerDefinition.create(meshdefinition, 64, 64);
 	}
 
-	public void animate(float pPartialTick) {
-		this.wing1.zRot = (float) (Mth.cos(pPartialTick * 100F * Mth.PI / 180.0F) * Mth.PI * 0.25);
-		this.wing2.zRot = (float) -(Mth.cos(pPartialTick * 100F * Mth.PI / 180.0F) * Mth.PI * 0.25);
+	public void animate(float partialTick) {
+		this.wing1.zRot = (float) (Mth.cos(partialTick * 100F * Mth.PI / 180.0F) * Mth.PI * 0.25);
+		this.wing2.zRot = (float) -(Mth.cos(partialTick * 100F * Mth.PI / 180.0F) * Mth.PI * 0.25);
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, float pRed, float pGreen, float pBlue, float pAlpha) {
-		root.render(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pRed, pGreen, pBlue, pAlpha);
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float pRed, float pGreen, float pBlue, float pAlpha) {
+		root.render(poseStack, buffer, packedLight, packedOverlay, pRed, pGreen, pBlue, pAlpha);
 	}
 }
