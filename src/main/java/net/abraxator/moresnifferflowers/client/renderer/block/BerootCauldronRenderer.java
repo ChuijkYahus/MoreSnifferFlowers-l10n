@@ -29,7 +29,7 @@ import org.joml.Quaternionf;
 
 import java.util.function.Function;
 
-public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> implements BlockEntityRenderer<T>, MultiblockRender {
+public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> implements BlockEntityRenderer<T>, IMultiblockRenderHelper {
     private final ModelPart cauldron;
     private final ModelPart spoon;
 
@@ -51,7 +51,7 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> impleme
         final RandomSource randomSource = level().getRandom();
         final Direction direction = blockEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
 
-        if(blockEntity.canRender()) {
+        if(blockEntity.isCenter()) {
             //CAULDRON
             poseStack.pushPose();
             poseStack.translate(1, 1.5, 0);

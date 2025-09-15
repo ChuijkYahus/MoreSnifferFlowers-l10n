@@ -13,8 +13,8 @@ import net.minecraft.world.level.block.state.BlockState;
 public class BoblingSackBlockEntity extends BlockEntity {
     public NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
     
-    public BoblingSackBlockEntity(BlockPos pos, BlockState pBlockState) {
-        super(ModBlockEntities.BOBLING_SACK.get(), pos, pBlockState);
+    public BoblingSackBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.BOBLING_SACK.get(), pos, state);
     }
 
     @Override

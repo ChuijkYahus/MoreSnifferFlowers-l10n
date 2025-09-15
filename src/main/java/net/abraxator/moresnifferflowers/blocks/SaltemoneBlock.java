@@ -2,8 +2,8 @@ package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
 import net.abraxator.moresnifferflowers.blocks.multiblock.AbstractMultiBlock;
-import net.abraxator.moresnifferflowers.blocks.multiblock.CorruptableMultiblock;
-import net.abraxator.moresnifferflowers.blocks.multiblock.PreviewableMultiblock;
+import net.abraxator.moresnifferflowers.blocks.multiblock.ICorruptableMultiblock;
+import net.abraxator.moresnifferflowers.blocks.multiblock.IPreviewableMultiblock;
 import net.abraxator.moresnifferflowers.entities.SaltBubbleProjectile;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
 
-public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock, Corruptable, ModCropBlock, PreviewableMultiblock, CorruptableMultiblock {
+public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock, Corruptable, ModCropBlock, IPreviewableMultiblock, ICorruptableMultiblock {
     public SaltemoneBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(defaultBlockState()
@@ -61,7 +61,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
 
     @Override
     public BlockState getDefaultStateForPreviews(Direction direction) {
-        return PreviewableMultiblock.super.getDefaultStateForPreviews(direction).setValue(getAgeProperty(), getMaxAge());
+        return IPreviewableMultiblock.super.getDefaultStateForPreviews(direction).setValue(getAgeProperty(), getMaxAge());
     }
 
     @Override

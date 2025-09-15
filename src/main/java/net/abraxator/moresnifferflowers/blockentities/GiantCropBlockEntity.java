@@ -12,14 +12,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
-public class GiantCropBlockEntity extends MultiBlockEntity {
+public class GiantCropBlockEntity extends AbstractMultiBlockEntity {
     public boolean canGrow = false;
     public double growProgress = 0;
     public int state = 0; //0 NONE; 1 ANIMATION; 2 SACK;
     public float staticGameTime;
 
-    public GiantCropBlockEntity(BlockPos pos, BlockState pBlockState) {
-        super(ModBlockEntities.GIANT_CROP.get(), pos, pBlockState);
+    public GiantCropBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.GIANT_CROP.get(), pos, state);
     }
 
     @Override

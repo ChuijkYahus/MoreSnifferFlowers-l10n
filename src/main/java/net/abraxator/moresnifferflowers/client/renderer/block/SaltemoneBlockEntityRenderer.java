@@ -18,11 +18,8 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 
-public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implements BlockEntityRenderer<T>, MultiblockRender {
+public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implements BlockEntityRenderer<T>, IMultiblockRenderHelper {
     private final ModelPart body;
     private final ModelPart top;
     private static final Material SALTEMONE_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/saltemone"));

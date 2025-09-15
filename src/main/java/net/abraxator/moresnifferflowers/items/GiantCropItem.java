@@ -1,10 +1,9 @@
 package net.abraxator.moresnifferflowers.items;
 
-import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.multiblock.MultiBlock;
+import net.abraxator.moresnifferflowers.blockentities.IMultiBlockEntity;
+import net.abraxator.moresnifferflowers.blocks.multiblock.IMultiBlock;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +30,7 @@ public class GiantCropItem extends BlockItem {
         var level = context.getLevel();
         var clickPos = context.getClickedPos().relative(context.getClickedFace(), 1);
         var aabb = AABB.ofSize(clickPos.getCenter(), 2, 2, 2);
-        MultiBlock multiBlock = (MultiBlock) state.getBlock();
+        IMultiBlock multiBlock = (IMultiBlock) state.getBlock();
 
         multiBlock.fullBlockShape(clickPos, null).forEach(pos -> {
 
@@ -41,7 +40,7 @@ public class GiantCropItem extends BlockItem {
                     .setValue(ModStateProperties.CENTER, pos.equals(clickPos))
                     .setValue(WATERLOGGED, isWaterLogged));
 
-            if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+            if (level.getBlockEntity(pos) instanceof IMultiBlockEntity entity) {
                 entity.setCenter(clickPos);
             }
         });
@@ -53,7 +52,7 @@ public class GiantCropItem extends BlockItem {
     protected boolean canPlace(BlockPlaceContext context, BlockState state) {
         var pos = context.getClickedPos();
         var level = context.getLevel();
-        MultiBlock multiBlock = (MultiBlock) state.getBlock();
+        IMultiBlock multiBlock = (IMultiBlock) state.getBlock();
         var aabb = AABB.ofSize(context.getClickedPos().relative(context.getClickedFace(), 1).getCenter(), 2, 2, 2);
         var ret = multiBlock.fullBlockShape(pos.relative(context.getClickedFace()), null).allMatch(blockPos -> level.getBlockState(blockPos).canBeReplaced());
 

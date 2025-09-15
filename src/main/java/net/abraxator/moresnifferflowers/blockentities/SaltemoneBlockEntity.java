@@ -6,9 +6,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
-public class SaltemoneBlockEntity extends MultiBlockEntity {
-    public SaltemoneBlockEntity(BlockPos pos, BlockState pBlockState) {
-        super(ModBlockEntities.SALTEMONE.get(), pos, pBlockState);
+public class SaltemoneBlockEntity extends AbstractMultiBlockEntity {
+    public SaltemoneBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.SALTEMONE.get(), pos, state);
     }
 
     @Override

@@ -9,7 +9,7 @@ import oshi.util.tuples.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface PreviewableMultiblock extends MultiBlock {
+public interface IPreviewableMultiblock extends IMultiBlock {
     /**May save performance and fix translucency glitches if your preview only uses a block entity render
      * usually it's better to override <BlockBehaviour.getRenderShape()> instead*/
     default boolean skipJsonRendering() {

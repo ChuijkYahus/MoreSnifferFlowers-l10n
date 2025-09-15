@@ -1,7 +1,6 @@
 package net.abraxator.moresnifferflowers.blocks.multiblock;
 
-import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.Corruptable;
+import net.abraxator.moresnifferflowers.blockentities.IMultiBlockEntity;
 import net.abraxator.moresnifferflowers.entities.CorruptedProjectile;
 import net.abraxator.moresnifferflowers.recipes.CorruptionRecipe;
 import net.minecraft.core.BlockPos;
@@ -12,7 +11,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-public interface CorruptableMultiblock extends MultiBlock {
+public interface ICorruptableMultiblock extends IMultiBlock {
     Block getCuredBlock();
     Block getCorruptedBlock();
 
@@ -23,8 +22,8 @@ public interface CorruptableMultiblock extends MultiBlock {
 
         boolean ret = fullBlockShape(center, state).allMatch(blockPos -> level.getBlockState(blockPos).is(getCuredBlock()) || level.getBlockState(blockPos).is(getCorruptedBlock()));
 
-        if (ret && level.getBlockEntity(pos) instanceof MultiBlockEntity entity && !entity.isPlaced) {
-            fullBlockShape(center, state).forEach(blockPos -> MultiBlockEntity.setPlaced(level, blockPos));
+        if (ret && level.getBlockEntity(pos) instanceof IMultiBlockEntity entity && !entity.isPlaced()) {
+            fullBlockShape(center, state).forEach(blockPos -> IMultiBlockEntity.setPlaced(level, blockPos));
         }
 
         return ret;
@@ -32,7 +31,7 @@ public interface CorruptableMultiblock extends MultiBlock {
 
     default void corruptionHelper(BlockState state, Level level, BlockPos pos, Entity entityInside){
         if(entityInside instanceof CorruptedProjectile corruptedProjectile && CorruptionRecipe.canBeCorrupted(state.getBlock(), level)) {
-            if(level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+            if(level.getBlockEntity(pos) instanceof IMultiBlockEntity entity) {
                 corruptedProjectile.discard();
                 BlockPos centrePos = entity.getCenter();
                 BlockState centreState = level.getBlockState(centrePos);
@@ -49,7 +48,7 @@ public interface CorruptableMultiblock extends MultiBlock {
         Block corruptedBlock = CorruptionRecipe.getCorruptedBlock(level.getBlockState(pos).getBlock(), level).orElse(Blocks.AIR);
         level.setBlockAndUpdate(pos, corruptedBlock.withPropertiesOf(level.getBlockState(pos)));
 
-        if(level.getBlockEntity(pos) instanceof MultiBlockEntity entity){
+        if(level.getBlockEntity(pos) instanceof IMultiBlockEntity entity){
             entity.setCenter(centrePos);
         }
     }

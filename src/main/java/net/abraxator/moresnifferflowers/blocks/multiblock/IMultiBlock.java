@@ -1,7 +1,7 @@
 package net.abraxator.moresnifferflowers.blocks.multiblock;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
-import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
+import net.abraxator.moresnifferflowers.blockentities.IMultiBlockEntity;
 import net.abraxator.moresnifferflowers.blocks.ModCropBlock;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.core.BlockPos;
@@ -14,16 +14,13 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.phys.shapes.BooleanOp;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
-public interface MultiBlock{
+public interface IMultiBlock {
 
     /*
    How to use:
@@ -74,8 +71,8 @@ public interface MultiBlock{
     }
 
     static Stream<BlockPos> getFullShape(Level level, BlockPos pos){
-        if (level.getBlockEntity(pos) instanceof MultiBlockEntity multiBlockEntity
-                && level.getBlockState(pos).getBlock() instanceof MultiBlock multiBlock){
+        if (level.getBlockEntity(pos) instanceof IMultiBlockEntity multiBlockEntity
+                && level.getBlockState(pos).getBlock() instanceof IMultiBlock multiBlock){
 
             return multiBlock.fullBlockShape(multiBlockEntity.getCenter(), level.getBlockState(pos));
         }
@@ -94,9 +91,9 @@ public interface MultiBlock{
             if (getStateFromOffset() != null) stateNew = getStateFromOffset().apply(stateNew, posNew.subtract(posOriginal));
 
             level.setBlock(posNew, stateNew, flags);
-            if(level.getBlockEntity(posNew) instanceof MultiBlockEntity entity) {
+            if(level.getBlockEntity(posNew) instanceof IMultiBlockEntity entity) {
                 entity.setCenter(posOriginal);
-                entity.setChanged();
+                entity.getBlockEntity().setChanged();
             }
         });
     }
@@ -137,15 +134,15 @@ public interface MultiBlock{
 
         boolean ret = fullBlockShape(center, state).allMatch(blockPos -> level.getBlockState(blockPos).is(getBlock()));
 
-        if (ret && level.getBlockEntity(pos) instanceof MultiBlockEntity entity && !entity.isPlaced) {
-            fullBlockShape(center, state).forEach(blockPos -> MultiBlockEntity.setPlaced(level, blockPos));
+        if (ret && level.getBlockEntity(pos) instanceof IMultiBlockEntity entity && !entity.isPlaced()) {
+            fullBlockShape(center, state).forEach(blockPos -> IMultiBlockEntity.setPlaced(level, blockPos));
         }
 
         return ret;
     }
 
     default BlockState updateShapeHelper(BlockState state, LevelAccessor level, BlockPos pos){
-        if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity){
+        if (level.getBlockEntity(pos) instanceof IMultiBlockEntity entity){
             boolean canSurvive = state.canSurvive(level, pos);
             if (!canSurvive){
                 destroy(entity.getCenter(), (Level) level, state);
@@ -160,10 +157,10 @@ public interface MultiBlock{
     }
 
     default boolean canSurviveHelper(BlockState state, LevelReader level, BlockPos pos){
-        if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity){
+        if (level.getBlockEntity(pos) instanceof IMultiBlockEntity entity){
             //survive logic
             boolean extraSurvive = fullBlockShape(entity.getCenter(), state).allMatch(blockPos -> extraSurviveRequirements(level, blockPos, state));
-            return (allBlocksPresent(level, pos, state) || !entity.isPlaced) && extraSurvive;
+            return (allBlocksPresent(level, pos, state) || !entity.isPlaced()) && extraSurvive;
         } else {
             //placement logic
             return canPlace(level, pos, state);
@@ -178,8 +175,8 @@ public interface MultiBlock{
 
     // Add this to playerWillDestroy
     default void preventCreativeDrops(Player player, Level level, BlockPos pos){
-        if (player.isCreative() && level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
-            level.destroyBlock(entity.center, false);
+        if (player.isCreative() && level.getBlockEntity(pos) instanceof IMultiBlockEntity entity) {
+            level.destroyBlock(entity.getCenter(), false);
         }
     }
 
@@ -194,10 +191,10 @@ public interface MultiBlock{
         if (isCenter(state)){
 
             fullBlockShape(pos, state).forEach(posNew -> {
-                if (level.getBlockEntity(posNew) instanceof MultiBlockEntity entity) {
+                if (level.getBlockEntity(posNew) instanceof IMultiBlockEntity entity) {
                     entity.setCenter(pos);
 
-                    entity.setChanged();
+                    entity.getBlockEntity().setChanged();
                     level.sendBlockUpdated(posNew, state, state, 2);
                 }
             });
@@ -208,15 +205,15 @@ public interface MultiBlock{
         if (!isCenter(state)) return false;
 
         return fullBlockShape(pos, state).anyMatch(blockPos -> {
-            if (level.getBlockEntity(blockPos) instanceof MultiBlockEntity entity){
-                return !(entity.center.equals(pos) && !isCenter(level.getBlockState(blockPos)));
+            if (level.getBlockEntity(blockPos) instanceof IMultiBlockEntity entity){
+                return !(entity.getCenter().equals(pos) && !isCenter(level.getBlockState(blockPos)));
             }
             return true;
         });
     }
 
     default BlockPos getCenter(BlockGetter level, BlockPos pos){
-        if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity){
+        if (level.getBlockEntity(pos) instanceof IMultiBlockEntity entity){
             return entity.getCenter();
         }
         MoreSnifferFlowers.LOGGER.error("Couldn't get center for multi block");
@@ -224,7 +221,7 @@ public interface MultiBlock{
     }
 
     default boolean isCenter(LevelReader level, BlockPos pos){
-        if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+        if (level.getBlockEntity(pos) instanceof IMultiBlockEntity entity) {
             return entity.getCenter().equals(pos);
         }
         return false;
@@ -235,21 +232,21 @@ public interface MultiBlock{
     }
 
     default int getXOffset(BlockGetter level, BlockPos pos){
-        if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+        if (level.getBlockEntity(pos) instanceof IMultiBlockEntity entity) {
             return pos.getX() - entity.getCenter().getX();
         }
         return 0;
     }
 
     default int getYOffset(BlockGetter level, BlockPos pos){
-        if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+        if (level.getBlockEntity(pos) instanceof IMultiBlockEntity entity) {
             return pos.getY() - entity.getCenter().getY();
         }
         return 0;
     }
 
     default int getZOffset(BlockGetter level, BlockPos pos){
-        if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+        if (level.getBlockEntity(pos) instanceof IMultiBlockEntity entity) {
             return pos.getZ() - entity.getCenter().getZ();
         }
         return 0;
@@ -275,10 +272,10 @@ public interface MultiBlock{
 
 
     default VoxelShape voxelShapeHelper(BlockState state, BlockGetter level, BlockPos pos, VoxelShape shape, float xOffset, float yOffset, float zOffset, boolean hasDirectionOffsets){
-        if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
-            var x = entity.center.getX() - pos.getX() + xOffset;
-            var y = entity.center.getY() - pos.getY() + yOffset;
-            var z = entity.center.getZ() - pos.getZ() + zOffset;
+        if (level.getBlockEntity(pos) instanceof IMultiBlockEntity entity) {
+            var x = entity.getCenter().getX() - pos.getX() + xOffset;
+            var y = entity.getCenter().getY() - pos.getY() + yOffset;
+            var z = entity.getCenter().getZ() - pos.getZ() + zOffset;
 
             if (getDirectionProperty() != null && hasDirectionOffsets) {
                 switch (state.getValue(getDirectionProperty())) {
@@ -298,7 +295,7 @@ public interface MultiBlock{
     default void growHelper(Level level, BlockPos blockPos, BlockState blockState){
         Block block = blockState.getBlock();
         if (block instanceof ModCropBlock cropBlock) {
-            if(level.getBlockEntity(blockPos) instanceof MultiBlockEntity entity) {
+            if(level.getBlockEntity(blockPos) instanceof IMultiBlockEntity entity) {
                 fullBlockShape(entity.getCenter(), level.getBlockState(blockPos)).forEach(pos -> {
                     if(level.getBlockState(pos).is(block)) {
                         cropBlock.makeGrowOnBonemeal(level, pos, level.getBlockState(pos));

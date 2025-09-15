@@ -1,7 +1,7 @@
 package net.abraxator.moresnifferflowers.mixins;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
+import net.abraxator.moresnifferflowers.blockentities.IMultiBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.TickablePacketListener;
 import net.minecraft.network.protocol.game.ServerGamePacketListener;
@@ -18,7 +18,7 @@ public abstract class ShutUpWarnsMixin implements ServerPlayerConnection, Tickab
 
     @ModifyVariable(method = "handleUseItemOn", at = @At(value = "STORE"), ordinal = 2)
     public Vec3 useAllower(Vec3 vec3, @Local ServerLevel level, @Local BlockPos pos) {
-        if(level.getBlockEntity(pos) instanceof MultiBlockEntity){
+        if(level.getBlockEntity(pos) instanceof IMultiBlockEntity){
             return new Vec3(0, 0 , 0);
         }
         return vec3;

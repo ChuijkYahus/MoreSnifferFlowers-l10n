@@ -1,7 +1,6 @@
 package net.abraxator.moresnifferflowers.blocks;
 
-import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.multiblock.MultiBlock;
+import net.abraxator.moresnifferflowers.blocks.multiblock.IMultiBlock;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -14,11 +13,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.FarmBlock;
@@ -29,7 +25,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.Tags;
 
-;import java.util.OptionalLong;
+;
 
 public interface ModCropBlock extends BonemealableBlock {
     IntegerProperty getAgeProperty();
@@ -71,7 +67,7 @@ public interface ModCropBlock extends BonemealableBlock {
             CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player, blockPos, player.getItemInHand(hand));
         }
 
-        MultiBlock.getFullShape(level, blockPos).forEach(pos -> {
+        IMultiBlock.getFullShape(level, blockPos).forEach(pos -> {
             BlockState blockStateNew = level.getBlockState(pos);
 
             level.setBlockAndUpdate(pos, blockStateNew.trySetValue(ModStateProperties.SHEARED, true));

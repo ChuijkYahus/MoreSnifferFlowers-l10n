@@ -2,7 +2,7 @@ package net.abraxator.moresnifferflowers.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
+import net.abraxator.moresnifferflowers.blockentities.IMultiBlockEntity;
 import net.abraxator.moresnifferflowers.components.PreviewMode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
@@ -11,13 +11,12 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import java.util.function.Function;
 
-public interface MultiblockRender {
+public interface IMultiblockRenderHelper {
 
     default Function<ResourceLocation, RenderType> getRenderTypeFunction(PreviewMode previewMode) {
        return previewMode.equals(PreviewMode.PLACED) ? RenderType::entityCutout : RenderType::entityTranslucentCull;
@@ -27,8 +26,8 @@ public interface MultiblockRender {
         return previewMode.equals(PreviewMode.PLACED) ? RenderType.entityCutout(location) : RenderType.entityTranslucentCull(location);
     }
 
-    default VertexConsumer getConsumer(MultiBufferSource buffer, MultiBlockEntity blockEntity, Material materialBase, Material materialCorrupted, Block blockCorrupted) {
-        PreviewMode previewMode = blockEntity.previewMode;
+    default VertexConsumer getConsumer(MultiBufferSource buffer, IMultiBlockEntity blockEntity, Material materialBase, Material materialCorrupted, Block blockCorrupted) {
+        PreviewMode previewMode = blockEntity.getPreviewMode();
 
         RenderType renderTypeBase = getRenderType(previewMode, materialBase.atlasLocation());
         RenderType renderTypeCorrupted = getRenderType(previewMode, materialCorrupted.atlasLocation());
@@ -36,7 +35,7 @@ public interface MultiblockRender {
         VertexConsumer baseConsumer = materialBase.sprite().wrap(buffer.getBuffer(renderTypeBase));
         VertexConsumer corruptedConsumer = materialCorrupted.sprite().wrap(buffer.getBuffer(renderTypeCorrupted));
 
-        return blockEntity.getBlockState().is(blockCorrupted) ? corruptedConsumer : baseConsumer;
+        return blockEntity.getBlockEntity().getBlockState().is(blockCorrupted) ? corruptedConsumer : baseConsumer;
     }
 
 

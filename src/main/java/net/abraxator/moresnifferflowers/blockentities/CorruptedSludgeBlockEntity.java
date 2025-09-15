@@ -36,8 +36,8 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
     public int stateChange;
     public GameEventListener listener;
     
-    public CorruptedSludgeBlockEntity(BlockPos pos, BlockState pBlockState) {
-        super(ModBlockEntities.CORRUPTED_SLUDGE.get(), pos, pBlockState);
+    public CorruptedSludgeBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.CORRUPTED_SLUDGE.get(), pos, state);
         this.corruptedSludgeListener = new CorruptedSludgeListener(new BlockPositionSource(pos));
         this.listener = new CorruptedSludgeListener(new BlockPositionSource(pos));
     }

@@ -2,7 +2,7 @@ package net.abraxator.moresnifferflowers.mixins;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
-import net.abraxator.moresnifferflowers.blocks.multiblock.MultiBlock;
+import net.abraxator.moresnifferflowers.blocks.multiblock.IMultiBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -19,7 +19,7 @@ public class StructureTemplateMixin {
 
     @Inject(method = "placeInWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/ServerLevelAccessor;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z", ordinal = 1), cancellable = true)
     public void placeInWorld(ServerLevelAccessor serverLevel, BlockPos offset, BlockPos pos, StructurePlaceSettings settings, RandomSource random, int flags, CallbackInfoReturnable<Boolean> cir, @Local(ordinal = 0, argsOnly = true) LocalIntRef flags1, @Local BlockState state, @Local(ordinal = 2) BlockPos blockPos) {
-        if (state.getBlock() instanceof MultiBlock multiBlock) {
+        if (state.getBlock() instanceof IMultiBlock multiBlock) {
             multiBlock.fixInStructures(state, serverLevel, blockPos);
         }
     }

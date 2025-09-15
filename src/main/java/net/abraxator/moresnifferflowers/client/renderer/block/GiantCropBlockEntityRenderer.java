@@ -20,7 +20,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.model.pipeline.VertexConsumerWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
@@ -29,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implements BlockEntityRenderer<T>, MultiblockRender {
+public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implements BlockEntityRenderer<T>, IMultiblockRenderHelper {
 	private final Map<Block, ModelPart> modelPartMap = new HashMap<>();
 
 

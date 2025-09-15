@@ -2,8 +2,8 @@ package net.abraxator.moresnifferflowers.client.renderer.custom;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.multiblock.PreviewableMultiblock;
+import net.abraxator.moresnifferflowers.blockentities.IMultiBlockEntity;
+import net.abraxator.moresnifferflowers.blocks.multiblock.IPreviewableMultiblock;
 import net.abraxator.moresnifferflowers.components.PreviewMode;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -34,7 +34,7 @@ public class MultiblockPreviewRenderer {
     public static void renderMultiblockPreviews(float partialTick, Minecraft minecraft, Level level, Camera camera, PoseStack poseStack) {
         LocalPlayer player = minecraft.player;
         assert player != null;
-        if (player.getMainHandItem().getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof PreviewableMultiblock multiBlock && blockItem.getBlock() instanceof EntityBlock block) {
+        if (player.getMainHandItem().getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof IPreviewableMultiblock multiBlock && blockItem.getBlock() instanceof EntityBlock block) {
             HitResult hitResult = minecraft.hitResult;
 
             if (hitResult instanceof BlockHitResult blockHitResult){
@@ -53,11 +53,11 @@ public class MultiblockPreviewRenderer {
                 BlockEntity entity = block.newBlockEntity(pos, state);
 
                 boolean shouldShowPreview = level.getBlockState(pos).canBeReplaced() && (!level.getBlockState(hitPos).isAir() || placeOnWater);
-                if (entity instanceof MultiBlockEntity multiBlockEntity && shouldShowPreview) {
+                if (entity instanceof IMultiBlockEntity multiBlockEntity && shouldShowPreview) {
                     entity.setLevel(level);
 
                     PreviewMode previewMode = multiBlock.canPlace(level, pos, state) ? PreviewMode.PREVIEW : PreviewMode.INVALID;
-                    multiBlockEntity.previewMode = previewMode;
+                    multiBlockEntity.setPreviewMode(previewMode);
 
                     if (level.getBlockState(hitPos).canBeReplaced() && !placeOnWater) pos = pos.relative(hitDirection.getOpposite());
 
@@ -83,7 +83,7 @@ public class MultiblockPreviewRenderer {
         }
     }
 
-    private static void renderJsonModels(Minecraft minecraft, Level level, PoseStack poseStack, PreviewableMultiblock multiBlock, BlockPos originalPos, BlockState stateOriginal, MultiBufferSource.BufferSource buffer, PreviewMode previewMode) {
+    private static void renderJsonModels(Minecraft minecraft, Level level, PoseStack poseStack, IPreviewableMultiblock multiBlock, BlockPos originalPos, BlockState stateOriginal, MultiBufferSource.BufferSource buffer, PreviewMode previewMode) {
         BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
         poseStack.translate(0.0001,0.0001,0.0001);
 
@@ -99,8 +99,13 @@ public class MultiblockPreviewRenderer {
 
             VertexConsumer tintedConsumer = new VertexConsumerWrapper(buffer.getBuffer(RenderType.translucent())) {
                 @Override
-                public void putBulkData(PoseStack.Pose pose, BakedQuad quad, float[] brightness, float red, float green, float blue, float alpha, int[] lightmap, int packedOverlay, boolean readAlpha){
-                    super.putBulkData(pose, quad, brightness, red * previewMode.red, green * previewMode.green, blue * previewMode.blue, alpha * previewMode.alpha, lightmap, packedOverlay, readAlpha);
+                public void putBulkData(PoseStack.Pose pose, BakedQuad quad, float[] colorMuls, float red, float green, float blue, int[] combinedLights, int combinedOverlay, boolean mulColor) {
+                    super.putBulkData(pose, quad, colorMuls, red, green, blue, combinedLights, combinedOverlay, mulColor);
+                }
+
+                @Override
+                public VertexConsumer color(float red, float green, float blue, float alpha) {
+                    return super.color(red * previewMode.red, green * previewMode.green, blue * previewMode.blue, alpha * previewMode.alpha);
                 }
             };
 

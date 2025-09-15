@@ -78,8 +78,8 @@ public class RebrewingStandBlockEntity extends BaseContainerBlockEntity {
         }
     };
 
-    public RebrewingStandBlockEntity(BlockPos pos, BlockState pBlockState) {
-        super(ModBlockEntities.REBREWING_STAND.get(), pos, pBlockState);
+    public RebrewingStandBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.REBREWING_STAND.get(), pos, state);
     }
 
     @Override

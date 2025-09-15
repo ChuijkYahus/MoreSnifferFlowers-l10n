@@ -41,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BerootCauldronBlockEntity extends MultiBlockEntity {
+public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity {
     public int beetroots = 0;
     private final int foodLimit = 8;
     public BetterNonNullList<ItemStack> ingredients = BetterNonNullList.withSize(foodLimit, ItemStack.EMPTY);
@@ -58,8 +58,8 @@ public class BerootCauldronBlockEntity extends MultiBlockEntity {
     int craftingTimeRemaining = 0;
     public boolean isCenter = false;
 
-    public BerootCauldronBlockEntity(BlockPos pos, BlockState pBlockState) {
-        super(ModBlockEntities.BEROOT_CAULDRON.get(), pos, pBlockState);
+    public BerootCauldronBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.BEROOT_CAULDRON.get(), pos, state);
     }
 
     public InteractionResult addItem(ItemStack itemStack, Player player) {

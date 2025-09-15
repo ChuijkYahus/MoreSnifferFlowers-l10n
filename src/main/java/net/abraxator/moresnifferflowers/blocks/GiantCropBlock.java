@@ -2,8 +2,8 @@ package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
-import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.multiblock.PreviewableMultiblock;
+import net.abraxator.moresnifferflowers.blockentities.IMultiBlockEntity;
+import net.abraxator.moresnifferflowers.blocks.multiblock.IPreviewableMultiblock;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,7 +15,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -48,7 +47,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 
-public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable, PreviewableMultiblock, SimpleWaterloggedBlock {
+public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable, IPreviewableMultiblock, SimpleWaterloggedBlock {
     public static final VoxelShape SHAPE_POTATO = makeShapePotato();
     public static final VoxelShape SHAPE_CARROT = makeShapeCarrot();
     public static final VoxelShape SHAPE_BEET = makeShapeBeet();
@@ -204,7 +203,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
             level.setBlockAndUpdate(pos, state);
 
-            if(level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+            if(level.getBlockEntity(pos) instanceof IMultiBlockEntity entity) {
                 entity.setCenter(finalBlockPos.above());
             }
         });

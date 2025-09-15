@@ -2,9 +2,7 @@ package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.blocks.multiblock.AbstractMultiBlock;
-import net.abraxator.moresnifferflowers.blocks.multiblock.MultiBlock;
-import net.abraxator.moresnifferflowers.blocks.multiblock.PreviewableMultiblock;
-import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.abraxator.moresnifferflowers.blocks.multiblock.IPreviewableMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -14,13 +12,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -32,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
 
-public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntityBlock, PreviewableMultiblock {
+public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntityBlock, IPreviewableMultiblock {
     public static final VoxelShape SHAPE_UPPER = makeShapeUpper();
     public static final VoxelShape SHAPE_LOWER = makeShapeLower();
     public static final VoxelShape SHAPE_LOWER_ROTATED = makeShapeLowerRotated();
