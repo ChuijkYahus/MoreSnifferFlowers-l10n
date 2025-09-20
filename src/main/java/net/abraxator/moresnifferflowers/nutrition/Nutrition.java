@@ -42,6 +42,7 @@ public class Nutrition {
         Nutrition nutrition = Nutrition.getNutritionForItem(item);
 
         List<NutritionEntry> list =  new ArrayList<>(nutrition.nutritionEntries);
+        if (list.isEmpty()) return NutritionType.NEUTRAL;
         list.sort(Comparator.comparing(nutritionEntry -> -(nutritionEntry.weight() + nutritionEntry.nutrition().priority)));
 
         return list.get(0).nutrition();

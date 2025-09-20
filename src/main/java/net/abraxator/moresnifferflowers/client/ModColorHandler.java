@@ -11,6 +11,7 @@ import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.ModStatePropertiesUnsafe;
 import net.abraxator.moresnifferflowers.items.DyespriaItem;
 import net.minecraft.client.renderer.BiomeColors;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.FoliageColor;
@@ -67,7 +68,7 @@ public class ModColorHandler {
                         if(state.is(ModBlocks.VIVICUS_LEAVES.get()) || state.is(ModBlocks.VIVICUS_LEAVES_SPROUT.get())) {
                             float[] colorHSB = getColorHSB(dyedValue);
 
-                            assert pos != null;
+                            if (pos == null) pos = new BlockPos(0,0,0);
                             float hue = colorHSB[0] + ((1+ Mth.sin((float)pos.getX() + (float)pos.getY() + (float)pos.getZ())) / 15);
 
                             if (colorHSB[1] < 0.3 && colorHSB[2] < 0.8){
