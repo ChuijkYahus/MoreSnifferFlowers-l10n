@@ -16,6 +16,8 @@ repositories {
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
     maven { url = "https://api.modrinth.com/maven" }
     mavenCentral()
+    flatDir { dir 'libs' }
+
 }
 
 group = 'net.abraxator.moresnifferflowers'
@@ -117,7 +119,10 @@ dependencies {
     modRuntimeOnly("curse.maven:farmers-delight-398521:6917255");
     modCompileOnly("curse.maven:farmers-delight-398521:6917255");
 
-   // modRuntimeOnly("curse.maven:hold-my-items-reforged-1246920:6608415")
+    modImplementation("local:TinyMultiblockLib-forge-1.20.1:1.0")
+
+
+    // modRuntimeOnly("curse.maven:hold-my-items-reforged-1246920:6608415")
    // modImplementation("curse.maven:dyenamics-509276:5353528")
 }
 

@@ -1,10 +1,7 @@
 package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
-import net.abraxator.moresnifferflowers.blockentities.IMultiBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.multiblock.AbstractMultiBlock;
 import net.abraxator.moresnifferflowers.blocks.multiblock.ICorruptableMultiblock;
-import net.abraxator.moresnifferflowers.blocks.multiblock.IPreviewableMultiblock;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModParticles;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
@@ -35,13 +32,17 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
+import net.nikdo53.tinymultiblocklib.blocks.AbstractMultiBlock;
+import net.nikdo53.tinymultiblocklib.blocks.IPreviewableMultiblock;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
-public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock, ModCropBlock, Corruptable, IPreviewableMultiblock, ICorruptableMultiblock {
+public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, ModCropBlock, Corruptable, IPreviewableMultiblock, ICorruptableMultiblock {
     public BondripiaBlock(Properties p_49795_) {
         super(p_49795_);
         this.registerDefaultState(defaultBlockState()
@@ -81,12 +82,6 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
     @Override
     public boolean isRandomlyTicking(BlockState state) {
         return true;
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> pBlockEntityType) {
-        return tickerHelper(level);
     }
 
     @Override
@@ -190,7 +185,7 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
     }
 
     public void grow(Level level, BlockPos blockPos, BlockState state) {
-        growHelper(level, blockPos, state);
+        growHelper(level, blockPos, getAgeProperty());
     }
     
     private boolean isBondripable(Level level, BlockPos blockPos) {

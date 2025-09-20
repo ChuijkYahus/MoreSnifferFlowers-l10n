@@ -1,9 +1,7 @@
 package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.multiblock.AbstractMultiBlock;
 import net.abraxator.moresnifferflowers.blocks.multiblock.ICorruptableMultiblock;
-import net.abraxator.moresnifferflowers.blocks.multiblock.IPreviewableMultiblock;
 import net.abraxator.moresnifferflowers.entities.SaltBubbleProjectile;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
@@ -34,6 +32,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.PacketDistributor;
+import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
+import net.nikdo53.tinymultiblocklib.blocks.AbstractMultiBlock;
+import net.nikdo53.tinymultiblocklib.blocks.IPreviewableMultiblock;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
@@ -117,7 +118,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
 
     @Override
     public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
-        growHelper(level, pos, state);
+        growHelper(level, pos, getAgeProperty());
     }
 
     public boolean isCorrupted(){
@@ -153,10 +154,11 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
                 ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new SaltemoneParticlePacket(vec3.toVector3f()));
 
             } else {
-                growHelper(level, pos, state);
+                growHelper(level, pos, getAgeProperty());
             }
         }
     }
+
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entityinside) {

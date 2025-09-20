@@ -1,6 +1,5 @@
 package net.abraxator.moresnifferflowers.blocks.multiblock;
 
-import net.abraxator.moresnifferflowers.blockentities.IMultiBlockEntity;
 import net.abraxator.moresnifferflowers.entities.CorruptedProjectile;
 import net.abraxator.moresnifferflowers.recipes.CorruptionRecipe;
 import net.minecraft.core.BlockPos;
@@ -10,6 +9,8 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
+import net.nikdo53.tinymultiblocklib.blocks.IMultiBlock;
 
 public interface ICorruptableMultiblock extends IMultiBlock {
     Block getCuredBlock();

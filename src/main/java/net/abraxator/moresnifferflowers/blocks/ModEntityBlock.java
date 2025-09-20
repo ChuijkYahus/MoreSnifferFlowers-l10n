@@ -1,6 +1,6 @@
 package net.abraxator.moresnifferflowers.blocks;
 
-import net.abraxator.moresnifferflowers.blockentities.ModBlockEntity;
+import net.abraxator.moresnifferflowers.blockentities.IModBlockEntity;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
@@ -13,9 +13,9 @@ public interface ModEntityBlock extends EntityBlock {
      default <T extends BlockEntity> BlockEntityTicker<T> tickerHelper(Level level) {
         return (pLevel1, pos, pState1, blockEntity) -> {
             if(level.isClientSide) {
-                ((ModBlockEntity) blockEntity).clientTick((ClientLevel) level);
+                ((IModBlockEntity) blockEntity).clientTick((ClientLevel) level);
             } else {
-                ((ModBlockEntity) blockEntity).tick(level);
+                ((IModBlockEntity) blockEntity).tick(level);
             }
         };
     }

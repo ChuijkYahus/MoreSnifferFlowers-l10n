@@ -1,8 +1,6 @@
 package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.multiblock.AbstractMultiBlock;
-import net.abraxator.moresnifferflowers.blocks.multiblock.IPreviewableMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -24,6 +22,8 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.nikdo53.tinymultiblocklib.blocks.AbstractMultiBlock;
+import net.nikdo53.tinymultiblocklib.blocks.IPreviewableMultiblock;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;

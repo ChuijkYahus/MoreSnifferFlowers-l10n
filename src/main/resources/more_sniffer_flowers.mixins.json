@@ -18,17 +18,14 @@
     "LeavesBlockMixin",
     "PlayerMixin",
     "RightClickHarvestModInitMixin",
-    "ShutUpWarnsMixin",
     "SlotMixin",
     "SnifferEggMixin",
     "SpriteResourceLoaderMixin",
-    "StructureTemplateMixin",
     "ThrownPotionMixin"
   ],
   "client": [
     "CreativeInventoryScreenMixin",
     "InventoryScreenMixin",
-    "ClientLevelMixin",
     "SpriteResourceLoaderMixin",
     "SpriteResourceLoaderMixin$PalettedPermutationsAccessor"
   ],

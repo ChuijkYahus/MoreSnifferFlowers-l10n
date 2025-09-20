@@ -36,12 +36,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
+import net.nikdo53.tinymultiblocklib.blockentities.AbstractMultiBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity {
+public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implements IModBlockEntity {
     public int beetroots = 0;
     private final int foodLimit = 8;
     public BetterNonNullList<ItemStack> ingredients = BetterNonNullList.withSize(foodLimit, ItemStack.EMPTY);
