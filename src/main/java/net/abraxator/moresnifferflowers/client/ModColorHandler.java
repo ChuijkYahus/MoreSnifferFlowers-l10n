@@ -10,6 +10,7 @@ import net.abraxator.moresnifferflowers.init.ModDataComponents;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.items.DyespriaItem;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
@@ -61,12 +62,11 @@ public class ModColorHandler {
                     var colorable = ((ColorableVivicusBlock) state.getBlock());
                     if(pTintIndex == 0) {
                         var dyedValue = Dye.colorForDye(colorable, state.getValue(colorable.getColorProperty()));
-                        var color = colorable.getDyeFromBlock(state).color();
 
                         if(state.is(ModBlocks.VIVICUS_LEAVES.get()) || state.is(ModBlocks.VIVICUS_LEAVES_SPROUT.get())) {
                             float[] colorHSB = getColorHSB(dyedValue);
 
-                            assert pos != null;
+                            if (pos == null) pos = new BlockPos(0,0,0);
                             float hue = colorHSB[0] + ((1+ Mth.sin((float)pos.getX() + (float)pos.getY() + (float)pos.getZ())) / 15);
 
                             if (colorHSB[1] < 0.3 && colorHSB[2] < 0.8){

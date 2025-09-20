@@ -9,7 +9,6 @@ import java.util.*;
 public class Nutrition {
     private final Item item;
     private final List<NutritionEntry> nutritionEntries;
-    private int saturation;
     public static final Nutrition EMPTY = new Nutrition(Items.AIR, List.of());
     
     public Nutrition(Item item, List<NutritionEntry> nutritionEntries) {
@@ -42,9 +41,10 @@ public class Nutrition {
         Nutrition nutrition = Nutrition.getNutritionForItem(item);
 
         List<NutritionEntry> list =  new ArrayList<>(nutrition.nutritionEntries);
+        if (list.isEmpty()) return NutritionType.NEUTRAL;
         list.sort(Comparator.comparing(nutritionEntry -> -(nutritionEntry.weight() + nutritionEntry.nutrition().priority)));
 
-        return list.get(0).nutrition();
+        return list.getFirst().nutrition();
     }
     
     public boolean isEmpty() {
