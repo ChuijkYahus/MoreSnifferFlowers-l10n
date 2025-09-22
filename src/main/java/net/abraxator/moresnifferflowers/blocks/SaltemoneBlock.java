@@ -33,8 +33,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.PacketDistributor;
 import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
-import net.nikdo53.tinymultiblocklib.blocks.AbstractMultiBlock;
-import net.nikdo53.tinymultiblocklib.blocks.IPreviewableMultiblock;
+import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
+import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
@@ -72,7 +72,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    public RenderShape getMultiblockRenderShape(BlockState state) {
         if (!isCenter(state)) return  RenderShape.INVISIBLE;
         if (getAge(state) == getMaxAge()) return RenderShape.ENTITYBLOCK_ANIMATED;
         return RenderShape.MODEL;
@@ -154,7 +154,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
                 ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new SaltemoneParticlePacket(vec3.toVector3f()));
 
             } else {
-                growHelper(level, pos, getAgeProperty());
+               if (isCenter(state)) growHelper(level, pos, getAgeProperty());
             }
         }
     }

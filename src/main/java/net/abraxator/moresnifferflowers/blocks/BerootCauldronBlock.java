@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -22,8 +23,8 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.nikdo53.tinymultiblocklib.blocks.AbstractMultiBlock;
-import net.nikdo53.tinymultiblocklib.blocks.IPreviewableMultiblock;
+import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
+import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
@@ -37,6 +38,14 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
 
     public BerootCauldronBlock(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public RenderShape getMultiblockRenderShape(BlockState state) {
+        if (isCenter(state)) {
+            return RenderShape.ENTITYBLOCK_ANIMATED;
+        }
+        return RenderShape.INVISIBLE;
     }
 
     @Override

@@ -23,7 +23,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.Tags;
-import net.nikdo53.tinymultiblocklib.blocks.IMultiBlock;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 
 ;
 

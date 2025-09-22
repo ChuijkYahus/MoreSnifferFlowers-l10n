@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
-import net.nikdo53.tinymultiblocklib.blocks.IMultiBlock;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 
 public interface ICorruptableMultiblock extends IMultiBlock {
     Block getCuredBlock();

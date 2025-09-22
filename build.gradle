@@ -119,7 +119,8 @@ dependencies {
     modRuntimeOnly("curse.maven:farmers-delight-398521:6917255");
     modCompileOnly("curse.maven:farmers-delight-398521:6917255");
 
-    modImplementation("local:TinyMultiblockLib-forge-1.20.1:1.0")
+    modImplementation(jarJar(group: "local", name:"TinyMultiblockLib-forge-1.20.1", version: "[1.1,)"))
+
 
 
     // modRuntimeOnly("curse.maven:hold-my-items-reforged-1246920:6608415")

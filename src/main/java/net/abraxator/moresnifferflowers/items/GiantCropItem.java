@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
-import net.nikdo53.tinymultiblocklib.blocks.IMultiBlock;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
