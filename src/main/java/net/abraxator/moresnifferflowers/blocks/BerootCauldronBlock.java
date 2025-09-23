@@ -24,6 +24,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,7 +43,7 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
 
     @Override
     public RenderShape getMultiblockRenderShape(BlockState state) {
-        if (isCenter(state)) {
+        if (IMultiBlock.isCenter(state)) {
             return RenderShape.ENTITYBLOCK_ANIMATED;
         }
         return RenderShape.INVISIBLE;
@@ -51,15 +52,6 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
     @Override
     public float getShadeBrightness(BlockState state, BlockGetter level, BlockPos pos) {
         return 1.0F;
-    }
-
-
-    @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        super.setPlacedBy(level, pos, state, placer, stack);
-        if (level.getBlockEntity(getCenter(level, pos)) instanceof BerootCauldronBlockEntity entity) {
-            entity.isCenter = true;
-        }
     }
 
     @Override
@@ -77,7 +69,7 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         var item = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-        if(level.getBlockEntity(getCenter(level, pos)) instanceof BerootCauldronBlockEntity blockEntity) {
+        if(level.getBlockEntity(IMultiBlock.getCenter(level, pos)) instanceof BerootCauldronBlockEntity blockEntity) {
             return blockEntity.addItem(item, player);
         }
         
@@ -98,7 +90,7 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
     public VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context){
         VoxelShape shape = SHAPE_UPPER;
 
-        if (getYOffset(getter, pos) <= 0) {
+        if (IMultiBlock.getYOffset(getter, pos) <= 0) {
 
             if (state.getValue(HorizontalDirectionalBlock.FACING).getAxis().equals(Direction.Axis.X)) {
                 shape = SHAPE_LOWER_ROTATED;

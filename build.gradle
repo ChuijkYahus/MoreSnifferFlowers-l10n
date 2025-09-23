@@ -108,6 +108,9 @@ dependencies {
 
     implementation 'org.jetbrains:annotations:26.0.1'
 
+    modImplementation(jarJar(group: "local", name:"TinyMultiblockLib-forge-1.20.1", version: "[1.1,)"))
+
+
     //quark
     compileOnly("curse.maven:quark-243121:6427817")
     compileOnly("curse.maven:zeta-968868:6432578")
@@ -119,9 +122,7 @@ dependencies {
     modRuntimeOnly("curse.maven:farmers-delight-398521:6917255");
     modCompileOnly("curse.maven:farmers-delight-398521:6917255");
 
-    modImplementation(jarJar(group: "local", name:"TinyMultiblockLib-forge-1.20.1", version: "[1.1,)"))
-
-
+    modImplementation("curse.maven:carry-on-274259:4882500")
 
     // modRuntimeOnly("curse.maven:hold-my-items-reforged-1246920:6608415")
    // modImplementation("curse.maven:dyenamics-509276:5353528")

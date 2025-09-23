@@ -32,6 +32,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.PacketDistributor;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
 import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
@@ -73,7 +74,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
 
     @Override
     public RenderShape getMultiblockRenderShape(BlockState state) {
-        if (!isCenter(state)) return  RenderShape.INVISIBLE;
+        if (!IMultiBlock.isCenter(state)) return  RenderShape.INVISIBLE;
         if (getAge(state) == getMaxAge()) return RenderShape.ENTITYBLOCK_ANIMATED;
         return RenderShape.MODEL;
     }
@@ -154,7 +155,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
                 ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new SaltemoneParticlePacket(vec3.toVector3f()));
 
             } else {
-               if (isCenter(state)) growHelper(level, pos, getAgeProperty());
+               if (IMultiBlock.isCenter(state)) growHelper(level, pos, getAgeProperty());
             }
         }
     }

@@ -19,7 +19,7 @@ public interface ICorruptableMultiblock extends IMultiBlock {
     @Override
     default boolean allBlocksPresent(LevelReader level, BlockPos pos, BlockState state){
         if (level.isClientSide()) return true;
-        BlockPos center = getCenter(level, pos);
+        BlockPos center = IMultiBlock.getCenter(level, pos);
 
         boolean ret = fullBlockShape(center, state).allMatch(blockPos -> level.getBlockState(blockPos).is(getCuredBlock()) || level.getBlockState(blockPos).is(getCorruptedBlock()));
 

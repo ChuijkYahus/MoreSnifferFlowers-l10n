@@ -36,8 +36,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.ScheduledTick;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
 import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 import vectorwing.farmersdelight.common.block.RiceBlock;
@@ -120,7 +123,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        if (!isCenter(state)) return  RenderShape.INVISIBLE;
+        if (!IMultiBlock.isCenter(state)) return  RenderShape.INVISIBLE;
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
@@ -252,10 +255,10 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
                 Blocks.BEETROOTS, new Pair<>(ModBlocks.GIANT_BEETROOT.get(), new Pair<>(BeetrootBlock.AGE, BeetrootBlock.MAX_AGE)),
                 Blocks.WHEAT, new Pair<>(ModBlocks.GIANT_WHEAT.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
 
-                vectorwing.farmersdelight.common.registry.ModBlocks.ONION_CROP.get(), new Pair<>(ModBlocks.GIANT_ONION.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
-                vectorwing.farmersdelight.common.registry.ModBlocks.TOMATO_CROP.get(), new Pair<>(ModBlocks.GIANT_TOMATO.get(), new Pair<>(TomatoVineBlock.VINE_AGE, 3)),
-                vectorwing.farmersdelight.common.registry.ModBlocks.CABBAGE_CROP.get(), new Pair<>(ModBlocks.GIANT_CABBAGE.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
-                vectorwing.farmersdelight.common.registry.ModBlocks.RICE_CROP_PANICLES.get(), new Pair<>(ModBlocks.GIANT_RICE.get(), new Pair<>(RiceBlock.AGE, 3))
+                ForgeRegistries.BLOCKS.getValue(MoreSnifferFlowers.farmersDelightLoc("onions")), new Pair<>(ModBlocks.GIANT_ONION.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
+                ForgeRegistries.BLOCKS.getValue(MoreSnifferFlowers.farmersDelightLoc("tomatoes")), new Pair<>(ModBlocks.GIANT_TOMATO.get(), new Pair<>(TomatoVineBlock.VINE_AGE, 3)),
+                ForgeRegistries.BLOCKS.getValue(MoreSnifferFlowers.farmersDelightLoc("cabbages")), new Pair<>(ModBlocks.GIANT_CABBAGE.get(), new Pair<>(CropBlock.AGE, CropBlock.MAX_AGE)),
+                ForgeRegistries.BLOCKS.getValue(MoreSnifferFlowers.farmersDelightLoc("rice_panicles")), new Pair<>(ModBlocks.GIANT_RICE.get(), new Pair<>(RiceBlock.AGE, 3))
 
         );
     }
@@ -277,7 +280,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
         VoxelShape shape = Shapes.block();
 
-        if (getXOffset(getter, pos) == 0 && getZOffset(getter, pos) == 0){
+        if (IMultiBlock.getXOffset(getter, pos) == 0 && IMultiBlock.getZOffset(getter, pos) == 0){
             return shape;
         }
 

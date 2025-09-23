@@ -36,6 +36,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
+import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.blockentities.AbstractMultiBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,7 +59,6 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
     public boolean redSoup = true;
     boolean crafting = false;
     int craftingTimeRemaining = 0;
-    public boolean isCenter = false;
 
     public BerootCauldronBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.BEROOT_CAULDRON.get(), pos, state);
@@ -219,14 +220,14 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
 
     @Override
     public void tick(Level level){
-        if (isCenter) {
+        if (isCenter()) {
             suckInItems(level, this.center);
         }
     }
 
     @Override
     public void clientTick(ClientLevel level) {
-        if (!isCenter) return;
+        if (!isCenter()) return;
 
         this.itemRot++;
         if(this.crafting && this.craftingTimeRemaining < 9) {
@@ -407,8 +408,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.putBoolean("isCenter", isCenter);
-        if (!isCenter) return;
+        if (!isCenter()) return;
 
         tag.putInt("beetroots", this.beetroots);
         ListTag items = new ListTag();
@@ -435,8 +435,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        isCenter = tag.getBoolean("isCenter");
-        if (!isCenter) return;
+        if (!isCenter()) return;
 
         this.ingredients.clear();
         this.beetroots = tag.getInt("beetroots");
@@ -551,7 +550,6 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
 
         return new Vec3(r,g,b);
     }
-
 
     @Nullable
     @Override

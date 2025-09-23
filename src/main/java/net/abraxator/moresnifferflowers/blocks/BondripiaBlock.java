@@ -32,6 +32,7 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
 import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
@@ -74,7 +75,7 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
 
     @Override
     public RenderShape getMultiblockRenderShape(BlockState state) {
-        if (!isCenter(state)) return  RenderShape.INVISIBLE;
+        if (!IMultiBlock.isCenter(state)) return  RenderShape.INVISIBLE;
         if (getAge(state) == getMaxAge()) return RenderShape.ENTITYBLOCK_ANIMATED;
         return RenderShape.MODEL;
     }
@@ -125,7 +126,7 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (state.getValue(ModStateProperties.SHEARED)) return;
-        if(!isMaxAge(state) && isCenter(state)) {
+        if(!isMaxAge(state) && IMultiBlock.isCenter(state)) {
             grow(level, pos, state);
         } else if (random.nextDouble() <= 0.33D && level.getBlockEntity(pos) instanceof BondripiaBlockEntity entity) {
             for (BlockPos blockPos : BlockPos.betweenClosed(entity.center.below().north().east(), entity.center.below().south().west())) {
