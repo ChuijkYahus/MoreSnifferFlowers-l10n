@@ -45,6 +45,8 @@ public class ModTags {
         public static final TagKey<Block> STICKABLE = create(Registries.BLOCK, "stickable");
         public static final TagKey<Block> CORRUPTION_SHIELDING = create(Registries.BLOCK, "corruption_shielding");
 
+        public static final TagKey<Block> CARRYON_BLACKLIST = create(Registries.BLOCK, "carryon_block_blacklist");
+
     }
 
     public static class ModBannerPatternTags {

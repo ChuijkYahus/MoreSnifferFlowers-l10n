@@ -88,7 +88,7 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
 
         return positions.stream();
     }
-    
+
     @Override
     public boolean isRandomlyTicking(BlockState state) {
         return true;
@@ -135,7 +135,7 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (state.getValue(ModStateProperties.SHEARED)) return;
-        if(!isMaxAge(state)) {
+        if(!isMaxAge(state) && IMultiBlock.isCenter(state)) {
             grow(level, pos, state);
         } else if (random.nextDouble() <= 0.33D && level.getBlockEntity(pos) instanceof BondripiaBlockEntity entity) {
             for (BlockPos blockPos : BlockPos.betweenClosed(entity.center.below().north().east(), entity.center.below().south().west())) {

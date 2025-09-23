@@ -142,7 +142,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements EntityBlock, C
                 PacketDistributor.sendToAllPlayers( new SaltemoneParticlePacket(vec3.toVector3f()));
 
             } else {
-                growHelper(level, pos, getAgeProperty());
+               if (IMultiBlock.isCenter(state)) growHelper(level, pos, getAgeProperty());
             }
         }
     }

@@ -57,14 +57,6 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
     }
 
     @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        super.setPlacedBy(level, pos, state, placer, stack);
-        if (level.getBlockEntity(IMultiBlock.getCenter(level, pos)) instanceof BerootCauldronBlockEntity entity) {
-            entity.isCenter = true;
-        }
-    }
-
-    @Override
     public @Nullable DirectionProperty getDirectionProperty() {
         return HorizontalDirectionalBlock.FACING;
     }

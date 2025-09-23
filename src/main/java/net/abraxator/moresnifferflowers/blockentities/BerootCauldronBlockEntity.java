@@ -58,7 +58,6 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
     public boolean redSoup = true;
     boolean crafting = false;
     int craftingTimeRemaining = 0;
-    public boolean isCenter = false;
 
     public BerootCauldronBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.BEROOT_CAULDRON.get(), pos, state);
@@ -192,14 +191,14 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
 
     @Override
     public void tick(Level level){
-        if (isCenter) {
+        if (isCenter()) {
             suckInItems(level, this.center);
         }
     }
 
     @Override
     public void clientTick(ClientLevel level) {
-        if (!isCenter) return;
+        if (!isCenter()) return;
 
         this.itemRot++;
         if(this.crafting && this.craftingTimeRemaining < 9) {
@@ -380,8 +379,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        tag.putBoolean("isCenter", isCenter);
-        if (!isCenter) return;
+        if (!isCenter()) return;
 
         tag.putInt("beetroots", this.beetroots);
 
@@ -404,8 +402,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        isCenter = tag.getBoolean("isCenter");
-        if (!isCenter) return;
+        if (!isCenter()) return;
 
         this.ingredients.clear();
         this.beetroots = tag.getInt("beetroots");
@@ -505,7 +502,6 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
 
         return new Vec3(r,g,b);
     }
-
 
     @Nullable
     @Override
