@@ -1,15 +1,21 @@
 package net.abraxator.moresnifferflowers.init;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
+
+import java.util.Optional;
 
 public class ModTags {
     public static class ModItemTags {
@@ -59,10 +65,15 @@ public class ModTags {
     }
     
     public static class ModEffectTags {
-        public static final TagKey<MobEffect> HAS_SWAMP_SNIFFER_TEMPLE = create(Registries.MOB_EFFECT, "has_swamp_sniffer_temple");
+        public static final TagKey<MobEffect> EXTRACTION_BLACKLIST = create(Registries.MOB_EFFECT, "extraction_blacklist");
     }
 
     private static <T extends Object> TagKey<T> create(ResourceKey<Registry<T>> registry, String name){
         return TagKey.create(registry, MoreSnifferFlowers.loc(name));
+    }
+
+    public static boolean hasEffectTag(MobEffect effect, TagKey<MobEffect> tag){
+        Optional<Holder<MobEffect>> holder = ForgeRegistries.MOB_EFFECTS.getHolder(effect);
+        return holder.map(mobEffectHolder -> mobEffectHolder.containsTag(tag)).orElse(false);
     }
 }
