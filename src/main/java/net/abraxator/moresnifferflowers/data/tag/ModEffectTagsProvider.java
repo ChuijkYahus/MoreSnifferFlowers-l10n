@@ -22,8 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class ModEffectTagsProvider extends TagsProvider<MobEffect> {
-    public ModEffectTagsProvider(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider, ExistingFileHelper existingFileHelper) {
-        super(pOutput, Registries.MOB_EFFECT, pLookupProvider, MoreSnifferFlowers.MOD_ID, existingFileHelper);
+    public ModEffectTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
+        super(output, Registries.MOB_EFFECT, lookupProvider, MoreSnifferFlowers.MOD_ID, existingFileHelper);
     }
 
     @Override

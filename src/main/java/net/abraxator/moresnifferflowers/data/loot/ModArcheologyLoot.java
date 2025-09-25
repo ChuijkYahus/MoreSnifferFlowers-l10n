@@ -19,8 +19,8 @@ import java.util.function.BiConsumer;
 
 public record ModArcheologyLoot() implements LootTableSubProvider {
     @Override
-    public void generate(BiConsumer<ResourceLocation, LootTable.Builder> pOutput) {
-        pOutput.accept(
+    public void generate(BiConsumer<ResourceLocation, LootTable.Builder> output) {
+        output.accept(
                 ModBuiltinLoottables.SNOW_SNIFFER_TEMPLE, //5 rolls
                 LootTable.lootTable()
                         .withPool(
@@ -45,7 +45,7 @@ public record ModArcheologyLoot() implements LootTableSubProvider {
                                         )
                         )
         );
-        pOutput.accept(
+        output.accept(
                 ModBuiltinLoottables.DESSERT_SNIFFER_TEMPLE, //9 rolls
                 LootTable.lootTable()
                         .withPool(
@@ -70,7 +70,7 @@ public record ModArcheologyLoot() implements LootTableSubProvider {
                                         )
                         )
         );
-        pOutput.accept(
+        output.accept(
                 ModBuiltinLoottables.SWAMP_SNIFFER_TEMPLE, //5 rolls
                 LootTable.lootTable()
                         .withPool(
@@ -95,7 +95,7 @@ public record ModArcheologyLoot() implements LootTableSubProvider {
                                         )
                         )
         );
-        pOutput.accept(
+        output.accept(
                 ModBuiltinLoottables.SNIFFER_EGG, //1 roll (guaranteed)
                 LootTable.lootTable()
                         .withPool(

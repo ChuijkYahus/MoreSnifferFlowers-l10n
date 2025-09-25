@@ -14,12 +14,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class ModBiomeTagProvider extends TagsProvider<Biome> {
-    public ModBiomeTagProvider(PackOutput p_275432_, CompletableFuture<HolderLookup.Provider> p_275222_, @Nullable ExistingFileHelper existingFileHelper) {
-        super(p_275432_, Registries.BIOME, p_275222_, MoreSnifferFlowers.MOD_ID, existingFileHelper);
+    public ModBiomeTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> completableFuture, @Nullable ExistingFileHelper existingFileHelper) {
+        super(packOutput, Registries.BIOME, completableFuture, MoreSnifferFlowers.MOD_ID, existingFileHelper);
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider pProvider) {
+    protected void addTags(HolderLookup.Provider provider) {
         this.tag(ModTags.ModBiomeTags.HAS_SWAMP_SNIFFER_TEMPLE).add(Biomes.SWAMP, Biomes.MANGROVE_SWAMP);
     }
 }

@@ -24,7 +24,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void addTags(HolderLookup.Provider pProvider) {
+    protected void addTags(HolderLookup.Provider provider) {
         this.tag(Tags.Items.SEEDS).add(ModItems.DAWNBERRY_VINE_SEEDS.get(), ModItems.AMBUSH_SEEDS.get(), ModItems.BONMEELIA_SEEDS.get(), ModItems.DYESPRIA_SEEDS.get());
 
         this.tag(ItemTags.TRIM_MATERIALS).add(ModItems.AMBER_SHARD.get(), ModItems.GARNET_SHARD.get(), ModItems.CROPRESSED_BEETROOT.get(), ModItems.CROPRESSED_POTATO.get(), ModItems.CROPRESSED_NETHERWART.get(), ModItems.CROPRESSED_CARROT.get(), ModItems.CROPRESSED_WHEAT.get());

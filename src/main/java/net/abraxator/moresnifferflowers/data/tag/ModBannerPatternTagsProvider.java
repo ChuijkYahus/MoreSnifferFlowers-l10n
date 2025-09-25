@@ -18,7 +18,7 @@ public class ModBannerPatternTagsProvider extends TagsProvider<BannerPattern> {
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider pProvider) {
+    protected void addTags(HolderLookup.Provider provider) {
         tag(ModTags.ModBannerPatternTags.AMBUSH_BANNER_PATTERN).add(ModBannerPatterns.AMBUSH.getKey());
         tag(ModTags.ModBannerPatternTags.EVIL_BANNER_PATTERN).add(ModBannerPatterns.EVIL.getKey());
     }

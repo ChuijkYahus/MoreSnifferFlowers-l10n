@@ -56,10 +56,10 @@ public class JarOfAcidProjectile extends ThrowableItemProjectile {
     }
     
     @Override
-    protected void onHit(HitResult pResult) {
-        super.onHit(pResult);
+    protected void onHit(HitResult result) {
+        super.onHit(result);
         this.level().broadcastEntityEvent(this, (byte)3);
-        degrowCrops(BlockPos.containing(pResult.getLocation()));
+        degrowCrops(BlockPos.containing(result.getLocation()));
         makeAreaOfEffectCloud();
         
         this.discard();
@@ -106,9 +106,9 @@ public class JarOfAcidProjectile extends ThrowableItemProjectile {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult pResult) {
-        super.onHitEntity(pResult);
-        Entity entity = pResult.getEntity();
+    protected void onHitEntity(EntityHitResult result) {
+        super.onHitEntity(result);
+        Entity entity = result.getEntity();
         if(entity instanceof LivingEntity livingEntity) {
             entity.hurt(this.damageSources().thrown(this, this.getOwner()), 0.0F);
             livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 2));

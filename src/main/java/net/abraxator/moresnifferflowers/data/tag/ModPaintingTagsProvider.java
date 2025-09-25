@@ -11,12 +11,12 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import java.util.concurrent.CompletableFuture;
 
 public class ModPaintingTagsProvider extends TagsProvider<PaintingVariant> {
-    public ModPaintingTagsProvider(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider, ExistingFileHelper existingFileHelper) {
-        super(pOutput, Registries.PAINTING_VARIANT, pLookupProvider, MoreSnifferFlowers.MOD_ID, existingFileHelper);
+    public ModPaintingTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
+        super(output, Registries.PAINTING_VARIANT, lookupProvider, MoreSnifferFlowers.MOD_ID, existingFileHelper);
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider pProvider) {
+    protected void addTags(HolderLookup.Provider provider) {
         //ModPaintings.HATTED_FERGUS_TATER.unwrapKey().ifPresent(paintingVariantResourceKey -> this.tag(PaintingVariantTags.PLACEABLE).add(paintingVariantResourceKey));
     }
 }

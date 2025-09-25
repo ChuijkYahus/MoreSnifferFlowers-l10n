@@ -14,8 +14,8 @@ import java.util.function.Consumer;
 
 public class ModCustomRecipeProvider extends RecipeProvider {
 
-    public ModCustomRecipeProvider(PackOutput pOutput) {
-        super(pOutput);
+    public ModCustomRecipeProvider(PackOutput output) {
+        super(output);
     }
 
     public static void createRecipes(Consumer<FinishedRecipe> recipeOutput) {

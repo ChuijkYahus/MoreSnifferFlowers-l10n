@@ -56,17 +56,17 @@ public class DragonflyProjectile extends ThrowableItemProjectile {
     }
 
     @Override
-    protected void onHit(HitResult pResult) {
+    protected void onHit(HitResult result) {
         if(level() instanceof ServerLevel serverLevel) {
             var particle = new ItemParticleOption(ParticleTypes.ITEM, ModItems.DRAGONFLY.get().getDefaultInstance());
             serverLevel.sendParticles(particle, getX(), getY(), getZ(), 10, Mth.nextDouble(random, 0, 0.3), Mth.nextDouble(random, 0, 0.3), Mth.nextDouble(random, 0, 0.3), 0);
         }
-        super.onHit(pResult);
+        super.onHit(result);
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult pResult) {
-        if(pResult.getEntity() instanceof LivingEntity entity) {
+    protected void onHitEntity(EntityHitResult result) {
+        if(result.getEntity() instanceof LivingEntity entity) {
             entity.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 140, 2));
             entity.hurt(this.damageSources().thrown(this, this.getOwner()), 0.3F);
         }
@@ -75,8 +75,8 @@ public class DragonflyProjectile extends ThrowableItemProjectile {
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult pResult) {
-        super.onHitBlock(pResult);
+    protected void onHitBlock(BlockHitResult result) {
+        super.onHitBlock(result);
         discard();
     }
 }
