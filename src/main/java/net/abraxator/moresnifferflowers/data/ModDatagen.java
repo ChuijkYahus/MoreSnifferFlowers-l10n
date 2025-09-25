@@ -50,7 +50,9 @@ public class ModDatagen {
 
         generator.addProvider(event.includeServer(), new ModBiomeTagProvider(packOutput, future, existingFileHelper));
         generator.addProvider(event.includeServer(), new ModBannerPatternTagsProvider(packOutput, lookupProvider, existingFileHelper));
-        
+        generator.addProvider(event.includeServer(), new ModEffectTagsProvider(packOutput, future, existingFileHelper));
+
+
         //ADVANCEMENTS
         generator.addProvider(event.includeServer(), new AdvancementProvider(packOutput, registries, existingFileHelper, List.of(new ModAdvancementGenerator())));
 

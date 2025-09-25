@@ -6,7 +6,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -58,8 +57,13 @@ public class ModTags {
     public static class ModBiomeTags {
         public static final TagKey<Biome> HAS_SWAMP_SNIFFER_TEMPLE = create(Registries.BIOME, "has_swamp_sniffer_temple");
     }
+    
+    public static class ModEffectTags {
+        public static final TagKey<MobEffect> EXTRACTION_BLACKLIST = create(Registries.MOB_EFFECT, "extraction_blacklist");
+    }
 
-    private static <T extends Object> TagKey<T> create(ResourceKey<Registry<T>> registry, String name){
+    private static <T> TagKey<T> create(ResourceKey<Registry<T>> registry, String name){
         return TagKey.create(registry, MoreSnifferFlowers.loc(name));
     }
+
 }

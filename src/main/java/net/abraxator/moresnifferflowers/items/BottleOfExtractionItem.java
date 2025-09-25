@@ -2,6 +2,7 @@ package net.abraxator.moresnifferflowers.items;
 
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.ModEffects;
+import net.abraxator.moresnifferflowers.init.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.component.DataComponents;
@@ -44,8 +45,12 @@ public class BottleOfExtractionItem extends Item {
                 return new ItemStack(Items.POISONOUS_POTATO);
             }
 
-            stack = initPotion(player);
-            pLivingEntity.removeAllEffects();
+            List<MobEffectInstance> activeEffects = new ArrayList<>(player.getActiveEffects());
+            activeEffects = activeEffects.stream().filter(mobEffectInstance -> !mobEffectInstance.getEffect().is(ModTags.ModEffectTags.EXTRACTION_BLACKLIST)).toList();
+
+            stack = initPotion(activeEffects);
+
+            activeEffects.forEach(effectInstance -> player.removeEffect(effectInstance.getEffect()));
         }
         return stack;
     }
@@ -60,10 +65,9 @@ public class BottleOfExtractionItem extends Item {
         }
     }
 
-    private ItemStack initPotion(Player player) {
+    private ItemStack initPotion(List<MobEffectInstance> activeEffects) {
         var stack = ModItems.EXTRACTED_BOTTLE.get().getDefaultInstance();
-        var effects = player.getActiveEffects();
-        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(PotionContents.getColor(effects)), new ArrayList<>(effects)));
+        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(PotionContents.getColor(activeEffects)), new ArrayList<>(activeEffects)));
         return stack;
     }
 
@@ -78,9 +82,10 @@ public class BottleOfExtractionItem extends Item {
     }
 
     private boolean canExtract(Level level, Player player) {
-        if (level.isClientSide) return false;
-        player.getActiveEffects();
-        return !player.getActiveEffects().isEmpty() && !player.hasEffect(ModEffects.EXTRACTED);
+        List<MobEffectInstance> activeEffects = new ArrayList<>(player.getActiveEffects());
+        activeEffects = activeEffects.stream().filter(mobEffectInstance -> !mobEffectInstance.getEffect().is(ModTags.ModEffectTags.EXTRACTION_BLACKLIST)).toList();
+
+        return !level.isClientSide && !activeEffects.isEmpty() && !player.hasEffect(ModEffects.EXTRACTED);
     }
 
     private static void doCheaterEasterEgg(Level level, Player player) {
