@@ -3,10 +3,12 @@ package net.abraxator.moresnifferflowers.capability;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
+import net.abraxator.moresnifferflowers.components.RootedSoup;
 import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.abraxator.moresnifferflowers.networking.toClient.SyncBlockPatternsPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.ChunkPos;
@@ -35,8 +37,8 @@ public class BlockPatternCapability {
             StreamCodec.composite(
             ByteBufCodecs.map(
                     HashMap::new,
-                    ByteBufCodecs.fromCodec(BlockPos.CODEC),
-                    ByteBufCodecs.fromCodec(PatternData.CODEC)
+                    BlockPos.STREAM_CODEC,
+                    PatternData.STREAM_CODEC
             ),
                     (cap -> cap.patterns),
                     BlockPatternCapability::new
@@ -172,6 +174,15 @@ public class BlockPatternCapability {
                         Direction.CODEC.fieldOf("dir").forGetter(PatternData::direction),
                         Codec.BOOL.fieldOf("glw").forGetter(PatternData::isGlowing)
                 ).apply(instance, PatternData::new));
+
+        public static final StreamCodec<? super ByteBuf, PatternData> STREAM_CODEC =
+                StreamCodec.composite(
+                        ByteBufCodecs.INT, PatternData::patternId,
+                        ByteBufCodecs.INT, PatternData::color,
+                        Direction.STREAM_CODEC, PatternData::direction,
+                        ByteBufCodecs.BOOL, PatternData::isGlowing,
+                        PatternData::new
+                );
 
     }
 }
