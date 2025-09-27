@@ -1,7 +1,5 @@
 package net.abraxator.moresnifferflowers.items;
 
-import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.multiblock.MultiBlock;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -14,6 +12,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
+import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
+import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
 
 import java.util.List;
 
@@ -29,17 +30,17 @@ public class GiantCropItem extends BlockItem {
         var level = context.getLevel();
         var clickPos = context.getClickedPos().relative(context.getClickedFace(), 1);
         var aabb = AABB.ofSize(clickPos.getCenter(), 2, 2, 2);
-        MultiBlock multiBlock = (MultiBlock) state.getBlock();
+        IMultiBlock multiBlock = (IMultiBlock) state.getBlock();
 
         multiBlock.fullBlockShape(clickPos, null).forEach(pos -> {
 
             boolean isWaterLogged = context.getLevel().getFluidState(pos).getType() == Fluids.WATER;
 
             level.setBlockAndUpdate(pos, this.getBlock().defaultBlockState()
-                    .setValue(ModStateProperties.CENTER, pos.equals(clickPos))
+                    .setValue(AbstractMultiBlock.CENTER, pos.equals(clickPos))
                     .setValue(WATERLOGGED, isWaterLogged));
 
-            if (level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+            if (level.getBlockEntity(pos) instanceof IMultiBlockEntity entity) {
                 entity.setCenter(clickPos);
             }
         });
@@ -51,7 +52,7 @@ public class GiantCropItem extends BlockItem {
     protected boolean canPlace(BlockPlaceContext context, BlockState state) {
         var pos = context.getClickedPos();
         var level = context.getLevel();
-        MultiBlock multiBlock = (MultiBlock) state.getBlock();
+        IMultiBlock multiBlock = (IMultiBlock) state.getBlock();
         var aabb = AABB.ofSize(context.getClickedPos().relative(context.getClickedFace(), 1).getCenter(), 2, 2, 2);
         var ret = multiBlock.fullBlockShape(pos.relative(context.getClickedFace()), null).allMatch(blockPos -> level.getBlockState(blockPos).canBeReplaced());
 

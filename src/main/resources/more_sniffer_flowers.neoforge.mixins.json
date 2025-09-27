@@ -16,18 +16,15 @@
     "LeavesBlockMixin",
     "PlayerMixin",
     "RightClickHarvestModInitMixin",
-    "ShutUpWarnsMixin",
     "SlotMixin",
     "SnifferEggMixin",
     "SpriteResourceLoaderMixin",
-    "StructureTemplateMixin",
     "ThrownPotionMixin"
   ],
   "client": [
     "BiomeColorsMixin",
     "CreativeInventoryScreenMixin",
     "InventoryScreenMixin",
-    "ClientLevelMixin",
     "SpriteResourceLoaderMixin$PalettedPermutationsAccessor"
   ]
 }

@@ -30,6 +30,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -43,7 +44,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock, ModCropBlock {
+public class TorchflowerAflameBlock extends BushBlock implements EntityBlock, ModCropBlock {
     public static final VoxelShape SHAPE = Block.box(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D);
     public static final MapCodec<TorchflowerAflameBlock> CODEC = simpleCodec(TorchflowerAflameBlock::new);
 
@@ -193,12 +194,6 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new TorchflowerBlockEntity(pos, state);
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> pBlockEntityType) {
-        return tickerHelper(level);
     }
 
     @Override

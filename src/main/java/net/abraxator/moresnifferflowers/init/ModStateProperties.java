@@ -16,7 +16,6 @@ public class ModStateProperties {
     public static final BooleanProperty SHEARED = BooleanProperty.create("sheared");
     public static final BooleanProperty VIVICUS_CURED = BooleanProperty.create("vivicus_cured");
     public static final IntegerProperty LAYER = BlockStateProperties.LAYERS;
-    public static final BooleanProperty CENTER = BooleanProperty.create("center");
     public static final BooleanProperty EMPTY = BooleanProperty.create("empty");
     public static final IntegerProperty FULLNESS = IntegerProperty.create("fullness", 0, 8);
     public static final IntegerProperty USES_4 = IntegerProperty.create("uses", 0, 3);

@@ -6,7 +6,6 @@ import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
-import net.abraxator.moresnifferflowers.components.PreviewMode;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.client.model.geom.ModelPart;
@@ -18,11 +17,15 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
+import net.nikdo53.tinymultiblocklib.client.IMultiblockRenderHelper;
+import net.nikdo53.tinymultiblocklib.components.PreviewMode;
 import org.jetbrains.annotations.NotNull;
 
-public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implements BlockEntityRenderer<T>, MultiblockRender {
+public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implements BlockEntityRenderer<T>, IMultiblockRenderHelper {
     private final ModelPart body;
     private final ModelPart top;
     private static final Material SALTEMONE_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/saltemone"));
@@ -35,12 +38,13 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
 
     @Override
     public void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        if(blockEntity.getBlockState().getValue(ModStateProperties.CENTER) && blockEntity.getBlockState().getValue(ModStateProperties.AGE_2) >= 2) {
+        BlockState blockState = blockEntity.getBlockState();
+        if(IMultiBlock.isCenter(blockState) && blockState.getValue(ModStateProperties.AGE_2) >= 2) {
             PreviewMode previewMode = blockEntity.previewMode;
             VertexConsumer consumer = getConsumer(buffer, blockEntity, SALTEMONE_TEXTURE, SOURLEMON_TEXTURE, ModBlocks.SOURLEMONE.get());
 
             poseStack.pushPose();
-            Direction direction = blockEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
+            Direction direction = blockState.getValue(HorizontalDirectionalBlock.FACING);
             poseStack.mulPose(direction.getCounterClockWise().getRotation());
             poseStack.mulPose(Axis.XN.rotationDegrees(-90));
             poseStack.translate(0, -1.4, 0);

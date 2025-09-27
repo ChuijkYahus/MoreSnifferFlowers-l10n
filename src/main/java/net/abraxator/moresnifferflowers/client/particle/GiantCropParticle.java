@@ -26,7 +26,7 @@ public class GiantCropParticle extends TextureSheetParticle {
 
         @Nullable
         @Override
-        public Particle createParticle(SimpleParticleType pType, ClientLevel level, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
             GiantCropParticle giantCropParticle = new GiantCropParticle(level, pX, pY, pZ);
             giantCropParticle.pickSprite(spriteSet);
             return giantCropParticle;

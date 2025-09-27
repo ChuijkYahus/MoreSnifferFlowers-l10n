@@ -1,10 +1,7 @@
 package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.blockentities.BondripiaBlockEntity;
-import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.multiblock.AbstractMultiBlock;
-import net.abraxator.moresnifferflowers.blocks.multiblock.CorruptableMultiblock;
-import net.abraxator.moresnifferflowers.blocks.multiblock.PreviewableMultiblock;
+import net.abraxator.moresnifferflowers.blocks.multiblock.ICorruptableMultiblock;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModParticles;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
@@ -36,17 +33,20 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
+import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
+import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock, ModCropBlock, Corruptable, PreviewableMultiblock, CorruptableMultiblock {
-    public BondripiaBlock(Properties p_49795_) {
-        super(p_49795_);
+public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, ModCropBlock, Corruptable, IPreviewableMultiblock, ICorruptableMultiblock {
+    public BondripiaBlock(Properties properties) {
+        super(properties);
         this.registerDefaultState(defaultBlockState()
-                .setValue(ModStateProperties.CENTER, false)
                 .setValue(getAgeProperty(), 0)
                 .setValue(ModStateProperties.SHEARED, false));
     }
@@ -64,19 +64,20 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
 
     @Override
     public BlockState getDefaultStateForPreviews(Direction direction) {
-        return PreviewableMultiblock.super.getDefaultStateForPreviews(direction).setValue(getAgeProperty(), getMaxAge());
+        return IPreviewableMultiblock.super.getDefaultStateForPreviews(direction).setValue(getAgeProperty(), getMaxAge());
     }
 
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
-        if (!isCenter(state)) return  RenderShape.INVISIBLE;
-        if (getAge(state) == getMaxAge()) return RenderShape.ENTITYBLOCK_ANIMATED;
+    public RenderShape getMultiblockRenderShape(BlockState blockState) {
+        if (!IMultiBlock.isCenter(blockState)) return  RenderShape.INVISIBLE;
+        if (getAge(blockState) == getMaxAge()) return RenderShape.ENTITYBLOCK_ANIMATED;
         return RenderShape.MODEL;
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(ModStateProperties.CENTER, getAgeProperty(), ModStateProperties.SHEARED);
+        super.createBlockStateDefinition(builder);
+        builder.add(getAgeProperty(), ModStateProperties.SHEARED);
     }
 
     @Override
@@ -93,12 +94,6 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
         return true;
     }
 
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> pBlockEntityType) {
-        return tickerHelper(level);
-    }
-
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         spawnBonmeeliaParticles(state, level, pos, random);
@@ -106,7 +101,7 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
 
     private void spawnBonmeeliaParticles(BlockState state, Level level, BlockPos pos, RandomSource random) {
         boolean isAcidripia = state.is(ModBlocks.ACIDRIPIA.get());
-        if(state.getValue(ModStateProperties.CENTER) && isMaxAge(state) && level.getBlockEntity(pos) instanceof MultiBlockEntity entity && random.nextFloat() < 0.4) {
+        if(IMultiBlock.isCenter(state) && isMaxAge(state) && level.getBlockEntity(pos) instanceof IMultiBlockEntity entity && random.nextFloat() < 0.4) {
             BlockPos.withinManhattanStream(entity.getCenter(), 1, 0, 1).forEach(blockPos -> {
 
                 var vec3 = blockPos.getCenter();
@@ -199,7 +194,7 @@ public class BondripiaBlock extends AbstractMultiBlock implements ModEntityBlock
     }
 
     public void grow(Level level, BlockPos blockPos, BlockState state) {
-        growHelper(level, blockPos, state);
+        growHelper(level, blockPos,  getAgeProperty());
     }
     
     private boolean isBondripable(Level level, BlockPos blockPos) {

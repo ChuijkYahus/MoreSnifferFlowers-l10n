@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
-import net.abraxator.moresnifferflowers.components.PreviewMode;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.ModTags;
@@ -22,13 +21,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.client.model.pipeline.VertexConsumerWrapper;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
+import net.nikdo53.tinymultiblocklib.client.IMultiblockRenderHelper;
+import net.nikdo53.tinymultiblocklib.components.PreviewMode;
 import org.joml.Quaternionf;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implements BlockEntityRenderer<T>, MultiblockRender {
+public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implements BlockEntityRenderer<T>, IMultiblockRenderHelper {
 	private final Map<Block, ModelPart> modelPartMap = new HashMap<>();
 
 
@@ -66,10 +68,10 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 		VertexConsumer vertexConsumer = TEXTURE.buffer(buffer, renderType);
 
 		double growProgress = previewMode.equals(PreviewMode.PLACED) ? blockEntity.growProgress : 1;
-		float coolPartialTick = (growProgress < 1 && blockState.is(ModTags.ModBlockTags.GIANT_CROPS) && blockState.getValue(ModStateProperties.CENTER)) ? partialTick : 0;
+		float coolPartialTick = (growProgress < 1 && blockState.is(ModTags.ModBlockTags.GIANT_CROPS) && IMultiBlock.isCenter(blockState)) ? partialTick : 0;
 		float coolGrowProgress = level().getGameTime() - blockEntity.staticGameTime;
 
-		if(growProgress > 0 && blockState.is(ModTags.ModBlockTags.GIANT_CROPS) && blockState.getValue(ModStateProperties.CENTER)) {
+		if(growProgress > 0 && blockState.is(ModTags.ModBlockTags.GIANT_CROPS) && IMultiBlock.isCenter(blockState)) {
 			float yCord = 0.5F;
 			float yScale = 1;
 

@@ -33,6 +33,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyC
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -308,11 +309,11 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         add(ModBlocks.BONMEEL_FILLED_CAULDRON.get(), createSingleItemTable(Blocks.CAULDRON));
         add(ModBlocks.ACID_FILLED_CAULDRON.get(), createSingleItemTable(Blocks.CAULDRON));
 
-        add(ModBlocks.BONDRIPIA.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.BONDRIPIA.get(), ModItems.BONDRIPIA_SEEDS.get()));
-        add(ModBlocks.ACIDRIPIA.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.ACIDRIPIA.get(), ModItems.ACIDRIPIA_SEEDS.get()));
-        add(ModBlocks.BEROOT_CAULDRON.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.BEROOT_CAULDRON.get(), ModItems.BEROOT_CAULDRON.get()));
-        add(ModBlocks.SALTEMONE.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.SALTEMONE.get(), ModItems.SALTEMONE_SEEDS.get()));
-        add(ModBlocks.SOURLEMONE.get(), simpleConditional(ModStateProperties.CENTER, ModBlocks.SOURLEMONE.get(), ModItems.SOURLEMONE_SEEDS.get()));
+        add(ModBlocks.BONDRIPIA.get(), simpleConditional(AbstractMultiBlock.CENTER, ModBlocks.BONDRIPIA.get(), ModItems.BONDRIPIA_SEEDS.get()));
+        add(ModBlocks.ACIDRIPIA.get(), simpleConditional(AbstractMultiBlock.CENTER, ModBlocks.ACIDRIPIA.get(), ModItems.ACIDRIPIA_SEEDS.get()));
+        add(ModBlocks.BEROOT_CAULDRON.get(), simpleConditional(AbstractMultiBlock.CENTER, ModBlocks.BEROOT_CAULDRON.get(), ModItems.BEROOT_CAULDRON.get()));
+        add(ModBlocks.SALTEMONE.get(), simpleConditional(AbstractMultiBlock.CENTER, ModBlocks.SALTEMONE.get(), ModItems.SALTEMONE_SEEDS.get()));
+        add(ModBlocks.SOURLEMONE.get(), simpleConditional(AbstractMultiBlock.CENTER, ModBlocks.SOURLEMONE.get(), ModItems.SOURLEMONE_SEEDS.get()));
 
         add(ModBlocks.SALTY_CLUMP.get(), simpleIncreasingConditional(ModStateProperties.AMOUNT_4, ModBlocks.SALTY_CLUMP.get(), ModItems.SALTY_SPICE.get()));
         add(ModBlocks.SOUR_PUDDLE.get(), createSingleItemTable(ModItems.SOUR_SPICE.get()));

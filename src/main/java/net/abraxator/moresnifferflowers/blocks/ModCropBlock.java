@@ -1,6 +1,5 @@
 package net.abraxator.moresnifferflowers.blocks;
 
-import net.abraxator.moresnifferflowers.blocks.multiblock.MultiBlock;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -13,7 +12,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -25,6 +23,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.Tags;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 
 public interface ModCropBlock extends BonemealableBlock {
     IntegerProperty getAgeProperty();
@@ -66,7 +65,7 @@ public interface ModCropBlock extends BonemealableBlock {
             CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player, blockPos, player.getItemInHand(hand));
         }
 
-        MultiBlock.getFullShape(level, blockPos).forEach(pos -> {
+        IMultiBlock.getFullShape(level, blockPos).forEach(pos -> {
             BlockState blockStateNew = level.getBlockState(pos);
 
             level.setBlockAndUpdate(pos, blockStateNew.trySetValue(ModStateProperties.SHEARED, true));
@@ -86,7 +85,7 @@ public interface ModCropBlock extends BonemealableBlock {
         return false;
     }
 
-    public static float getGrowthSpeed(BlockState blockState, BlockGetter p_52274_, BlockPos p_52275_) {
+    static float getGrowthSpeed(BlockState blockState, BlockGetter p_52274_, BlockPos p_52275_) {
         Block p_52273_ = blockState.getBlock();
         float f = 1.0F;
         BlockPos blockpos = p_52275_.below();

@@ -2,8 +2,6 @@ package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
-import net.abraxator.moresnifferflowers.blockentities.MultiBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.multiblock.PreviewableMultiblock;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,7 +13,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -39,17 +36,20 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.ScheduledTick;
+import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
+import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
+import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 import vectorwing.farmersdelight.common.block.RiceBlock;
 import vectorwing.farmersdelight.common.block.TomatoVineBlock;
 
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 
-public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable, PreviewableMultiblock, SimpleWaterloggedBlock {
+public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable, IPreviewableMultiblock, SimpleWaterloggedBlock {
     public static final VoxelShape SHAPE_POTATO = makeShapePotato();
     public static final VoxelShape SHAPE_CARROT = makeShapeCarrot();
     public static final VoxelShape SHAPE_BEET = makeShapeBeet();
@@ -61,11 +61,11 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     public static final VoxelShape SHAPE_RICE = makeShapeRice();
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    public static final BlockBehaviour.StatePredicate STATE_PREDICATE = (p_152641_, p_152642_, p_152643_) -> p_152641_.getValue(ModStateProperties.CENTER);
+    public static final BlockBehaviour.StatePredicate STATE_PREDICATE = (p_152641_, p_152642_, p_152643_) -> p_152641_.getValue(AbstractMultiBlock.CENTER);
 
     public GiantCropBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(ModStateProperties.CENTER, false).setValue(WATERLOGGED, false));
+        registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false));
     }
 
     @Nullable
@@ -98,7 +98,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
     @Override
     protected RenderShape getRenderShape(BlockState state) {
-        if (isCenter(state)) return RenderShape.ENTITYBLOCK_ANIMATED;
+        if (IMultiBlock.isCenter(state)) return RenderShape.ENTITYBLOCK_ANIMATED;
         return RenderShape.INVISIBLE;
     }
 
@@ -159,7 +159,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState pOldState, boolean pMovedByPiston) {
-        if(state.getValue(ModStateProperties.CENTER)) {
+        if(IMultiBlock.isCenter(state)) {
             level.getBlockTicks().schedule(new ScheduledTick<>(this, pos, level.getGameTime() + 7, level.nextSubTickCount()));
             if(level.getBlockEntity(pos) instanceof GiantCropBlockEntity entity && entity.state == 0) {
                 entity.state = 1;
@@ -174,7 +174,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(ModStateProperties.CENTER, WATERLOGGED);
+        builder.add(AbstractMultiBlock.CENTER, WATERLOGGED);
     }
 
     @Nullable
@@ -201,12 +201,12 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
             level.destroyBlock(pos, false);
 
             BlockState state = getCropMap().get(blockState.getBlock()).getA().defaultBlockState()
-                    .setValue(ModStateProperties.CENTER, pos.equals(finalBlockPos.above()))
+                    .setValue(AbstractMultiBlock.CENTER, pos.equals(finalBlockPos.above()))
                     .setValue(WATERLOGGED, isWaterLogged);
 
             level.setBlockAndUpdate(pos, state);
 
-            if(level.getBlockEntity(pos) instanceof MultiBlockEntity entity) {
+            if(level.getBlockEntity(pos) instanceof IMultiBlockEntity entity) {
                 entity.setCenter(finalBlockPos.above());
             }
         });
@@ -280,7 +280,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
         VoxelShape shape = Shapes.block();
 
-        if (getXOffset(getter, pos) == 0 && getZOffset(getter, pos) == 0){
+        if (IMultiBlock.getXOffset(getter, pos) == 0 && IMultiBlock.getZOffset(getter, pos) == 0){
             return shape;
         }
 

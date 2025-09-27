@@ -79,22 +79,22 @@ public class ModBoatRenderer extends BoatRenderer {
         pPoseStack.popPose();
     }
 
-    private static String getTextureLocation(ModBoatEntity.Type pType, boolean pChestBoat) {
-        return pChestBoat ? "textures/entity/chest_boat/" + pType.getName() + ".png" : "textures/entity/boat/" + pType.getName() + ".png";
+    private static String getTextureLocation(ModBoatEntity.Type type, boolean pChestBoat) {
+        return pChestBoat ? "textures/entity/chest_boat/" + type.getName() + ".png" : "textures/entity/boat/" + type.getName() + ".png";
     }
 
-    private ListModel<Boat> createBoatModel(EntityRendererProvider.Context context, ModBoatEntity.Type pType, boolean pChestBoat) {
-        ModelLayerLocation modellayerlocation = pChestBoat ? ModBoatRenderer.createChestBoatModelName(pType) : ModBoatRenderer.createBoatModelName(pType);
+    private ListModel<Boat> createBoatModel(EntityRendererProvider.Context context, ModBoatEntity.Type type, boolean pChestBoat) {
+        ModelLayerLocation modellayerlocation = pChestBoat ? ModBoatRenderer.createChestBoatModelName(type) : ModBoatRenderer.createBoatModelName(type);
         ModelPart modelpart = context.bakeLayer(modellayerlocation);
         return pChestBoat ? new ChestBoatModel(modelpart) : new BoatModel(modelpart);
     }
 
-    public static ModelLayerLocation createBoatModelName(ModBoatEntity.Type pType) {
-        return createLocation("boat/" + pType.getName(), "main");
+    public static ModelLayerLocation createBoatModelName(ModBoatEntity.Type type) {
+        return createLocation("boat/" + type.getName(), "main");
     }
 
-    public static ModelLayerLocation createChestBoatModelName(ModBoatEntity.Type pType) {
-        return createLocation("chest_boat/" + pType.getName(), "main");
+    public static ModelLayerLocation createChestBoatModelName(ModBoatEntity.Type type) {
+        return createLocation("chest_boat/" + type.getName(), "main");
     }
 
     private static ModelLayerLocation createLocation(String pPath, String pModel) {

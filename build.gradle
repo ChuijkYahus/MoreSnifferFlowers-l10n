@@ -29,6 +29,7 @@ repositories {
         name = "TerraformersMC" //EMI
         url = "https://maven.terraformersmc.com/"
     }
+    flatDir { dir 'libs' }
 }
 
 
@@ -78,18 +79,15 @@ neoForge {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    //implementation "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     compileOnly("curse.maven:rightclickharvest-452834:6134804")
-    //implementation "curse.maven:architectury-api-419699:5786327"
-    //implementation "curse.maven:jamlib-623764:5988164"
-    //implementation("me.shedaniel.cloth:cloth-config-neoforge:${cloth_version}")
-    //implementation("dev.architectury:architectury-neoforge:${architectury_version}")
 
     runtimeOnly "curse.maven:farmers-delight-398521:6917256"
     compileOnly "curse.maven:farmers-delight-398521:6917256"
+
+    implementation(jarJar(group: "local", name:"TinyMultiblockLib-neoforge-1.21.1", version: "[1.1,)"))
 
     implementation("net.neoforged:neoforge:${neoforge_version}")
 }

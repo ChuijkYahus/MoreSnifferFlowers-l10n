@@ -21,8 +21,8 @@ import java.util.Map;
 public class ColoredBlockEntity extends ModBlockEntity implements Colorable {
     public Dye dye = Dye.EMPTY;
 
-    public ColoredBlockEntity(BlockEntityType<?> pType, BlockPos pos, BlockState state) {
-        super(pType, pos, state);
+    public ColoredBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     @Override

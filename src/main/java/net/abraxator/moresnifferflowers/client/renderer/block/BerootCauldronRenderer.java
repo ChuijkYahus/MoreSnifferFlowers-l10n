@@ -6,7 +6,6 @@ import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
-import net.abraxator.moresnifferflowers.components.PreviewMode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -24,13 +23,15 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.phys.AABB;
+import net.nikdo53.tinymultiblocklib.client.IMultiblockRenderHelper;
+import net.nikdo53.tinymultiblocklib.components.PreviewMode;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
 import java.util.function.Function;
 
-public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> implements BlockEntityRenderer<T>, MultiblockRender {
+public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> implements BlockEntityRenderer<T>, IMultiblockRenderHelper {
     private final ModelPart cauldron;
     private final ModelPart spoon;
 
@@ -52,7 +53,7 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> impleme
         final RandomSource randomSource = level().getRandom();
         final Direction direction = blockEntity.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
 
-        if(blockEntity.canRender()) {
+        if(blockEntity.isCenter()) {
             //CAULDRON
             poseStack.pushPose();
             poseStack.translate(1, 1.5, 0);

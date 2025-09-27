@@ -18,8 +18,8 @@ public class ModPieceTypes {
         return STRUCTURE_PIECE.register(pPieceId.toLowerCase(Locale.ROOT), () -> pPieceType);
     }
 
-    private static DeferredHolder<StructurePieceType, StructurePieceType> setPieceId(StructurePieceType.ContextlessType pType, String pKey) {
-        return setFullContextPieceId(pType, pKey);
+    private static DeferredHolder<StructurePieceType, StructurePieceType> setPieceId(StructurePieceType.ContextlessType type, String pKey) {
+        return setFullContextPieceId(type, pKey);
     }
 
     private static DeferredHolder<StructurePieceType, StructurePieceType> setTemplatePieceId(StructurePieceType.StructureTemplateType pTemplateType, String pPieceId) {

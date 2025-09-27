@@ -1,10 +1,7 @@
 package net.abraxator.moresnifferflowers.blocks;
 
 import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
-import net.abraxator.moresnifferflowers.blocks.multiblock.AbstractMultiBlock;
-import net.abraxator.moresnifferflowers.blocks.multiblock.CorruptableMultiblock;
-import net.abraxator.moresnifferflowers.blocks.multiblock.MultiBlock;
-import net.abraxator.moresnifferflowers.blocks.multiblock.PreviewableMultiblock;
+import net.abraxator.moresnifferflowers.blocks.multiblock.ICorruptableMultiblock;
 import net.abraxator.moresnifferflowers.entities.SaltBubbleProjectile;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
@@ -17,18 +14,17 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.AABB;
@@ -37,24 +33,26 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
+import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
 
-public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock, Corruptable, ModCropBlock, PreviewableMultiblock, CorruptableMultiblock {
+public class SaltemoneBlock extends AbstractMultiBlock implements EntityBlock, Corruptable, ModCropBlock, IPreviewableMultiblock, ICorruptableMultiblock {
     public SaltemoneBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(defaultBlockState()
-                .setValue(ModStateProperties.CENTER, false)
                 .setValue(getAgeProperty(), 0)
-                .setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH)
                 .setValue(ModStateProperties.SHEARED, false));
     }
     protected static final VoxelShape AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(HorizontalDirectionalBlock.FACING, ModStateProperties.CENTER, getAgeProperty(), ModStateProperties.SHEARED);
+        super.createBlockStateDefinition(builder);
+        builder.add( getAgeProperty(), ModStateProperties.SHEARED);
     }
 
     @Override
@@ -69,12 +67,12 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
 
     @Override
     public BlockState getDefaultStateForPreviews(Direction direction) {
-        return PreviewableMultiblock.super.getDefaultStateForPreviews(direction).setValue(getAgeProperty(), getMaxAge());
+        return IPreviewableMultiblock.super.getDefaultStateForPreviews(direction).setValue(getAgeProperty(), getMaxAge());
     }
 
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
-        if (!isCenter(state)) return  RenderShape.INVISIBLE;
+    public RenderShape getMultiblockRenderShape(BlockState state) {
+        if (!IMultiBlock.isCenter(state)) return  RenderShape.INVISIBLE;
         if (getAge(state) == getMaxAge()) return RenderShape.ENTITYBLOCK_ANIMATED;
         return RenderShape.MODEL;
     }
@@ -108,7 +106,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
 
     @Override
     public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
-        growHelper(level, pos, state);
+        growHelper(level, pos, getAgeProperty());
     }
 
     public boolean isCorrupted(){
@@ -144,7 +142,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
                 PacketDistributor.sendToAllPlayers( new SaltemoneParticlePacket(vec3.toVector3f()));
 
             } else {
-                growHelper(level, pos, state);
+                growHelper(level, pos, getAgeProperty());
             }
         }
     }
