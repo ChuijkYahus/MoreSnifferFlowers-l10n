@@ -36,6 +36,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
+import net.nikdo53.tinymultiblocklib.components.SyncedStatePropertiesBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
@@ -48,6 +49,13 @@ public class SaltemoneBlock extends AbstractMultiBlock implements EntityBlock, C
                 .setValue(ModStateProperties.SHEARED, false));
     }
     protected static final VoxelShape AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
+
+    @Override
+    public void createSyncedBlockStates(SyncedStatePropertiesBuilder builder) {
+        super.createSyncedBlockStates(builder);
+        builder.add(ModStateProperties.SHEARED);
+        builder.add(getAgeProperty());
+    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -78,7 +86,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements EntityBlock, C
     }
 
     @Override
-    public Stream<BlockPos> fullBlockShape(Direction direction, BlockPos center) {
+    public Stream<BlockPos> makeFullBlockShape(@javax.annotation.Nullable Direction direction, BlockPos center, BlockState state) {
         BlockPos relative = center.relative(direction).relative(direction.getClockWise());
         return BlockPos.betweenClosedStream(new AABB(center.getCenter(), relative.getCenter()));
     }

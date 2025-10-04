@@ -65,12 +65,8 @@ public interface ModCropBlock extends BonemealableBlock {
             CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player, blockPos, player.getItemInHand(hand));
         }
 
-        IMultiBlock.getFullShape(level, blockPos).forEach(pos -> {
-            BlockState blockStateNew = level.getBlockState(pos);
-
-            level.setBlockAndUpdate(pos, blockStateNew.trySetValue(ModStateProperties.SHEARED, true));
-            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, blockStateNew));
-        });
+        level.setBlockAndUpdate(blockPos, blockState.trySetValue(ModStateProperties.SHEARED, true));
+        level.gameEvent(GameEvent.BLOCK_CHANGE, blockPos, GameEvent.Context.of(player, blockState));
 
         level.playSound(null, blockPos, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1.0F, 0.8F + level.random.nextFloat() * 0.4F);
         player.getItemInHand(hand).hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));

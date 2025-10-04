@@ -37,6 +37,7 @@ import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
 import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
+import net.nikdo53.tinymultiblocklib.components.SyncedStatePropertiesBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -75,13 +76,20 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
     }
 
     @Override
+    public void createSyncedBlockStates(SyncedStatePropertiesBuilder builder) {
+        super.createSyncedBlockStates(builder);
+        builder.add(ModStateProperties.SHEARED);
+        builder.add(getAgeProperty());
+    }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(getAgeProperty(), ModStateProperties.SHEARED);
     }
 
     @Override
-    public Stream<BlockPos> fullBlockShape(@Nullable Direction direction, BlockPos center) {
+    public Stream<BlockPos> makeFullBlockShape(@javax.annotation.Nullable Direction direction, BlockPos center, BlockState state) {
         List<BlockPos> positions = new ArrayList<>();
         positions.add(center.immutable());
         positions.addAll(Direction.Plane.HORIZONTAL.stream().map(direction1 -> center.relative(direction1).immutable()).toList());

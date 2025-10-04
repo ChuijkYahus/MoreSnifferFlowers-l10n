@@ -62,7 +62,7 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
     }
 
     @Override
-    public Stream<BlockPos> fullBlockShape(Direction direction, BlockPos center) {
+    public Stream<BlockPos> makeFullBlockShape(@javax.annotation.Nullable Direction direction, BlockPos center, BlockState state) {
         BlockPos relative = center.relative(direction).relative(direction.getClockWise()).above();
         return BlockPos.betweenClosedStream(new AABB(center.getCenter(), relative.getCenter()));
     }

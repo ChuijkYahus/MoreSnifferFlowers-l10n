@@ -40,6 +40,7 @@ import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
 import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
+import net.nikdo53.tinymultiblocklib.components.SyncedStatePropertiesBuilder;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 import vectorwing.farmersdelight.common.block.RiceBlock;
@@ -62,10 +63,16 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BlockBehaviour.StatePredicate STATE_PREDICATE = (p_152641_, p_152642_, p_152643_) -> p_152641_.getValue(AbstractMultiBlock.CENTER);
+    public final SyncedStatePropertiesBuilder PROPERTIES_BUILDER = new SyncedStatePropertiesBuilder();
 
     public GiantCropBlock(Properties properties) {
         super(properties);
         registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false));
+    }
+
+    @Override
+    public SyncedStatePropertiesBuilder getSyncedStatePropertiesBuilder() {
+        return PROPERTIES_BUILDER;
     }
 
     @Nullable
@@ -75,7 +82,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
     }
 
     @Override
-    public Stream<BlockPos> fullBlockShape(@Nullable Direction direction, BlockPos center) {
+    public Stream<BlockPos> makeFullBlockShape(@javax.annotation.Nullable Direction direction, BlockPos center, BlockState state) {
         if (this.equals(ModBlocks.GIANT_CABBAGE.get())){
             return BlockPos.betweenClosedStream(
                     center.getX() - 1,
@@ -194,7 +201,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
         if (isRicePanicles(blockState.getBlock())) blockPos = blockPos.below();
 
         BlockPos finalBlockPos = blockPos;
-        this.fullBlockShape(null, blockPos.above()).forEach(pos -> {
+        this.getfullBlockShape(blockPos.above(), blockState).forEach(pos -> {
             pos = pos.immutable();
             boolean isWaterLogged = level.getFluidState(pos).getType() == Fluids.WATER;
 
@@ -230,7 +237,7 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
             blockPos = blockPos.below();
         }
 
-        return fullBlockShape(null, blockPos.above()).allMatch(pos -> {
+        return getfullBlockShape(blockPos.above(), blockState).allMatch(pos -> {
             BlockState state = level.getBlockState(pos);
             var PROPERTY = getCropMap().get(crop).getB().getA();
             int MAX_AGE = getCropMap().get(crop).getB().getB();
@@ -364,8 +371,5 @@ public class GiantCropBlock extends Block implements ModEntityBlock, Bonmeelable
 
         return shape;
     }
-
-
-
 
 }
