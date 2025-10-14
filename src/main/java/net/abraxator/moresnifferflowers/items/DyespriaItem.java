@@ -30,10 +30,7 @@ import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -52,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class DyespriaItem extends BlockItem implements Colorable {
     public DyespriaItem(Properties properties) {
@@ -237,9 +235,13 @@ public class DyespriaItem extends BlockItem implements Colorable {
             blockId = "white_stained_" + blockId;
         }
 
-        String validColorName = "white|light_gray|gray|black|brown|red|orange|yellow|lime|green|cyan|light_blue|blue|purple|magenta|pink";
+        String validColorName = Arrays.stream(DyeColor.values()).map(DyeColor::getName).collect(Collectors.joining("|"));
         String finalBlockName = blockId.replaceFirst(validColorName, newColor.getName());
         Block finalBlock = BuiltInRegistries.BLOCK.get(new ResourceLocation(modId, finalBlockName));
+        if (finalBlock.defaultBlockState().isAir()) {
+            finalBlock = BuiltInRegistries.BLOCK.get(new ResourceLocation(BuiltInRegistries.ITEM.getKey(DyeItem.byColor(newColor)).getNamespace(), finalBlockName));
+        }
+
         BlockState finalBlockState = finalBlock.defaultBlockState();
 
         BlockEntity originalShulker = level.getBlockEntity(blockPos);
@@ -343,24 +345,26 @@ public class DyespriaItem extends BlockItem implements Colorable {
 
     @Override
     public Map<DyeColor, Integer> colorValues() {
-        return Util.make(Maps.newLinkedHashMap(), dyeColorHexFormatMap -> {
-            dyeColorHexFormatMap.put(DyeColor.WHITE, 0xFFFFFFFF);
-            dyeColorHexFormatMap.put(DyeColor.LIGHT_GRAY, 0xFF9d979b);
-            dyeColorHexFormatMap.put(DyeColor.GRAY, 0xFF474f52);
-            dyeColorHexFormatMap.put(DyeColor.BLACK, 0xFF1d1d21);
-            dyeColorHexFormatMap.put(DyeColor.BROWN, 0xFF835432);
-            dyeColorHexFormatMap.put(DyeColor.RED, 0xFFce5849);
-            dyeColorHexFormatMap.put(DyeColor.ORANGE, 0xFFf89635);
-            dyeColorHexFormatMap.put(DyeColor.YELLOW, 0xFFffee53);
-            dyeColorHexFormatMap.put(DyeColor.LIME, 0xFF80c71f);
-            dyeColorHexFormatMap.put(DyeColor.GREEN, 0xFF5e7c16);
-            dyeColorHexFormatMap.put(DyeColor.CYAN, 0xFF36a98c);
-            dyeColorHexFormatMap.put(DyeColor.LIGHT_BLUE, 0xFF70d9e4);
-            dyeColorHexFormatMap.put(DyeColor.BLUE, 0xFF4753ac);
-            dyeColorHexFormatMap.put(DyeColor.PURPLE, 0xFFb15fc2);
-            dyeColorHexFormatMap.put(DyeColor.MAGENTA, 0xFFd276b9);
-            dyeColorHexFormatMap.put(DyeColor.PINK, 0xFFf8b0c4);
-        });
+        Map<DyeColor, Integer> map = Colorable.super.colorValues();
+
+        map.put(DyeColor.WHITE, 0xFFFFFFFF);
+        map.put(DyeColor.LIGHT_GRAY, 0xFF9d979b);
+        map.put(DyeColor.GRAY, 0xFF474f52);
+        map.put(DyeColor.BLACK, 0xFF1d1d21);
+        map.put(DyeColor.BROWN, 0xFF835432);
+        map.put(DyeColor.RED, 0xFFce5849);
+        map.put(DyeColor.ORANGE, 0xFFf89635);
+        map.put(DyeColor.YELLOW, 0xFFffee53);
+        map.put(DyeColor.LIME, 0xFF80c71f);
+        map.put(DyeColor.GREEN, 0xFF5e7c16);
+        map.put(DyeColor.CYAN, 0xFF36a98c);
+        map.put(DyeColor.LIGHT_BLUE, 0xFF70d9e4);
+        map.put(DyeColor.BLUE, 0xFF4753ac);
+        map.put(DyeColor.PURPLE, 0xFFb15fc2);
+        map.put(DyeColor.MAGENTA, 0xFFd276b9);
+        map.put(DyeColor.PINK, 0xFFf8b0c4);
+            
+        return map;
     }
     
     public static Component getCurrentModeComponent(DyespriaMode dyespriaMode) {

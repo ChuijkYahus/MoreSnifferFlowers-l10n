@@ -110,6 +110,14 @@ dependencies {
 
     modImplementation(jarJar(group: "local", name:"TinyMultiblockLib-forge-1.20.1", version: "[1.1,)"))
 
+/*    jarJar(modImplementation(group: "maven.modrinth", name:"tiny-multiblock-lib", version:"1.1-forge,1.20.1"){
+        version {
+            prefer('1.1')
+            strictly('[1.1,)')
+        }
+    })*/
+
+  //  modImplementation("maven.modrinth:tiny-multiblock-lib:1.1-forge,1.20.1")
 
     //quark
     compileOnly("curse.maven:quark-243121:6427817")
@@ -122,7 +130,9 @@ dependencies {
     modRuntimeOnly("curse.maven:farmers-delight-398521:6917255");
     modCompileOnly("curse.maven:farmers-delight-398521:6917255");
 
-    modImplementation("curse.maven:carry-on-274259:4882500")
+    modImplementation("maven.modrinth:dye-depot:1.2.1-forge")
+
+   // modImplementation("curse.maven:carry-on-274259:4882500")
 
     // modRuntimeOnly("curse.maven:hold-my-items-reforged-1246920:6608415")
    // modImplementation("curse.maven:dyenamics-509276:5353528")

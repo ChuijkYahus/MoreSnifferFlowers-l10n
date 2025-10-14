@@ -7,6 +7,10 @@
     "minecraft:terracotta",
     "minecraft:shulker_box",
     "minecraft:candle",
+    {
+      "id": "#forge:dyed",
+      "required": false
+    },
     "minecraft:white_wool",
     "minecraft:white_carpet",
     "minecraft:white_terracotta",

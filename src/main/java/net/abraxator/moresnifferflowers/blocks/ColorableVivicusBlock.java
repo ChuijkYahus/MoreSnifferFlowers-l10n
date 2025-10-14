@@ -70,23 +70,26 @@ public interface ColorableVivicusBlock extends Colorable {
 
     @Override
     default Map<DyeColor, Integer> colorValues() {
-        return Util.make(Maps.newLinkedHashMap(), dyeColorHexFormatMap -> {
-            dyeColorHexFormatMap.put(DyeColor.WHITE, 0xFFFFFFFF);
-            dyeColorHexFormatMap.put(DyeColor.LIGHT_GRAY, 0xFFd2cad8);
-            dyeColorHexFormatMap.put(DyeColor.GRAY, 0xFFb0a4be);
-            dyeColorHexFormatMap.put(DyeColor.BLACK, 0xFF837e9b);
-            dyeColorHexFormatMap.put(DyeColor.BROWN, 0xFFd6a27c);
-            dyeColorHexFormatMap.put(DyeColor.RED, 0xFFffaca6);
-            dyeColorHexFormatMap.put(DyeColor.ORANGE, 0xFFffd180);
-            dyeColorHexFormatMap.put(DyeColor.YELLOW, 0xFFfff07a);
-            dyeColorHexFormatMap.put(DyeColor.LIME, 0xFFddff97);
-            dyeColorHexFormatMap.put(DyeColor.GREEN, 0xFFa2ffb2);
-            dyeColorHexFormatMap.put(DyeColor.CYAN, 0xFF9bffda);
-            dyeColorHexFormatMap.put(DyeColor.LIGHT_BLUE, 0xFFbefffa);
-            dyeColorHexFormatMap.put(DyeColor.BLUE, 0xFFa7cdff);
-            dyeColorHexFormatMap.put(DyeColor.PURPLE, 0xFFccb0ff);
-            dyeColorHexFormatMap.put(DyeColor.MAGENTA, 0xFFe9adff);
-            dyeColorHexFormatMap.put(DyeColor.PINK, 0xFFffd7f7);
-        });
+        Map<DyeColor, Integer> map = Colorable.super.colorValues();
+
+        map.put(DyeColor.WHITE, 0xFFFFFFFF);
+        map.put(DyeColor.LIGHT_GRAY, 0xFFd2cad8);
+        map.put(DyeColor.GRAY, 0xFFb0a4be);
+        map.put(DyeColor.BLACK, 0xFF837e9b);
+        map.put(DyeColor.BROWN, 0xFFd6a27c);
+        map.put(DyeColor.RED, 0xFFffaca6);
+        map.put(DyeColor.ORANGE, 0xFFffd180);
+        map.put(DyeColor.YELLOW, 0xFFfff07a);
+        map.put(DyeColor.LIME, 0xFFddff97);
+        map.put(DyeColor.GREEN, 0xFFa2ffb2);
+        map.put(DyeColor.CYAN, 0xFF9bffda);
+        map.put(DyeColor.LIGHT_BLUE, 0xFFbefffa);
+        map.put(DyeColor.BLUE, 0xFFa7cdff);
+        map.put(DyeColor.PURPLE, 0xFFccb0ff);
+        map.put(DyeColor.MAGENTA, 0xFFe9adff);
+        map.put(DyeColor.PINK, 0xFFffd7f7);
+
+        return map;
     }
+
 }

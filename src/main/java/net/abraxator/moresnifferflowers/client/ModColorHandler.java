@@ -13,6 +13,7 @@ import net.abraxator.moresnifferflowers.items.DyespriaItem;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.Blocks;
@@ -62,12 +63,18 @@ public class ModColorHandler {
         event.register((state, level, pos, tintIndex) -> {
                     var colorable = ((ColorableVivicusBlock) state.getBlock());
                     if(tintIndex == 0) {
-                        var dyedValue = Dye.colorForDye(colorable, state.getValue(colorable.getColorProperty()));
-                        var color = colorable.getDyeFromBlock(state).color();
+                        int dyedValue = Dye.colorForDye(colorable, state.getValue(colorable.getColorProperty()));
+                        DyeColor color = colorable.getDyeFromBlock(state).color();
+                        float[] colorHSB = getColorHSB(dyedValue);
+
+                        if (Colorable.isModdedDye(color)) {
+                            colorHSB[1] = colorHSB[1] / 1.5f;
+                            colorHSB[2] = colorHSB[2] * 1.6f;
+
+                            if (colorHSB[2] > 1) colorHSB[2] = 1f;
+                        }
 
                         if(state.is(ModBlocks.VIVICUS_LEAVES.get()) || state.is(ModBlocks.VIVICUS_LEAVES_SPROUT.get())) {
-                            float[] colorHSB = getColorHSB(dyedValue);
-
                             if (pos == null) pos = new BlockPos(0,0,0);
                             float hue = colorHSB[0] + ((1+ Mth.sin((float)pos.getX() + (float)pos.getY() + (float)pos.getZ())) / 15);
 
@@ -83,7 +90,7 @@ public class ModColorHandler {
                             return Color.HSBtoRGB(hue, colorHSB[1], colorHSB[2]);
                         }
 
-                        return dyedValue;
+                        return Color.HSBtoRGB(colorHSB[0], colorHSB[1], colorHSB[2]);
                     }
 
                     return -1;
@@ -129,12 +136,26 @@ public class ModColorHandler {
 
         event.register(((stack, tintIndex) ->{
             if (stack.getOrCreateTag().contains(Colorable.TAG_HEX)) {
-                return stack.getOrCreateTag().getInt(Colorable.TAG_HEX);
+                int color = stack.getOrCreateTag().getInt(Colorable.TAG_HEX);
+                int colorId = stack.getOrCreateTag().getInt(Colorable.TAG_ID);
+
+                if (Colorable.isModdedDye(DyeColor.byId(colorId))) {
+                    float[] colorHSB = getColorHSB(color);
+
+                    colorHSB[1] = colorHSB[1] / 1.5f;
+                    colorHSB[2] = colorHSB[2] * 1.6f;
+
+                    if (colorHSB[2] > 1) colorHSB[2] = 1f;
+
+                    return Color.HSBtoRGB(colorHSB[0], colorHSB[1], colorHSB[2]);
+                }
+
+                return color;
             }
             return 0xffffff;
         }), ModBlocks.VIVICUS_LOG.get(),  ModBlocks.VIVICUS_WOOD.get(), ModBlocks.STRIPPED_VIVICUS_LOG.get(),  ModBlocks.STRIPPED_VIVICUS_WOOD.get(), ModBlocks.VIVICUS_PLANKS.get(),
                 ModBlocks.VIVICUS_STAIRS.get(), ModBlocks.VIVICUS_SLAB.get(), ModBlocks.VIVICUS_FENCE.get(), ModBlocks.VIVICUS_FENCE_GATE.get(), ModBlocks.VIVICUS_DOOR.get(),
-                ModBlocks.VIVICUS_TRAPDOOR.get(), ModBlocks.VIVICUS_PRESSURE_PLATE.get(), ModBlocks.VIVICUS_BUTTON.get(), ModBlocks.VIVICUS_LEAVES.get(), ModBlocks.VIVICUS_SAPLING.get(),
+                ModBlocks.VIVICUS_TRAPDOOR.get(), ModBlocks.VIVICUS_PRESSURE_PLATE.get(), ModBlocks.VIVICUS_BUTTON.get(), ModBlocks.VIVICUS_LEAVES.get(),
                 ModBlocks.VIVICUS_LEAVES_SPROUT.get(), ModItems.VIVICUS_SIGN.get(), ModItems.VIVICUS_HANGING_SIGN.get(), ModItems.VIVICUS_BOAT.get(), ModItems.VIVICUS_CHEST_BOAT.get());
 
     }

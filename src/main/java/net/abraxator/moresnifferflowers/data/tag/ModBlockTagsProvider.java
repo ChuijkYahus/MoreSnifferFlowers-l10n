@@ -101,7 +101,8 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         this.tag(BlockTags.DIRT).add(ModBlocks.CORRUPTED_GRASS_BLOCK.get(), ModBlocks.CURED_GRASS_BLOCK.get());
         this.tag(BlockTags.FLOWER_POTS).add(ModBlocks.POTTED_DYESPRIA.get(), ModBlocks.POTTED_CORRUPTED_SAPLING.get(), ModBlocks.POTTED_VIVICUS_SAPLING.get());
 
-        this.tag(DYED).addTags(Tags.Blocks.STAINED_GLASS_PANES, Tags.Blocks.STAINED_GLASS).add(Blocks.GLASS, Blocks.GLASS_PANE, Blocks.TERRACOTTA, Blocks.SHULKER_BOX, Blocks.CANDLE);
+        this.tag(DYED).addTags(Tags.Blocks.STAINED_GLASS_PANES, Tags.Blocks.STAINED_GLASS).add(Blocks.GLASS, Blocks.GLASS_PANE, Blocks.TERRACOTTA, Blocks.SHULKER_BOX, Blocks.CANDLE)
+                .addOptionalTag(TagKey.create(Registries.BLOCK, new ResourceLocation("forge", "dyed")));
         addColored(DYED, "{c}_wool", "{c}_carpet", "{c}_terracotta", "{c}_concrete", "{c}_concrete_powder", "{c}_glazed_terracotta", "{c}_shulker_box", "{c}_candle", "{c}_banner");
     }
 
@@ -111,7 +112,7 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
                 ResourceLocation key = new ResourceLocation("minecraft", s.replace("{c}",  color.getName()));
                 Block item = ForgeRegistries.BLOCKS.getValue(key);
                 if (item == null || item  == Blocks.AIR)
-                    throw new IllegalStateException("Unknown vanilla item: " + key);
+                    return;
                 tag(group).add(item);
             }
         }
