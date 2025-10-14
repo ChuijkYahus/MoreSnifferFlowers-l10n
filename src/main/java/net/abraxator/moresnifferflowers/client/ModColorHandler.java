@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -28,44 +29,51 @@ import java.awt.*;
 public class ModColorHandler {
     @SubscribeEvent
     public static void onRegisterBlockColorHandlers(net.neoforged.neoforge.client.event.RegisterColorHandlersEvent.Block event) {
-        event.register((state, level, pos, pTintIndex) -> {
+        event.register((state, level, pos, tintIndex) -> {
             Colorable colorable = ((Colorable) state.getBlock());
             Dye dye = colorable.getDyeFromBlock(state);
             int color = Dye.colorForDye(colorable, dye.color());
             if(!dye.isEmpty()) {
-                if (pTintIndex == 0) {
+                if (tintIndex == 0) {
                     float[] colorHSB = getColorHSB(color);
 
                     return Color.HSBtoRGB(colorHSB[0], Math.max(colorHSB[1] / 1.7F, 0), Math.max(colorHSB[2], 0));
                 }
-                if (pTintIndex == 1) {
+                if (tintIndex == 1) {
                     return color;
                 }
             }
             return -1;
         }, ModBlocks.CAULORFLOWER.get());
-        event.register((state, level, pos, pTintIndex) -> {
+        event.register((state, level, pos, tintIndex) -> {
             int color = state.getValue(ModStateProperties.BLOCK_PATTERN).getColor();
             if (state.getValue(ModStateProperties.EMPTY)) color = 0xFFFFFF;
-            if (pTintIndex == 0) {
+            if (tintIndex == 0) {
                 float[] colorHSB = getColorHSB(color);
                 return Color.HSBtoRGB(colorHSB[0], Math.max(colorHSB[1] / 1.7F, 0), Math.max(colorHSB[2], 0));
             }
-            if (pTintIndex == 1) {
+            if (tintIndex == 1) {
                 float[] colorHSB = getColorHSB(color);
                 return Color.HSBtoRGB(colorHSB[0], Math.min(colorHSB[1] * 1.1F, 1), Math.min(colorHSB[2] * 1.2F, 1));
             }
 
             return -1;
         }, ModBlocks.PATTERNFLOWER.get());
-        event.register((state, level, pos, pTintIndex) -> {
+        event.register((state, level, pos, tintIndex) -> {
                     var colorable = ((ColorableVivicusBlock) state.getBlock());
-                    if(pTintIndex == 0) {
-                        var dyedValue = Dye.colorForDye(colorable, state.getValue(colorable.getColorProperty()));
+                    if(tintIndex == 0) {
+                        int dyedValue = Dye.colorForDye(colorable, state.getValue(colorable.getColorProperty()));
+                        DyeColor color = colorable.getDyeFromBlock(state).color();
+                        float[] colorHSB = getColorHSB(dyedValue);
+
+                        if (Colorable.isModdedDye(color)) {
+                            colorHSB[1] = colorHSB[1] / 1.5f;
+                            colorHSB[2] = colorHSB[2] * 1.6f;
+
+                            if (colorHSB[2] > 1) colorHSB[2] = 1f;
+                        }
 
                         if(state.is(ModBlocks.VIVICUS_LEAVES.get()) || state.is(ModBlocks.VIVICUS_LEAVES_SPROUT.get())) {
-                            float[] colorHSB = getColorHSB(dyedValue);
-
                             if (pos == null) pos = new BlockPos(0,0,0);
                             float hue = colorHSB[0] + ((1+ Mth.sin((float)pos.getX() + (float)pos.getY() + (float)pos.getZ())) / 15);
 
@@ -81,7 +89,7 @@ public class ModColorHandler {
                             return Color.HSBtoRGB(hue, colorHSB[1], colorHSB[2]);
                         }
 
-                        return dyedValue;
+                        return Color.HSBtoRGB(colorHSB[0], colorHSB[1], colorHSB[2]);
                     }
 
                     return -1;
@@ -96,16 +104,16 @@ public class ModColorHandler {
 
     @SubscribeEvent
     public static void onRegisterItemColorHandlers(RegisterColorHandlersEvent.Item event) {
-        event.register((stack, pTintIndex) -> {
+        event.register((stack, tintIndex) -> {
             Dye dye = Dye.getDyeFromDyespria(stack);
-            if(pTintIndex != 0 || dye.isEmpty()) {
+            if(tintIndex != 0 || dye.isEmpty()) {
                 return -1;
             } else {
                 return Dye.colorForDye(((DyespriaItem) stack.getItem()), dye.color());
             }
         }, ModItems.DYESPRIA.get());
 
-        event.register((stack, pTintIndex) -> pTintIndex > 0 ? -1 : stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getColor(),
+        event.register((stack, tintIndex) -> tintIndex > 0 ? -1 : stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getColor(),
                 ModItems.EXTRACTED_BOTTLE.get(), ModItems.REBREWED_POTION.get(), ModItems.REBREWED_SPLASH_POTION.get(), ModItems.REBREWED_LINGERING_POTION.get());
 
         event.register(((stack, tintIndex) ->{
@@ -114,15 +122,38 @@ public class ModColorHandler {
            return alphaFixer(stack.getOrDefault(ModDataComponents.COLOR.get(), pattern.getColor()));
         }), ModItems.PATTERNSPRIA.get());
 
+        event.register(((stack, tintIndex) ->{
+            if (tintIndex != 0) return -1;
+            return alphaFixer(stack.getOrDefault(ModDataComponents.COLOR.get(), 0xffffffff));
+        }), ModItems.ROOTED_SOUP.get());
+
+
         event.register(((stack, tintIndex) -> {
                     if (tintIndex != 0) return -1;
-                    return alphaFixer(stack.getOrDefault(ModDataComponents.COLOR.get(), 0xffffffff));
+
+                    if (stack.has(ModDataComponents.COLOR)) {
+                        int color = stack.getOrDefault(ModDataComponents.COLOR, 0xffffffff);
+                        int colorId = stack.getOrDefault(ModDataComponents.COLOR_ID, 0);
+
+                        if (Colorable.isModdedDye(DyeColor.byId(colorId))) {
+                            float[] colorHSB = getColorHSB(color);
+
+                            colorHSB[1] = colorHSB[1] / 1.5f;
+                            colorHSB[2] = colorHSB[2] * 1.6f;
+
+                            if (colorHSB[2] > 1) colorHSB[2] = 1f;
+
+                            return alphaFixer(Color.HSBtoRGB(colorHSB[0], colorHSB[1], colorHSB[2]));
+                        }
+
+                        return alphaFixer(color);
+                    }
+                    return -1;
                 }
         ), ModBlocks.VIVICUS_LOG.get(),  ModBlocks.VIVICUS_WOOD.get(), ModBlocks.STRIPPED_VIVICUS_LOG.get(),  ModBlocks.STRIPPED_VIVICUS_WOOD.get(), ModBlocks.VIVICUS_PLANKS.get(),
                 ModBlocks.VIVICUS_STAIRS.get(), ModBlocks.VIVICUS_SLAB.get(), ModBlocks.VIVICUS_FENCE.get(), ModBlocks.VIVICUS_FENCE_GATE.get(), ModBlocks.VIVICUS_DOOR.get(),
-                ModBlocks.VIVICUS_TRAPDOOR.get(), ModBlocks.VIVICUS_PRESSURE_PLATE.get(), ModBlocks.VIVICUS_BUTTON.get(), ModBlocks.VIVICUS_LEAVES.get(), ModBlocks.VIVICUS_SAPLING.get(),
-                ModBlocks.VIVICUS_LEAVES_SPROUT.get(), ModItems.VIVICUS_SIGN.get(), ModItems.VIVICUS_HANGING_SIGN.get(), ModItems.VIVICUS_BOAT.get(), ModItems.VIVICUS_CHEST_BOAT.get(),
-                ModItems.ROOTED_SOUP.get());
+                ModBlocks.VIVICUS_TRAPDOOR.get(), ModBlocks.VIVICUS_PRESSURE_PLATE.get(), ModBlocks.VIVICUS_BUTTON.get(), ModBlocks.VIVICUS_LEAVES.get(),
+                ModBlocks.VIVICUS_LEAVES_SPROUT.get(), ModItems.VIVICUS_SIGN.get(), ModItems.VIVICUS_HANGING_SIGN.get(), ModItems.VIVICUS_BOAT.get(), ModItems.VIVICUS_CHEST_BOAT.get());
 
     }
 

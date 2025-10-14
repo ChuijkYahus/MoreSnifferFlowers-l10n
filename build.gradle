@@ -90,6 +90,8 @@ dependencies {
     implementation(jarJar(group: "local", name:"tiny-multiblock-lib", version: "[neo-1.21.1-2.0,)"))
     runtimeOnly("curse.maven:carry-on-274259:5649344")
 
+    implementation("maven.modrinth:dye-depot:2.0.1-neoforge")
+
     implementation("net.neoforged:neoforge:${neoforge_version}")
 }
 

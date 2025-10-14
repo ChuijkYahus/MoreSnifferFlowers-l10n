@@ -1,5 +1,8 @@
 package net.abraxator.moresnifferflowers.components;
 
+import com.google.common.collect.Maps;
+import net.abraxator.moresnifferflowers.items.DyespriaItem;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -17,13 +20,15 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import oshi.util.tuples.Pair;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static net.abraxator.moresnifferflowers.init.ModStateProperties.COLOR;
 import static net.abraxator.moresnifferflowers.init.ModStateProperties.EMPTY;
 
 public interface Colorable {
-    Map<DyeColor, Integer> colorValues();
     String TAG_HEX = "MSF_Hex";
     String TAG_ID = "MSF_ID";
 
@@ -74,7 +79,15 @@ public interface Colorable {
         if (!Dye.dyeCheck(dyeInside, dyeToInsert)) {
             onAddDye(dyespria, dyeToInsert, dyeToInsert.getCount());
             dyeToInsert.shrink(dyeToInsert.getCount());
-            return Dye.stackFromDye(dyeInside);
+
+            ItemStack returnStack = Dye.stackFromDye(dyeInside);
+
+            if (DyespriaItem.getDyespriaUses(dyespria) < 4){
+                returnStack.shrink(1);
+                DyespriaItem.setDyespriaUses(dyespria, 4);
+            }
+
+            return returnStack;
         }
         
         int amountInside = dyeInside.amount();
@@ -109,5 +122,37 @@ public interface Colorable {
                     0, 0, 0);
         }
     }
-    
+
+    default Map<DyeColor, Integer> colorValues(){
+        return Util.make(Maps.newLinkedHashMap(), map -> Arrays.stream(DyeColor.values()).forEach(color -> map.put(color, color.getTextColor())));
+    }
+
+    /**
+     * Used for checking modded dyes and making them suck less
+     * */
+    static List<DyeColor> vanillaDyeColors(){
+        ArrayList<DyeColor> list = new ArrayList<>();
+        list.add(DyeColor.WHITE);
+        list.add(DyeColor.ORANGE);
+        list.add(DyeColor.MAGENTA);
+        list.add(DyeColor.LIGHT_BLUE);
+        list.add(DyeColor.YELLOW);
+        list.add(DyeColor.LIME);
+        list.add(DyeColor.PINK);
+        list.add(DyeColor.GRAY);
+        list.add(DyeColor.LIGHT_GRAY);
+        list.add(DyeColor.CYAN);
+        list.add(DyeColor.PURPLE);
+        list.add(DyeColor.BLUE);
+        list.add(DyeColor.BROWN);
+        list.add(DyeColor.GREEN);
+        list.add(DyeColor.RED);
+        list.add(DyeColor.BLACK);
+        return list;
+    }
+
+    static boolean isModdedDye(DyeColor dyeColor){
+        return !vanillaDyeColors().contains(dyeColor);
+    }
+
 }

@@ -5,6 +5,10 @@
     "minecraft:terracotta",
     "minecraft:shulker_box",
     "minecraft:candle",
+    {
+      "id": "#forge:dyed",
+      "required": false
+    },
     "minecraft:white_wool",
     "minecraft:white_stained_glass",
     "minecraft:white_stained_glass_pane",

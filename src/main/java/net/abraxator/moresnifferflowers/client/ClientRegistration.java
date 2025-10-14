@@ -84,6 +84,8 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModModelLayerLocations.BEROOT_SPOON, BerootCauldronModel::createSpoonLayer);
         event.registerLayerDefinition(ModModelLayerLocations.SALTEMONE, SaltemoneModel::createBodyLayer);
         event.registerLayerDefinition(ModModelLayerLocations.SALTEMONE_TOP, SaltemoneModel::createTopLayer);
+        event.registerLayerDefinition(ModModelLayerLocations.DYESPRIA, DyespriaModel::createBodyLayer);
+
 
     }
 

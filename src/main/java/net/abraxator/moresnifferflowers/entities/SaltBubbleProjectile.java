@@ -117,7 +117,8 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
             projectile.setCorrupted(isCorrupted());
             level().addFreshEntity(projectile);
             level().playSound(null, blockPosition(), SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, SoundSource.BLOCKS, 10.0F + random.nextFloat() * 3, 0.75f + random.nextFloat() / 2);
-            PacketDistributor.sendToAllPlayers(new SaltemoneParticlePacket(this.position().toVector3f()));
+            if(!level().isClientSide())
+                PacketDistributor.sendToAllPlayers(new SaltemoneParticlePacket(this.position().toVector3f()));
         }
         discard();
     }
