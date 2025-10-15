@@ -1,6 +1,8 @@
 package net.abraxator.moresnifferflowers.client;
 
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
+import net.abraxator.moresnifferflowers.client.gui.screen.ClientDyespriaTooltip;
+import net.abraxator.moresnifferflowers.client.gui.screen.DyespriaTooltip;
 import net.abraxator.moresnifferflowers.client.gui.screen.RebrewingStandScreen;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
 import net.abraxator.moresnifferflowers.client.model.block.*;
@@ -26,6 +28,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
@@ -139,9 +142,13 @@ public class ClientRegistration {
         event.registerSpriteSet(ModParticles.TORCHFLAME.get(), TorchflameParticle.Provider::new);
         event.registerSpriteSet(ModParticles.BUBBLE.get(), ModBubbleParticle.Provider::new);
 
-
     }
 
+    @SubscribeEvent
+    public static void onRegisterTooltips(RegisterClientTooltipComponentFactoriesEvent event) {
+        event.register(DyespriaTooltip.class, ClientDyespriaTooltip::new);
+    }
+    
     @SubscribeEvent
     public static void addPackFinders(AddPackFindersEvent event) {
         if(event.getPackType() == PackType.CLIENT_RESOURCES) {

@@ -208,6 +208,11 @@ public class ModColorHandler {
         int lowColor = 0x8c1111;
         int highColor = 0x179529;
 
+        return barColorHelper(input, maxInput, lowColor, highColor);
+    }
+
+
+    public static int barColorHelper(int input, int maxInput, int lowColor, int highColor){
         int lowRed = (lowColor >> 16) & 0xFF;
         int lowGreen = (lowColor >> 8) & 0xFF;
         int lowBlue = lowColor & 0xFF;
@@ -221,6 +226,8 @@ public class ModColorHandler {
 
 
         float finalHue = ((lowHSB[0] * (Math.abs(input - maxInput))) + (highHSB[0] * input)) / maxInput;
+        float finalSat = ((lowHSB[1] * (Math.abs(input - maxInput))) + (highHSB[1] * input)) / maxInput;
+        float finalValue = ((lowHSB[2] * (Math.abs(input - maxInput))) + (highHSB[2] * input)) / maxInput;
 
         return Mth.hsvToRgb(finalHue, 1.0F, 1.0F);
     }

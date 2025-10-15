@@ -32,7 +32,11 @@ public record Dye(DyeColor color, int amount) {
     
     public static ItemStack stackFromDye(Dye dye) {
         return dye.isEmpty() ? ItemStack.EMPTY : new ItemStack(DyeItem.byColor(dye.color), dye.amount);
-    }    
+    }
+
+    public ItemStack toStack(){
+        return new ItemStack(DyeItem.byColor(color), amount);
+    }
     
     public static boolean dyeCheck(Dye dye, ItemStack dyeToInsert) {
         DyeItem dyeToInsertItem = ((DyeItem) dyeToInsert.getItem());
