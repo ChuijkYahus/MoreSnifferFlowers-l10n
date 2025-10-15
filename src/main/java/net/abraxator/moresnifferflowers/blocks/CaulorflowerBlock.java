@@ -237,24 +237,26 @@ public class CaulorflowerBlock extends Block implements BonemealableBlock, ModCr
 
     @Override
     public Map<DyeColor, Integer> colorValues() {
-        return Util.make(Maps.newLinkedHashMap(), dyeColorHexFormatMap -> {
-            dyeColorHexFormatMap.put(DyeColor.WHITE, 0xFFFFFFFF);
-            dyeColorHexFormatMap.put(DyeColor.LIGHT_GRAY, 0xFF9d979b);
-            dyeColorHexFormatMap.put(DyeColor.GRAY, 0xFF474f52);
-            dyeColorHexFormatMap.put(DyeColor.BLACK, 0xFF26262e);
-            dyeColorHexFormatMap.put(DyeColor.BROWN, 0xFF835432);
-            dyeColorHexFormatMap.put(DyeColor.RED, 0xFFd5544e);
-            dyeColorHexFormatMap.put(DyeColor.ORANGE, 0xFFf89635);
-            dyeColorHexFormatMap.put(DyeColor.YELLOW, 0xFFffee53);
-            dyeColorHexFormatMap.put(DyeColor.LIME, 0xFF80c71f);
-            dyeColorHexFormatMap.put(DyeColor.GREEN, 0xFF5e7c16);
-            dyeColorHexFormatMap.put(DyeColor.CYAN, 0xFF00AACC);
-            dyeColorHexFormatMap.put(DyeColor.LIGHT_BLUE, 0xFF70d9e4);
-            dyeColorHexFormatMap.put(DyeColor.BLUE, 0xFF4753ac);
-            dyeColorHexFormatMap.put(DyeColor.PURPLE, 0xFFb15fc2);
-            dyeColorHexFormatMap.put(DyeColor.MAGENTA, 0xFFd276b9);
-            dyeColorHexFormatMap.put(DyeColor.PINK, 0xFFf8b0c4);
-        });
+        Map<DyeColor, Integer> map = Colorable.super.colorValues();
+
+        map.put(DyeColor.WHITE, 0xFFFFFFFF);
+        map.put(DyeColor.LIGHT_GRAY, 0xFF9d979b);
+        map.put(DyeColor.GRAY, 0xFF474f52);
+        map.put(DyeColor.BLACK, 0xFF26262e);
+        map.put(DyeColor.BROWN, 0xFF835432);
+        map.put(DyeColor.RED, 0xFFd5544e);
+        map.put(DyeColor.ORANGE, 0xFFf89635);
+        map.put(DyeColor.YELLOW, 0xFFffee53);
+        map.put(DyeColor.LIME, 0xFF80c71f);
+        map.put(DyeColor.GREEN, 0xFF5e7c16);
+        map.put(DyeColor.CYAN, 0xFF00AACC);
+        map.put(DyeColor.LIGHT_BLUE, 0xFF70d9e4);
+        map.put(DyeColor.BLUE, 0xFF4753ac);
+        map.put(DyeColor.PURPLE, 0xFFb15fc2);
+        map.put(DyeColor.MAGENTA, 0xFFd276b9);
+        map.put(DyeColor.PINK, 0xFFf8b0c4);
+
+        return map;
     }
     
     @Override

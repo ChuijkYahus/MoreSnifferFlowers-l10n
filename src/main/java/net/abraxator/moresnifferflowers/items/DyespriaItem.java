@@ -4,15 +4,14 @@ import com.google.common.collect.Maps;
 import net.abraxator.moresnifferflowers.blockentities.DyespriaPlantBlockEntity;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.client.ModColorHandler;
-import net.abraxator.moresnifferflowers.components.Colorable;
-import net.abraxator.moresnifferflowers.components.Dye;
-import net.abraxator.moresnifferflowers.components.DyespriaMode;
-import net.abraxator.moresnifferflowers.components.EntityDistanceComparator;
+import net.abraxator.moresnifferflowers.client.gui.screen.DyespriaTooltip;
+import net.abraxator.moresnifferflowers.components.*;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.init.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -30,6 +29,7 @@ import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
@@ -44,10 +44,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -173,7 +170,9 @@ public class DyespriaItem extends BlockItem implements Colorable {
         int input = getDyespriaUses(stack)-1;
         int maxInput= 4;
 
-        return ModColorHandler.barColorHelper(input, maxInput);
+        int color = colorValues().get(Dye.getDyeFromDyespria(stack).color());
+
+        return color;
     }
 
     @Override
@@ -309,6 +308,12 @@ public class DyespriaItem extends BlockItem implements Colorable {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+
+        if (!Screen.hasShiftDown()) {
+            tooltipComponents.add(Component.translatable("tooltip.dyespria.shift").withStyle(ChatFormatting.GOLD));
+            return;
+        }
+
         Dye dye = Dye.getDyeFromDyespria(stack);
         Component usage = Component.translatableWithFallback("tooltip.dyespria.usage", "Right click with dye to insert \nRight click caulorflower to repaint \nSneak to apply to the whole column \n").withStyle(ChatFormatting.GOLD);
         var usageComponents = Arrays.stream(usage.getString().split("\n", -1))
@@ -319,7 +324,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
         tooltipComponents.add(Component.empty());
         tooltipComponents.add(getCurrentModeComponent(getMode(stack)));
         tooltipComponents.add(Component.empty());
-        
+
         if(!dye.isEmpty()) {
             var name = Component
                     .literal(dye.amount() + " - " + WordUtils.capitalizeFully(dye.color()
@@ -380,5 +385,11 @@ public class DyespriaItem extends BlockItem implements Colorable {
         tag.putByte("mode", (byte) newMode.ordinal());
         stack.setTag(tag);
         player.displayClientMessage(DyespriaItem.getCurrentModeComponent(DyespriaMode.byIndex(newMode.ordinal())), true);
+    }
+
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+        ItemStack dyeItem = Dye.getDyeFromDyespria(stack).toStack();
+        return Optional.of(new DyespriaTooltip(dyeItem, false, getMode(stack).ordinal()));
     }
 }

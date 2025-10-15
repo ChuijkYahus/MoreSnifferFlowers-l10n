@@ -116,6 +116,10 @@ public enum BlockPattern implements StringRepresentable {
         return getItem().getDefaultInstance().copyWithCount(amount);
     }
 
+    public static ItemStack getItemStackFromPatternspria(ItemStack patternspria){
+        return fromPatternspria(patternspria).getItemStack(patternspria);
+    }
+
     public static void setPatternToHolderStack(ItemStack itemStack, ItemStack patternToInsert, int amount) {
         setPatternToHolderStack(itemStack, patternToInsert, amount, PatternspriaItem.getPatternspriaUses(itemStack));
     }

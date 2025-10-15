@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.items;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.client.ModColorHandler;
+import net.abraxator.moresnifferflowers.client.gui.screen.DyespriaTooltip;
 import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.components.DyespriaMode;
 import net.abraxator.moresnifferflowers.components.EntityDistanceComparator;
@@ -10,8 +11,10 @@ import net.abraxator.moresnifferflowers.components.PatternspriaMode;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -25,6 +28,8 @@ import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.tooltip.BundleTooltip;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -286,10 +291,17 @@ public class PatternspriaItem extends Item {
 
     @Override
     public int getBarColor(ItemStack stack) {
-        int input = getPatternspriaUses(stack)-1;
+        int input = getPatternspriaUses(stack);
         int maxInput= 4;
 
-        return ModColorHandler.barColorHelper(input, maxInput);
+        int color;
+        if (stack.getOrCreateTag().contains("color")) {
+            color = stack.getOrCreateTag().getInt("color");
+        } else
+            color = BlockPattern.fromPatternspria(stack).getColor();
+
+
+        return color;
     }
 
     @Override
@@ -330,6 +342,12 @@ public class PatternspriaItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+
+        if (!Screen.hasShiftDown()) {
+            tooltipComponents.add(Component.translatable("tooltip.dyespria.shift").withStyle(ChatFormatting.GOLD));
+            return;
+        }
+
         BlockPattern pattern = BlockPattern.fromPatternspria(stack);
         Component usage = Component.translatableWithFallback("tooltip.patternspria.usage", "Right click with dye to insert \nRight click caulorflower to repaint \nSneak to apply to the whole column \n").withStyle(ChatFormatting.GOLD);
         var usageComponents = Arrays.stream(usage.getString().split("\n", -1))
@@ -376,5 +394,11 @@ public class PatternspriaItem extends Item {
         stack.getOrCreateTag().putByte("mode", (byte) newMode.ordinal());
         player.displayClientMessage(DyespriaItem.getCurrentModeComponent(DyespriaMode.byIndex(newMode.ordinal())), true);
 
+    }
+
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+        ItemStack pattern = BlockPattern.getItemStackFromPatternspria(stack);
+        return Optional.of(new DyespriaTooltip(pattern, true, getMode(stack).ordinal()));
     }
 }
