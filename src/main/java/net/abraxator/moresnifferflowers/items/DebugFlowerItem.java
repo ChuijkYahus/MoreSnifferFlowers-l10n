@@ -1,16 +1,15 @@
 package net.abraxator.moresnifferflowers.items;
 
-import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CorruptionCapability;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
-import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
+import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
 
 public class DebugFlowerItem extends Item {
     public DebugFlowerItem(Properties properties) {
@@ -30,10 +29,11 @@ public class DebugFlowerItem extends Item {
             CorruptionCapability.printDebug(level.getChunkAt(pos));
         }
 
-        if (blockState.is(Blocks.GRASS_BLOCK)){
-            System.out.println("BlockPatterns = " + BlockPatternCapability.getBlockPatterns(pos, level).getPatterns());
-            level.getChunkAt(pos).getData(ModDataAttachments.BLOCK_PATTERNS).sync(pos, level);
+        if (IMultiBlock.isMultiblock(blockState) && level.getBlockEntity(pos) instanceof IMultiBlockEntity entity) {
+            System.out.println("entity.getCenter() = " + entity.getCenter());
+            System.out.println("entity.isPlaced() = " + entity.isPlaced());
         }
+
         return super.useOn(context);
     }
 }

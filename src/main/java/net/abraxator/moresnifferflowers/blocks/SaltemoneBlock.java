@@ -39,6 +39,7 @@ import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
 import net.nikdo53.tinymultiblocklib.components.SyncedStatePropertiesBuilder;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 public class SaltemoneBlock extends AbstractMultiBlock implements EntityBlock, Corruptable, ModCropBlock, IPreviewableMultiblock, ICorruptableMultiblock {
@@ -86,9 +87,9 @@ public class SaltemoneBlock extends AbstractMultiBlock implements EntityBlock, C
     }
 
     @Override
-    public Stream<BlockPos> makeFullBlockShape(@javax.annotation.Nullable Direction direction, BlockPos center, BlockState state) {
+    public List<BlockPos> makeFullBlockShape(Direction direction, BlockPos center, BlockState blockState) {
         BlockPos relative = center.relative(direction).relative(direction.getClockWise());
-        return BlockPos.betweenClosedStream(new AABB(center.getCenter(), relative.getCenter()));
+        return IMultiBlock.posStreamToList(BlockPos.betweenClosedStream(center, relative));
     }
 
 

@@ -64,11 +64,6 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
     }
 
     @Override
-    public BlockState getDefaultStateForPreviews(Direction direction) {
-        return IPreviewableMultiblock.super.getDefaultStateForPreviews(direction).setValue(getAgeProperty(), getMaxAge());
-    }
-
-    @Override
     public RenderShape getMultiblockRenderShape(BlockState blockState) {
         if (!IMultiBlock.isCenter(blockState)) return  RenderShape.INVISIBLE;
         if (getAge(blockState) == getMaxAge()) return RenderShape.ENTITYBLOCK_ANIMATED;
@@ -89,12 +84,17 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
     }
 
     @Override
-    public Stream<BlockPos> makeFullBlockShape(@javax.annotation.Nullable Direction direction, BlockPos center, BlockState state) {
+    public BlockState getDefaultStateForPreviews(Direction direction) {
+        return IPreviewableMultiblock.super.getDefaultStateForPreviews(direction).setValue(getAgeProperty(), getMaxAge());
+    }
+
+    @Override
+    public List<BlockPos> makeFullBlockShape(@Nullable Direction direction, BlockPos center, BlockState blockState) {
         List<BlockPos> positions = new ArrayList<>();
         positions.add(center.immutable());
         positions.addAll(Direction.Plane.HORIZONTAL.stream().map(direction1 -> center.relative(direction1).immutable()).toList());
 
-        return positions.stream();
+        return positions;
     }
 
     @Override
