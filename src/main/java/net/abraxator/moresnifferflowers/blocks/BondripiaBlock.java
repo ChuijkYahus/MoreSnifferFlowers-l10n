@@ -36,6 +36,7 @@ import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
 import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
+import net.nikdo53.tinymultiblocklib.components.SyncedStatePropertiesBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -62,6 +63,13 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
     @Override
     public BlockState getDefaultStateForPreviews(Direction direction) {
         return IPreviewableMultiblock.super.getDefaultStateForPreviews(direction).setValue(getAgeProperty(), getMaxAge());
+    }
+
+    @Override
+    public void createSyncedBlockStates(SyncedStatePropertiesBuilder builder) {
+        super.createSyncedBlockStates(builder);
+        builder.add(ModStateProperties.SHEARED);
+        builder.add(getAgeProperty());
     }
 
     @Override

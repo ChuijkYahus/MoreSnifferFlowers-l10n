@@ -36,6 +36,7 @@ import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
 import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
+import net.nikdo53.tinymultiblocklib.components.SyncedStatePropertiesBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -51,6 +52,13 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
                 .setValue(ModStateProperties.SHEARED, false));
     }
     protected static final VoxelShape AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
+
+    @Override
+    public void createSyncedBlockStates(SyncedStatePropertiesBuilder builder) {
+        super.createSyncedBlockStates(builder);
+        builder.add(ModStateProperties.SHEARED);
+        builder.add(getAgeProperty());
+    }
 
     @Override
     public Block getCorruptedBlock() {

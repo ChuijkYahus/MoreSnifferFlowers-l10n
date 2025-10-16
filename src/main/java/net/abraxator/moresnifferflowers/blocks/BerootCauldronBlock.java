@@ -73,10 +73,10 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
         if(level.getBlockEntity(IMultiBlock.getCenter(level, pos)) instanceof BerootCauldronBlockEntity blockEntity) {
             return blockEntity.addItem(item, player);
         }
-        
+
         return InteractionResult.PASS;
     }
-    
+
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new BerootCauldronBlockEntity(blockPos, blockState);
