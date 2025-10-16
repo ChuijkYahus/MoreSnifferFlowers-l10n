@@ -28,6 +28,7 @@ import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntityBlock, IPreviewableMultiblock {
@@ -60,9 +61,9 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
     }
 
     @Override
-    public Stream<BlockPos> fullBlockShape(Direction direction, BlockPos center) {
+    public List<BlockPos> makeFullBlockShape(@Nullable Direction direction, BlockPos center, BlockState blockState) {
         BlockPos relative = center.relative(direction).relative(direction.getClockWise()).above();
-        return BlockPos.betweenClosedStream(new AABB(center, relative));
+        return IMultiBlock.posStreamToList(BlockPos.betweenClosedStream(new AABB(center, relative)));
     }
 
     @Override

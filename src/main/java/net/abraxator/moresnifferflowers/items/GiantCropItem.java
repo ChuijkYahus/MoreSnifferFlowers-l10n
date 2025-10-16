@@ -32,7 +32,7 @@ public class GiantCropItem extends BlockItem {
         var aabb = AABB.ofSize(clickPos.getCenter(), 2, 2, 2);
         IMultiBlock multiBlock = (IMultiBlock) state.getBlock();
 
-        multiBlock.fullBlockShape(clickPos, null).forEach(pos -> {
+        multiBlock.getFullBlockShape(clickPos, state, level).forEach(pos -> {
 
             boolean isWaterLogged = context.getLevel().getFluidState(pos).getType() == Fluids.WATER;
 
@@ -54,7 +54,7 @@ public class GiantCropItem extends BlockItem {
         var level = context.getLevel();
         IMultiBlock multiBlock = (IMultiBlock) state.getBlock();
         var aabb = AABB.ofSize(context.getClickedPos().relative(context.getClickedFace(), 1).getCenter(), 2, 2, 2);
-        var ret = multiBlock.fullBlockShape(pos.relative(context.getClickedFace()), null).allMatch(blockPos -> level.getBlockState(blockPos).canBeReplaced());
+        var ret = multiBlock.getFullBlockShape(pos.relative(context.getClickedFace()), state, level).stream().allMatch(blockPos -> level.getBlockState(blockPos).canBeReplaced());
 
         return ret;
     }

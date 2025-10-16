@@ -65,12 +65,12 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
     }
 
     @Override
-    public Stream<BlockPos> fullBlockShape(@Nullable Direction direction, BlockPos center) {
+    public List<BlockPos> makeFullBlockShape(@Nullable Direction direction, BlockPos center, BlockState blockState) {
         List<BlockPos> positions = new ArrayList<>();
         positions.add(center.immutable());
         positions.addAll(Direction.Plane.HORIZONTAL.stream().map(direction1 -> center.relative(direction1).immutable()).toList());
 
-        return positions.stream();
+        return positions;
     }
 
     @Override

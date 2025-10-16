@@ -108,16 +108,16 @@ dependencies {
 
     implementation 'org.jetbrains:annotations:26.0.1'
 
-    modImplementation(jarJar(group: "local", name:"TinyMultiblockLib-forge-1.20.1", version: "[1.1,)"))
+  //  modImplementation(jarJar(group: "local", name:"tiny-multiblock-lib-forge-1.20.1", version: "[2.0,)"))
 
-/*    jarJar(modImplementation(group: "maven.modrinth", name:"tiny-multiblock-lib", version:"1.1-forge,1.20.1"){
+    jarJar(modImplementation(group: "maven.modrinth", name:"tiny-multiblock-lib", version:"forge-1.20.1-2.0"){
         version {
-            prefer('1.1')
-            strictly('[1.1,)')
+            strictly('[forge-1.20.1-2.0,)')
         }
-    })*/
+    })
 
-  //  modImplementation("maven.modrinth:tiny-multiblock-lib:1.1-forge,1.20.1")
+    // modImplementation("maven.modrinth:tiny-multiblock-lib:forge-1.20.1-2.0")
+    // tiny-multiblock-lib-forge-1.20.1-2.0
 
     //quark
     compileOnly("curse.maven:quark-243121:6427817")
@@ -130,7 +130,10 @@ dependencies {
     modRuntimeOnly("curse.maven:farmers-delight-398521:6917255");
     modCompileOnly("curse.maven:farmers-delight-398521:6917255");
 
-    modImplementation("maven.modrinth:dye-depot:1.2.1-forge")
+   // modImplementation("maven.modrinth:dye-depot:1.2.1-forge")
+   // modRuntimeOnly("curse.maven:delicate-dyes-1283159:6985177")
+   // modImplementation("curse.maven:runiclib-880879:6981571")
+
    // modImplementation("curse.maven:worldedit-225608:4586218")
 
    // modImplementation("curse.maven:carry-on-274259:4882500")
