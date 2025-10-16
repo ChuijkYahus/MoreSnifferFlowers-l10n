@@ -87,7 +87,7 @@ dependencies {
     runtimeOnly "curse.maven:farmers-delight-398521:6917256"
     compileOnly "curse.maven:farmers-delight-398521:6917256"
 
-    implementation(jarJar(group: "local", name:"TinyMultiblockLib-neoforge-1.21.1", version: "[2.0,)"))
+    implementation(jarJar(group: "local", name:"tiny-multiblock-lib", version: "[neo-1.21.1-2.0,)"))
     runtimeOnly("curse.maven:carry-on-274259:5649344")
 
     implementation("net.neoforged:neoforge:${neoforge_version}")
