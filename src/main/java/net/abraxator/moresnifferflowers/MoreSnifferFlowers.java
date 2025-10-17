@@ -3,7 +3,6 @@ package net.abraxator.moresnifferflowers;
 import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
-import net.abraxator.moresnifferflowers.compat.quark.OtherModEvents;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
 import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
@@ -58,10 +57,6 @@ public class MoreSnifferFlowers {
         ModRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
 
         modEventBus.addListener(CapabilityList::registerCapabilities);
-        
-        if(ModList.get().isLoaded("quark")) {
-            MinecraftForge.EVENT_BUS.addListener(OtherModEvents::onSimpleHarvest);
-        }
         
         ModPacketHandler.init();
     }

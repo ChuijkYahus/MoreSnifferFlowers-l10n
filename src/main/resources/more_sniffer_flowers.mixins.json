@@ -17,7 +17,6 @@
     "InventoryMenuMixin",
     "LeavesBlockMixin",
     "PlayerMixin",
-    "RightClickHarvestModInitMixin",
     "SlotMixin",
     "SnifferEggMixin",
     "SpriteResourceLoaderMixin",

@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +23,7 @@ public class JarOfBonmeelItem extends Item {
         super(properties);
     }
 
-    @Override
+/*    @Override
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
         BlockPos blockPos = context.getClickedPos();
@@ -42,6 +43,28 @@ public class JarOfBonmeelItem extends Item {
         }
 
         return InteractionResult.PASS;
+    }
+    */
+
+    public InteractionResult highPriorityUseOn(UseOnContext context) {
+        Level level = context.getLevel();
+        BlockPos blockPos = context.getClickedPos();
+        BlockState blockState = context.getLevel().getBlockState(blockPos);
+        Player player = context.getPlayer();
+
+        if(blockState.is(ModTags.ModBlockTags.BONMEELABLE)) {
+            Block block = GiantCropBlock.getCropMap().get(blockState.getBlock()).getA();
+            if(block instanceof Bonmeelable bonmeelable && player != null && bonmeelable.canBonmeel(blockPos,blockState,level,player)) {
+                bonmeelable.performBonmeel(blockPos, blockState, level, player);
+                if (!player.isCreative()) player.setItemInHand(context.getHand(), ItemUtils.createFilledResult(player.getItemInHand(context.getHand()), player, new ItemStack(Items.GLASS_BOTTLE)));
+
+                return InteractionResult.SUCCESS;
+
+            }
+
+        }
+
+        return InteractionResult.FAIL;
     }
     
     @Override

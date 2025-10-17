@@ -50,6 +50,7 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -240,6 +241,17 @@ public class ForgeEvents {
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void highPriorityClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        if (event.getItemStack().getItem() instanceof JarOfBonmeelItem jarOfBonmeelItem) {
+            InteractionResult interactionResult = jarOfBonmeelItem.highPriorityUseOn(new UseOnContext(event.getEntity(), event.getHand(), event.getHitVec()));
+
+            event.setCancellationResult(interactionResult);
+            event.setCanceled(true);
+        }
+    }
+
+
     @SubscribeEvent
     public static void onPlayerInteractRightClickItem(PlayerInteractEvent.RightClickBlock event) {
         Player player = event.getEntity();
@@ -251,12 +263,6 @@ public class ForgeEvents {
         ItemStack item = player.getItemInHand(hand).getItem().getDefaultInstance();
 
         if (event.isCanceled()) return;
-
-        if(item.getItem() instanceof JarOfBonmeelItem jar && state.is(ModTags.ModBlockTags.BONMEELABLE)) {
-            event.setCanceled(true);
-            event.setCancellationResult(jar.useOn(new UseOnContext(player, hand, event.getHitVec())));
-
-        }
 
         if((item.is(ModItems.REBREWED_POTION.get()) || item.is(ModItems.EXTRACTED_BOTTLE.get())) && state.is(Blocks.DIRT)) {
             event.setCancellationResult(InteractionResult.FAIL);
