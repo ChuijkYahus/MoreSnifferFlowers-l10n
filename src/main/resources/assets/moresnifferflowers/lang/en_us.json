@@ -226,6 +226,11 @@
 
 # Tooltips 📜📜📜
 	"message.more_sniffer_flowers.dyespria_mode": "Current Mode",
+	
+	"message.moresnifferflowers.bonmeel.has_mixed_crops": "This area has mixed crops or non-crop blocks",
+	"message.moresnifferflowers.bonmeel.not_grown": "These crops are not fully grown",
+	"message.moresnifferflowers.bonmeel.no_space": "Not enough empty space above",
+
 
 	"tooltip.trim_material_item.usage": "Can be used as an armor trim material",
 	"tooltip.dyespria.usage": "Hover+Right-click to insert dye \nRight-click compatible block or pattern to paint \nSneak+Scroll to change paint mode\n",

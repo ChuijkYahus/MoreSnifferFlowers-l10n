@@ -7,10 +7,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Arrays;
@@ -21,26 +23,25 @@ public class JarOfBonmeelItem extends Item {
         super(properties);
     }
 
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
+    public ItemInteractionResult highPriorityUseOn(UseOnContext context) {
         Level level = context.getLevel();
         BlockPos blockPos = context.getClickedPos();
         BlockState blockState = context.getLevel().getBlockState(blockPos);
         Player player = context.getPlayer();
-    
+
         if(blockState.is(ModTags.ModBlockTags.BONMEELABLE)) {
-            Bonmeelable bonmeelable = (Bonmeelable) GiantCropBlock.getCropMap().get(blockState.getBlock()).getA();
-            if(bonmeelable.canBonmeel(blockPos,blockState,level) && player != null) {
+            Block block = GiantCropBlock.getCropMap().get(blockState.getBlock()).getA();
+            if(block instanceof Bonmeelable bonmeelable && player != null && bonmeelable.canBonmeel(blockPos,blockState,level,player)) {
                 bonmeelable.performBonmeel(blockPos, blockState, level, player);
                 if (!player.isCreative()) player.setItemInHand(context.getHand(), ItemUtils.createFilledResult(player.getItemInHand(context.getHand()), player, new ItemStack(Items.GLASS_BOTTLE)));
 
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
 
             }
 
         }
 
-        return InteractionResult.PASS;
+        return ItemInteractionResult.FAIL;
     }
 
     @Override

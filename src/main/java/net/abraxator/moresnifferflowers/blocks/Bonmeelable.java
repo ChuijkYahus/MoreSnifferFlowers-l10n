@@ -13,6 +13,6 @@ import java.util.Map;
 public interface Bonmeelable {
     void performBonmeel(BlockPos blockPos, BlockState blockState, Level level, @Nullable Player player);
 
-    boolean canBonmeel(BlockPos blockPos, BlockState blockState, Level level);
+    boolean canBonmeel(BlockPos blockPos, BlockState blockState, Level level, @Nullable Player player);
 }
 

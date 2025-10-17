@@ -4,10 +4,12 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.IModBlockEntity;
 import net.abraxator.moresnifferflowers.init.*;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -49,8 +51,10 @@ import oshi.util.tuples.Pair;
 import vectorwing.farmersdelight.common.block.RiceBlock;
 import vectorwing.farmersdelight.common.block.TomatoVineBlock;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 
@@ -209,36 +213,32 @@ public class GiantCropBlock extends AbstractMultiBlock implements ModEntityBlock
     public void performBonmeel(BlockPos blockPos, BlockState blockState, Level level, Player player) {
         if (isRicePanicles(blockState.getBlock())) blockPos = blockPos.below();
 
-        BlockPos finalBlockPos = blockPos;
-        getFullBlockShape(blockPos, blockState, level).forEach(pos -> {
-            pos = pos.above().immutable();
-            boolean isWaterLogged = level.getFluidState(pos).getType() == Fluids.WATER;
+        place(level, blockPos.above(), this.defaultBlockState());
 
-            level.destroyBlock(pos, false);
-
-            BlockState state = getCropMap().get(blockState.getBlock()).getA().defaultBlockState()
-                    .setValue(AbstractMultiBlock.CENTER, pos.equals(finalBlockPos.above()))
-                    .setValue(WATERLOGGED, isWaterLogged);
-
-            level.setBlockAndUpdate(pos, state);
-
-            if(level.getBlockEntity(pos) instanceof IMultiBlockEntity entity) {
-                entity.setCenter(finalBlockPos.above());
-            }
-        });
-
-        if(player != null) {
-
-            if (player instanceof ServerPlayer serverPlayer) {
-                ModAdvancementCritters.USED_BONMEEL.get().trigger(serverPlayer);
-            }
-        }
+        if (player instanceof ServerPlayer serverPlayer)
+            ModAdvancementCritters.USED_BONMEEL.get().trigger(serverPlayer);
 
         level.playLocalSound(blockPos, SoundEvents.BONE_MEAL_USE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
     }
 
     @Override
-    public boolean canBonmeel(BlockPos blockPos, BlockState blockState, Level level) {
+    public List<com.mojang.datafixers.util.Pair<BlockPos, BlockState>> prepareForPlace(Level level, BlockPos centerPos, BlockState stateOriginal) {
+        List<com.mojang.datafixers.util.Pair<BlockPos, BlockState>> list = new ArrayList<>();
+
+        getFullBlockShape(centerPos, stateOriginal, level).forEach(posNew -> {
+            posNew = posNew.immutable();
+            boolean isWaterLogged = level.getFluidState(posNew).getType() == Fluids.WATER;
+
+            BlockState stateNew = stateOriginal.setValue(AbstractMultiBlock.CENTER, centerPos.equals(posNew)).setValue(WATERLOGGED, isWaterLogged);
+
+            list.add(new com.mojang.datafixers.util.Pair<>(posNew, stateNew));
+        });
+
+        return list;
+    }
+
+    @Override
+    public boolean canBonmeel(BlockPos blockPos, BlockState blockState, Level level, @Nullable Player player) {
         Block crop = blockState.getBlock();
         int cropY = blockPos.getY();
 
@@ -246,18 +246,52 @@ public class GiantCropBlock extends AbstractMultiBlock implements ModEntityBlock
             blockPos = blockPos.below();
         }
 
-        return getFullBlockShape(blockPos, blockState, level).stream().allMatch(pos -> {
+        AtomicBoolean hasMixedCrops = new AtomicBoolean(false);
+        AtomicBoolean notGrown = new AtomicBoolean(false);
+        AtomicBoolean noSpace = new AtomicBoolean(false);
+
+        boolean canBonmeel = getFullBlockShape(blockPos, blockState, level).stream().allMatch(pos -> {
             pos = pos.above();
             BlockState state = level.getBlockState(pos);
             var PROPERTY = getCropMap().get(crop).getB().getA();
             int MAX_AGE = getCropMap().get(crop).getB().getB();
 
-            if(pos.getY() == cropY) {
-                return state.is(crop) && state.is(ModTags.ModBlockTags.BONMEELABLE) && state.getValue(PROPERTY) == MAX_AGE;
+            if (pos.getY() == cropY) {
+                // Check crops
+                boolean isCorrectCrop = state.is(crop) && state.is(ModTags.ModBlockTags.BONMEELABLE);
+                if (!isCorrectCrop) {
+                    hasMixedCrops.set(true);
+                    return false;
+                };
+
+                boolean isMaxAge = state.getValue(PROPERTY) == MAX_AGE;
+                if (!isMaxAge)
+                    notGrown.set(true);
+
+                return isMaxAge;
+
             } else {
-                return state.canBeReplaced() || state.is(ModTags.ModBlockTags.GIANT_CROP_REPLACEABLE) || state.is(crop);
+                // Checks free space
+                boolean hasFreeSpace = state.canBeReplaced() || state.is(ModTags.ModBlockTags.GIANT_CROP_REPLACEABLE) || state.is(crop);
+                if (!hasFreeSpace)
+                    noSpace.set(true);
+
+                return hasFreeSpace;
             }
         });
+
+        //Sends client messages
+        if (!canBonmeel && player != null) {
+            if (hasMixedCrops.get()) {
+                player.displayClientMessage(Component.translatable("message.moresnifferflowers.bonmeel.has_mixed_crops").withStyle(ChatFormatting.GRAY), true);
+            } else if (notGrown.get()) {
+                player.displayClientMessage(Component.translatable("message.moresnifferflowers.bonmeel.not_grown").withStyle(ChatFormatting.GRAY), true);
+            } else if (noSpace.get()) {
+                player.displayClientMessage(Component.translatable("message.moresnifferflowers.bonmeel.no_space").withStyle(ChatFormatting.GRAY), true);
+            }
+        }
+
+        return canBonmeel;
     }
 
     private static boolean isRicePanicles(Block crop) {

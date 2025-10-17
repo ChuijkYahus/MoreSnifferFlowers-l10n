@@ -162,7 +162,7 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
                         
                         if (blockState.is(ModTags.ModBlockTags.BONMEELABLE)) {
                             Bonmeelable bonmeelable = (Bonmeelable) GiantCropBlock.getCropMap().get(blockState.getBlock()).getA();
-                            if (bonmeelable.canBonmeel(currentPos, blockState, level)) {
+                            if (bonmeelable.canBonmeel(currentPos, blockState, level, null)) {
                                 bonmeelable.performBonmeel(currentPos, blockState, level, null);
                                 break;
                             }

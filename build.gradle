@@ -1,15 +1,7 @@
 
 plugins {
     id 'maven-publish'
-    id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
-    id 'net.neoforged.moddev' version '2.0.107'
-}
-
-group = 'net.abraxator.moresnifferflowers'
-version = version
-
-base {
-    archivesName.set("MoreSnifferFlowers-${minecraft_version}-neo")
+    id 'net.neoforged.moddev' version '2.0.115'
 }
 
 repositories {
@@ -82,7 +74,6 @@ dependencies {
     compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
-    compileOnly("curse.maven:rightclickharvest-452834:6134804")
 
     runtimeOnly "curse.maven:farmers-delight-398521:6917256"
     compileOnly "curse.maven:farmers-delight-398521:6917256"
