@@ -2,6 +2,7 @@ package net.abraxator.moresnifferflowers.networking.toClient;
 
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.client.ClientRegistration;
+import net.abraxator.moresnifferflowers.client.renderer.custom.BlockPatternRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -38,7 +39,7 @@ public record SyncBlockPatternsPacket(CompoundTag tag, ChunkPos pos) {
         LevelChunk chunk = level.getChunkSource().getChunk(chunkPos.x, chunkPos.z, false);
         if(chunk != null) {
             chunk.getCapability(CapabilityList.BLOCK_PATTERNS).ifPresent(blockPatternCapability -> blockPatternCapability.load(msg.tag));
-            ClientRegistration.getBlockPatternRenderer().markDirty();
+            BlockPatternRenderer.BUFFER_MANAGER.markDirty();
         }
     }
 }

@@ -23,29 +23,6 @@ public class JarOfBonmeelItem extends Item {
         super(properties);
     }
 
-/*    @Override
-    public InteractionResult useOn(UseOnContext context) {
-        Level level = context.getLevel();
-        BlockPos blockPos = context.getClickedPos();
-        BlockState blockState = context.getLevel().getBlockState(blockPos);
-        Player player = context.getPlayer();
-    
-        if(blockState.is(ModTags.ModBlockTags.BONMEELABLE)) {
-            Bonmeelable bonmeelable = (Bonmeelable) GiantCropBlock.getCropMap().get(blockState.getBlock()).getA();
-            if(bonmeelable.canBonmeel(blockPos,blockState,level) && player != null) {
-                bonmeelable.performBonmeel(blockPos, blockState, level, player);
-                if (!player.isCreative()) player.setItemInHand(context.getHand(), ItemUtils.createFilledResult(player.getItemInHand(context.getHand()), player, new ItemStack(Items.GLASS_BOTTLE)));
-
-                return InteractionResult.SUCCESS;
-
-            }
-
-        }
-
-        return InteractionResult.PASS;
-    }
-    */
-
     public InteractionResult highPriorityUseOn(UseOnContext context) {
         Level level = context.getLevel();
         BlockPos blockPos = context.getClickedPos();

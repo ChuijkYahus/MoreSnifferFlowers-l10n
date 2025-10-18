@@ -5,12 +5,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
-import net.abraxator.moresnifferflowers.client.ClientRegistration;
 import net.abraxator.moresnifferflowers.client.renderer.custom.BlockPatternRenderer;
+import net.abraxator.moresnifferflowers.client.renderer.custom.GhostRenderer;
 import net.abraxator.moresnifferflowers.entities.GluingGumEntity;
 import net.abraxator.moresnifferflowers.init.ModEffects;
 import net.abraxator.moresnifferflowers.init.ModItems;
-import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.networking.toServer.DyespriaModePacket;
 import net.abraxator.moresnifferflowers.networking.toServer.PatternspriaModePacket;
@@ -30,6 +29,7 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -59,11 +59,17 @@ public class ClientEvents {
         Minecraft minecraft = Minecraft.getInstance();
         Level level = minecraft.level;
         Frustum frustum = event.getFrustum();
-
+        float partialTicks = event.getPartialTick();
 
         if (stage.equals(RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS)) {
             BlockPatternRenderer.cacheAndRender(frustum, camera, level, minecraft, poseStack);
+            GhostRenderer.renderAll(partialTicks, frustum, camera, level, poseStack);
         }
+    }
+
+    @SubscribeEvent
+    public static void clientTick(TickEvent.ClientTickEvent event){
+       if (event.phase.equals(TickEvent.Phase.END)) GhostRenderer.tickAll();
     }
 
     @SubscribeEvent
@@ -131,13 +137,13 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        ClientRegistration.getBlockPatternRenderer().markDirty();
+        BlockPatternRenderer.BUFFER_MANAGER.markDirty();
 
     }
 
     @SubscribeEvent
     public static void onBlockPlaced(BlockEvent.EntityPlaceEvent event) {
-        ClientRegistration.getBlockPatternRenderer().markDirty();
+        BlockPatternRenderer.BUFFER_MANAGER.markDirty();
 
     }
 

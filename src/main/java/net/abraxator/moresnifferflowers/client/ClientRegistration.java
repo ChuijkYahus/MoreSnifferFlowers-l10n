@@ -46,13 +46,6 @@ public class ClientRegistration {
         MenuScreens.register(ModMenuTypes.REBREWING_STAND.get(), RebrewingStandScreen::new);
     }
 
-    private static final BlockPatternRenderer BUFFER_MANAGER = new BlockPatternRenderer();
-
-    public static BlockPatternRenderer getBlockPatternRenderer() {
-        return BUFFER_MANAGER;
-    }
-
-    
     @SubscribeEvent
     public static void onEntityRenderersRegisterLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         //CENTER
@@ -84,6 +77,9 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModModelLayerLocations.SALTEMONE, SaltemoneModel::createBodyLayer);
         event.registerLayerDefinition(ModModelLayerLocations.SALTEMONE_TOP, SaltemoneModel::createTopLayer);
         event.registerLayerDefinition(ModModelLayerLocations.DYESPRIA, DyespriaModel::createBodyLayer);
+
+        event.registerLayerDefinition(ModModelLayerLocations.SIMPLE_CUBE, SimpleModels::simpleCube);
+        event.registerLayerDefinition(ModModelLayerLocations.INVERTED_CUBE, SimpleModels::invertedCube);
 
 
     }
