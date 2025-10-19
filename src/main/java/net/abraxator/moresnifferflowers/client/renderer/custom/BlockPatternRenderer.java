@@ -42,6 +42,7 @@ import java.util.stream.Stream;
 
 public class BlockPatternRenderer {
     public static final BlockPatternRenderer.CameraTracker CAMERA_TRACKER = new BlockPatternRenderer.CameraTracker();
+    public static final BlockPatternRenderer BUFFER_MANAGER = new BlockPatternRenderer();
 
     private boolean dirty = true;
     private final List<RenderQuad> cachedQuads = new ArrayList<>();
@@ -51,7 +52,6 @@ public class BlockPatternRenderer {
         double camY = camera.getPosition().y;
         double camZ = camera.getPosition().z;
 
-        BlockPatternRenderer BUFFER_MANAGER = ClientRegistration.getBlockPatternRenderer();
         if (level == null || minecraft.player == null) return;
 
         if (CAMERA_TRACKER.hasMoved(camera)) {
@@ -96,33 +96,39 @@ public class BlockPatternRenderer {
                 patternPositions.forEach(pos -> {
                     BlockPatternCapability.PatternData data = storage.getPattern(pos);
 
-                    if (data != null && frustum.isVisible(new AABB(pos))) {
+                    if (!(data != null && frustum.isVisible(new AABB(pos)))) return;
 
-                        ResourceLocation resourceLocation = MoreSnifferFlowers.loc("block/block_pattern/" + BlockPattern.fromId(data.patternId()).getSerializedName());
-                        TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(resourceLocation);
-                        BlockState state = level.getBlockState(pos);
+                    ResourceLocation resourceLocation = MoreSnifferFlowers.loc("block/block_pattern/" + BlockPattern.fromId(data.patternId()).getSerializedName());
+                    TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(resourceLocation);
+                    BlockState state = level.getBlockState(pos);
 
-                        for (Direction dir : Direction.values()) {
-                            if (state.isFaceSturdy(level, pos, dir) && (!level.getBlockState(pos.relative(dir)).isFaceSturdy(level, pos.relative(dir), dir.getOpposite()) || !level.getBlockState(pos.relative(dir)).canOcclude() )) {
-                                float[] brightness = new float[]{1,1,1,1};
-                                int[] lightmap;
-                                boolean smoothLighting = ModClientConfig.BLOCK_PATTERN_SMOOTH_LIGHTING.get();
+                    for (Direction dir : Direction.values()) {
+                        BlockState relativeState = level.getBlockState(pos.relative(dir));
 
-                                if (smoothLighting) {
-                                    ModelBlockRenderer.AmbientOcclusionFace aoFace = new ModelBlockRenderer.AmbientOcclusionFace();
-                                aoFace.calculate(level, state, pos.relative(dir), dir, new float[Direction.values().length * 2], new BitSet(3), true);
-                                    brightness = aoFace.brightness;
-                                    lightmap = aoFace.lightmap;
+                        boolean faceSturdy = state.isFaceSturdy(level, pos, dir);
+                        boolean notBlocked = !relativeState.isFaceSturdy(level, pos.relative(dir), dir.getOpposite());
+                        boolean noOcclusion = !relativeState.canOcclude();
 
-                                } else {
-                                    int packed = getPackedLight(level, pos.relative(dir));
-                                    if (data.isGlowing()) packed = LightTexture.FULL_BRIGHT;
-                                    lightmap = new int[]{packed,packed,packed,packed};
-                                }
+                        boolean canRenderFace = faceSturdy && (notBlocked || noOcclusion);
+                        if (!canRenderFace) return;
 
-                                cachedQuads.add(RenderQuad.create(pos, dir, data.color(), sprite, smoothLighting, data.direction(), data.isGlowing(), brightness, lightmap));
-                            }
+                        float[] brightness = new float[]{1,1,1,1};
+                        int[] lightmap;
+                        boolean smoothLighting = ModClientConfig.BLOCK_PATTERN_SMOOTH_LIGHTING.get();
+
+                        if (smoothLighting) {
+                            ModelBlockRenderer.AmbientOcclusionFace aoFace = new ModelBlockRenderer.AmbientOcclusionFace();
+                            aoFace.calculate(level, state, pos.relative(dir), dir, new float[Direction.values().length * 2], new BitSet(3), true);
+                            brightness = aoFace.brightness;
+                            lightmap = aoFace.lightmap;
+
+                        } else {
+                            int packed = getPackedLight(level, pos.relative(dir));
+                            if (data.isGlowing()) packed = LightTexture.FULL_BRIGHT;
+                            lightmap = new int[]{packed,packed,packed,packed};
                         }
+
+                        cachedQuads.add(RenderQuad.create(pos, dir, data.color(), sprite, smoothLighting, data.direction(), data.isGlowing(), brightness, lightmap));
                     }
                 });
         }

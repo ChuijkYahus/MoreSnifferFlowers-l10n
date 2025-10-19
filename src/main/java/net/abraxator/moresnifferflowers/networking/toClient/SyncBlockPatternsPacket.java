@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.client.ClientRegistration;
+import net.abraxator.moresnifferflowers.client.renderer.custom.BlockPatternRenderer;
 import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.abraxator.moresnifferflowers.networking.MSFClientPacket;
 import net.abraxator.moresnifferflowers.networking.MSFServerPacket;
@@ -32,7 +33,7 @@ public record SyncBlockPatternsPacket(BlockPatternCapability capability, BlockPo
     public void handleClientPacket(Player player, Level level) {
         LevelChunk chunk = level.getChunkAt(pos);
         chunk.getData(ModDataAttachments.BLOCK_PATTERNS).load(capability);
-        ClientRegistration.getBlockPatternRenderer().markDirty();
+        BlockPatternRenderer.BUFFER_MANAGER.markDirty();
     }
 
     @Override

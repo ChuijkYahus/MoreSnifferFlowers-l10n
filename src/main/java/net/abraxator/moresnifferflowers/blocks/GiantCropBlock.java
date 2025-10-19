@@ -3,6 +3,8 @@ package net.abraxator.moresnifferflowers.blocks;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.IModBlockEntity;
+import net.abraxator.moresnifferflowers.client.renderer.custom.GhostBlockRenderer;
+import net.abraxator.moresnifferflowers.components.RenderOffsetType;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -249,6 +251,7 @@ public class GiantCropBlock extends AbstractMultiBlock implements ModEntityBlock
         AtomicBoolean hasMixedCrops = new AtomicBoolean(false);
         AtomicBoolean notGrown = new AtomicBoolean(false);
         AtomicBoolean noSpace = new AtomicBoolean(false);
+        boolean canRenderGhosts = player != null && level.isClientSide();
 
         boolean canBonmeel = getFullBlockShape(blockPos, blockState, level).stream().allMatch(pos -> {
             pos = pos.above();
@@ -265,16 +268,30 @@ public class GiantCropBlock extends AbstractMultiBlock implements ModEntityBlock
                 };
 
                 boolean isMaxAge = state.getValue(PROPERTY) == MAX_AGE;
-                if (!isMaxAge)
+                if (!isMaxAge) {
                     notGrown.set(true);
+                    if (canRenderGhosts)
+                        new GhostBlockRenderer(pos, 60, state.setValue(PROPERTY, MAX_AGE))
+                            .setARGB(1, 0.5f, 0.5f, 0.5f)
+                            .enableFadeOut(20)
+                            .setRenderOffsetType(RenderOffsetType.CROSS)
+                            .addToRenderList();
+                }
 
                 return isMaxAge;
 
             } else {
                 // Checks free space
                 boolean hasFreeSpace = state.canBeReplaced() || state.is(ModTags.ModBlockTags.GIANT_CROP_REPLACEABLE) || state.is(crop);
-                if (!hasFreeSpace)
+                if (!hasFreeSpace) {
                     noSpace.set(true);
+                    if (canRenderGhosts)
+                        new GhostBlockRenderer(pos, 60, Blocks.RED_CONCRETE.defaultBlockState())
+                            .setARGB(1, 1f, 1f, 0.5f)
+                            .enableFadeOut(20)
+                            .setRenderOffsetType(RenderOffsetType.SCALED)
+                            .addToRenderList();
+                }
 
                 return hasFreeSpace;
             }

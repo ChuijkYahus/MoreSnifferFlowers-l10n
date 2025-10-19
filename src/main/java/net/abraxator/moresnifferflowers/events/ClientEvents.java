@@ -8,6 +8,7 @@ import net.abraxator.moresnifferflowers.capability.GluedCapability;
 import net.abraxator.moresnifferflowers.capability.SlipperyCapability;
 import net.abraxator.moresnifferflowers.client.ClientRegistration;
 import net.abraxator.moresnifferflowers.client.renderer.custom.BlockPatternRenderer;
+import net.abraxator.moresnifferflowers.client.renderer.custom.GhostRenderer;
 import net.abraxator.moresnifferflowers.entities.GluingGumEntity;
 import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.networking.toServer.DyespriaModePacket;
@@ -56,13 +57,19 @@ public class ClientEvents {
         Minecraft minecraft = Minecraft.getInstance();
         Level level = minecraft.level;
         Frustum frustum = event.getFrustum();
-        DeltaTracker partialTick = event.getPartialTick();
+        float partialTicks = event.getPartialTick().getGameTimeDeltaPartialTick(true);
 
 
         if (stage.equals(RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS)) {
             BlockPatternRenderer.cacheAndRender(frustum, camera, level, minecraft, poseStack);
+            GhostRenderer.renderAll(partialTicks, frustum, camera, level, poseStack);
         }
 
+    }
+
+    @SubscribeEvent
+    public static void clientTick(ClientTickEvent.Post event){
+        GhostRenderer.tickAll();
     }
 
     @SubscribeEvent
@@ -136,13 +143,13 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        ClientRegistration.getBlockPatternRenderer().markDirty();
+        BlockPatternRenderer.BUFFER_MANAGER.markDirty();
 
     }
 
     @SubscribeEvent
     public static void onBlockPlaced(BlockEvent.EntityPlaceEvent event) {
-        ClientRegistration.getBlockPatternRenderer().markDirty();
+        BlockPatternRenderer.BUFFER_MANAGER.markDirty();
 
     }
 

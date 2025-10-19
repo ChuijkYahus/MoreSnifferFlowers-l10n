@@ -1,7 +1,10 @@
 package net.abraxator.moresnifferflowers.items;
 
+import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.capability.CorruptionCapability;
+import net.abraxator.moresnifferflowers.client.renderer.custom.GhostBlockEntityRenderer;
 import net.abraxator.moresnifferflowers.init.ModBlocks;
+import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
@@ -33,6 +36,18 @@ public class DebugFlowerItem extends Item {
             System.out.println("entity.getCenter() = " + entity.getCenter());
             System.out.println("entity.isPlaced() = " + entity.isPlaced());
         }
+
+/*        new GhostModelRenderer(pos, 60, SimpleModels.simpleCube().bakeRoot(), new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/amber_block")))
+                .enableFadeOut(60)
+                .addToRenderList();*/
+
+/*
+        new GhostBlockRenderer(pos, 20*5, Blocks.DIAMOND_BLOCK.defaultBlockState())
+                .setARGB(1, 0.5f, 0.5f, 0.5f)
+                .addToRenderList();
+*/
+
+        new GhostBlockEntityRenderer(pos, 60, new BerootCauldronBlockEntity(pos, ModBlocks.BEROOT_CAULDRON.get().defaultBlockState().setValue(ModStateProperties.CENTER, true))).addToRenderList();
 
         return super.useOn(context);
     }
