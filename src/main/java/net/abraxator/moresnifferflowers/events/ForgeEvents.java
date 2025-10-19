@@ -51,10 +51,7 @@ import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
-import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
-import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.entity.player.UseItemOnBlockEvent;
+import net.neoforged.neoforge.event.entity.player.*;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkWatchEvent;
 
@@ -238,9 +235,9 @@ public class ForgeEvents {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void highPriorityClickBlock(UseItemOnBlockEvent event) {
+    public static void highPriorityClickBlock(PlayerInteractEvent.RightClickBlock event) {
         if (event.getItemStack().getItem() instanceof JarOfBonmeelItem jarOfBonmeelItem) {
-            ItemInteractionResult interactionResult = jarOfBonmeelItem.highPriorityUseOn(event.getUseOnContext());
+            InteractionResult interactionResult = jarOfBonmeelItem.highPriorityUseOn(new UseOnContext(event.getEntity(), event.getHand(), event.getHitVec()));
 
             event.setCancellationResult(interactionResult);
             event.setCanceled(true);

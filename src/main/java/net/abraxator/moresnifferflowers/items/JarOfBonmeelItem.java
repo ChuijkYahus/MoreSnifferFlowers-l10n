@@ -23,7 +23,7 @@ public class JarOfBonmeelItem extends Item {
         super(properties);
     }
 
-    public ItemInteractionResult highPriorityUseOn(UseOnContext context) {
+    public InteractionResult highPriorityUseOn(UseOnContext context) {
         Level level = context.getLevel();
         BlockPos blockPos = context.getClickedPos();
         BlockState blockState = context.getLevel().getBlockState(blockPos);
@@ -35,13 +35,13 @@ public class JarOfBonmeelItem extends Item {
                 bonmeelable.performBonmeel(blockPos, blockState, level, player);
                 if (!player.isCreative()) player.setItemInHand(context.getHand(), ItemUtils.createFilledResult(player.getItemInHand(context.getHand()), player, new ItemStack(Items.GLASS_BOTTLE)));
 
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
 
             }
 
         }
 
-        return ItemInteractionResult.FAIL;
+        return InteractionResult.FAIL;
     }
 
     @Override
