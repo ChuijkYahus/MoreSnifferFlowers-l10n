@@ -3,11 +3,15 @@ package net.abraxator.moresnifferflowers.blocks;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.GiantCropBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.IModBlockEntity;
+import net.abraxator.moresnifferflowers.client.model.block.SimpleModels;
 import net.abraxator.moresnifferflowers.client.renderer.custom.GhostBlockRenderer;
+import net.abraxator.moresnifferflowers.client.renderer.custom.GhostModelRenderer;
 import net.abraxator.moresnifferflowers.components.RenderOffsetType;
 import net.abraxator.moresnifferflowers.init.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -271,7 +275,7 @@ public class GiantCropBlock extends AbstractMultiBlock implements ModEntityBlock
                 if (!isMaxAge) {
                     notGrown.set(true);
                     if (canRenderGhosts)
-                        new GhostBlockRenderer(pos, 60, state.setValue(PROPERTY, MAX_AGE))
+                        new GhostBlockRenderer(pos, 40, state.setValue(PROPERTY, MAX_AGE))
                             .setARGB(1, 0.5f, 0.5f, 0.5f)
                             .enableFadeOut(20)
                             .setRenderOffsetType(RenderOffsetType.CROSS)
@@ -286,8 +290,8 @@ public class GiantCropBlock extends AbstractMultiBlock implements ModEntityBlock
                 if (!hasFreeSpace) {
                     noSpace.set(true);
                     if (canRenderGhosts)
-                        new GhostBlockRenderer(pos, 60, Blocks.RED_CONCRETE.defaultBlockState())
-                            .setARGB(1, 1f, 1f, 0.5f)
+                        new GhostModelRenderer(pos, 40, SimpleModels.simpleCube().bakeRoot(), new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/pure_white")))
+                            .setARGB(1, 0.0f, 0.0f, 0.3f)
                             .enableFadeOut(20)
                             .setRenderOffsetType(RenderOffsetType.SCALED)
                             .addToRenderList();
