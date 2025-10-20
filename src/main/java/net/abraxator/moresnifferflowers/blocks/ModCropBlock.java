@@ -43,7 +43,7 @@ public interface ModCropBlock extends BonemealableBlock {
     }
 
     default void makeGrowOnTick(BlockState blockState, Level level, BlockPos blockPos) {
-        if (blockState.getValue(ModStateProperties.SHEARED)) return;
+        if (blockState.hasProperty(ModStateProperties.SHEARED) && blockState.getValue(ModStateProperties.SHEARED)) return;
 
         if (!isMaxAge(blockState) && level.isAreaLoaded(blockPos, 1) && level.getRawBrightness(blockPos, 0) >= 9) {
             float f = getGrowthSpeed(blockState, level, blockPos);
@@ -55,7 +55,8 @@ public interface ModCropBlock extends BonemealableBlock {
     }
 
     default void makeGrowOnBonemeal(Level level, BlockPos blockPos, BlockState blockState) {
-        level.setBlock(blockPos, blockState.setValue(getAgeProperty(), isMaxAge(blockState) ? getAge(blockState) : getAge(blockState) + 1), 2);
+       if (!isMaxAge(blockState))
+           level.setBlock(blockPos, blockState.setValue(getAgeProperty(), getAge(blockState) + 1), 2);
     }
 
     default boolean mayPlaceOn(BlockState state) {

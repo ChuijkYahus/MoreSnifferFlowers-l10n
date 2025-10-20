@@ -128,7 +128,8 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
 
     @Override
     public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
-        growHelper(level, pos, getAgeProperty());
+        if (IMultiBlock.isCenter(state))
+            makeGrowOnBonemeal(level, pos, state);
     }
 
     public boolean isCorrupted(){
@@ -146,6 +147,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (state.getValue(ModStateProperties.SHEARED)) return;
+
         if (level.getBlockEntity(pos) instanceof SaltemoneBlockEntity entity && pos.equals(entity.center)) {
             if (isMaxAge(state)) {
                 Direction direction = state.getValue(HorizontalDirectionalBlock.FACING);
@@ -164,7 +166,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
                 ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new SaltemoneParticlePacket(vec3.toVector3f()));
 
             } else {
-               if (IMultiBlock.isCenter(state)) growHelper(level, pos, getAgeProperty());
+                performBonemeal(level, random, pos, state);
             }
         }
     }

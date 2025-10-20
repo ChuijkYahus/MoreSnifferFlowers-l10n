@@ -194,7 +194,8 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
     }
 
     public void grow(Level level, BlockPos blockPos, BlockState state) {
-        growHelper(level, blockPos, getAgeProperty());
+       if (IMultiBlock.isCenter(state))
+           makeGrowOnBonemeal(level, blockPos, state);
     }
     
     private boolean isBondripable(Level level, BlockPos blockPos) {
