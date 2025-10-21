@@ -29,6 +29,7 @@ public class CookbookScreen extends Screen {
     public static final ResourceLocation RENDERABLES = MoreSnifferFlowers.loc("textures/gui/cookbook_renderables.png");
     public static final ResourceLocation GUIDE_0 = MoreSnifferFlowers.loc("textures/gui/cookbook_guide1.png");
     public static final ResourceLocation GUIDE_1 = MoreSnifferFlowers.loc("textures/gui/cookbook_guide2.png");
+    public static final ResourceLocation ERROR = MoreSnifferFlowers.loc("textures/gui/cookbook_error.png");
 
     private final int ROWS = 8;
     private final int COLUMNS = 5;
@@ -71,6 +72,10 @@ public class CookbookScreen extends Screen {
         if (page == Page.GUIDE){
             this.renderGuide(guiGraphics, mouseX, mouseY, x, y);
         }
+
+        if (page == Page.ERROR)
+            guiGraphics.blit(ERROR, x, y,0, 0, 166, 256);
+
         this.renderContents(guiGraphics, mouseX, mouseY, x, y);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
@@ -124,7 +129,7 @@ public class CookbookScreen extends Screen {
         for (int i = startIndex * COLUMNS + 1; i < startIndex * COLUMNS  + 1 + PAGE_SIZE && i < this.nutritions.size() + 1; i++) {
             Nutrition nutrition = nutritions.get(i - 1);
             boolean unlocked = this.unlocked.contains(nutrition.getItem());
-            
+
             nutrition = unlocked ? nutrition : Nutrition.EMPTY;
             if (yPos >= 16) addRenderableWidget(new ItemWidget(x + xPos, y + yPos, Component.empty(), nutrition, this));
 
@@ -166,7 +171,15 @@ public class CookbookScreen extends Screen {
     }
     
     public void pageToItems(NutritionType type) {
-        List<Nutrition> list = new ArrayList<>(NutritionLoader.typeNutritions.get(type).stream().toList());
+        Set<Nutrition> nutritionTypeSet = NutritionLoader.typeNutritions.get(type);
+
+        if (nutritionTypeSet == null) {
+            this.turnPage(Page.ERROR);
+            return;
+        }
+
+        List<Nutrition> list = new ArrayList<>(nutritionTypeSet.stream().toList());
+
         list.sort(Comparator.comparing( nutrition -> {
             float weight = 0;
             for (NutritionEntry entry : nutrition.getNutritionEntries()){
@@ -249,6 +262,7 @@ public class CookbookScreen extends Screen {
     public enum Page {
         CONTENTS,
         ITEMS,
-        GUIDE
+        GUIDE,
+        ERROR
     }
 }
