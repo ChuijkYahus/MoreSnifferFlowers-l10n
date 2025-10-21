@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class NutritionLoader extends SimpleJsonResourceReloadListener {
-    private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
+    private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().setLenient().create();
     private static final Codec<Map<Either<TagKey<Item>, Item>, Integer>> CODEC = Codec.unboundedMap(
             Codec.either(
                     TagKey.hashedCodec(Registries.ITEM), BuiltInRegistries.ITEM.byNameCodec()
@@ -62,7 +62,6 @@ public class NutritionLoader extends SimpleJsonResourceReloadListener {
                         
                         for (Map.Entry<Either<TagKey<Item>, Item>, Integer> mapEntry : values.entrySet()) {
                             Set<Item> itemList = new HashSet<>();
-                            Map.Entry<Item, NutritionEntry> ret;
 
                             if (mapEntry.getKey().left().isPresent()) {
                                 itemList = (Arrays.stream(Ingredient.of(mapEntry.getKey().left().get()).getItems())
