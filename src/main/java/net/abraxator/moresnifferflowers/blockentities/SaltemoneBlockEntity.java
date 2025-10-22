@@ -14,6 +14,6 @@ public class SaltemoneBlockEntity extends AbstractMultiBlockEntity {
 
     @Override
     public @NotNull AABB getRenderBoundingBox() {
-        return new AABB(center).inflate(1);
+        return new AABB(getCenter()).inflate(1);
     }
 }

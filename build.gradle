@@ -91,9 +91,9 @@ dependencies {
 
     // modImplementation(jarJar(group: "local", name:"tiny-multiblock-lib-forge-1.20.1", version: "[2.0,)"))
     // modImplementation("maven.modrinth:tiny-multiblock-lib:forge-1.20.1-2.0")
-    jarJar(modImplementation(group: "maven.modrinth", name:"tiny-multiblock-lib", version:"forge-1.20.1-2.0"){
+    jarJar(modImplementation(group: "local", name:"tiny-multiblock-lib", version:"forge-1.20.1-2.1"){
         version {
-            strictly('[forge-1.20.1-2.0,)')
+            strictly('[forge-1.20.1-2.1,)')
         }
     })
 

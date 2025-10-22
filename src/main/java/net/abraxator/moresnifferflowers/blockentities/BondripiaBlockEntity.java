@@ -14,6 +14,6 @@ public class BondripiaBlockEntity extends AbstractMultiBlockEntity {
 
     @Override
     public AABB getRenderBoundingBox() {
-        return new AABB(center).inflate(1);
+        return new AABB(getCenter()).inflate(1);
     }
 }

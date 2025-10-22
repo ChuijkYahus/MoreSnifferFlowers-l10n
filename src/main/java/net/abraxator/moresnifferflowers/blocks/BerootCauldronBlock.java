@@ -26,6 +26,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
+import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -91,7 +92,7 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
     public VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context){
         VoxelShape shape = SHAPE_UPPER;
 
-        if (IMultiBlock.getYOffset(getter, pos) <= 0) {
+        if (getter.getBlockEntity(pos) instanceof IMultiBlockEntity entity && entity.getOffset().getY() <= 0) {
 
             if (state.getValue(HorizontalDirectionalBlock.FACING).getAxis().equals(Direction.Axis.X)) {
                 shape = SHAPE_LOWER_ROTATED;

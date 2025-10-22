@@ -221,7 +221,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
     @Override
     public void tick(Level level){
         if (isCenter()) {
-            suckInItems(level, this.center);
+            suckInItems(level, this.getCenter());
         }
     }
 
@@ -235,7 +235,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
             this.craftingTimeRemaining++;
             this.itemRot += 10;
             if(this.spoonRotation * spoonSpeed >= this.soupCount * 180 && soupCount != 0) {
-                 ModPacketHandler.CHANNEL.sendToServer(new BerootCauldronCraftPacket(this.center));
+                 ModPacketHandler.CHANNEL.sendToServer(new BerootCauldronCraftPacket(this.getCenter()));
                  craft();
                 this.crafting = false;
                 this.isCrafted = true;
@@ -394,7 +394,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
             case WEST -> z -= 1;
         }
 
-        return this.center.getCenter().add(x, y, z);
+        return this.getCenter().getCenter().add(x, y, z);
     }
 
     public void clearIngredients() {
@@ -559,7 +559,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
 
     @Override
     public AABB getRenderBoundingBox() {
-        return AABB.ofSize(this.center.getCenter(), 4, 4, 4);
+        return AABB.ofSize(this.getCenter().getCenter(), 4, 4, 4);
     }
 
 }
