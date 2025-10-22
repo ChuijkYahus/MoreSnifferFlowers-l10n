@@ -133,10 +133,11 @@ public class SaltemoneBlock extends AbstractMultiBlock implements EntityBlock, C
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (state.getValue(ModStateProperties.SHEARED)) return;
-        if (level.getBlockEntity(pos) instanceof SaltemoneBlockEntity entity && pos.equals(entity.center)) {
+
+        if (level.getBlockEntity(pos) instanceof SaltemoneBlockEntity entity && pos.equals(entity.getCenter())) {
             if (isMaxAge(state)) {
                 Direction direction = state.getValue(HorizontalDirectionalBlock.FACING);
-                Vec3 vec3 = entity.center.getCenter().relative(direction, 0.5D).relative(direction.getClockWise(), 0.5D).relative(Direction.UP, 0.0);
+                Vec3 vec3 = entity.getCenter().getCenter().relative(direction, 0.5D).relative(direction.getClockWise(), 0.5D).relative(Direction.UP, 0.0);
                 float speed = 0.2F;
 
                 SaltBubbleProjectile projectile = new SaltBubbleProjectile(vec3.x, vec3.y, vec3.z, level);

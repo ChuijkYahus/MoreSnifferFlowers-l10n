@@ -352,7 +352,7 @@ public class GiantCropBlock extends AbstractMultiBlock implements ModEntityBlock
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
         VoxelShape shape = Shapes.block();
 
-        if (IMultiBlock.getXOffset(getter, pos) == 0 && IMultiBlock.getZOffset(getter, pos) == 0){
+        if (getter.getBlockEntity(pos) instanceof IMultiBlockEntity entity &&  entity.getOffset().getX() == 0 && entity.getOffset().getZ() == 0){
             return shape;
         }
 

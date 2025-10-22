@@ -146,7 +146,7 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
         if(!isMaxAge(state) && IMultiBlock.isCenter(state)) {
             grow(level, pos, state);
         } else if (random.nextDouble() <= 0.33D && level.getBlockEntity(pos) instanceof BondripiaBlockEntity entity) {
-            for (BlockPos blockPos : BlockPos.betweenClosed(entity.center.below().north().east(), entity.center.below().south().west())) {
+            for (BlockPos blockPos : BlockPos.betweenClosed(entity.getCenter().below().north().east(), entity.getCenter().below().south().west())) {
                 BlockPos currentPos = blockPos;
 
                     int y = level.getRandom().nextIntBetweenInclusive(1, 11);

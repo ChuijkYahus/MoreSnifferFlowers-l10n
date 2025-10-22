@@ -31,13 +31,13 @@ public class AciddripiaBlock extends BondripiaBlock {
             if (!isMaxAge(stateOriginal)) {
                 grow(level, pos, stateOriginal);
             } else if (random.nextDouble() <= 0.33D) {
-                var aabb = new AABB(entity.center.below()).inflate(1.5D, 0, 1.5D).setMaxY(10.0D);
+                var aabb = new AABB(entity.getCenter().below()).inflate(1.5D, 0, 1.5D).setMaxY(10.0D);
                 level.getEntities((Entity) null, aabb, entity1 -> entity1.getType() == EntityType.PLAYER)
                         .stream().map(entity1 -> ((Player) entity1))
                         .forEach(entity1 -> {
                             entity1.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 2));
                         });
-                for (BlockPos blockPos : BlockPos.betweenClosed(entity.center.below().north().east(), entity.center.below().south().west())) {
+                for (BlockPos blockPos : BlockPos.betweenClosed(entity.getCenter().below().north().east(), entity.getCenter().below().south().west())) {
                     BlockPos currentPos = blockPos;
 
                     int y = level.getRandom().nextIntBetweenInclusive(1, 11);

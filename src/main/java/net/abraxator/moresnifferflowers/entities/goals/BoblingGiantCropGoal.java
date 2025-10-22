@@ -101,27 +101,6 @@ public class BoblingGiantCropGoal extends Goal {
         return !gonnaPlant() && flag;
     }
 
-/*    @Override
-    public void stop() {
-        if(gonnaPlant()) {
-            var giantBlock = Util.getRandom(List.of(ModBlocks.GIANT_CARROT, ModBlocks.GIANT_BEETROOT, ModBlocks.GIANT_NETHERWART, ModBlocks.GIANT_POTATO, ModBlocks.GIANT_WHEAT), this.bobling.getRandom());
-            var aabb = AABB.ofSize(wantedPos.add(0, 2, 0), 1, 1, 1);
-            var level = this.bobling.level();
-
-            BlockPos.betweenClosedStream(aabb).forEach(pos -> {
-                level.setBlockAndUpdate(pos, giantBlock.get().defaultBlockState().setValue(ModStateProperties.CENTER, pos.equals(BlockPos.containing(this.wantedPos.add(0, 1, 0)))));
-                if (level.getBlockEntity(pos) instanceof GiantCropBlockEntity entity) {
-                    entity.pos1 = BlockPos.containing(this.wantedPos.add(0, 1, 0)).mutable().move(1, 2, 1);
-                    entity.pos2 = BlockPos.containing(this.wantedPos.add(0, 1, 0)).mutable().move(-1, 0, -1);
-                    entity.state = 2;
-                }
-
-                var tick = new ScheduledTick<>(level.getBlockState(pos).getBlock(), pos, level.getGameTime() + 50, level.nextSubTickCount());
-                level.getBlockTicks().schedule(tick);
-                this.bobling.remove(Entity.RemovalReason.DISCARDED);
-            });
-        }
-    }*/
 
     @Override
     public void tick() {

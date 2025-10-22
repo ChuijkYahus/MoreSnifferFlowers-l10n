@@ -59,7 +59,7 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
             render(body, poseStack, consumer, packedLight, packedOverlay, previewMode);
 
             float time = (level().getGameTime() + partialTick) / 20f;
-            float scale = 1.0f + 0.3f * Mth.sin(time / 2 * Mth.TWO_PI + blockEntity.center.getX() + blockEntity.center.getZ());
+            float scale = 1.0f + 0.3f * Mth.sin(time / 2 * Mth.TWO_PI + blockEntity.getCenter().getX() + blockEntity.getCenter().getZ());
             poseStack.scale(scale, scale / 1.5f + 0.4f, scale);
             poseStack.translate(0, -scale + 2.32, 0);
 

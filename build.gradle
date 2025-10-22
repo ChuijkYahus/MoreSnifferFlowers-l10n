@@ -86,9 +86,9 @@ dependencies {
     runtimeOnly "curse.maven:farmers-delight-398521:6917256"
     compileOnly "curse.maven:farmers-delight-398521:6917256"
 
-    jarJar(implementation(group: "maven.modrinth", name:"tiny-multiblock-lib", version:"neo-1.21.1-2.0"){
+    jarJar(implementation(group: "maven.modrinth", name:"tiny-multiblock-lib", version:"neo-1.21.1-2.1"){
         version {
-            strictly('[neo-1.21.1-2.0,)')
+            strictly('[neo-1.21.1-2.1,)')
         }
     })
 

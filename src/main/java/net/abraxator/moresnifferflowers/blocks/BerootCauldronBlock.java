@@ -27,6 +27,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
+import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
