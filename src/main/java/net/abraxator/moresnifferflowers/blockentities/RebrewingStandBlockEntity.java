@@ -49,8 +49,8 @@ public class RebrewingStandBlockEntity extends BaseContainerBlockEntity {
     private boolean[] lastPotionCount;
     public final ContainerData containerData = new ContainerData() {
         @Override
-        public int get(int pIndex) {
-            return switch (pIndex) {
+        public int get(int index) {
+            return switch (index) {
                 case 0 -> RebrewingStandBlockEntity.this.brewProgress;
                 case 1 -> RebrewingStandBlockEntity.this.fuel;
                 case 2 -> RebrewingStandBlockEntity.this.cost;
@@ -59,8 +59,8 @@ public class RebrewingStandBlockEntity extends BaseContainerBlockEntity {
         }
 
         @Override
-        public void set(int pIndex, int pValue) {
-            switch (pIndex) {
+        public void set(int index, int pValue) {
+            switch (index) {
                 case 0:
                     RebrewingStandBlockEntity.this.brewProgress = pValue;
                     break;
@@ -239,24 +239,24 @@ public class RebrewingStandBlockEntity extends BaseContainerBlockEntity {
     }
 
     @Override
-    public ItemStack getItem(int pSlot) {
-        return pSlot >= 0 && pSlot < this.inv.size() ? this.inv.get(pSlot) : ItemStack.EMPTY;
+    public ItemStack getItem(int slot) {
+        return slot >= 0 && slot < this.inv.size() ? this.inv.get(slot) : ItemStack.EMPTY;
     }
 
     @Override
-    public ItemStack removeItem(int pSlot, int pAmount) {
-        return ContainerHelper.removeItem(this.inv, pSlot, pAmount);
+    public ItemStack removeItem(int slot, int pAmount) {
+        return ContainerHelper.removeItem(this.inv, slot, pAmount);
     }
 
     @Override
-    public ItemStack removeItemNoUpdate(int pSlot) {
-        return ContainerHelper.takeItem(inv, pSlot);
+    public ItemStack removeItemNoUpdate(int slot) {
+        return ContainerHelper.takeItem(inv, slot);
     }
 
     @Override
-    public void setItem(int pSlot, ItemStack stack) {
-        if (pSlot >= 0 && pSlot < this.inv.size()) {
-            this.inv.set(pSlot, stack);
+    public void setItem(int slot, ItemStack stack) {
+        if (slot >= 0 && slot < this.inv.size()) {
+            this.inv.set(slot, stack);
         }
     }
 

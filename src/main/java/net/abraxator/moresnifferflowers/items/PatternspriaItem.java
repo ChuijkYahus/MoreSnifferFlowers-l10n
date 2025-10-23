@@ -251,14 +251,14 @@ public class PatternspriaItem extends Item {
     }
 
     @Override
-    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack pOther, Slot pSlot, ClickAction pAction, Player player, SlotAccess pAccess) {
-        if(pAction == ClickAction.SECONDARY && pSlot.allowModification(player)) {
-            if(pOther.isEmpty()) {
-                pAccess.set(removePattern(stack));
+    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action, Player player, SlotAccess access) {
+        if(action == ClickAction.SECONDARY && slot.allowModification(player)) {
+            if(other.isEmpty()) {
+                access.set(removePattern(stack));
                 playRemoveOneSound(player);
             } else {
-                ItemStack itemStack = addPattern(stack, pOther);
-                pAccess.set(itemStack);
+                ItemStack itemStack = addPattern(stack, other);
+                access.set(itemStack);
                 if(itemStack.isEmpty()) {
                     this.playInsertSound(player);
                 }

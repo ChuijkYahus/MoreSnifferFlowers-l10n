@@ -269,14 +269,14 @@ public class DyespriaItem extends BlockItem implements Colorable {
     }
 
     @Override
-    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack pOther, Slot pSlot, ClickAction pAction, Player player, SlotAccess pAccess) {
-        if(pAction == ClickAction.SECONDARY && pSlot.allowModification(player)) {
-            if(pOther.isEmpty()) {
-                pAccess.set(remove(stack));
+    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action, Player player, SlotAccess access) {
+        if(action == ClickAction.SECONDARY && slot.allowModification(player)) {
+            if(other.isEmpty()) {
+                access.set(remove(stack));
                 playRemoveOneSound(player);
             } else {
-                ItemStack itemStack = add(stack, Dye.getDyeFromDyespria(stack), pOther);
-                pAccess.set(itemStack);
+                ItemStack itemStack = add(stack, Dye.getDyeFromDyespria(stack), other);
+                access.set(itemStack);
                 if(itemStack.isEmpty()) {
                     this.playInsertSound(player);
                 }
