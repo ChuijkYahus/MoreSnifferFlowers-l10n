@@ -115,7 +115,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements EntityBlock, C
 
     @Override
     public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
-        growHelper(level, pos, getAgeProperty());
+        makeGrowOnBonemeal(level, pos, state);
     }
 
     public boolean isCorrupted(){
@@ -152,7 +152,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements EntityBlock, C
                 PacketDistributor.sendToAllPlayers( new SaltemoneParticlePacket(vec3.toVector3f()));
 
             } else {
-               if (IMultiBlock.isCenter(state)) growHelper(level, pos, getAgeProperty());
+               if (IMultiBlock.isCenter(state)) performBonemeal(level, random, pos, state);
             }
         }
     }

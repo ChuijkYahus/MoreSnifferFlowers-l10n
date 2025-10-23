@@ -48,6 +48,6 @@ public class BondripiaBlockEntityRenderer<T extends BondripiaBlockEntity> implem
 
     @Override
     public @NotNull AABB getRenderBoundingBox(T blockEntity) {
-        return new AABB(blockEntity.center).inflate(1);
+        return new AABB(blockEntity.getCenter()).inflate(1);
     }
 }

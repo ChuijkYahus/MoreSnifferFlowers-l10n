@@ -59,7 +59,7 @@ public class TorchewflowerBlock extends BushBlock implements ModCropBlock {
 
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (isValidBonemealTarget(level, pos ,state, level.isClientSide()))
+        if (isValidBonemealTarget(level, pos ,state))
             makeGrowOnTick(state, level, pos);
     }
 

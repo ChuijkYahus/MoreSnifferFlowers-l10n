@@ -40,7 +40,7 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
     public void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         BlockState blockState = blockEntity.getBlockState();
         if(IMultiBlock.isCenter(blockState) && blockState.getValue(ModStateProperties.AGE_2) >= 2) {
-            PreviewMode previewMode = blockEntity.previewMode;
+            PreviewMode previewMode = blockEntity.getPreviewMode();
             VertexConsumer consumer = getConsumer(buffer, blockEntity, SALTEMONE_TEXTURE, SOURLEMON_TEXTURE, ModBlocks.SOURLEMONE.get());
 
             poseStack.pushPose();
@@ -75,7 +75,7 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
 
     @Override
     public @NotNull AABB getRenderBoundingBox(T blockEntity) {
-        return new AABB(blockEntity.center).inflate(1);
+        return new AABB(blockEntity.getCenter()).inflate(1);
     }
 
 }

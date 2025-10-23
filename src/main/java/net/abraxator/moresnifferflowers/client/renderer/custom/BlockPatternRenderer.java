@@ -103,14 +103,15 @@ public class BlockPatternRenderer {
                     BlockState state = level.getBlockState(pos);
 
                     for (Direction dir : Direction.values()) {
-                        BlockState relativeState = level.getBlockState(pos.relative(dir));
+                        BlockPos relativePos = pos.relative(dir);
+                        BlockState relativeState = level.getBlockState(relativePos);
 
                         boolean faceSturdy = state.isFaceSturdy(level, pos, dir);
-                        boolean notBlocked = !relativeState.isFaceSturdy(level, pos.relative(dir), dir.getOpposite());
+                        boolean notBlocked = !relativeState.isFaceSturdy(level, relativePos, dir.getOpposite());
                         boolean noOcclusion = !relativeState.canOcclude();
 
                         boolean canRenderFace = faceSturdy && (notBlocked || noOcclusion);
-                        if (!canRenderFace) return;
+                        if (!canRenderFace) continue;
 
                         float[] brightness = new float[]{1,1,1,1};
                         int[] lightmap;
@@ -118,12 +119,12 @@ public class BlockPatternRenderer {
 
                         if (smoothLighting) {
                             ModelBlockRenderer.AmbientOcclusionFace aoFace = new ModelBlockRenderer.AmbientOcclusionFace();
-                            aoFace.calculate(level, state, pos.relative(dir), dir, new float[Direction.values().length * 2], new BitSet(3), true);
+                            aoFace.calculate(level, state, relativePos, dir, new float[Direction.values().length * 2], new BitSet(3), true);
                             brightness = aoFace.brightness;
                             lightmap = aoFace.lightmap;
 
                         } else {
-                            int packed = getPackedLight(level, pos.relative(dir));
+                            int packed = getPackedLight(level, relativePos);
                             if (data.isGlowing()) packed = LightTexture.FULL_BRIGHT;
                             lightmap = new int[]{packed,packed,packed,packed};
                         }

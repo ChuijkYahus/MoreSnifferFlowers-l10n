@@ -93,7 +93,8 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
     public VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context){
         VoxelShape shape = SHAPE_UPPER;
 
-        if (IMultiBlock.getYOffset(getter, pos) <= 0) {
+        if (IMultiBlock.getOffset(getter, pos).getY() <= 0) {
+
             if (state.getValue(HorizontalDirectionalBlock.FACING).getAxis().equals(Direction.Axis.X)) {
                 shape = SHAPE_LOWER_ROTATED;
             } else shape = SHAPE_LOWER;
