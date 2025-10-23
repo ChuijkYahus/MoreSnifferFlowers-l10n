@@ -62,7 +62,7 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
 		String path = blockState.getBlock().getDescriptionId().replace("block." + MoreSnifferFlowers.MOD_ID + ".", "");
 		Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/" + path));
 
-		PreviewMode previewMode = blockEntity.previewMode;
+		PreviewMode previewMode = blockEntity.getPreviewMode();
 		Function<ResourceLocation, RenderType> renderType = getRenderTypeFunction(previewMode);
 		VertexConsumer vertexConsumer = TEXTURE.buffer(buffer, renderType);
 
@@ -95,7 +95,7 @@ public class GiantCropBlockEntityRenderer<T extends GiantCropBlockEntity> implem
                 };
             }
 
-            render(modelPartMap.get(blockState.getBlock()), poseStack, vertexConsumer, packedLight, packedOverlay, blockEntity.previewMode);
+            render(modelPartMap.get(blockState.getBlock()), poseStack, vertexConsumer, packedLight, packedOverlay, blockEntity.getPreviewMode());
 
 			poseStack.popPose();
 		}

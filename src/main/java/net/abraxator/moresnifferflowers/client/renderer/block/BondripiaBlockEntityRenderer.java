@@ -32,7 +32,7 @@ public class BondripiaBlockEntityRenderer<T extends BondripiaBlockEntity> implem
 
             poseStack.translate(0.5, 1.5, 0.5);
             poseStack.mulPose(Axis.XP.rotationDegrees(180));
-            PreviewMode previewMode = blockEntity.previewMode;
+            PreviewMode previewMode = blockEntity.getPreviewMode();
 
             VertexConsumer consumer = getConsumer(buffer, blockEntity, BONDRIPIA_TEXTURE, ACIDRIPIA_TEXTURE, ModBlocks.ACIDRIPIA.get());
 

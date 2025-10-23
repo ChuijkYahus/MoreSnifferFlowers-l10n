@@ -44,7 +44,7 @@ public class BerootCauldronRenderer<T extends BerootCauldronBlockEntity> impleme
         final Material CAULDRON_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/beroot_cauldron"));
         final Material SPOON_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MoreSnifferFlowers.loc("block/beroot_spoon"));
 
-        PreviewMode previewMode = blockEntity.previewMode;
+        PreviewMode previewMode = blockEntity.getPreviewMode();
         Function<ResourceLocation, RenderType> renderType = getRenderTypeFunction(previewMode);
 
         final VertexConsumer cauldron_consumer = CAULDRON_TEXTURE.buffer(buffer, renderType);

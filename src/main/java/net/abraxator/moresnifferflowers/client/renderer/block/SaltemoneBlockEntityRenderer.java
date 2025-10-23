@@ -34,7 +34,7 @@ public class SaltemoneBlockEntityRenderer<T extends SaltemoneBlockEntity> implem
     @Override
     public void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         if(blockEntity.getBlockState().getValue(ModStateProperties.CENTER) && blockEntity.getBlockState().getValue(ModStateProperties.AGE_2) >= 2) {
-            PreviewMode previewMode = blockEntity.previewMode;
+            PreviewMode previewMode = blockEntity.getPreviewMode();
             VertexConsumer consumer = getConsumer(buffer, blockEntity, SALTEMONE_TEXTURE, SOURLEMON_TEXTURE, ModBlocks.SOURLEMONE.get());
 
             poseStack.pushPose();

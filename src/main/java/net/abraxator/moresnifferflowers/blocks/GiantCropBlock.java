@@ -220,21 +220,10 @@ public class GiantCropBlock extends AbstractMultiBlock implements ModEntityBlock
 
         level.playLocalSound(blockPos, SoundEvents.BONE_MEAL_USE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
     }
-
     @Override
-    public List<com.mojang.datafixers.util.Pair<BlockPos, BlockState>> prepareForPlace(Level level, BlockPos centerPos, BlockState stateOriginal) {
-        List<com.mojang.datafixers.util.Pair<BlockPos, BlockState>> list = new ArrayList<>();
-
-        getFullBlockShape(centerPos, stateOriginal, level).forEach(posNew -> {
-            posNew = posNew.immutable();
-            boolean isWaterLogged = level.getFluidState(posNew).getType() == Fluids.WATER;
-
-            BlockState stateNew = stateOriginal.setValue(AbstractMultiBlock.CENTER, centerPos.equals(posNew)).setValue(WATERLOGGED, isWaterLogged);
-
-            list.add(new com.mojang.datafixers.util.Pair<>(posNew, stateNew));
-        });
-
-        return list;
+    public BlockState getStateForEachBlock(BlockState state, BlockPos pos, BlockPos centerOffset, Level level, @Nullable Direction direction) {
+        boolean isWaterLogged = level.getFluidState(pos).getType() == Fluids.WATER;
+        return state.setValue(WATERLOGGED, isWaterLogged);
     }
 
     @Override
@@ -346,7 +335,8 @@ public class GiantCropBlock extends AbstractMultiBlock implements ModEntityBlock
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
         VoxelShape shape = Shapes.block();
 
-        if (getter.getBlockEntity(pos) instanceof IMultiBlockEntity entity &&  entity.getOffset().getX() == 0 && entity.getOffset().getZ() == 0){
+        BlockPos offset = IMultiBlock.getOffset(getter, pos);
+        if (offset.getX() == 0 && offset.getZ() == 0){
             return shape;
         }
 
