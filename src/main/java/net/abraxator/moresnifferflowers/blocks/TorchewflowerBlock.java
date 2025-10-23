@@ -50,6 +50,12 @@ public class TorchewflowerBlock extends BushBlock implements ModCropBlock {
     }
 
     @Override
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (isValidBonemealTarget(level, pos ,state, level.isClientSide()))
+            makeGrowOnTick(state, level, pos);
+    }
+
+    @Override
     public boolean isRandomlyTicking(BlockState state) {
         int age = getAge(state);
         return age < 2;

@@ -109,8 +109,8 @@ public class TorchflowerAflameBlock extends BushBlock implements ModEntityBlock,
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         int age = getAge(state);
-        if (age == 0 && isBonemealSuccess(level)) {
-            level.setBlockAndUpdate(pos, Blocks.TORCHFLOWER.defaultBlockState());
+        if (age == 0) {
+            makeGrowOnTick(state, level, pos);
         }
         if (age == 1 && (!level.getBlockState(pos.below(2)).is(Blocks.NETHERRACK) || level.isRainingAt(pos))) {
             int fire = state.getValue(ModStateProperties.FIRE_TICKS);
