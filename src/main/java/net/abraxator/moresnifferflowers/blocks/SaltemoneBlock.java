@@ -128,8 +128,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
 
     @Override
     public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
-        if (IMultiBlock.isCenter(state))
-            makeGrowOnBonemeal(level, pos, state);
+        makeGrowOnBonemeal(level, pos, state);
     }
 
     public boolean isCorrupted(){
@@ -166,7 +165,7 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
                 ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new SaltemoneParticlePacket(vec3.toVector3f()));
 
             } else {
-                performBonemeal(level, random, pos, state);
+                if (IMultiBlock.isCenter(state)) performBonemeal(level, random, pos, state);
             }
         }
     }

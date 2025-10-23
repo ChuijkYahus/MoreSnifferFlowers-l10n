@@ -230,7 +230,7 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
 
     @Override
     public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
-        grow(level, pos, state);
+        makeGrowOnBonemeal(level, pos, state);
     }
 
     @Override
