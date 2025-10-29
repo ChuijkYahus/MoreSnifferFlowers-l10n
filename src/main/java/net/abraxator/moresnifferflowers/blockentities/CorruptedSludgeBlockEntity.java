@@ -88,7 +88,7 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
     }
 
     public static class CorruptedSludgeListener implements GameEventListener {
-        private PositionSource positionSource;
+        private final PositionSource positionSource;
 
         public CorruptedSludgeListener(PositionSource positionSource) {
             this.positionSource = positionSource;
@@ -106,32 +106,28 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
 
         @Override
         public boolean handleGameEvent(ServerLevel level, GameEvent pGameEvent, GameEvent.Context context, Vec3 pos) {
-            CorruptedSludgeBlockEntity entity;
 
-            if (context.affectedState() == null || !CorruptionRecipe.canBeCorrupted(context.affectedState().getBlock(), level)) return false;
-            
-            if(level.getBlockEntity(BlockPos.containing(this.positionSource.getPosition(level).get())) instanceof CorruptedSludgeBlockEntity entity1) {
-                entity = entity1;
-            } else return false;
-            
-            boolean validEvent = (pGameEvent != GameEvent.BLOCK_PLACE || pGameEvent != GameEvent.BLOCK_DESTROY);
-            
+            if (context.affectedState() == null || this.positionSource.getPosition(level).isEmpty()) return false;
+
+            if(!(level.getBlockEntity(BlockPos.containing(this.positionSource.getPosition(level).get())) instanceof CorruptedSludgeBlockEntity entity)) return false;
+
             if (entity.usesLeft == -1) {
                 entity.usesLeft = level.random.nextIntBetweenInclusive(16, 32) - 1;
                 entity.stateChange = entity.usesLeft / 4;
             }
-            
+
+            boolean validEvent = (pGameEvent != GameEvent.BLOCK_PLACE || pGameEvent != GameEvent.BLOCK_DESTROY);
             if(entity.usesLeft <= 0 || entity.getBlockState().getValue(ModStateProperties.CURED) || !validEvent) {
                 return false;
             }
 
             if(pGameEvent == GameEvent.BLOCK_PLACE && CorruptionRecipe.canBeCorrupted(context.affectedState().getBlock(), level)) {
-                Vec3 startPos = this.getListenerSource().getPosition(level).get();         
+                Vec3 startPos = this.positionSource.getPosition(level).get();
                 Vec3 dirNormal = new Vec3(pos.x - startPos.x, pos.y - startPos.y, pos.z - startPos.z).normalize();
                 Optional<Block> corrupted = CorruptionRecipe.getCorruptedBlock(context.affectedState().getBlock(), level);
                 BlockPos blockPos = BlockPos.containing(pos);
                 corrupted.ifPresent(block -> {
-                    ModPacketHandler.CHANNEL.send(PacketDistributor.NEAR.with(() -> 
+                    ModPacketHandler.CHANNEL.send(PacketDistributor.NEAR.with(() ->
                             new PacketDistributor.TargetPoint(startPos.x, startPos.y, startPos.z, 64, level.dimension())
                     ), new CorruptedSludgePacket(startPos.toVector3f(), pos.toVector3f(), dirNormal.toVector3f()));
                     if(level.getBlockState(BlockPos.containing(pos)).getBlock() instanceof net.abraxator.moresnifferflowers.blocks.Corruptable corruptable) {
@@ -150,7 +146,7 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
                     entity.updateUses();
                 });
 
-                return !corrupted.isPresent();
+                return corrupted.isEmpty();
             }
 
             if (ModServerConfig.CORRUPTED_SLUDGE_GRIEFING.get()) {
@@ -164,7 +160,7 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
 
             return false;
         }
-        
+
         public static void shootProjectiles(Vec3 center, int projectileNumber, Level level) {
             var radius = 2.5;
             Set<Vec3> placed = new HashSet<>();
@@ -184,7 +180,7 @@ public class CorruptedSludgeBlockEntity extends ModBlockEntity implements GameEv
             double yg = center.y + radius * Mth.sin((float) phi) * Mth.sin((float) theta);
             double zg = center.z + radius * Mth.cos((float) phi);
             var vec3 = new Vec3(xg, yg, zg);
-            
+
             if (placed.stream().noneMatch(vec31 -> AABB.ofSize(vec3, 1, 1, 1).contains(vec31)) && level.getBlockState(BlockPos.containing(vec3)).canBeReplaced()) {
                 var pos = center;
                 var x = random.nextDouble() * 0.5;
