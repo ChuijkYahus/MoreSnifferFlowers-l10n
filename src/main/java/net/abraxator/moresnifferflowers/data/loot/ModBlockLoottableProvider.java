@@ -306,8 +306,8 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
         dropOther(ModBlocks.VIVICUS_HANGING_SIGN.get(), ModItems.VIVICUS_HANGING_SIGN);
         dropOther(ModBlocks.VIVICUS_WALL_HANGING_SIGN.get(), ModItems.VIVICUS_HANGING_SIGN);
 
-        add(ModBlocks.BONMEEL_FILLED_CAULDRON.get(), createSingleItemTable(Blocks.CAULDRON));
-        add(ModBlocks.ACID_FILLED_CAULDRON.get(), createSingleItemTable(Blocks.CAULDRON));
+        add(ModBlocks.BONMEEL_FILLED_CAULDRON.get(), noDrop());
+        add(ModBlocks.ACID_FILLED_CAULDRON.get(), noDrop());
 
         add(ModBlocks.BONDRIPIA.get(), simpleConditional(AbstractMultiBlock.CENTER, ModBlocks.BONDRIPIA.get(), ModItems.BONDRIPIA_SEEDS.get()));
         add(ModBlocks.ACIDRIPIA.get(), simpleConditional(AbstractMultiBlock.CENTER, ModBlocks.ACIDRIPIA.get(), ModItems.ACIDRIPIA_SEEDS.get()));

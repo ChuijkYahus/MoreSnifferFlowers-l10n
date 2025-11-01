@@ -1,0 +1,74 @@
+package net.abraxator.moresnifferflowers.blockentities;
+
+import net.abraxator.moresnifferflowers.init.ModBlockEntities;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.StateHolder;
+import net.minecraft.world.level.block.state.properties.Property;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
+
+public class ModCauldronBlockEntity extends BlockEntity {
+    public ModCauldronBlockEntity(BlockPos pos, BlockState blockState) {
+        super(ModBlockEntities.MOD_CAULDRON.get(), pos, blockState);
+    }
+
+    public BlockState originalCauldron = Blocks.CAULDRON.defaultBlockState();
+
+    public ItemStack getItemstack() {
+        return Item.BY_BLOCK.get(originalCauldron.getBlock()).getDefaultInstance();
+    }
+
+    public static ItemStack getItemstack(BlockGetter level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof ModCauldronBlockEntity blockEntity) {
+            return blockEntity.getItemstack();
+        }
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        tag.putString("cauldron", BuiltInRegistries.BLOCK.getKey(originalCauldron.getBlock()).toString());
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        originalCauldron = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(tag.getString("cauldron"))).defaultBlockState();
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = super.getUpdateTag(registries);
+        saveAdditional(tag, registries);
+        return tag;
+    }
+
+    @Override
+    public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+}

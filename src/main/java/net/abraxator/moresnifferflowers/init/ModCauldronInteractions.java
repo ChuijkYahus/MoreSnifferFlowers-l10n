@@ -1,7 +1,9 @@
 package net.abraxator.moresnifferflowers.init;
 
+import net.abraxator.moresnifferflowers.blockentities.ModCauldronBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -13,11 +15,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class ModCauldronInteractions {
     public static final CauldronInteraction.InteractionMap BONMEEL = CauldronInteraction.newInteractionMap("bonmeel");
@@ -27,9 +31,9 @@ public class ModCauldronInteractions {
     public static final CauldronInteraction FILL_JAR_OF_ACID = (state, level, pos, player, hand, stack) ->
             emptyBottle(level, pos,  player, hand, stack, ModBlocks.ACID_FILLED_CAULDRON.get().defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3));
     public static final CauldronInteraction EMPTY_JAR_OF_BONMEEL = (state, level, pos, player, hand, stack) ->
-            CauldronInteraction.fillBucket(state, level, pos, player, hand, stack, ModItems.JAR_OF_BONMEEL.toStack(), blockState -> blockState.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BOTTLE_FILL);
+            fillBucket(state, level, pos, player, hand, stack, ModItems.JAR_OF_BONMEEL.get().getDefaultInstance(), blockState -> blockState.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BOTTLE_FILL);
     public static final CauldronInteraction EMPTY_JAR_OF_ACID = (state, level, pos, player, hand, stack) ->
-            CauldronInteraction.fillBucket(state, level, pos, player, hand, stack, ModItems.JAR_OF_ACID.toStack(), blockState -> blockState.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BOTTLE_FILL);
+            fillBucket(state, level, pos, player, hand, stack, ModItems.JAR_OF_ACID.get().getDefaultInstance(), blockState -> blockState.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BOTTLE_FILL);
 
 
     static ItemInteractionResult emptyBottle(Level level, BlockPos pos, Player player, InteractionHand hand, ItemStack filledStack, BlockState state) {
@@ -49,6 +53,24 @@ public class ModCauldronInteractions {
         return ItemInteractionResult.FAIL;
     }
 
+
+    static ItemInteractionResult fillBucket(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, ItemStack emptyStack, ItemStack filledStack, Predicate<BlockState> statePredicate, SoundEvent fillSound) {
+        if (!statePredicate.test(blockState)) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        } else {
+            if (!level.isClientSide && level.getBlockEntity(pos) instanceof ModCauldronBlockEntity entity) {
+                Item item = emptyStack.getItem();
+                player.setItemInHand(hand, ItemUtils.createFilledResult(emptyStack, player, filledStack));
+                player.awardStat(Stats.USE_CAULDRON);
+                player.awardStat(Stats.ITEM_USED.get(item));
+                level.setBlockAndUpdate(pos, entity.originalCauldron);
+                level.playSound(null, pos, fillSound, SoundSource.BLOCKS, 1.0F, 1.0F);
+                level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
+            }
+
+            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+        }
+    }
 
     public static void bootstrap() {
         Map<Item, CauldronInteraction> bonmeel = BONMEEL.map();
