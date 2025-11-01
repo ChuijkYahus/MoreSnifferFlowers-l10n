@@ -97,7 +97,8 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         this.tag(CORRUPTION_SHIELDING).add(Blocks.OXEYE_DAISY, Blocks.SUNFLOWER, Blocks.PITCHER_PLANT);
         this.tag(CARRYON_BLACKLIST).add(ModBlocks.AMBUSH_BOTTOM.get(), ModBlocks.AMBUSH_TOP.get(), ModBlocks.GARBUSH_BOTTOM.get(), ModBlocks.GARBUSH_TOP.get());
 
-        this.tag(BlockTags.CAULDRONS).add(ModBlocks.ACID_FILLED_CAULDRON.get(), ModBlocks.BONMEEL_FILLED_CAULDRON.get());
+        this.tag(BlockTags.CAULDRONS).add(ModBlocks.ACID_FILLED_CAULDRON.get(), ModBlocks.BONMEEL_FILLED_CAULDRON.get()).addOptionalTag(TagKey.create(Registries.BLOCK,new ResourceLocation("meadow","cauldrons")));
+
         this.tag(BlockTags.DIRT).add(ModBlocks.CORRUPTED_GRASS_BLOCK.get(), ModBlocks.CURED_GRASS_BLOCK.get());
         this.tag(BlockTags.FLOWER_POTS).add(ModBlocks.POTTED_DYESPRIA.get(), ModBlocks.POTTED_CORRUPTED_SAPLING.get(), ModBlocks.POTTED_VIVICUS_SAPLING.get());
 

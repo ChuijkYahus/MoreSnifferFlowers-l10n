@@ -15,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -32,6 +33,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.AbstractCauldronBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -244,6 +246,9 @@ public class ForgeEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void highPriorityClickBlock(PlayerInteractEvent.RightClickBlock event) {
         if (event.getItemStack().getItem() instanceof JarOfBonmeelItem jarOfBonmeelItem) {
+
+            if (event.getLevel().getBlockState(event.getPos()).is(BlockTags.CAULDRONS)) return;
+
             InteractionResult interactionResult = jarOfBonmeelItem.highPriorityUseOn(new UseOnContext(event.getEntity(), event.getHand(), event.getHitVec()));
 
             event.setCancellationResult(interactionResult);
@@ -291,7 +296,9 @@ public class ForgeEvents {
 
         }
 
-        if ((item.is(ModItems.JAR_OF_BONMEEL.get()) || item.is(ModItems.JAR_OF_ACID.get())) && state.is(Blocks.CAULDRON)){
+        if ((item.is(ModItems.JAR_OF_BONMEEL.get()) || item.is(ModItems.JAR_OF_ACID.get())) && state.getBlock() instanceof AbstractCauldronBlock cauldronBlock) {
+            if (cauldronBlock.isFull(state) || state.hasProperty(LayeredCauldronBlock.LEVEL)) return;
+
             var cauldronType = item.is(ModItems.JAR_OF_BONMEEL.get()) ? ModBlocks.BONMEEL_FILLED_CAULDRON.get() :  ModBlocks.ACID_FILLED_CAULDRON.get();
             var state1 = cauldronType.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3);
             level.setBlock(pos, state1, 3);

@@ -105,7 +105,10 @@ dependencies {
     modRuntimeOnly("curse.maven:farmers-delight-398521:6917255");
     modCompileOnly("curse.maven:farmers-delight-398521:6917255");
 
-   // modImplementation("maven.modrinth:dye-depot:1.2.1-forge")
+    modImplementation("curse.maven:daves-potioneering-639653:6727871")
+    modImplementation("curse.maven:geckolib-388172:7025129")
+
+    // modImplementation("maven.modrinth:dye-depot:1.2.1-forge")
    // modImplementation("curse.maven:worldedit-225608:4586218")
 }
 
