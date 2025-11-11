@@ -203,10 +203,10 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
     }
 
     @Override
-    public boolean extraSurviveRequirements(LevelReader level, BlockPos pos, BlockState state) {
+    public boolean extraSurviveRequirements(LevelReader level, BlockPos pos, BlockState state, BlockPos centerOffset) {
         return Block.canSupportCenter(level, pos.above(), Direction.DOWN) && !level.isWaterAt(pos);
     }
-    
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

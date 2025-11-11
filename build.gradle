@@ -73,6 +73,8 @@ println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty '
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
+    implementation 'org.jetbrains:annotations:26.0.1'
+
     //jei
     modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
@@ -80,22 +82,14 @@ dependencies {
     // modRuntimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
     modRuntimeOnly("curse.maven:jei-238222:6075247")
 
-    // modRuntimeOnly("curse.maven:farmers-delight-398521:6917255");
-
     //mixin
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     implementation(jarJar(group: "io.github.llamalad7", name:"mixinextras-forge", version: "[0.5.0,)"))
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
 
-    implementation 'org.jetbrains:annotations:26.0.1'
-
     // modImplementation(jarJar(group: "local", name:"tiny-multiblock-lib-forge-1.20.1", version: "[2.0,)"))
     // modImplementation("maven.modrinth:tiny-multiblock-lib:forge-1.20.1-2.0")
-    jarJar(modImplementation(group: "local", name:"tiny-multiblock-lib", version:"forge-1.20.1-2.1"){
-        version {
-            strictly('[forge-1.20.1-2.1,)')
-        }
-    })
+    jarJar(modImplementation(group: "maven.modrinth", name:"tiny-multiblock-lib", version:"forge-1.20.1-${tiny_multiblock_lib_version}"))
 
     //quark
     compileOnly("curse.maven:quark-243121:6427817")
@@ -109,7 +103,7 @@ dependencies {
     modImplementation("curse.maven:geckolib-388172:7025129")
 
     // modImplementation("maven.modrinth:dye-depot:1.2.1-forge")
-   // modImplementation("curse.maven:worldedit-225608:4586218")
+    // modImplementation("curse.maven:worldedit-225608:4586218")
 }
 
 mixin {
