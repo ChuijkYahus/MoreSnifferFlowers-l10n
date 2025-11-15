@@ -31,7 +31,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class CropressorBlockBase extends HorizontalDirectionalBlock {
     public final Part PART;
-    protected BlockPos ENTITY_POS;
     protected static final VoxelShape OUT_EAST = Block.box(0, 0, 0, 16, 11, 16);
     protected static final VoxelShape OUT_SOUTH = Block.box(0, 0, 0, 16, 11, 16);
     protected static final VoxelShape OUT_WEST = Block.box(0, 0, 0, 16, 11, 16);
@@ -125,9 +124,7 @@ public class CropressorBlockBase extends HorizontalDirectionalBlock {
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        ENTITY_POS = getEntityPos(level, pos, PART);
-        if (!level.isClientSide && level.getBlockEntity(ENTITY_POS) instanceof CropressorBlockEntity entity && entity.canInteract() && player.getMainHandItem().is(ModTags.ModItemTags.CROPRESSABLE)) {
-            
+        if (!level.isClientSide && level.getBlockEntity(getEntityPos(level, pos, PART)) instanceof CropressorBlockEntity entity && entity.canInteract() && player.getMainHandItem().is(ModTags.ModItemTags.CROPRESSABLE)) {
             return entity.addItem(player.getItemInHand(hand));
         }
 

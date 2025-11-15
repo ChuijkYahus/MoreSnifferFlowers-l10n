@@ -18,10 +18,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -105,6 +102,8 @@ public class CropressorBlockEntity extends ModBlockEntity implements Container {
 
                     if (!result.isEmpty()) {
                         progress++;
+                        currentCrop = slotStack;
+                        barLength = Math.min(Mth.ceil((float) getTotalAmount(slotStack.getItem()) / 2), 8);
                         setChanged();
                         return;
                     }
@@ -280,13 +279,9 @@ public class CropressorBlockEntity extends ModBlockEntity implements Container {
         tag.putInt("bar", barLength);
         tag.put("result", result.save(new CompoundTag()));
 
-        ListTag items = new ListTag();
-        for (ItemStack stack : container) {
-            CompoundTag itemTag = new CompoundTag();
-            stack.save(itemTag);
-            items.add(itemTag);
-        }
-        tag.put("container", items);
+        CompoundTag slots = new CompoundTag();
+        ContainerHelper.saveAllItems(slots, container);
+        tag.put("slots", slots);
     }
 
     @Override
@@ -297,7 +292,9 @@ public class CropressorBlockEntity extends ModBlockEntity implements Container {
         barLength = tag.getInt("bar");
         result = ItemStack.of(tag.getCompound("result"));
 
-        ListTag containerTag = tag.getList("container", 10);
+        ContainerHelper.loadAllItems(tag.getCompound("slots"), container);
+
+        ListTag containerTag = tag.getList("container", 10); // maintains compatibility with < 6.5
         for (int i = 0; i < SLOT_SIZE; i++) {
             CompoundTag itemTag = containerTag.getCompound(i);
             ItemStack stack = ItemStack.of(itemTag);

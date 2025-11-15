@@ -34,7 +34,6 @@ public class CropressorBlockOut extends CropressorBlockBase implements ModEntity
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        ENTITY_POS = pos;
         return new CropressorBlockEntity(pos, state);
     }
 }
