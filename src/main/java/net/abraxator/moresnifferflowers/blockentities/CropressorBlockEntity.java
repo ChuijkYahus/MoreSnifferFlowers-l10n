@@ -20,6 +20,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -107,6 +108,8 @@ public class CropressorBlockEntity extends ModBlockEntity implements Container {
 
                     if (!result.isEmpty()) {
                         progress++;
+                        currentCrop = slotStack;
+                        barLength = Math.min(Mth.ceil((float) getTotalAmount(slotStack.getItem()) / 2), 8);
                         setChanged();
                         return;
                     }
@@ -283,15 +286,9 @@ public class CropressorBlockEntity extends ModBlockEntity implements Container {
         tag.putInt("bar", barLength);
         tag.put("result", result.saveOptional(reg));
 
-        ListTag items = new ListTag();
-        for (ItemStack stack : container) {
-            if (!stack.isEmpty()) {
-                CompoundTag itemTag = new CompoundTag();
-                stack.save(reg);
-                items.add(itemTag);
-            }
-        }
-        tag.put("container", items);
+        CompoundTag slots = new CompoundTag();
+        ContainerHelper.saveAllItems(slots, container, reg);
+        tag.put("slots", slots);
     }
 
     @Override
@@ -302,7 +299,9 @@ public class CropressorBlockEntity extends ModBlockEntity implements Container {
         barLength = tag.getInt("bar");
         result = ItemStack.parseOptional(reg ,tag.getCompound("result"));
 
-        ListTag containerTag = tag.getList("container", 10);
+        ContainerHelper.loadAllItems(tag.getCompound("slots"), container, reg);
+
+        ListTag containerTag = tag.getList("container", 10); // maintains compatibility with < 6.5
         for (int i = 0; i < SLOT_SIZE; i++) {
             CompoundTag itemTag = containerTag.getCompound(i);
             ItemStack stack = ItemStack.parseOptional(reg, itemTag);
