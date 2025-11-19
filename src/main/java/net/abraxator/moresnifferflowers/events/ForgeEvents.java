@@ -269,18 +269,20 @@ public class ForgeEvents {
         }
 
         if(item.is(ItemTags.AXES) && (state.is(ModBlocks.VIVICUS_LOG.get()) || state.is(ModBlocks.VIVICUS_WOOD.get()))) {
-            var strippedBlock = AxeItem.STRIPPABLES.get(state.getBlock());
-            var state1 = strippedBlock.defaultBlockState()
-                    .setValue(RotatedPillarBlock.AXIS, state.getValue(RotatedPillarBlock.AXIS))
-                    .setValue(ModStateProperties.COLOR, state.getValue(ModStateProperties.COLOR));
+            var strippedState = AxeItem.getAxeStrippingState(state);
+            if (strippedState == null) return;
+
+            strippedState = strippedState.setValue(ModStateProperties.COLOR, state.getValue(ModStateProperties.COLOR));
 
             if (player instanceof ServerPlayer serverPlayer) {
                 CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, item);
             }
             level.playSound(player, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.setBlock(pos, state1, 3);
-            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, state1));
-            itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+            level.setBlock(pos, strippedState, 3);
+            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, strippedState));
+            itemStack.hurtAndBreak(1, player, player1 -> {
+                player1.broadcastBreakEvent(player1.getUsedItemHand());
+            });
 
             event.setCancellationResult(ItemInteractionResult.SUCCESS);
             event.setCanceled(true);
