@@ -8,13 +8,29 @@ plugins {
 }
 
 repositories {
-    maven { url 'https://cursemaven.com'}
+    exclusiveContent {
+        forRepository {
+            maven {
+                url "https://cursemaven.com"
+            }
+        }
+        filter {
+            includeGroup "curse.maven"
+        }
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
     maven { url "https://maven.blamejared.com/" }
     maven { url "https://modmaven.dev" }
-    maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
-    maven { url = "https://maven.tterrag.com" } // Registrate
-    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
-    maven { url = "https://api.modrinth.com/maven" }
     mavenCentral()
     flatDir { dir 'libs' }
 
@@ -98,6 +114,10 @@ dependencies {
     //farmersDelight
     modRuntimeOnly("curse.maven:farmers-delight-398521:6917255");
     modCompileOnly("curse.maven:farmers-delight-398521:6917255");
+
+    //BotanyPots
+    modImplementation(group: 'net.darkhax.botanypots', name: 'BotanyPots-Forge-1.20.1', version: '13.0.41')
+    modImplementation(group: 'net.darkhax.bookshelf', name: 'Bookshelf-Forge-1.20.1', version: '20.2.13')
 
     modImplementation("curse.maven:daves-potioneering-639653:6727871")
     modImplementation("curse.maven:geckolib-388172:7025129")
