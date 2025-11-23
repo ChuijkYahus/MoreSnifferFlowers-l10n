@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.blocks;
 
+import net.abraxator.moresnifferflowers.blockentities.IModBlockEntity;
 import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
 import net.abraxator.moresnifferflowers.blocks.multiblock.ICorruptableMultiblock;
 import net.abraxator.moresnifferflowers.entities.SaltBubbleProjectile;
@@ -7,6 +8,7 @@ import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.networking.toClient.SaltemoneParticlePacket;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -19,9 +21,12 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -88,7 +93,6 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
         return RenderShape.MODEL;
     }
 
-
     @Override
     public boolean extraSurviveRequirements(LevelReader level, BlockPos pos, BlockState state) {
         return !level.isWaterAt(pos) && level.isWaterAt(pos.below());
@@ -105,6 +109,10 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
         return IMultiBlock.posStreamToList(BlockPos.betweenClosedStream(new AABB(center, relative)));
     }
 
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        return tickerHelper(level);
+    }
 
     @Override
     public IntegerProperty getAgeProperty() {
@@ -143,33 +151,6 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
 
         return super.use(state, level, pos, player, hand, hit);
     }
-    @Override
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (state.getValue(ModStateProperties.SHEARED)) return;
-
-        if (level.getBlockEntity(pos) instanceof SaltemoneBlockEntity entity && pos.equals(entity.getCenter())) {
-            if (isMaxAge(state)) {
-                Direction direction = state.getValue(HorizontalDirectionalBlock.FACING);
-                Vec3 vec3 = entity.getCenter().getCenter().relative(direction, 0.5D).relative(direction.getClockWise(), 0.5D).relative(Direction.UP, 0.0);
-                float speed = 0.2F;
-
-                SaltBubbleProjectile projectile = new SaltBubbleProjectile(vec3.x, vec3.y, vec3.z, level);
-
-                projectile.setNoGravity(true);
-                projectile.setCorrupted(isCorrupted());
-                projectile.setState(0);
-                projectile.setDeltaMovement((random.nextFloat() - 0.5)*speed,1*speed, (random.nextFloat() - 0.5)*speed);
-
-                level.addFreshEntity(projectile);
-
-                ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new SaltemoneParticlePacket(vec3.toVector3f()));
-
-            } else {
-                if (IMultiBlock.isCenter(state)) performBonemeal(level, random, pos, state);
-            }
-        }
-    }
-
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entityinside) {

@@ -95,8 +95,8 @@ dependencies {
     modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     modCompileOnlyApi("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     // Sometimes JEI disappears for some reason
-    // modRuntimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
-    modRuntimeOnly("curse.maven:jei-238222:6075247")
+     modRuntimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+   // modRuntimeOnly("curse.maven:jei-238222:6075247")
 
     //mixin
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
