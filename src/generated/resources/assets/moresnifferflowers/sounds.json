@@ -8,7 +8,10 @@
   },
   "bobling_battle": {
     "sounds": [
-      "moresnifferflowers:battle_music_disc"
+      {
+        "name": "moresnifferflowers:battle_music_disc",
+        "stream": true
+      }
     ],
     "subtitle": "sound.moresnifferflowers.bobling_battle"
   },

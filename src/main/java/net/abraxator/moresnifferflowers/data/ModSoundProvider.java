@@ -23,7 +23,7 @@ public class ModSoundProvider extends SoundDefinitionsProvider {
 
         add(ModSoundEvents.BOBLING_BATTLE_DISC, definition()
                 .subtitle("sound.moresnifferflowers." + ModSoundEvents.BOBLING_BATTLE_DISC.get().getLocation().getPath())
-                .with(sound(MoreSnifferFlowers.loc("battle_music_disc"))));
+                .with(sound(MoreSnifferFlowers.loc("battle_music_disc")).stream()));
 
     }
 }
