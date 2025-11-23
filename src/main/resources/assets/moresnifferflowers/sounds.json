@@ -1,0 +1,10 @@
+{
+  "bobling_battle": {
+    "sounds": [
+      {
+        "name": "moresnifferflowers:music_disc.bobling_battle",
+        "stream": true
+      }
+    ]
+  }
+}

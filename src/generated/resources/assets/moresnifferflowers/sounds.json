@@ -6,6 +6,12 @@
     ],
     "subtitle": "sound.moresnifferflowers.block.cropressor.belt"
   },
+  "bobling_battle": {
+    "sounds": [
+      "moresnifferflowers:battle_music_disc"
+    ],
+    "subtitle": "sound.moresnifferflowers.bobling_battle"
+  },
   "item.dyespria.paint": {
     "sounds": [
       "moresnifferflowers:dyespria_paint"

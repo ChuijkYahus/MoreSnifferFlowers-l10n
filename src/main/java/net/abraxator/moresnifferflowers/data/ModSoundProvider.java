@@ -16,10 +16,14 @@ public class ModSoundProvider extends SoundDefinitionsProvider {
         add(ModSoundEvents.CROPRESSOR_BELT, definition()
                 .subtitle("sound.moresnifferflowers." + ModSoundEvents.CROPRESSOR_BELT.get().getLocation().getPath())
                 .with(sound(MoreSnifferFlowers.loc("cropressor_sound_1")))
-                .with(sound(MoreSnifferFlowers.loc("cropressor_sound_2")))
-        );
+                .with(sound(MoreSnifferFlowers.loc("cropressor_sound_2"))));
         add(ModSoundEvents.DYESPRIA_PAINT, definition()
                 .subtitle("sound.moresnifferflowers." + ModSoundEvents.DYESPRIA_PAINT.get().getLocation().getPath())
                 .with(sound(MoreSnifferFlowers.loc("dyespria_paint"))));
+
+        add(ModSoundEvents.BOBLING_BATTLE_DISC, definition()
+                .subtitle("sound.moresnifferflowers." + ModSoundEvents.BOBLING_BATTLE_DISC.get().getLocation().getPath())
+                .with(sound(MoreSnifferFlowers.loc("battle_music_disc"))));
+
     }
 }

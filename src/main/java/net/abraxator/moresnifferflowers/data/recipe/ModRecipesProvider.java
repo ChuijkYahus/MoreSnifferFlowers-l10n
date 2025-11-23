@@ -228,6 +228,17 @@ public class ModRecipesProvider extends RecipeProvider {
                 .unlockedBy("cropressed_beetroot", has(ModItems.CROPRESSED_BEETROOT.get()))
                 .save(recipeOutput);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.MUSIC_DISC_BOBLING.get(), 1)
+                .pattern(" A ")
+                .pattern("AXA")
+                .pattern(" A ")
+                .define('A', ModItems.DISC_FRAGMENT_BOBLING.get())
+                .define('X', ModItems.CORRUPTED_BOBLING_CORE.get())
+                .unlockedBy(getHasName(ModItems.DISC_FRAGMENT_BOBLING.get()) ,has(ModItems.DISC_FRAGMENT_BOBLING.get()))
+                .save(recipeOutput);
+
+
+
         ModCustomRecipeProvider.createRecipes(recipeOutput);
     }
 

@@ -6,7 +6,8 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:sniffer_egg"
+          "name": "minecraft:sniffer_egg",
+          "weight": 2
         },
         {
           "type": "minecraft:item",
@@ -24,7 +25,7 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:nautilus_shell",
-          "weight": 3
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -33,7 +34,8 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:tide_armor_trim_smithing_template"
+          "name": "minecraft:tide_armor_trim_smithing_template",
+          "weight": 2
         },
         {
           "type": "minecraft:item",

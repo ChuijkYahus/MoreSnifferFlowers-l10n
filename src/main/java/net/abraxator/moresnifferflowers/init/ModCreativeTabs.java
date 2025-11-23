@@ -119,12 +119,14 @@ public class ModCreativeTabs {
                     output.accept(ModBlocks.GIANT_RICE.get());
 
                 }
-
-                output.accept(ModItems.BOBLING_SPAWN_EGG);
-                output.accept(ModItems.CORRUPTED_BOBLING_CORE);
-                output.accept(ModItems.CORRUPTED_SLIME_BALL);
-                output.accept(ModItems.BOBLING_CORE);
-                output.accept(ModItems.VIVICUS_ANTIDOTE);
+                
+                output.accept(ModItems.BOBLING_SPAWN_EGG.get());
+                output.accept(ModItems.CORRUPTED_BOBLING_CORE.get());
+                output.accept(ModItems.CORRUPTED_SLIME_BALL.get());
+                output.accept(ModItems.BOBLING_CORE.get());
+                output.accept(ModItems.DISC_FRAGMENT_BOBLING.get());
+                output.accept(ModItems.MUSIC_DISC_BOBLING.get());
+                output.accept(ModItems.VIVICUS_ANTIDOTE.get());
 
                 output.accept(ModBlocks.DECAYED_LOG.get());
                 output.accept(ModBlocks.CORRUPTED_GRASS_BLOCK.get());

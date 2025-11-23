@@ -150,6 +150,9 @@ public class ModItems {
     public static final DeferredItem<Item> DRIPSALT = ITEMS.register("dripsalt", () -> new BlockItem(ModBlocks.DRIPSALT.get(), new Item.Properties()));
     public static final DeferredItem<Item> BURNED_SLOT = ITEMS.register("burned_slot", () -> new BurnedSlotItem(new Item.Properties().stacksTo(1)));
 
+    public static final DeferredItem<Item> MUSIC_DISC_BOBLING = ITEMS.register("music_disc_bobling", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(ModSoundEvents.MusicDiscs.BOBLING_BATTLE.getKey())));
+    public static final DeferredItem<Item> DISC_FRAGMENT_BOBLING = ITEMS.register("disc_fragment_bobling", () -> new Item(new Item.Properties()));
+
     public static final DeferredItem<Item> CREATIVE_TAB_ICON = ITEMS.register("creative_tab_icon", () -> new CreativeTabItem(new Item.Properties()));
     public static final DeferredItem<Item> WAND_OF_CUBING = ITEMS.register("wand_of_cubing", () -> new WandOfCubingItem(new Item.Properties()));
     public static final DeferredItem<Item> DEBUG_FLOWER = ITEMS.register("debug_flower", () -> new DebugFlowerItem(new Item.Properties()));

@@ -66,7 +66,9 @@ public class ModItemTagsProvider extends ItemTagsProvider {
                 ModBlocks.VIVICUS_SLAB.asItem(), ModBlocks.VIVICUS_TRAPDOOR.asItem(), ModBlocks.VIVICUS_WOOD.asItem(),
                 ModBlocks.VIVICUS_LEAVES_SPROUT.asItem());
 
-        this.tag(ItemTags.SNIFFER_FOOD).add(ModItems.DAWNBERRY.asItem());
+        this.tag(ItemTags.SNIFFER_FOOD).add(ModItems.DAWNBERRY.get().asItem());
+
+        tag(Tags.Items.MUSIC_DISCS).add(ModItems.MUSIC_DISC_BOBLING.get());
     }
 
     private Item item(DeferredBlock<Block> object) {

@@ -25,13 +25,13 @@ public record ModArcheologyLoot(HolderLookup.Provider registries) implements Loo
                         .withPool(
                                 LootPool.lootPool()
                                         .setRolls(ConstantValue.exactly(1.0F))
-                                        .add(LootItem.lootTableItem(Items.SNIFFER_EGG).setWeight(1))
+                                        .add(LootItem.lootTableItem(Items.SNIFFER_EGG).setWeight(2))
                                         .add(LootItem.lootTableItem(Items.GOLDEN_APPLE).setWeight(5))
                                         .add(LootItem.lootTableItem(Items.ENCHANTED_GOLDEN_APPLE).setWeight(1))
                                         .add(LootItem.lootTableItem(Items.DIAMOND_BLOCK).setWeight(1))
-                                        .add(LootItem.lootTableItem(Items.NAUTILUS_SHELL).setWeight(3))
+                                        .add(LootItem.lootTableItem(Items.NAUTILUS_SHELL).setWeight(5))
                                         .add(LootItem.lootTableItem(Items.HEART_OF_THE_SEA).setWeight(2))
-                                        .add(LootItem.lootTableItem(Items.TIDE_ARMOR_TRIM_SMITHING_TEMPLATE).setWeight(1))
+                                        .add(LootItem.lootTableItem(Items.TIDE_ARMOR_TRIM_SMITHING_TEMPLATE).setWeight(2))
 
                                         .add(
                                                 LootItem.lootTableItem(Items.SUSPICIOUS_STEW)
@@ -50,12 +50,12 @@ public record ModArcheologyLoot(HolderLookup.Provider registries) implements Loo
                         .withPool(
                                 LootPool.lootPool()
                                         .setRolls(ConstantValue.exactly(1.0F))
-                                        .add(LootItem.lootTableItem(Items.SNIFFER_EGG).setWeight(1))
-                                        .add(LootItem.lootTableItem(Items.GOLDEN_APPLE).setWeight(5))
-                                        .add(LootItem.lootTableItem(Items.ENCHANTED_GOLDEN_APPLE).setWeight(2))
+                                        .add(LootItem.lootTableItem(Items.SNIFFER_EGG).setWeight(2))
+                                        .add(LootItem.lootTableItem(Items.GOLDEN_APPLE).setWeight(8))
+                                        .add(LootItem.lootTableItem(Items.ENCHANTED_GOLDEN_APPLE).setWeight(1))
                                         .add(LootItem.lootTableItem(Items.GOLD_BLOCK).setWeight(3))
-                                        .add(LootItem.lootTableItem(Items.EMERALD_BLOCK).setWeight(2))
-                                        .add(LootItem.lootTableItem(Items.DUNE_ARMOR_TRIM_SMITHING_TEMPLATE).setWeight(1))
+                                        .add(LootItem.lootTableItem(Items.EMERALD_BLOCK).setWeight(3))
+                                        .add(LootItem.lootTableItem(Items.DUNE_ARMOR_TRIM_SMITHING_TEMPLATE).setWeight(2))
 
                                         .add(
                                                 LootItem.lootTableItem(Items.SUSPICIOUS_STEW)

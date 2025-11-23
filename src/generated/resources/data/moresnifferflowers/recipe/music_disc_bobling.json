@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "moresnifferflowers:disc_fragment_bobling"
+    },
+    "X": {
+      "item": "moresnifferflowers:corrupted_bobling_core"
+    }
+  },
+  "pattern": [
+    " A ",
+    "AXA",
+    " A "
+  ],
+  "result": {
+    "count": 1,
+    "id": "moresnifferflowers:music_disc_bobling"
+  }
+}
