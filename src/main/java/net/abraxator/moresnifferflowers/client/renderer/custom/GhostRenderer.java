@@ -89,13 +89,6 @@ public abstract class GhostRenderer {
 
     public abstract void render(float partialTick, Frustum frustum, Camera camera, Level level, PoseStack poseStack, MultiBufferSource.BufferSource buffer);
 
-/*
-        BlockEntityRenderer<BlockEntity> entityRender = minecraft.getBlockEntityRenderDispatcher().getRenderer(blockEntity);
-
-        if (entityRender != null)
-            entityRender.render(blockEntity, partialTick, poseStack, buffer, 0xFFFFFF, OverlayTexture.NO_OVERLAY);
-*/
-
     public GhostRenderer setRenderOffsetType(RenderOffsetType renderOffsetType) {
         this.renderOffsetType = renderOffsetType;
         return this;

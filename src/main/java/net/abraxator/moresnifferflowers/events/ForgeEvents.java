@@ -280,9 +280,7 @@ public class ForgeEvents {
             level.playSound(player, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
             level.setBlock(pos, strippedState, 3);
             level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, strippedState));
-            itemStack.hurtAndBreak(1, player, player1 -> {
-                player1.broadcastBreakEvent(player1.getUsedItemHand());
-            });
+            itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
 
             event.setCancellationResult(ItemInteractionResult.SUCCESS);
             event.setCanceled(true);
