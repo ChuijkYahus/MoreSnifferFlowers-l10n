@@ -11,5 +11,11 @@
       "moresnifferflowers:dyespria_paint"
     ],
     "subtitle": "sound.moresnifferflowers.item.dyespria.paint"
+  },
+  "music_disc.bobling_battle": {
+    "sounds": [
+      "moresnifferflowers:battle_music_disc"
+    ],
+    "subtitle": "sound.moresnifferflowers.music_disc.bobling_battle"
   }
 }

@@ -12,6 +12,8 @@ public class ModSoundEvents {
 
     public static final RegistryObject<SoundEvent> CROPRESSOR_BELT = variableRange("block.cropressor.belt");
     public static final RegistryObject<SoundEvent> DYESPRIA_PAINT = variableRange("item.dyespria.paint");
+    public static final RegistryObject<SoundEvent> BOBLING_BATTLE_DISC = variableRange("music_disc.bobling_battle");
+
 
     private static RegistryObject<SoundEvent> variableRange(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(MoreSnifferFlowers.loc(name)));

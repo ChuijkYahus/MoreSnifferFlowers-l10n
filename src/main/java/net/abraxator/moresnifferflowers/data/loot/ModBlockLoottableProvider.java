@@ -69,6 +69,7 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
                         .add(LootItem.lootTableItem(Items.WHEAT).setWeight(50))
                         .add(LootItem.lootTableItem(Items.WHEAT_SEEDS).setWeight(50))
                         //RARE
+                        .add(LootItem.lootTableItem(ModItems.DISC_FRAGMENT_BOBLING.get()).setWeight(25))
                         .add(LootItem.lootTableItem(Items.SNORT_POTTERY_SHERD).setWeight(25))
                         .add(LootItem.lootTableItem(ModItems.BELT_PIECE.get()).setWeight(25))
                         .add(LootItem.lootTableItem(ModItems.ENGINE_PIECE.get()).setWeight(25))
@@ -109,6 +110,7 @@ public class ModBlockLoottableProvider extends BlockLootSubProvider {
                         .add(LootItem.lootTableItem(Items.RAW_GOLD).setWeight(100))
                         //UNCOMMON
 
+                        .add(LootItem.lootTableItem(ModItems.DISC_FRAGMENT_BOBLING.get()).setWeight(50))
                         .add(LootItem.lootTableItem(Items.GOLDEN_CARROT).setWeight(50))
                         .add(LootItem.lootTableItem(Items.LAPIS_LAZULI).setWeight(50))
                         .add(LootItem.lootTableItem(Items.IRON_INGOT).setWeight(50))

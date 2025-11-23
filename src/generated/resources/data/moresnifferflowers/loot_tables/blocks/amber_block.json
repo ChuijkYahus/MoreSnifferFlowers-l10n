@@ -157,6 +157,11 @@
         },
         {
           "type": "minecraft:item",
+          "name": "moresnifferflowers:disc_fragment_bobling",
+          "weight": 25
+        },
+        {
+          "type": "minecraft:item",
           "name": "minecraft:snort_pottery_sherd",
           "weight": 25
         },

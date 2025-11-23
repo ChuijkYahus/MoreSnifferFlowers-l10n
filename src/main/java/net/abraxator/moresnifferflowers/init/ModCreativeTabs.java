@@ -125,6 +125,8 @@ public class ModCreativeTabs {
                 output.accept(ModItems.CORRUPTED_BOBLING_CORE.get());
                 output.accept(ModItems.CORRUPTED_SLIME_BALL.get());
                 output.accept(ModItems.BOBLING_CORE.get());
+                output.accept(ModItems.DISC_FRAGMENT_BOBLING.get());
+                output.accept(ModItems.MUSIC_DISC_BOBLING.get());
                 output.accept(ModItems.VIVICUS_ANTIDOTE.get());
 
                 output.accept(ModBlocks.DECAYED_LOG.get());

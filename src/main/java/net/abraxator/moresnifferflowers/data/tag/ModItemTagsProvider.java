@@ -67,6 +67,8 @@ public class ModItemTagsProvider extends ItemTagsProvider {
                 ModBlocks.VIVICUS_LEAVES_SPROUT.get().asItem());
 
         this.tag(ItemTags.SNIFFER_FOOD).add(ModItems.DAWNBERRY.get().asItem());
+
+        tag(ItemTags.MUSIC_DISCS).add(ModItems.MUSIC_DISC_BOBLING.get());
     }
 
     private Item item(RegistryObject<Block> object) {

@@ -56,6 +56,9 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         basicItem(ModBlocks.TORCHFLAME.get().asItem());
 
+        basicItem(ModItems.MUSIC_DISC_BOBLING.get());
+        basicItem(ModItems.DISC_FRAGMENT_BOBLING.get());
+
 
         /*for(int i = 1; i <= ModItemProperties.COPRESSOR_ANIMATION_FRAMES; i++) {
             withExistingParent(ModItems.CROPRESSOR.getId().getPath() + "_animation_" + i, MoreSnifferFlowers.loc("item/cropressor_animation_" + i / ModItemProperties.FRAME_TIME));

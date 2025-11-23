@@ -127,6 +127,11 @@
         },
         {
           "type": "minecraft:item",
+          "name": "moresnifferflowers:disc_fragment_bobling",
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
           "name": "minecraft:golden_carrot",
           "weight": 50
         },

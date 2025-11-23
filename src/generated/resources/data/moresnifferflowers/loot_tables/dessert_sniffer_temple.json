@@ -6,17 +6,17 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:sniffer_egg"
+          "name": "minecraft:sniffer_egg",
+          "weight": 2
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:golden_apple",
-          "weight": 5
+          "weight": 8
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:enchanted_golden_apple",
-          "weight": 2
+          "name": "minecraft:enchanted_golden_apple"
         },
         {
           "type": "minecraft:item",
@@ -26,11 +26,12 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:emerald_block",
-          "weight": 2
+          "weight": 3
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:dune_armor_trim_smithing_template"
+          "name": "minecraft:dune_armor_trim_smithing_template",
+          "weight": 2
         },
         {
           "type": "minecraft:item",
