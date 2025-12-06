@@ -11,7 +11,7 @@ repositories {
     exclusiveContent {
         forRepository {
             maven {
-                url "https://cursemaven.com"
+                url = "https://cursemaven.com"
             }
         }
         filter {
@@ -29,8 +29,8 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
-    maven { url "https://maven.blamejared.com/" }
-    maven { url "https://modmaven.dev" }
+    maven { url = "https://maven.blamejared.com/" }
+    maven { url = "https://modmaven.dev" }
     mavenCentral()
     flatDir { dir 'libs' }
 
@@ -100,12 +100,12 @@ dependencies {
 
     //mixin
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    implementation(jarJar(group: "io.github.llamalad7", name:"mixinextras-forge", version: "[0.5.0,)"))
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:[0.5.0,)"))
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
 
     // modImplementation(jarJar(group: "local", name:"tiny-multiblock-lib-forge-1.20.1", version: "[2.0,)"))
     // modImplementation("maven.modrinth:tiny-multiblock-lib:forge-1.20.1-2.0")
-    jarJar(modImplementation(group: "maven.modrinth", name:"tiny-multiblock-lib", version:"forge-1.20.1-${tiny_multiblock_lib_version}"))
+    modImplementation(jarJar("maven.modrinth:tiny-multiblock-lib:forge-1.20.1-${tiny_multiblock_lib_version}"))
 
     //quark
     compileOnly("curse.maven:quark-243121:6427817")
@@ -116,11 +116,13 @@ dependencies {
     modCompileOnly("curse.maven:farmers-delight-398521:6917255");
 
     //BotanyPots
+/*
     modImplementation(group: 'net.darkhax.botanypots', name: 'BotanyPots-Forge-1.20.1', version: '13.0.41')
     modImplementation(group: 'net.darkhax.bookshelf', name: 'Bookshelf-Forge-1.20.1', version: '20.2.13')
 
     modImplementation("curse.maven:daves-potioneering-639653:6727871")
     modImplementation("curse.maven:geckolib-388172:7025129")
+*/
 
     // modImplementation("maven.modrinth:dye-depot:1.2.1-forge")
     // modImplementation("curse.maven:worldedit-225608:4586218")
