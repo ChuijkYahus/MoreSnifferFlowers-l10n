@@ -3,7 +3,9 @@ package net.abraxator.moresnifferflowers.blockentities;
 import net.abraxator.moresnifferflowers.blocks.BerootCauldronBlock;
 import net.abraxator.moresnifferflowers.client.ModColorHandler;
 import net.abraxator.moresnifferflowers.components.BetterNonNullList;
+import net.abraxator.moresnifferflowers.components.RootedSoup;
 import net.abraxator.moresnifferflowers.init.ModBlockEntities;
+import net.abraxator.moresnifferflowers.init.ModDataComponents;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.networking.toServer.BerootCauldronCraftPacket;
 import net.abraxator.moresnifferflowers.networking.toClient.BerootCauldronSuckPacket;
@@ -126,20 +128,11 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
         int soupUses = Math.min(Math.max(Math.round(food / 3f) + (ingredients - foodLimit / 2) / 2, 1), maxSoupUses);
 
 
-        //For Cookbook unlocking
-        ListTag ingredientListTag = new ListTag();
-        for (ItemStack stack : this.ingredients.validStream().toList() ){
-            CompoundTag ingredientTag = new CompoundTag();
-            stack.save(ingredientTag);
-            ingredientListTag.add(ingredientTag);
-        }
-        tag.put("ingredients", ingredientListTag);
+        ModDataComponents.set(soup, ModDataComponents.ROOTED_INGREDIENTS, this.ingredients.validStream().toList()); //For Cookbook unlocking
+        ModDataComponents.set(soup, ModDataComponents.ROOTED_SOUP, new RootedSoup(soupFood, soupSat, soupUses));
+        ModDataComponents.set(soup, ModDataComponents.USES, soupUses);
 
         //values into tag
-        tag.putInt("soupFood", soupFood);
-        tag.putFloat("soupSat", soupSat);
-        tag.putInt("soupCount", soupUses);
-        tag.putInt("soupCountMax", soupUses);
         tag.putInt("color", ModColorHandler.RGBtoInt(color()));
 
         float positiveThreshold = 0.5f;
@@ -156,7 +149,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
         int minFlavour = 50;
 
         //effect init
-        ListTag effectTag = new ListTag();
+        List<RootedSoup.RootedEffect> effects = new ArrayList<>();
         for (NutritionEntry nutritionEntry : entryList) {
             if (!nutritionEntry.nutrition().equals(NutritionType.NEUTRAL)) {
                 totalFlavour += nutritionEntry.weight();
@@ -179,41 +172,20 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
                 amplifier = Math.max(Math.min(amplifier, maxAmp), 1);
 
                 if (positive != null && nutritionEntry.weight() >= minFlavour) {
-                    CompoundTag compoundTag = new CompoundTag();
-                    compoundTag.putInt("nutritionType", nutritionEntry.nutrition().ordinal());
-                    compoundTag.putBoolean("positive", positive);
-                    compoundTag.putInt("dur", duration);
-                    compoundTag.putInt("amp", amplifier);
-                    effectTag.add(compoundTag);
+                    effects.add(new RootedSoup.RootedEffect(nutritionEntry.nutrition().ordinal(), positive, duration, amplifier ));
                 }
             }
         }
 
         //Neutral effects
-        if (effectTag.isEmpty()){
-            if (totalFlavour < blandThreshold){
-                CompoundTag compoundTag = new CompoundTag();
-                compoundTag.putInt("nutritionType", NutritionType.NEUTRAL.ordinal());
-                compoundTag.putBoolean("positive", false);
-                compoundTag.putInt("dur", duration);
-                compoundTag.putInt("amp", 1);
-                effectTag.add(compoundTag);
+        if (effects.isEmpty()){
+            boolean positive = totalFlavour > blandThreshold;
+            int amplifier = totalFlavour < blandThreshold ? 1 : Math.min(Mth.floor((float) (totalFlavour - blandThreshold) / 100 + 1), 3);
 
-            }else {
-                CompoundTag compoundTag = new CompoundTag();
-                compoundTag.putInt("nutritionType", NutritionType.NEUTRAL.ordinal());
-                compoundTag.putBoolean("positive", true);
-                compoundTag.putInt("dur", duration);
-                compoundTag.putInt("amp", Math.min(Mth.floor((float) (totalFlavour - blandThreshold) / 100 + 1), 3));
-                effectTag.add(compoundTag);
-
-            }
-
+            effects.add(new RootedSoup.RootedEffect(NutritionType.NEUTRAL.ordinal(), positive, duration, amplifier ));
         }
 
-        tag.put("effects", effectTag);
-
-        soup.setTag(tag);
+        ModDataComponents.set(soup, ModDataComponents.ROOTED_EFFECTS, effects);
         this.soup = soup;
         setChanged();
     }

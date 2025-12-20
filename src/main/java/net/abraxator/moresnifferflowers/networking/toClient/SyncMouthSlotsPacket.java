@@ -1,6 +1,10 @@
 package net.abraxator.moresnifferflowers.networking.toClient;
 
+import io.netty.buffer.ByteBuf;
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.abraxator.moresnifferflowers.capability.HardenedMouthCapability;
+import net.abraxator.moresnifferflowers.components.BetterNonNullList;
+import net.abraxator.moresnifferflowers.networking.StreamCodec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
@@ -10,22 +14,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
+import java.util.List;
 import java.util.function.Supplier;
 
-public record SyncMouthSlotsPacket(NonNullList<ItemStack> itemStacks, int cooldown) {
-
-    public static void encode(SyncMouthSlotsPacket msg, FriendlyByteBuf buffer) {
-        for (ItemStack itemStack : msg.itemStacks) {
-            buffer.writeItem(itemStack);
-        }
-        buffer.writeInt(msg.cooldown);
-    }
-
-    public static SyncMouthSlotsPacket decode(FriendlyByteBuf buffer) {
-        NonNullList<ItemStack> itemStacks1 = NonNullList.of(ItemStack.EMPTY, buffer.readItem(), buffer.readItem());
-        int cooldown = buffer.readInt();
-        return new SyncMouthSlotsPacket(itemStacks1, cooldown);
-    }
+public record SyncMouthSlotsPacket(List<ItemStack> itemStacks, int cooldown) {
+    public static final StreamCodec<SyncMouthSlotsPacket> STREAM_CODEC = StreamCodec.composite(
+            StreamCodec.ITEM_STACK.list(), SyncMouthSlotsPacket::itemStacks,
+            StreamCodec.INT, SyncMouthSlotsPacket::cooldown,
+            SyncMouthSlotsPacket::new
+    );
 
     public static void handle(SyncMouthSlotsPacket msg, Supplier<NetworkEvent.Context> ctx) {
         NetworkEvent.Context context = ctx.get();
@@ -38,7 +35,7 @@ public record SyncMouthSlotsPacket(NonNullList<ItemStack> itemStacks, int cooldo
         Player player = Minecraft.getInstance().player;
         if (player != null) {
             player.getCapability(CapabilityList.MOUTH_SLOTS).ifPresent(cap -> {
-                cap.setAllItems(msg.itemStacks);
+                cap.setAllItems(new BetterNonNullList<>(msg.itemStacks, ItemStack.EMPTY));
                 cap.setCooldown(msg.cooldown);
             });
         }

@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.networking.toClient;
 
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
+import net.abraxator.moresnifferflowers.networking.StreamCodec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,6 +18,12 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public record SyncNutritionPacket(Set<Item> nutritionItems, Set<Integer> effects) {
+
+    public static final StreamCodec<SyncNutritionPacket> CODEC = StreamCodec.composite(
+            StreamCodec.RESOURCE_LOCATION.remap(BuiltInRegistries.ITEM::get, BuiltInRegistries.ITEM::getKey).collection(HashSet::new), SyncNutritionPacket::nutritionItems,
+            StreamCodec.INT.collection(HashSet::new), SyncNutritionPacket::effects,
+            SyncNutritionPacket::new
+    );
 
     public static void encode(SyncNutritionPacket msg, FriendlyByteBuf buffer) {
         buffer.writeInt(msg.nutritionItems.size());

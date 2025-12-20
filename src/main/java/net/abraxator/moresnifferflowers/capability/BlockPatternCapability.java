@@ -1,8 +1,10 @@
 package net.abraxator.moresnifferflowers.capability;
 
+import io.netty.buffer.ByteBuf;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.components.DirectionStorageHelper;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
+import net.abraxator.moresnifferflowers.networking.StreamCodec;
 import net.abraxator.moresnifferflowers.networking.toClient.SyncBlockPatternsPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,7 +33,20 @@ public class BlockPatternCapability implements ICapabilityProvider, INBTSerializ
     public final Map<BlockPos, PatternData> patterns = new HashMap<>();
     private final LazyOptional<BlockPatternCapability> optional = LazyOptional.of(() -> this);
     ResourceLocation ID = MoreSnifferFlowers.loc("block_patterns");
-    
+
+
+    public static final StreamCodec<BlockPatternCapability> STREAM_CODEC =
+            StreamCodec.composite(
+                    StreamCodec.map(HashMap::new, StreamCodec.BLOCK_POS, PatternData.STREAM_CODEC), (cap -> cap.patterns),
+                    BlockPatternCapability::create
+            );
+
+    public static BlockPatternCapability create(Map<BlockPos, PatternData> patterns) {
+        BlockPatternCapability blockPatternCapability = new BlockPatternCapability();
+        blockPatternCapability.patterns.putAll(patterns);
+        return blockPatternCapability;
+    }
+
     public static BlockPatternCapability getBlockPatterns(BlockPos pos, Level level) {
         LevelChunk levelChunk = (LevelChunk) level.getChunk(pos);
         return levelChunk.getCapability(CapabilityList.BLOCK_PATTERNS).orElse(new BlockPatternCapability());
@@ -119,8 +134,7 @@ public class BlockPatternCapability implements ICapabilityProvider, INBTSerializ
     }
 
     public void sync(ChunkPos pos){
-        CompoundTag compoundtag = this.save(new CompoundTag());
-        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new SyncBlockPatternsPacket(compoundtag, pos));
+        ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new SyncBlockPatternsPacket(this, pos));
     }
 
     public int count() {
@@ -170,6 +184,11 @@ public class BlockPatternCapability implements ICapabilityProvider, INBTSerializ
         }
     }
 
+    public void load(Map<BlockPos, PatternData> patterns) {
+       this.patterns.putAll(patterns);
+    }
+
+
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         return cap == CapabilityList.BLOCK_PATTERNS ? optional.cast() : LazyOptional.empty() ;
@@ -192,6 +211,17 @@ public class BlockPatternCapability implements ICapabilityProvider, INBTSerializ
     // pattern=pat color=6, direction=dir, glowing=glow
 
     public record PatternData(int patternId, int color, Direction direction, boolean isGlowing) {
+
+        public static final StreamCodec<PatternData> STREAM_CODEC =
+                StreamCodec.composite(
+                        StreamCodec.INT, PatternData::patternId,
+                        StreamCodec.INT, PatternData::color,
+                        StreamCodec.DIRECTION, PatternData::direction,
+                        StreamCodec.BOOLEAN, PatternData::isGlowing,
+                        PatternData::new
+                );
+
+
         public CompoundTag save() {
             CompoundTag tag = new CompoundTag();
             tag.putInt("pat", patternId);
