@@ -39,9 +39,11 @@ public class ModPacketHandler {
         CHANNEL.messageBuilder(BerootCauldronSuckPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(BerootCauldronSuckPacket::encode).decoder(BerootCauldronSuckPacket::new).consumerMainThread(BerootCauldronSuckPacket::handle).add();
 
-        StreamNetworkingUtils.registerMessage(CHANNEL, id++, SyncMouthSlotsPacket.class, SyncMouthSlotsPacket.STREAM_CODEC, SyncMouthSlotsPacket::handle);
+        CHANNEL.messageBuilder(SyncMouthSlotsPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(SyncMouthSlotsPacket::encode).decoder(SyncMouthSlotsPacket::decode).consumerMainThread(SyncMouthSlotsPacket::handle).add();
 
-        StreamNetworkingUtils.registerMessage(CHANNEL, id++, SyncBlockPatternsPacket.class, SyncBlockPatternsPacket.STREAM_CODEC, SyncBlockPatternsPacket::handle);
+        CHANNEL.messageBuilder(SyncBlockPatternsPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(SyncBlockPatternsPacket::encode).decoder(SyncBlockPatternsPacket::decode).consumerMainThread(SyncBlockPatternsPacket::handle).add();
 
         CHANNEL.messageBuilder(PatternspriaModePacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
                 .encoder(PatternspriaModePacket::encode).decoder(PatternspriaModePacket::new).consumerMainThread(PatternspriaModePacket::handle).add();
@@ -52,14 +54,14 @@ public class ModPacketHandler {
         CHANNEL.messageBuilder(BerootCookbookScreenPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(BerootCookbookScreenPacket::encode).decoder(BerootCookbookScreenPacket::decode).consumerMainThread(BerootCookbookScreenPacket::handle).add();
 
-        StreamNetworkingUtils.registerMessage(CHANNEL, id++, SyncGluedPacket.class, SyncGluedPacket.CODEC, SyncGluedPacket::handle);
+        CHANNEL.messageBuilder(SyncGluedPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(SyncGluedPacket::encode).decoder(SyncGluedPacket::new).consumerMainThread(SyncGluedPacket::handle).add();
 
         CHANNEL.messageBuilder(CorruptionParticlePacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(CorruptionParticlePacket::encode).decoder(CorruptionParticlePacket::new).consumerMainThread(CorruptionParticlePacket::handle).add();
 
         CHANNEL.messageBuilder(SyncSlipperyPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(SyncSlipperyPacket::encode).decoder(SyncSlipperyPacket::new).consumerMainThread(SyncSlipperyPacket::handle).add();
-
 
     }
 }

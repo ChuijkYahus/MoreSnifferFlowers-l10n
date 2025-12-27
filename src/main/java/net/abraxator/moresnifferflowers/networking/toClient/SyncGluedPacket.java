@@ -2,8 +2,8 @@ package net.abraxator.moresnifferflowers.networking.toClient;
 
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.capability.GluedCapability;
-import net.abraxator.moresnifferflowers.networking.StreamCodec;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -14,11 +14,14 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record SyncGluedPacket(boolean isGlued, int entityId) {
-    public static final StreamCodec<SyncGluedPacket> CODEC = StreamCodec.composite(
-            StreamCodec.BOOLEAN, SyncGluedPacket::isGlued,
-            StreamCodec.INT, SyncGluedPacket::entityId,
-            SyncGluedPacket::new
-    );
+    public SyncGluedPacket(FriendlyByteBuf buf) {
+        this(buf.readBoolean(), buf.readInt());
+    }
+
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeBoolean(isGlued);
+        buf.writeInt(entityId);
+    }
 
     public static void handle(SyncGluedPacket packet, Supplier<NetworkEvent.Context> context) {
         context.get().enqueueWork(() -> handlePacket(packet));
@@ -39,4 +42,5 @@ public record SyncGluedPacket(boolean isGlued, int entityId) {
             });
         }
     }
+
 }

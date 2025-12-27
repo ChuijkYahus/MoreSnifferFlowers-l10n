@@ -16,13 +16,12 @@ public class BetterNonNullList<E> extends NonNullList<E> {
     private final E defaultValue;
 
 
-    public BetterNonNullList(List<E> list, @Nullable E defaultValue) {
+    protected BetterNonNullList(List<E> list, @Nullable E defaultValue) {
         super(list, defaultValue);
         this.list = list;
         this.defaultValue = defaultValue;
 
     }
-
 
     public static <E> BetterNonNullList<E> create() {
         return new BetterNonNullList<>(Lists.newArrayList(), (E)null);
