@@ -50,8 +50,6 @@ import net.minecraft.world.ticks.ScheduledTick;
 import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
-import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
-import net.nikdo53.tinymultiblocklib.components.SyncedStatePropertiesBuilder;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 import vectorwing.farmersdelight.common.block.RiceBlock;
@@ -77,16 +75,10 @@ public class GiantCropBlock extends AbstractMultiBlock implements ModEntityBlock
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BlockBehaviour.StatePredicate STATE_PREDICATE = (p_152641_, p_152642_, p_152643_) -> p_152641_.getValue(AbstractMultiBlock.CENTER);
-    public final SyncedStatePropertiesBuilder PROPERTIES_BUILDER = new SyncedStatePropertiesBuilder();
 
     public GiantCropBlock(Properties properties) {
         super(properties);
         registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false));
-    }
-
-    @Override
-    public SyncedStatePropertiesBuilder getSyncedStatePropertiesBuilder() {
-        return PROPERTIES_BUILDER;
     }
 
     @Nullable
@@ -96,7 +88,7 @@ public class GiantCropBlock extends AbstractMultiBlock implements ModEntityBlock
     }
 
     @Override
-    public List<BlockPos> makeFullBlockShape(@Nullable Direction direction, BlockPos center, BlockState blockState) {
+    public List<BlockPos> makeFullBlockShape(Level level, BlockPos center, BlockState blockState, @Nullable BlockEntity blockEntity, @Nullable Direction direction) {
         if (this.equals(ModBlocks.GIANT_CABBAGE.get())){
             return IMultiBlock.posStreamToList(BlockPos.betweenClosedStream(
                     center.getX() - 1,
@@ -138,9 +130,13 @@ public class GiantCropBlock extends AbstractMultiBlock implements ModEntityBlock
     }
 
     @Override
-    public RenderShape getMultiblockRenderShape(BlockState state) {
-        if (!IMultiBlock.isCenter(state)) return  RenderShape.INVISIBLE;
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+    public void preventCreativeDrops(Player player, Level level, BlockPos pos) {
+
+    }
+
+    @Override
+    public RenderShape getMultiblockRenderShape(BlockState state, boolean c) {
+        return c ?  RenderShape.ENTITYBLOCK_ANIMATED : RenderShape.INVISIBLE;
     }
 
     @Override
@@ -246,7 +242,7 @@ public class GiantCropBlock extends AbstractMultiBlock implements ModEntityBlock
         AtomicBoolean noSpace = new AtomicBoolean(false);
         boolean canRenderGhosts = player != null && level.isClientSide();
 
-        boolean canBonmeel = getFullBlockShape(blockPos, blockState, level).stream().allMatch(pos -> {
+        boolean canBonmeel = getFullBlockShape(level, blockPos, blockState).stream().allMatch(pos -> {
             pos = pos.above();
             BlockState state = level.getBlockState(pos);
             var PROPERTY = getCropMap().get(crop).getB().getA();

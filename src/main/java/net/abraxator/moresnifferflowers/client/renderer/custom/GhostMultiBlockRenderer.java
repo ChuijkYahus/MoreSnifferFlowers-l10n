@@ -26,8 +26,8 @@ public class GhostMultiBlockRenderer extends GhostRenderer{
 
     @Override
     public void render(float partialTick, Frustum frustum, Camera camera, Level level, PoseStack poseStack, MultiBufferSource.BufferSource buffer) {
-        ((IMultiBlock) blockState.getBlock()).getFullBlockShapeNoCache(pos, blockState).forEach(pos1 -> {
+/*        ((IMultiBlock) blockState.getBlock()).getFullBlockShapeNoCache(pos, blockState).forEach(pos1 -> {
 
-        });
+        });*/
     }
 }
