@@ -44,8 +44,8 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
     }
 
     @Override
-    public RenderShape getMultiblockRenderShape(BlockState state) {
-        if (IMultiBlock.isCenter(state)) {
+    public RenderShape getMultiblockRenderShape(BlockState state, boolean isCenter) {
+        if (isCenter) {
             return RenderShape.ENTITYBLOCK_ANIMATED;
         }
         return RenderShape.INVISIBLE;
@@ -62,7 +62,7 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
     }
 
     @Override
-    public List<BlockPos> makeFullBlockShape(@Nullable Direction direction, BlockPos center, BlockState blockState) {
+    public List<BlockPos> makeFullBlockShape(Level level, BlockPos center, BlockState blockState, @Nullable BlockEntity blockEntity, @Nullable Direction direction) {
         BlockPos relative = center.relative(direction).relative(direction.getClockWise()).above();
         return IMultiBlock.posStreamToList(BlockPos.betweenClosedStream(new AABB(center, relative)));
     }

@@ -21,8 +21,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -32,17 +30,15 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
-import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
 import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
+import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
-import net.nikdo53.tinymultiblocklib.components.SyncedStatePropertiesBuilder;
+import net.nikdo53.tinymultiblocklib.blockentities.IMultiBlockEntity;
+import net.nikdo53.tinymultiblocklib.components.SharedStatePropertiesBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, ModCropBlock, Corruptable, IPreviewableMultiblock, ICorruptableMultiblock {
     public BondripiaBlock(Properties p_49795_) {
@@ -53,6 +49,21 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
                 .setValue(ModStateProperties.SHEARED, false));
     }
     private static final VoxelShape SHAPE = makeShape();
+
+    @Override
+    public RenderShape getMultiblockRenderShape(BlockState blockState, boolean isCenter) {
+        if (!isCenter) return  RenderShape.INVISIBLE;
+        if (getAge(blockState) == getMaxAge()) return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.MODEL;
+    }
+
+
+    @Override
+    public void createSharedBlockStates(SharedStatePropertiesBuilder builder) {
+        super.createSharedBlockStates(builder);
+        builder.add(ModStateProperties.SHEARED);
+        builder.add(getAgeProperty());
+    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -66,28 +77,14 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
     }
 
     @Override
-    public void createSyncedBlockStates(SyncedStatePropertiesBuilder builder) {
-        super.createSyncedBlockStates(builder);
-        builder.add(ModStateProperties.SHEARED);
-        builder.add(getAgeProperty());
-    }
-
-    @Override
-    public List<BlockPos> makeFullBlockShape(@Nullable Direction direction, BlockPos center, BlockState blockState) {
+    public List<BlockPos> makeFullBlockShape(Level level, BlockPos center, BlockState blockState, @Nullable BlockEntity blockEntity, @Nullable Direction direction) {
         List<BlockPos> positions = new ArrayList<>();
         positions.add(center.immutable());
         positions.addAll(Direction.Plane.HORIZONTAL.stream().map(direction1 -> center.relative(direction1).immutable()).toList());
 
         return positions;
     }
-
-    @Override
-    public RenderShape getMultiblockRenderShape(BlockState state) {
-        if (!IMultiBlock.isCenter(state)) return  RenderShape.INVISIBLE;
-        if (getAge(state) == getMaxAge()) return RenderShape.ENTITYBLOCK_ANIMATED;
-        return RenderShape.MODEL;
-    }
-
+    
     @Override
     public boolean isRandomlyTicking(BlockState state) {
         return true;
