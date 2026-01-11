@@ -200,6 +200,11 @@ public class GiantCropBlock extends AbstractMultiBlock implements ModEntityBlock
         return new GiantCropBlockEntity(pos, state);
     }
 
+    @Override
+    public boolean hasCustomBE() {
+        return true;
+    }
+
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> pBlockEntityType) {

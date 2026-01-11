@@ -136,6 +136,11 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
     }
 
     @Override
+    public boolean hasCustomBE() {
+        return true;
+    }
+
+    @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (shear(player, level, pos, hand)){
             return InteractionResult.SUCCESS;
