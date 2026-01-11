@@ -9,6 +9,8 @@ import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.networking.toClient.SaltemoneParticlePacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -25,39 +27,58 @@ public class SaltemoneBlockEntity extends AbstractMultiBlockEntity implements IM
         super(ModBlockEntities.SALTEMONE.get(), pos, state);
     }
 
+    public int bubbleCount = 0;
+    public static final int MAX_BUBBLE_COUNT = 5;
+
     @Override
     public void tick(Level level) {
         if (getLevel() == null) return;
 
         BlockState state = getBlockState();
-        BlockPos pos = getBlockPos();
         SaltemoneBlock saltemoneBlock = (SaltemoneBlock) state.getBlock();
         RandomSource random = getLevel().getRandom();
 
-        if (state.getValue(ModStateProperties.SHEARED)) return;
+        if (!canSpawnBubble(state, random, saltemoneBlock))
+            return;
 
-        if (!(getLevel().getGameTime() % 160 == 0 && random.nextFloat() < 0.20f)) return;
+        Direction direction = state.getValue(HorizontalDirectionalBlock.FACING);
+        Vec3 vec3 = this.getCenter().getCenter().relative(direction, 0.5D).relative(direction.getClockWise(), 0.5D).relative(Direction.UP, 0.0);
+        float speed = 0.2F;
 
-        if (pos.equals(this.getCenter())) {
-            if (saltemoneBlock.isMaxAge(state)) {
-                Direction direction = state.getValue(HorizontalDirectionalBlock.FACING);
-                Vec3 vec3 = this.getCenter().getCenter().relative(direction, 0.5D).relative(direction.getClockWise(), 0.5D).relative(Direction.UP, 0.0);
-                float speed = 0.2F;
+        SaltBubbleProjectile projectile = new SaltBubbleProjectile(vec3.x, vec3.y, vec3.z, level, getCenter());
+        projectile.setNoGravity(true);
+        projectile.setCorrupted(saltemoneBlock.isCorrupted());
+        projectile.setState(0);
+        projectile.setDeltaMovement((random.nextFloat() - 0.5)*speed,1*speed, (random.nextFloat() - 0.5)*speed);
 
-                SaltBubbleProjectile projectile = new SaltBubbleProjectile(vec3.x, vec3.y, vec3.z, level);
+        getLevel().addFreshEntity(projectile);
+        PacketDistributor.sendToAllPlayers(new SaltemoneParticlePacket(vec3.toVector3f()));
 
-                projectile.setNoGravity(true);
-                projectile.setCorrupted(saltemoneBlock.isCorrupted());
-                projectile.setState(0);
-                projectile.setDeltaMovement((random.nextFloat() - 0.5)*speed,1*speed, (random.nextFloat() - 0.5)*speed);
+        bubbleCount++;
+        setChanged();
+    }
 
-                getLevel().addFreshEntity(projectile);
+    private boolean canSpawnBubble(BlockState state, RandomSource random, SaltemoneBlock saltemoneBlock) {
+        if (state.getValue(ModStateProperties.SHEARED)) return false;
+        if (bubbleCount >= MAX_BUBBLE_COUNT) return false;
+        if (!(getLevel().getGameTime() % 160 == 0 && random.nextFloat() < 0.20f)) return false;
+        if (!isCenter()) return false;
+        return saltemoneBlock.isMaxAge(state);
+    }
 
-                PacketDistributor.sendToAllPlayers(new SaltemoneParticlePacket(vec3.toVector3f()));
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        if (isCenter())
+            tag.putInt("bubbleCount", bubbleCount);
+    }
 
-            } else {
-                if (IMultiBlock.isCenter(state)) saltemoneBlock.performBonemeal((ServerLevel) getLevel(), random, pos, state);
-            }
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        if (isCenter()) {
+            bubbleCount = tag.getInt("bubbleCount");
+            bubbleCount = Math.clamp(bubbleCount, 0, MAX_BUBBLE_COUNT);
         }
     }
 }

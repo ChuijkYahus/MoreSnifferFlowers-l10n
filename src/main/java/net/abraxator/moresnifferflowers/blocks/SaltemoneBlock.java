@@ -122,6 +122,15 @@ public class SaltemoneBlock extends AbstractMultiBlock implements ModEntityBlock
     }
 
     @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        super.randomTick(state, level, pos, random);
+
+        if (IMultiBlock.isCenter(state) && !state.getValue(ModStateProperties.SHEARED)) {
+            makeGrowOnTick(state, level, pos);
+        }
+    }
+
+    @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (shear(player, level, pos, hand)){
             return ItemInteractionResult.SUCCESS;

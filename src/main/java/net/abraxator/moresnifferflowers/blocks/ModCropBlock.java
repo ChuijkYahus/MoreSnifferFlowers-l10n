@@ -45,6 +45,10 @@ public interface ModCropBlock extends BonemealableBlock {
             if (blockState.getValue(ModStateProperties.SHEARED)) return;
         }
 
+        if (IMultiBlock.isMultiblock(blockState)){
+            if (!IMultiBlock.isCenter(blockState)) return;
+        }
+
         if (!isMaxAge(blockState) && level.isAreaLoaded(blockPos, 1) && level.getRawBrightness(blockPos, 0) >= 9) {
             float f = getGrowthSpeed(blockState, level, blockPos);
             if (CommonHooks.canCropGrow(level, blockPos, blockState, level.getRandom().nextInt((int)(25.0F / f) + 1) == 0)) {
