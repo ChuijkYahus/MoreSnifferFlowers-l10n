@@ -87,9 +87,10 @@ dependencies {
     runtimeOnly "curse.maven:farmers-delight-398521:6917256"
     compileOnly "curse.maven:farmers-delight-398521:6917256"
 
-    jarJar(implementation("maven.modrinth:tiny-multiblock-lib:neo-1.21.1-${tiny_multiblock_lib_version}"))
+    jarJar(implementation("maven.modrinth:tiny-multiblock-lib:${tiny_multiblock_lib_version}"))
 
-    implementation("maven.modrinth:dye-depot:2.0.1-neoforge")
+
+    implementation("maven.modrinth:DistantHorizons:2.4.5-b-1.21.1")
 }
 
 final manifestAttributes = [

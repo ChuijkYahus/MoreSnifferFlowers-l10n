@@ -53,8 +53,7 @@ public class HardenedMouthSlot extends Slot {
 
     @Override
     public void set(ItemStack stack) {
-        if (itemStorage.get() == null) {
-            System.out.println("fuck");
+        if (mayPlace(stack) || itemStorage.get() == null) {
             return;
         }
         itemStorage.get().setItem(index, stack);

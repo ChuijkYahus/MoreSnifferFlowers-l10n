@@ -5,10 +5,7 @@ import net.abraxator.moresnifferflowers.blocks.ColorableVivicusBlock;
 import net.abraxator.moresnifferflowers.components.BlockPattern;
 import net.abraxator.moresnifferflowers.components.Colorable;
 import net.abraxator.moresnifferflowers.components.Dye;
-import net.abraxator.moresnifferflowers.init.ModBlocks;
-import net.abraxator.moresnifferflowers.init.ModDataComponents;
-import net.abraxator.moresnifferflowers.init.ModItems;
-import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.abraxator.moresnifferflowers.init.*;
 import net.abraxator.moresnifferflowers.items.DyespriaItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -16,6 +13,8 @@ import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -231,4 +230,23 @@ public class ModColorHandler {
 
         return Mth.hsvToRgb(finalHue, 1.0F, 1.0F);
     }
+
+    public static int getTransformedLeavesColor(int original, BlockAndTintGetter level, BlockPos blockPos) {
+
+        // distant horizons provides a level that doesn't actually have a level???
+        BlockState blockState;
+        try {
+            blockState = level.getBlockState(blockPos);
+        } catch (Exception e) {
+           return original;
+        }
+
+        if (ModStatePropertiesUnsafe.hasCustomLeavesProperties(blockState) && !blockState.getValue(ModStatePropertiesUnsafe.NOT_CORRUPTED)) {
+            float[] colorHSB = ModColorHandler.getColorHSB(original);
+            original = (Color.HSBtoRGB(-colorHSB[0] / 1.5F, colorHSB[1] - 0.25F, colorHSB[2] - 0.23F));
+        }
+
+        return original;
+    }
+
 }
