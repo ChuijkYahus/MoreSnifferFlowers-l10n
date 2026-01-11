@@ -1,10 +1,12 @@
 package net.abraxator.moresnifferflowers.entities;
 
+import net.abraxator.moresnifferflowers.blockentities.SaltemoneBlockEntity;
 import net.abraxator.moresnifferflowers.init.ModEntityTypes;
 import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
 import net.abraxator.moresnifferflowers.networking.ModPacketHandler;
 import net.abraxator.moresnifferflowers.networking.toClient.SaltemoneParticlePacket;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -33,18 +35,19 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
     private float height;
     private float slowdown;
     private int maxTime;
+    BlockPos plantPos;
 
     public SaltBubbleProjectile(EntityType<? extends SaltBubbleProjectile> entityType, Level level) {
         super(entityType, level);
     }
 
-    public SaltBubbleProjectile(double x, double y, double z, Level level) {
+    public SaltBubbleProjectile(double x, double y, double z, Level level, BlockPos pos) {
         super(ModEntityTypes.SALT_BUBBLE.get(), x, y, z , level);
         this.pos = new Vector3f((float) x, (float) y, (float) z);
         this.height = level.random.nextIntBetweenInclusive(10, 20) + level.random.nextFloat();
         this.slowdown = 1.0f + 0.10f / (height * 2);
         this.maxTime = level.random.nextIntBetweenInclusive(4800, 7200);
-
+        this.plantPos = pos;
     }
 
     @Override
@@ -120,6 +123,11 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
             if(!level().isClientSide())
                 ModPacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new SaltemoneParticlePacket(this.position().toVector3f()));
         }
+
+        if (level().getBlockEntity(plantPos) instanceof SaltemoneBlockEntity blockEntity) {
+            blockEntity.bubbleCount--;
+        }
+
         discard();
     }
 
