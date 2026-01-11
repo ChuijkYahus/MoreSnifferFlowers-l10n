@@ -91,6 +91,11 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
     }
 
     @Override
+    public boolean hasCustomBE() {
+        return true;
+    }
+
+    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context){
         VoxelShape shape = SHAPE_UPPER;
 

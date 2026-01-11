@@ -16,7 +16,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BoneMealItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -31,6 +35,8 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.nikdo53.tinymultiblocklib.block.AbstractMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IMultiBlock;
 import net.nikdo53.tinymultiblocklib.block.IPreviewableMultiblock;
@@ -146,32 +152,32 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
         } else if (random.nextDouble() <= 0.33D && level.getBlockEntity(pos) instanceof BondripiaBlockEntity entity) {
             for (BlockPos blockPos : BlockPos.betweenClosed(entity.getCenter().below().north().east(), entity.getCenter().below().south().west())) {
                 BlockPos currentPos = blockPos;
+                BlockState blockState = level.getBlockState(currentPos);
 
-                    int y = level.getRandom().nextIntBetweenInclusive(1, 11);
-                    currentPos = currentPos.below(y);
+                int y = level.getRandom().nextIntBetweenInclusive(1, 11);
+                currentPos = currentPos.below(y);
 
-                    if (isBondripable(level, currentPos)) {
-                        BlockState blockState = level.getBlockState(currentPos);
+                if (level.getBlockState(currentPos).getBlock() instanceof AbstractCauldronBlock block) {
+                    fillCauldron(level, currentPos, blockState);
+                    break;
 
-                        if (blockState.getBlock() instanceof BonemealableBlock bonemealable && bonemealable.isValidBonemealTarget(level, currentPos, blockState)) {
-                            bonemealable.performBonemeal(level, random, currentPos, blockState);
-                            break;
-                        }
-                        
-                        if (blockState.is(ModTags.ModBlockTags.BONMEELABLE)) {
-                            Bonmeelable bonmeelable = (Bonmeelable) GiantCropBlock.getCropMap().get(blockState.getBlock()).getA();
-                            if (bonmeelable.canBonmeel(currentPos, blockState, level, null)) {
-                                bonmeelable.performBonmeel(currentPos, blockState, level, null);
-                                break;
-                            }
-                        }
+                }
 
+                if (blockState.is(ModTags.ModBlockTags.BONMEELABLE)) {
 
-                    } else if (level.getBlockState(currentPos).getBlock() instanceof AbstractCauldronBlock block) {
-                        fillCauldron(level, currentPos, level.getBlockState(currentPos));
+                    Bonmeelable bonmeelable = (Bonmeelable) GiantCropBlock.getCropMap().get(blockState.getBlock()).getA();
+                    if (bonmeelable.canBonmeel(currentPos, blockState, level, null)) {
+                        bonmeelable.performBonmeel(currentPos, blockState, level, null);
+                        break;
                     }
 
+                }
 
+               if (Items.BONE_MEAL instanceof BoneMealItem boneMealItem ) {
+                   FakePlayer fakePlayer = FakePlayerFactory.getMinecraft(level);
+                   boneMealItem.useOn(new UseOnContext(level, fakePlayer, InteractionHand.MAIN_HAND, Items.BONE_MEAL.getDefaultInstance(),
+                           new BlockHitResult(currentPos.getCenter(), Direction.UP, currentPos, false)));
+               }
             }
         }
     }
@@ -217,6 +223,11 @@ public class BondripiaBlock extends AbstractMultiBlock implements EntityBlock, M
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new BondripiaBlockEntity(pos, state);
+    }
+
+    @Override
+    public boolean hasCustomBE() {
+        return true;
     }
 
     @Override
