@@ -15,8 +15,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
@@ -218,4 +220,23 @@ public class ModColorHandler {
 
         return Mth.hsvToRgb(finalHue, 1.0F, 1.0F);
     }
+
+    public static int getTransformedLeavesColor(int original, BlockAndTintGetter level, BlockPos blockPos) {
+
+        // distant horizons provides a level that doesn't actually have a level???
+        BlockState blockState;
+        try {
+            blockState = level.getBlockState(blockPos);
+        } catch (Exception e) {
+           return original;
+        }
+
+        if (ModStatePropertiesUnsafe.hasCustomLeavesProperties(blockState) && !blockState.getValue(ModStatePropertiesUnsafe.NOT_CORRUPTED)) {
+            float[] colorHSB = ModColorHandler.getColorHSB(original);
+            original = (Color.HSBtoRGB(-colorHSB[0] / 1.5F, colorHSB[1] - 0.25F, colorHSB[2] - 0.23F));
+        }
+
+        return original;
+    }
+
 }
