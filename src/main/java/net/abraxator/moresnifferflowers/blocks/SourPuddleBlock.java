@@ -18,36 +18,43 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PipeBlock;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-public class SourPuddleBlock extends Block {
+public class SourPuddleBlock extends Block implements SimpleWaterloggedBlock {
     private static final VoxelShape SHAPE = Block.box(0, 0,  0, 16, 2, 16);
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public SourPuddleBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(PipeBlock.NORTH, Boolean.FALSE)
                 .setValue(PipeBlock.EAST, Boolean.FALSE).setValue(PipeBlock.WEST, Boolean.FALSE)
-                .setValue(PipeBlock.SOUTH, Boolean.FALSE).setValue(ModStateProperties.HYDRATED, Boolean.FALSE)
-                .setValue(ModStateProperties.FULL, Boolean.FALSE).setValue(ModStateProperties.NATURAL, Boolean.TRUE));
+                .setValue(PipeBlock.SOUTH, Boolean.FALSE).setValue(ModStateProperties.FULL, Boolean.FALSE)
+                .setValue(BlockStateProperties.WATERLOGGED, Boolean.FALSE));
 
     }
 
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockGetter blockgetter = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
+        FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
+        boolean flag = fluidstate.getType() == Fluids.WATER;
+
         return super.getStateForPlacement(context)
                 .setValue(PipeBlock.NORTH, this.connectsTo(blockgetter, blockpos, Direction.NORTH))
                 .setValue(PipeBlock.EAST, this.connectsTo(blockgetter, blockpos, Direction.EAST))
                 .setValue(PipeBlock.SOUTH, this.connectsTo(blockgetter, blockpos, Direction.SOUTH))
                 .setValue(PipeBlock.WEST, this.connectsTo(blockgetter, blockpos, Direction.WEST))
                 .setValue(ModStateProperties.FULL, this.isFull(blockgetter, blockpos))
-                .setValue(ModStateProperties.HYDRATED, false)
-                .setValue(ModStateProperties.NATURAL, false);
+                .setValue(WATERLOGGED, flag);
     }
 
     public boolean connectsTo(BlockGetter level, BlockPos pos, Direction direction) {
@@ -67,6 +74,10 @@ public class SourPuddleBlock extends Block {
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) { return SHAPE; }
 
     public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+        if (state.getValue(WATERLOGGED)) {
+            level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+        }
+
         boolean isThis = facingState.is(this);
         BlockState newState = switch (facing){
             case UP, DOWN -> state;
@@ -106,11 +117,17 @@ public class SourPuddleBlock extends Block {
         }
     }
 
+    @Override
+    public @NotNull FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+
+
     public boolean isFree(BlockState state) {
         return state.isAir() || state.is(BlockTags.FIRE) || state.liquid() || state.canBeReplaced();
     }
 
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(PipeBlock.NORTH, PipeBlock.EAST, PipeBlock.WEST, PipeBlock.SOUTH, ModStateProperties.HYDRATED, ModStateProperties.FULL, ModStateProperties.NATURAL);
+        builder.add(PipeBlock.NORTH, PipeBlock.EAST, PipeBlock.WEST, PipeBlock.SOUTH, ModStateProperties.FULL, WATERLOGGED);
     }
 }

@@ -10,14 +10,19 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.common.util.FakePlayerFactory;
 
 public class SaltProjectile extends ThrowableItemProjectile {
     private static final EntityDataAccessor<Boolean> CORRUPTED = SynchedEntityData.defineId(SaltProjectile.class, EntityDataSerializers.BOOLEAN);
@@ -51,9 +56,9 @@ public class SaltProjectile extends ThrowableItemProjectile {
                 discard();
             }
         } else {
-            if (placeBlockSour(pos, 0)) {
+            if (placeBlockSour(pos, 0, result)) {
                 discard();
-            } else if (placeBlockSour(posRelative, 0)) {
+            } else if (placeBlockSour(posRelative, 0, result)) {
                 discard();
             }
         }
@@ -80,21 +85,33 @@ public class SaltProjectile extends ThrowableItemProjectile {
         return false;
     }
 
-    public boolean placeBlockSour(BlockPos pos, int loop) {
+    public boolean placeBlockSour(BlockPos pos, int loop, BlockHitResult hitResult) {
         Level level = this.level();
-        BlockState newState = level.getBlockState(pos);
+        BlockState state = level.getBlockState(pos);
 
         if (loop > 2) return false;
 
-        if (newState.canBeReplaced()) {
-            if (!ModBlocks.SOUR_PUDDLE.get().canSurvive(newState, level, pos)){
+        if (state.canBeReplaced()) {
+            if (!ModBlocks.SOUR_PUDDLE.get().canSurvive(state, level, pos)){
                 return true;
             }
-            level.setBlock(pos, ModBlocks.SOUR_PUDDLE.get().defaultBlockState(), 3);
+
+            if (level instanceof ServerLevel serverLevel) {
+                BlockState stateForPlacement = ModBlocks.SOUR_PUDDLE.get().getStateForPlacement(
+                        new BlockPlaceContext(
+                                new UseOnContext(
+                                        FakePlayerFactory.getMinecraft(serverLevel),
+                                        InteractionHand.MAIN_HAND,
+                                        new BlockHitResult(hitResult.getLocation(), hitResult.getDirection(), pos, hitResult.isInside()))));
+
+                if (stateForPlacement != null) {
+                    level.setBlock(pos, stateForPlacement, 3);
+                }
+            }
             return true;
         }
-        if (newState.is(ModBlocks.SOUR_PUDDLE.get())){
-            return placeBlockSour(aroundPos(pos, random.nextInt(7)), loop+1);
+        if (state.is(ModBlocks.SOUR_PUDDLE.get())){
+            return placeBlockSour(aroundPos(pos, random.nextInt(7)), loop+1, hitResult);
         }
         return false;
     }
