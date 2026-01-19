@@ -124,8 +124,10 @@ public class SaltBubbleProjectile extends ThrowableItemProjectile {
                 PacketDistributor.sendToAllPlayers(new SaltemoneParticlePacket(this.position().toVector3f()));
         }
 
-        if (!level().isClientSide() && level().getBlockEntity(plantPos) instanceof SaltemoneBlockEntity blockEntity) {
-            blockEntity.bubbleCount--;
+        if (!level().isClientSide() && plantPos != null) {
+            if (level().getBlockEntity(plantPos) instanceof SaltemoneBlockEntity blockEntity) {
+                blockEntity.bubbleCount--;
+            }
         }
 
         discard();
