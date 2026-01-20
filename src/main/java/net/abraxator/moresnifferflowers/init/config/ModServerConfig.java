@@ -29,6 +29,8 @@ public class ModServerConfig {
 
     public static final ForgeConfigSpec.BooleanValue SALTEMONE_GRIEFING;
     public static final ForgeConfigSpec.IntValue THROWABLES_COOLDOWN;
+    public static final ForgeConfigSpec.BooleanValue TORCHFLOWER_CONVERSION;
+
 
 
     static {
@@ -97,6 +99,12 @@ public class ModServerConfig {
                 .comment("Cooldown for all throwable items, which drop blocks. Input in ticks")
                 .translation("moresnifferflowers.configuration.throwables_cooldown")
                 .defineInRange("Throwables Cooldown", 0, 0, 10000);
+
+        TORCHFLOWER_CONVERSION = builder
+                .comment("Allows Torchflowers to covert to burning torchflower when in direct sunlight")
+                .translation("moresnifferflowers.configuration.torchflower_conversion")
+                .define("Torchflower Conversion", true);
+
 
         builder.pop();
 

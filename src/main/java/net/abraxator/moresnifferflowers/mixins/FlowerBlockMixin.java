@@ -2,6 +2,7 @@ package net.abraxator.moresnifferflowers.mixins;
 
 import net.abraxator.moresnifferflowers.init.ModBlocks;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
+import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
@@ -28,9 +29,11 @@ public abstract class FlowerBlockMixin extends BushBlock implements SuspiciousEf
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         super.randomTick(state, level, pos, random);
+        if (!state.is(Blocks.TORCHFLOWER) || !ModServerConfig.TORCHFLOWER_CONVERSION.get()) return;
+
         boolean isWaterUnderneath = level.getFluidState(pos.below(2)).is(FluidTags.WATER);
 
-        if (state.is(Blocks.TORCHFLOWER) && level.getBrightness(LightLayer.SKY, pos) > 13 && level.isDay() && !level.isRaining() && !isWaterUnderneath) {
+        if (level.getBrightness(LightLayer.SKY, pos) > 13 && level.isDay() && !level.isRaining() && !isWaterUnderneath) {
             level.setBlock(pos, ModBlocks.TORCHFLOWER_AFLAME.get().defaultBlockState().setValue(ModStateProperties.AGE_2, 1).setValue(ModStateProperties.FIRE_TICKS, 0), 3);
         }
     }
