@@ -6,6 +6,7 @@ plugins {
     id 'net.neoforged.moddev.legacyforge' version '2.0.115'
     id "me.modmuss50.mod-publish-plugin" version "1.1.0"
 }
+version = mod_version
 
 group = 'net.abraxator.moresnifferflowers'
 base {
@@ -37,8 +38,8 @@ repositories {
     maven { url = "https://maven.blamejared.com/" }
     maven { url = "https://modmaven.dev" }
     maven {
-        name 'Shedaniel\'s Maven' //REI
-        url "https://maven.shedaniel.me"
+        name = 'Shedaniel\'s Maven' //REI
+        url ="https://maven.shedaniel.me"
     }
     maven {
         name = "TerraformersMC" //EMI
@@ -135,30 +136,40 @@ dependencies {
 }
 
 mixin {
-    add sourceSets.main, 'more_sniffer_flowers.mixins.refmap.json'
-    config 'more_sniffer_flowers.mixins.json'
+    add sourceSets.main, "${mod_id}.mixins.refmap.json"
+    config "${mod_id}.mixins.json"
 }
 
-final manifestAttributes = [
-        'Specification-Title'   : 'MoreSnifferFlowers',
-        'Specification-Vendor'  : 'Nikdo53',
-        'Specification-Version' : '1',
-        'Implementation-Title'  : project.name,
-        'Implementation-Version': project.version,
-        'Implementation-Vendor' : 'Nikdo53',
-        "MixinConfigs"          : "more_sniffer_flowers.mixins.json",
-        'jei_version'           : project.jei_version_range,
-]
-
 jar {
-    manifest.attributes(manifestAttributes)
+    manifest.attributes([
+            "MixinConfigs": "${mod_id}.mixins.json"
+    ])
     finalizedBy('reobfJar')
 }
 
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+            minecraft_version        : minecraft_version,
+            forge_version            : forge_version,
+            mod_id                   : mod_id,
+            mod_name                 : mod_name,
+            mod_license              : "MIT",
+            mod_version              : mod_version,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+sourceSets.main.resources.srcDir generateModMetadata
+legacyForge.ideSyncTask generateModMetadata
+
 publishMods {
-    file = jar.archiveFile
+    file = reobfJar.archiveFile
     modLoaders.add("forge")
-    displayName = "More Sniffer Flowers $version - $minecraft_version Forge"
+    modLoaders.add("neoforge")
+
+    displayName = "$mod_name $mod_version - $minecraft_version Forge"
 
     type = STABLE
     changelog = rootProject.file("CHANGELOG.md").text
@@ -167,6 +178,8 @@ publishMods {
         accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
         projectId = "884119"
         minecraftVersions.add(minecraft_version)
+        clientRequired = true
+        serverRequired = true
     }
 
     modrinth {
