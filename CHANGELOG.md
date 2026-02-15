@@ -1,0 +1,1 @@
+- Converted the bobling music disc from stereo to mono so minecraft stops complaining
