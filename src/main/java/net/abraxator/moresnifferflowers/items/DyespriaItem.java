@@ -218,6 +218,7 @@ public class DyespriaItem extends BlockItem implements Colorable {
         return blockState.is(ModTags.ModBlockTags.DYED);
     }
 
+    @SuppressWarnings("removal")
     private void dyeNonColorableBlock(BlockState blockState, BlockPos blockPos, DyeColor newColor, Level level) {
         if(!checkDyedBlock(blockState)) {
             return;

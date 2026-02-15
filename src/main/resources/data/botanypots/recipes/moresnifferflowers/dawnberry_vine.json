@@ -1,4 +1,10 @@
 {
+  "forge:conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "botanypots"
+    }
+  ],
   "type": "botanypots:crop",
   "seed": {
     "item": "moresnifferflowers:dawnberry_vine_seeds"

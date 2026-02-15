@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+@SuppressWarnings("removal")
 public class AddItemsModifier extends LootModifier {
     public static final Supplier<Codec<AddItemsModifier>> CODEC = Suppliers.memoize(()
             -> RecordCodecBuilder.create(inst -> codecStart(inst).and(ExtraCodecs.nonEmptyList(ForgeRegistries.ITEMS.getCodec().listOf())

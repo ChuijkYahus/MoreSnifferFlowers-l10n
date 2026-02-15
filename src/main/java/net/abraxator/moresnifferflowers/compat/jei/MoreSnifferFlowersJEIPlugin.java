@@ -28,7 +28,7 @@ import java.util.Map;
 
 @JeiPlugin
 public class MoreSnifferFlowersJEIPlugin implements IModPlugin {
-    public static final ResourceLocation ID = new ResourceLocation("jei", MoreSnifferFlowers.MOD_ID);
+    public static final ResourceLocation ID = MoreSnifferFlowers.modLoc("jei", MoreSnifferFlowers.MOD_ID);
 
     @Override
     public ResourceLocation getPluginUid() {

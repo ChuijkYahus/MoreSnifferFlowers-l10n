@@ -42,6 +42,7 @@ public class DyescrapiaItem extends BlockItem {
     }
 
     @Override
+    @SuppressWarnings("removal")
     public InteractionResult useOn(UseOnContext context) {
         var pos = context.getClickedPos();
         var state = context.getLevel().getBlockState(pos);

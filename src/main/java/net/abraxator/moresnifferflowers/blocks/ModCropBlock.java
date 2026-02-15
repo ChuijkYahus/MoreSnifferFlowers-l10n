@@ -1,5 +1,6 @@
 package net.abraxator.moresnifferflowers.blocks;
 
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.init.ModStateProperties;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -66,7 +67,7 @@ public interface ModCropBlock extends BonemealableBlock {
     }
 
     default boolean mayPlaceOn(BlockState state) {
-        return state.is(Blocks.FARMLAND) || state.getBlock() instanceof FarmBlock || state.is(TagKey.create(Registries.BLOCK, new ResourceLocation("supplementaries", "planters")));
+        return state.is(Blocks.FARMLAND) || state.getBlock() instanceof FarmBlock || state.is(TagKey.create(Registries.BLOCK, MoreSnifferFlowers.modLoc("supplementaries", "planters")));
     }
 
     private static void shear(Player player, Level level, BlockPos blockPos, BlockState blockState, InteractionHand hand) {

@@ -31,6 +31,7 @@ public class MoreSnifferFlowers {
     public static final String MOD_ID = "moresnifferflowers";
     public static final Logger LOGGER = LogUtils.getLogger();
 
+    @SuppressWarnings("removal")
     public MoreSnifferFlowers() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ModClientConfig.CLIENT_CONFIG);
@@ -60,7 +61,8 @@ public class MoreSnifferFlowers {
         
         ModPacketHandler.init();
     }
-    
+
+    @SuppressWarnings("removal")
     private void commonSetup(final FMLCommonSetupEvent event) {
         ModAdvancementCritters.init();
         
@@ -135,23 +137,24 @@ public class MoreSnifferFlowers {
     }
 
     public static ResourceLocation farmersDelightLoc(String path) {
-        return new ResourceLocation("farmersdelight", path);
+        return modLoc("farmersdelight", path);
     }
 
-
     public static ResourceLocation loc(String path) {
-        return new ResourceLocation(MOD_ID, path);
+        return modLoc(MOD_ID, path);
     }
 
     public static ResourceLocation vanillaLoc(String path) {
-        return new ResourceLocation("minecraft", path);
+        return modLoc(ResourceLocation.DEFAULT_NAMESPACE, path);
     }
 
+    @SuppressWarnings("removal")
     public static ResourceLocation ofLoc(String path) {
         return ResourceLocation.of(path, ':');
     }
 
-    public static String sLoc(String path) {
-        return loc(path).toString();
+    @SuppressWarnings("removal")
+    public static ResourceLocation modLoc(String modId, String path) {
+        return new ResourceLocation(modId, path);
     }
 }

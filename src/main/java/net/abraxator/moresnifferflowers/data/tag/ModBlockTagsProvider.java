@@ -28,7 +28,7 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "removal"})
     protected void addTags(HolderLookup.Provider provider) {
         this.tag(BlockTags.FLOWERS).add(ModBlocks.DAWNBERRY_VINE.get(), ModBlocks.AMBUSH_BOTTOM.get(), ModBlocks.AMBUSH_TOP.get(), ModBlocks.CAULORFLOWER.get(), ModBlocks.DYESPRIA_PLANT.get(), ModBlocks.BONMEELIA.get());
         this.tag(BlockTags.INSIDE_STEP_SOUND_BLOCKS).add(ModBlocks.DAWNBERRY_VINE.get(), ModBlocks.AMBUSH_BOTTOM.get(), ModBlocks.AMBUSH_TOP.get(), ModBlocks.CAULORFLOWER.get());
@@ -107,6 +107,7 @@ public class ModBlockTagsProvider extends IntrinsicHolderTagsProvider<Block> {
         addColored(DYED, "{c}_wool", "{c}_carpet", "{c}_terracotta", "{c}_concrete", "{c}_concrete_powder", "{c}_glazed_terracotta", "{c}_shulker_box", "{c}_candle", "{c}_banner");
     }
 
+    @SuppressWarnings("removal")
     private void addColored(TagKey<Block> group, String... pattern) {
         for (DyeColor color  : DyeColor.values()) {
             for(String s : pattern) {

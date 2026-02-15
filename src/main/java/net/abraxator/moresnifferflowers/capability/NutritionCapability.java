@@ -85,7 +85,7 @@ public class NutritionCapability implements INBTSerializable<CompoundTag>, ICapa
         items = new HashSet<>();
         
         for (int i = 0; i < nbt.getInt("size"); i++) {
-            ResourceLocation location = ResourceLocation.of(nbt.getString("unlocked" + i), ':');
+            ResourceLocation location = MoreSnifferFlowers.ofLoc(nbt.getString("unlocked" + i));
             items.add(ForgeRegistries.ITEMS.getValue(location));
         }
 

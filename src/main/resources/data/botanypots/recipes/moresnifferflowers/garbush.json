@@ -1,4 +1,11 @@
 {
+  "forge:conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "botanypots"
+    }
+  ],
+
   "type": "botanypots:crop",
   "seed": {
     "item": "moresnifferflowers:garbush_seeds"

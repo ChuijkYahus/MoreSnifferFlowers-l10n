@@ -1,6 +1,7 @@
 package net.abraxator.moresnifferflowers.blockentities;
 
 import com.google.common.collect.Lists;
+import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blocks.rebrewingstand.RebrewingStandBlockBase;
 import net.abraxator.moresnifferflowers.client.gui.menu.RebrewingStandMenu;
 import net.abraxator.moresnifferflowers.init.ModBlockEntities;
@@ -216,7 +217,7 @@ public class RebrewingStandBlockEntity extends BaseContainerBlockEntity {
             var dur = potion.getInt("Duration") + (ingredient.is(ModServerConfig.itemFromLoc(ModServerConfig.REBREWING_LENGTH.get())) ? 12000 : defaultDur);
             if (potion.getInt("Duration") == -1) dur = -1;
             var splitId = id.split(":");
-            var instance = new MobEffectInstance(ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(splitId[0], splitId[1])), dur, amp);
+            var instance = new MobEffectInstance(ForgeRegistries.MOB_EFFECTS.getValue(MoreSnifferFlowers.modLoc(splitId[0], splitId[1])), dur, amp);
 
             durList.add(dur);
             ret.add(instance);
