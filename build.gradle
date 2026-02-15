@@ -5,10 +5,9 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.115'
     id "me.modmuss50.mod-publish-plugin" version "1.1.0"
 }
+version = mod_version
 
 group = 'net.abraxator.moresnifferflowers'
-version = version
-
 base {
     archivesName.set("MoreSnifferFlowers-${minecraft_version}-neo")
 }
@@ -96,24 +95,33 @@ dependencies {
     implementation("maven.modrinth:DistantHorizons:2.4.5-b-1.21.1")
 }
 
-final manifestAttributes = [
-        'Specification-Title'   : 'More Sniffer Flowers',
-        'Specification-Vendor'  : 'Nikdo53',
-        'Specification-Version' : project.version,
-        'Implementation-Title'  : project.name,
-        'Implementation-Version': project.version,
-        'Implementation-Vendor' : 'Nikdo53',
-        "MixinConfigs": "more_sniffer_flowers.neoforge.mixins.json"
-]
-
 jar {
-    manifest.attributes(manifestAttributes)
+    manifest.attributes([
+            "MixinConfigs": "${mod_id}.mixins.json"
+    ])
 }
+
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            neo_version            : neoforge_version,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : "MIT",
+            mod_version            : mod_version,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
 
 publishMods {
     file = jar.archiveFile
     modLoaders.add("neoforge")
-    displayName = "More Sniffer Flowers $version - $minecraft_version Neoforge"
+    displayName = "$mod_name $mod_version - $minecraft_version Neoforge"
 
     type = STABLE
     changelog = rootProject.file("CHANGELOG.md").text
@@ -122,6 +130,8 @@ publishMods {
         accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
         projectId = "884119"
         minecraftVersions.add(minecraft_version)
+        clientRequired = true
+        serverRequired = true
     }
 
     modrinth {
