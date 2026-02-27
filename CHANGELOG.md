@@ -1,2 +1,2 @@
-- Fixed a crash from cropressor holding an itemstack with count over 99
-- Fixed cropressor recipes not allowing air as their output
+- Fixed performance issues when rendering the glued overlay
+- Fixed the beroot cauldron cooking soup with way too much saturation (already cooked ones won't change)

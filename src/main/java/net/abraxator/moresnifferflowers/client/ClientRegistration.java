@@ -4,6 +4,7 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.ModCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.client.gui.screen.ClientDyespriaTooltip;
 import net.abraxator.moresnifferflowers.client.gui.screen.DyespriaTooltip;
+import net.abraxator.moresnifferflowers.client.gui.screen.GluedOverlay;
 import net.abraxator.moresnifferflowers.client.gui.screen.RebrewingStandScreen;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
 import net.abraxator.moresnifferflowers.client.model.block.*;
@@ -28,10 +29,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforgespi.locating.IModFile;
 
@@ -141,6 +139,13 @@ public class ClientRegistration {
         event.registerSpriteSet(ModParticles.BUBBLE.get(), ModBubbleParticle.Provider::new);
 
     }
+
+    @SubscribeEvent
+    public static void registerGuiOverlays(RegisterGuiLayersEvent event) {
+        event.registerBelowAll(MoreSnifferFlowers.loc("glued"), new GluedOverlay());
+    }
+
+
 
     @SubscribeEvent
     public static void onRegisterTooltips(RegisterClientTooltipComponentFactoriesEvent event) {
