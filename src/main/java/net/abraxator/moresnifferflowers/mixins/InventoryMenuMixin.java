@@ -2,7 +2,7 @@ package net.abraxator.moresnifferflowers.mixins;
 
 import net.abraxator.moresnifferflowers.capability.CapabilityList;
 import net.abraxator.moresnifferflowers.capability.HardenedMouthCapability;
-import net.abraxator.moresnifferflowers.client.gui.menu.InventoryMenuExtension;
+
 import net.abraxator.moresnifferflowers.client.gui.slot.HardenedMouthSlot;
 import net.abraxator.moresnifferflowers.init.config.ModClientConfig;
 import net.minecraft.core.NonNullList;
@@ -10,19 +10,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InventoryMenu.class)
-public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingContainer> implements InventoryMenuExtension {
-    @Shadow
-    @Final
-    public boolean active;
-
+public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingContainer> {
     public InventoryMenuMixin(MenuType<?> menuType, int containerId) {
         super(menuType, containerId);
     }
@@ -50,8 +44,7 @@ public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingContaine
                         .map(HardenedMouthCapability::getMouthSlotItems)
                         .orElse(NonNullList.withSize(2, ItemStack.EMPTY))));
         // x180, y120
-
-
+        
     }
 
     @Override
