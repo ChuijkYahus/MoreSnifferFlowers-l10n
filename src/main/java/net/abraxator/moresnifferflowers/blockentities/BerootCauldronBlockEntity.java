@@ -113,6 +113,7 @@ public class BerootCauldronBlockEntity extends AbstractMultiBlockEntity implemen
         this.soupCount = this.beetroots + (ingredients / 4);
         int soupFood = 6 + (food / ingredients);
         float soupSat = 7 + ((float) sat / ingredients);
+        soupSat = (soupSat / soupFood) / 2f; // because mojang made it relative
         
         //calculate neutral factor
         for(NutritionEntry nutritionEntry : entryList) {
