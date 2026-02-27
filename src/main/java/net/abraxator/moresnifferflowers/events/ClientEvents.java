@@ -97,28 +97,6 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public static void renderGuiOverlay(RenderGuiOverlayEvent.Pre event) {
-        // ChatGPT code that worked first time???
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null || !player.hasEffect(ModEffects.GLUED.get())) return;
-
-        GuiGraphics guiGraphics = event.getGuiGraphics();
-        Minecraft mc = Minecraft.getInstance();
-        int width = mc.getWindow().getGuiScaledWidth();
-        int height = mc.getWindow().getGuiScaledHeight();
-
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-
-        ResourceLocation texture = MoreSnifferFlowers.loc("textures/gui/glued_overlay.png");
-        RenderSystem.setShaderTexture(0, texture);
-
-        guiGraphics.blit(texture, 0, 0, 0, 0, width, height, width, height);
-
-        RenderSystem.disableBlend();
-    }
-
-    @SubscribeEvent
     public static void renderPlayer(RenderPlayerEvent.Pre event) {
         Player player = event.getEntity();
         PoseStack pose = event.getPoseStack();

@@ -4,6 +4,7 @@ import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.blockentities.ModCauldronBlockEntity;
 import net.abraxator.moresnifferflowers.client.gui.screen.ClientDyespriaTooltip;
 import net.abraxator.moresnifferflowers.client.gui.screen.DyespriaTooltip;
+import net.abraxator.moresnifferflowers.client.gui.screen.GluedOverlay;
 import net.abraxator.moresnifferflowers.client.gui.screen.RebrewingStandScreen;
 import net.abraxator.moresnifferflowers.client.model.ModModelLayerLocations;
 import net.abraxator.moresnifferflowers.client.model.block.*;
@@ -28,6 +29,7 @@ import net.minecraft.server.packs.repository.PackSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -138,6 +140,13 @@ public class ClientRegistration {
         event.registerSpriteSet(ModParticles.BUBBLE.get(), ModBubbleParticle.Provider::new);
 
     }
+
+    @SubscribeEvent
+    public static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
+        event.registerBelowAll("glued", new GluedOverlay());
+    }
+
+
 
     @SubscribeEvent
     public static void onRegisterTooltips(RegisterClientTooltipComponentFactoriesEvent event) {
