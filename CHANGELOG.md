@@ -1,2 +1,2 @@
-- Fixed performance issues when rendering the glued overlay
-- Fixed the beroot cauldron cooking soup with way too much saturation (already cooked ones won't change)
+- Hopefully Fixed the cropressor recipe getting corrupted and breaking
+- Slots from the hardened mouth effect should no longer make items disappear

@@ -9,10 +9,14 @@ import net.abraxator.moresnifferflowers.init.ModItems;
 import net.abraxator.moresnifferflowers.networking.toClient.SyncGluedPacket;
 import net.abraxator.moresnifferflowers.networking.toClient.SyncMouthSlotsPacket;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
@@ -21,20 +25,14 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class HardenedMouthCapability {
     public static int SLOT_COUNT = 2;
     public NonNullList<ItemStack> mouthSlots;
     public int cooldown;
 
-    public static final Codec<List<ItemStack>> ITEMSTACK_LIST_CODEC = ItemStack.CODEC.listOf()
-            .validate(list -> list.size() != 2
-                    ? DataResult.error(() -> "Expected " + 2 + " items, got " + list.size())
-                    : DataResult.success(list.stream()
-                    .map(stack -> stack.isEmpty() ? ModItems.PLACEHOLDER.toStack() : stack)
-                    .toList()));
-
-    public static final Codec<ItemStack> SAFE_ITEMSTACK_CODEC = ItemStack.CODEC.xmap(
+    public static final Codec<ItemStack> SAFE_ITEMSTACK_CODEC = ItemStack.OPTIONAL_CODEC.xmap(
             stack -> stack.is(ModItems.PLACEHOLDER) ? ItemStack.EMPTY : stack,
             stack -> stack.isEmpty() ? ModItems.PLACEHOLDER.toStack() : stack
     );
@@ -43,6 +41,12 @@ public class HardenedMouthCapability {
                     NonNullList.codecOf(SAFE_ITEMSTACK_CODEC).fieldOf("slots").forGetter(cap -> cap.mouthSlots),
                     Codec.INT.fieldOf("cooldown").forGetter(cap -> cap.cooldown))
             .apply(instance, HardenedMouthCapability::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, HardenedMouthCapability> STREAM_CODEC = StreamCodec.composite(
+            ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()).map(NonNullList::copyOf, Function.identity()), cap -> cap.mouthSlots,
+            ByteBufCodecs.INT, cap -> cap.cooldown,
+            HardenedMouthCapability::new
+    );
 
 
     public HardenedMouthCapability(NonNullList<ItemStack> list, int cooldown) {

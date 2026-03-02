@@ -7,6 +7,7 @@ import net.abraxator.moresnifferflowers.init.ModDataAttachments;
 import net.abraxator.moresnifferflowers.networking.MSFClientPacket;
 import net.abraxator.moresnifferflowers.networking.MSFServerPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -19,8 +20,8 @@ import org.jetbrains.annotations.NotNull;
 
 public record SyncMouthSlotsPacket(HardenedMouthCapability capability) implements MSFClientPacket {
     public static final CustomPacketPayload.Type<SyncMouthSlotsPacket> TYPE = new CustomPacketPayload.Type<>(MoreSnifferFlowers.loc("sync_mouth"));
-    public static final StreamCodec<ByteBuf, SyncMouthSlotsPacket> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.fromCodec(HardenedMouthCapability.CODEC), SyncMouthSlotsPacket::capability,
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncMouthSlotsPacket> STREAM_CODEC = StreamCodec.composite(
+            HardenedMouthCapability.STREAM_CODEC, SyncMouthSlotsPacket::capability,
             SyncMouthSlotsPacket::new
     );
 
