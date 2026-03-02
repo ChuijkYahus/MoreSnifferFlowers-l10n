@@ -95,7 +95,7 @@ public class CropressorBlockEntity extends ModBlockEntity implements Container {
 
                     cropressingRecipeOptional.ifPresent(recipe -> {
                         if (slotStack.getCount() >= recipe.count()) {
-                            result = recipe.result();
+                            result = recipe.result().copy();
                             slotStack.shrink(recipe.count());
                         }
                     });
