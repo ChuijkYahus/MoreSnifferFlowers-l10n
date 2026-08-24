@@ -2,12 +2,13 @@
 plugins {
     id 'maven-publish'
     id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
-    id 'net.neoforged.moddev' version '2.0.115'
+    id 'net.neoforged.moddev' version '2.0.142'
     id "me.modmuss50.mod-publish-plugin" version "1.1.0"
 }
 version = mod_version
 
-group = 'net.abraxator.moresnifferflowers'
+group = 'net.abraxator'
+
 base {
     archivesName.set("MoreSnifferFlowers-${minecraft_version}-neo")
 }
@@ -30,6 +31,11 @@ repositories {
         url = "https://maven.terraformersmc.com/"
     }
     flatDir { dir 'libs' }
+
+
+    maven {
+        url = 'https://nikdo53.github.io'
+    }
 }
 
 
@@ -84,12 +90,11 @@ dependencies {
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
-    runtimeOnly "curse.maven:farmers-delight-398521:6917256"
-    compileOnly "curse.maven:farmers-delight-398521:6917256"
+    runtimeOnly "curse.maven:farmers-delight-398521:8672744"
+    compileOnly "curse.maven:farmers-delight-398521:8672744"
 
-    // jarJar(implementation("libs:tiny-multiblock-lib:neo-1.21.1-${tiny_multiblock_lib_version}"))
-
-    jarJar(implementation("maven.modrinth:tiny-multiblock-lib:neo-1.21.1-${tiny_multiblock_lib_version}"))
+    jarJar(implementation("net.nikdo53:tiny-multiblock-lib-neoforge-1.21.1:${tiny_multiblock_lib_version}"))
+    implementation("net.nikdo53:nikdo-color:1.0.0")
 
 
    // implementation("maven.modrinth:DistantHorizons:2.4.5-b-1.21.1")
@@ -138,6 +143,19 @@ publishMods {
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
         projectId = "DbriYWc8"
         minecraftVersions.add(minecraft_version)
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            url = "$rootDir/build/maven"
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
     }
 }
 

@@ -1,16 +1,19 @@
 package net.abraxator.moresnifferflowers.events;
 
+import com.google.common.collect.ImmutableList;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.abraxator.moresnifferflowers.capability.BlockPatternCapability;
 import net.abraxator.moresnifferflowers.capability.CorruptionCapability;
 import net.abraxator.moresnifferflowers.capability.GluedCapability;
 import net.abraxator.moresnifferflowers.capability.UntouchableCapability;
 import net.abraxator.moresnifferflowers.init.*;
+import net.abraxator.moresnifferflowers.init.config.ModServerConfig;
 import net.abraxator.moresnifferflowers.items.JarOfBonmeelItem;
 import net.abraxator.moresnifferflowers.nutrition.NutritionLoader;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -27,10 +30,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -41,6 +41,10 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -48,6 +52,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.entity.item.ItemEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
@@ -57,6 +62,8 @@ import net.neoforged.neoforge.event.entity.player.*;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkWatchEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @EventBusSubscriber(modid = MoreSnifferFlowers.MOD_ID)
@@ -123,6 +130,26 @@ public class ForgeEvents {
         if (effect.equals(ModEffects.GLUED))
             GluedCapability.setAndSync(entity, false, true);
 
+
+    }
+
+    @SubscribeEvent
+    public static void lootTableLoad(LootTableLoadEvent event){
+        if (event.getKey().location().equals(BuiltInLootTables.SNIFFER_DIGGING.location())) {
+            LootTable table = event.getTable();
+            LootPool pool = table.getPool("main");
+            if (pool == null){
+                MoreSnifferFlowers.LOGGER.error("Failed to add MoreSnifferFlowers loot to sniffer digging loot table, pool 'main' not found");
+                return;
+            }
+
+            List<Item> items = List.of(ModItems.DAWNBERRY_VINE_SEEDS.get(), ModItems.DYESPRIA_SEEDS.get(), ModItems.AMBUSH_SEEDS.get(), ModItems.CAULORFLOWER_SEEDS.get(),
+                    ModItems.BONMEELIA_SEEDS.get(), ModItems.BONDRIPIA_SEEDS.get(), ModBlocks.VIVICUS_SAPLING.get().asItem(), ModItems.SALTEMONE_SEEDS.get());
+
+            pool.entries = new ArrayList<>(pool.entries);
+            pool.entries.addAll(items.stream().map(item -> LootItem.lootTableItem(item).build()).toList());
+            pool.entries = ImmutableList.copyOf(pool.entries);
+        }
 
     }
 

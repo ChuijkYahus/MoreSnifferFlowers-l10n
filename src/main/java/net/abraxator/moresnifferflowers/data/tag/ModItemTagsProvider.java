@@ -15,6 +15,7 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ModItemTagsProvider extends ItemTagsProvider {
@@ -68,7 +69,10 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 
         this.tag(ItemTags.SNIFFER_FOOD).add(ModItems.DAWNBERRY.get().asItem());
 
-        tag(Tags.Items.MUSIC_DISCS).add(ModItems.MUSIC_DISC_BOBLING.get());
+        this.tag(Tags.Items.MUSIC_DISCS).add(ModItems.MUSIC_DISC_BOBLING.get());
+
+        this.tag(ModTags.ModItemTags.MSF_SNIFFER_LOOT).add(ModItems.DAWNBERRY_VINE_SEEDS.get(), ModItems.DYESPRIA_SEEDS.get(), ModItems.AMBUSH_SEEDS.get(), ModItems.CAULORFLOWER_SEEDS.get(),
+                ModItems.BONMEELIA_SEEDS.get(), ModItems.BONDRIPIA_SEEDS.get(), ModBlocks.VIVICUS_SAPLING.get().asItem(), ModItems.SALTEMONE_SEEDS.get());
     }
 
     private Item item(DeferredBlock<Block> object) {

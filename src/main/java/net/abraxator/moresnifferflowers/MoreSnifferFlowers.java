@@ -59,7 +59,6 @@ public class MoreSnifferFlowers {
         ModPieceTypes.STRUCTURE_PIECE.register(modEventBus);
         ModAdvancementCritters.TRIGGERS.register(modEventBus);
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
-        ModLootModifiers.LOOT_MODIFIERS.register(modEventBus);
         ModTreeDecoratorTypes.DECORATORS.register(modEventBus);
         ModStructureTypes.STRUCTURE_PIECE.register(modEventBus);
         ModDataComponents.DATA_COMPONENTS.register(modEventBus);
