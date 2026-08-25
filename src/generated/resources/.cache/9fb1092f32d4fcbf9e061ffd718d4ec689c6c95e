@@ -1,5 +1,7 @@
-// 1.21.1	2025-11-23T21:52:41.7800108	Recipes
+// 1.21.1	2026-08-25T16:05:07.983304	Recipes
+cc4eacadc9e6b7d6af48bc264cbaccfd9a71a75a data/minecraft/advancement/recipes/misc/torchflower.json
 c9e239f3417968bd8f8a46ee1570d7c2eebc00f6 data/minecraft/recipe/rebrewed_tipped_arrow.json
+716348981179d1d14cf6bbe14cf2112d6af5b7ed data/minecraft/recipe/torchflower.json
 9c17de2c66a1b6ad56ada7e84dca6fbe0a12ee71 data/moresnifferflowers/advancement/cropressed_beetroot_from_cropressing.json
 084119f2732c68c0dfd7b7d1f3e8c22148d51927 data/moresnifferflowers/advancement/cropressed_carrot_from_cropressing.json
 fcbbf30bd320d7e7590038611b7e187ecc59b557 data/moresnifferflowers/advancement/cropressed_nether_wart_from_cropressing.json

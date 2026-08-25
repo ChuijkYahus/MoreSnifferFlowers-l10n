@@ -3,6 +3,7 @@ package net.abraxator.moresnifferflowers.init;
 import net.abraxator.moresnifferflowers.MoreSnifferFlowers;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -14,7 +15,8 @@ public class ModCreativeTabs {
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MORESNIFFERFLOWERS_TAB = TABS.register("moresnifferflowers_tab", () -> CreativeModeTab.builder()
             .title(Component.translatable("moresnifferflowers.creative_tab"))
-            .icon(() -> new ItemStack(ModItems.CREATIVE_TAB_ICON.get()))
+            .hideTitle()
+            .icon(() -> new ItemStack(ModItems.DYESPRIA.get()))
             .displayItems((parameters, output) -> {
                 output.accept(ModItems.DAWNBERRY_VINE_SEEDS.get());
                 output.accept(ModItems.DAWNBERRY.get());
@@ -200,7 +202,44 @@ public class ModCreativeTabs {
 
             })
             .backgroundTexture(MoreSnifferFlowers.loc("textures/gui/container/tab_items.png"))
-            .withTabsImage(MoreSnifferFlowers.loc("textures/gui/container/tabs.png"))
             .build()
     );
+
+    public static final ResourceLocation[] UNSELECTED_TOP_TABS = new ResourceLocation[]{
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_top_unselected_1"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_top_unselected_2"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_top_unselected_3"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_top_unselected_4"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_top_unselected_5"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_top_unselected_6"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_top_unselected_7")
+    };
+    public static final ResourceLocation[] SELECTED_TOP_TABS = new ResourceLocation[]{
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_top_selected_1"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_top_selected_2"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_top_selected_3"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_top_selected_4"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_top_selected_5"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_top_selected_6"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_top_selected_7")
+    };
+    public static final ResourceLocation[] UNSELECTED_BOTTOM_TABS = new ResourceLocation[]{
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_unselected_1"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_unselected_2"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_unselected_3"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_unselected_4"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_unselected_5"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_unselected_6"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_unselected_7")
+    };
+    public static final ResourceLocation[] SELECTED_BOTTOM_TABS = new ResourceLocation[]{
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_selected_1"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_selected_2"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_selected_3"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_selected_4"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_selected_5"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_selected_6"),
+            MoreSnifferFlowers.loc("container/creative_inventory/tab_bottom_selected_7")
+    };
+
 }

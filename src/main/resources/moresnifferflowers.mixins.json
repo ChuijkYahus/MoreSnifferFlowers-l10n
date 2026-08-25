@@ -25,5 +25,8 @@
     "CreativeInventoryScreenMixin",
     "InventoryScreenMixin",
     "SpriteResourceLoaderMixin$PalettedPermutationsAccessor"
-  ]
+  ],
+  "mixinextras": {
+    "minVersion": "0.5.0"
+  }
 }

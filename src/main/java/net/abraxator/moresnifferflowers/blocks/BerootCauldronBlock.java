@@ -4,6 +4,7 @@ import net.abraxator.moresnifferflowers.blockentities.BerootCauldronBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -74,6 +75,15 @@ public class BerootCauldronBlock extends AbstractMultiBlock implements ModEntity
         }
 
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if(level.getBlockEntity(IMultiBlock.getCenter(level, pos)) instanceof BerootCauldronBlockEntity blockEntity) {
+             return blockEntity.useWithoutItem(level);
+        }
+
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override
