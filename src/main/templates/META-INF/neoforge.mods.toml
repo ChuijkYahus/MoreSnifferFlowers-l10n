@@ -28,3 +28,10 @@ type="required"
 versionRange="${minecraft_version}"
 ordering="NONE"
 side="BOTH"
+
+[[dependencies.moresnifferflowers]]
+modId="tinymultiblocklib"
+mandatory = true
+versionRange="[4.0.0,)"
+ordering="NONE"
+side="BOTH"
